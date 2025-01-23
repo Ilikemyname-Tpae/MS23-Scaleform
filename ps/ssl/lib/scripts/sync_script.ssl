@@ -1,0 +1,13 @@
+import ssl.lib.scripts.ssl_obj
+
+native class SyncScript : SslObj
+   native func IssueEvent(id : string, data : *)
+   native func SendToHost(id : string, data : *)
+   native func SendMessage(clientId : int, id : string, data : *)
+   native func SendMessageAll(id : string, data : *)
+   native func GetLocalClientId() : int
+   native func IsManagedHost() : bool
+   native func IsClientJoined(clientId : int) : bool
+   native func GetClientMask() : int
+   native func GetNextJoinedClient(id : int) : int
+end

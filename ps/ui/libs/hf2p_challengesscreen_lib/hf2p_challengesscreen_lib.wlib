@@ -1,0 +1,874 @@
+classes   =   {
+   challengesBackBtn   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "closeChallenges"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::hf2pPanelLeftBtn"
+   }
+   hf2p_challengesList   =   {
+      lir   =   {
+         __type   =   "hf2p_ChallengesScreen_lib::hf2p_challenges_Renderer"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBar"
+      }
+      __type   =   "ui_challengesScreen_lib::hf2p_challengesList"
+   }
+   hf2p_challengesScreen   =   {
+      elements   =   {
+         screenCont   =   {
+            x   =   450
+            y   =   100
+            fixed   =   False
+            elements   =   {
+               challengeType1   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "headerMark"
+                        propVal   =   {
+                           val   =   "profile_challenges_daily"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb1"
+                        propVal   =   {
+                           val   =   "5"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb2"
+                        propVal   =   {
+                           val   =   "7"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_ChallengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+               }
+               challengeType2   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "headerMark"
+                        propVal   =   {
+                           val   =   "profile_challenges_weekly"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb1"
+                        propVal   =   {
+                           val   =   "5"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb2"
+                        propVal   =   {
+                           val   =   "7"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_ChallengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+               }
+               challengeType3   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "headerMark"
+                        propVal   =   {
+                           val   =   "profile_challenges_community"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb1"
+                        propVal   =   {
+                           val   =   "5"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb2"
+                        propVal   =   {
+                           val   =   "7"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_ChallengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+               }
+               challengeType4   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "headerMark"
+                        propVal   =   {
+                           val   =   "profile_challenges_personal"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb1"
+                        propVal   =   {
+                           val   =   "5"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     },
+                     {
+                        propName   =   "pb2"
+                        propVal   =   {
+                           val   =   "7"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_ChallengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+               }
+               challengesList   =   {
+                  x   =   65
+                  fixed   =   False
+                  lir   =   {
+                     __type   =   "hf2p_ChallengesScreen_lib::hf2p_challenges_Renderer"
+                  }
+                  scrollbar   =   {
+                     __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBar"
+                  }
+                  __type   =   "hf2p_ChallengesScreen_lib::hf2p_challengesList"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::hf2p_challengesScreen"
+   }
+   hf2p_challenges_PanelBookmarkMedBtn   =   {
+      elements   =   {
+         progressBar   =   {
+            __type   =   "hf2p_gameStatScreen_lib::hf2p_progressBar"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            textFieldDesc   =   {
+               isNoTranslate   =   True
+            }
+            headerMark   =   {
+               mapping   =   "markHeadTF.text"
+            }
+            pb1   =   {
+               mapping   =   "PB1textField.text"
+            }
+            pb2   =   {
+               mapping   =   "PB2textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      __type   =   "ui_challengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+   }
+   hf2p_challenges_Renderer   =   {
+      sslClass   =   "UiHf2pChallengesRenderer"
+      sslModule   =   "ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib"
+      elements   =   {
+         progressBar   =   {
+            __type   =   "hf2p_gameStatScreen_lib::hf2p_progressBar"
+         }
+         attachPoint   =   {
+            scaleX   =   0.7
+            scaleY   =   0.7
+            fixed   =   False
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx_image"
+            }
+            __type   =   "ui_widget_image"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            textFieldDesc   =   {
+               isNoTranslate   =   True
+            }
+            desctf   =   {
+               mapping   =   "descTextField.text"
+            }
+            lirPb1   =   {
+               mapping   =   "LirPB1textField.text"
+            }
+            lirPb2   =   {
+               mapping   =   "LirPB2textField.text"
+            }
+            text   =   {
+               mapping   =   "ChallengeTF.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx_list_item"
+      }
+      __type   =   "ui_challengesScreen_lib::hf2p_challenges_Renderer"
+   }
+   hf2p_screenChallenge   =   {
+      elements   =   {
+         challengeInfo   =   {
+            elements   =   {
+               challengeProgressList   =   {
+                  impl   =   {
+                     symbol   =   "hf2p_challengeInfoList"
+                     __type   =   "ui_widget_impl_gfx_list"
+                  }
+                  lir   =   {
+                     sslClass   =   "UiHf2pChallengesInfoRenderer"
+                     sslModule   =   "ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib"
+                     impl   =   {
+                        propMapping   =   {
+                           progress   =   {
+                              mapping   =   "progressbar.bar.scaleX"
+                           }
+                        }
+                        __type   =   "ui_widget_impl_gfx_list_item"
+                     }
+                     __type   =   "ui_challengesScreen_lib::progressLIR"
+                  }
+                  __type   =   "ui_challengesScreen_lib::hf2p_challengesList"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "header"
+                  propVal   =   {
+                     val   =   "profile_challenge_info"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_challengesScreen_lib::ProgressCont"
+         }
+         challengeListCont   =   {
+            elements   =   {
+               challengeList   =   {
+                  lir   =   {
+                     sslClass   =   "UiHf2pChallengesRenderer"
+                     sslModule   =   "ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib"
+                     elements   =   {
+                        attachChallengeIcn   =   {
+                           customProps   =   [
+                              {
+                                 propName   =   "pic"
+                                 propVal   =   {
+                                    val   =   "allUpgrade"
+                                    __type   =   "ui_widget_desc_prop_string"
+                                 }
+                              }
+                           ]
+                           __type   =   "ui_challengesScreen_lib::iconAttachChallenge"
+                        }
+                     }
+                     impl   =   {
+                        propMapping   =   {
+                           label   =   {
+                              mapping   =   "textFieldUp.textFieldUp.text"
+                           }
+                           barScale   =   {
+                              mapping   =   "progressBar.bar.scaleX"
+                           }
+                        }
+                        __type   =   "ui_widget_impl_gfx_list_item"
+                     }
+                     __type   =   "ui_challengesScreen_lib::challengesLIR"
+                  }
+                  __type   =   "ui_challengesScreen_lib::hf2p_challengesList"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::selectChallengeCont"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::screenChallenge"
+   }
+   hf2p_challenge_filter   =   {
+      elements   =   {
+         challengeBookmark1   =   {
+            elements   =   {
+               tf   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "textField"
+                        propVal   =   {
+                           val   =   "mark1"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::hf2pPanelBookmarkBtn_S"
+         }
+         challengeBookmark2   =   {
+            x   =   192
+            elements   =   {
+               tf   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "textField"
+                        propVal   =   {
+                           val   =   "mark2"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::hf2pPanelBookmarkBtn_S"
+         }
+         challengeBookmark3   =   {
+            x   =   384
+            elements   =   {
+               tf   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "textField"
+                        propVal   =   {
+                           val   =   "mark3"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::hf2pPanelBookmarkBtn_S"
+         }
+      }
+      __type   =   "hf2p_WeaponConf_lib::wc_container"
+   }
+   ItemChallengesLIR   =   {
+      __type   =   "ui_challengesScreen_lib::ItemChallengesLIR"
+   }
+   ChallengeProgressBar   =   {
+      elements   =   {
+         progress   =   {
+            elements   =   {
+               bar   =   {
+                  sslClass   =   "ChallengeProgress"
+                  sslModule   =   "ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib"
+                  isBlinkable   =   True
+                  fixed   =   False
+                  bindings   =   {
+                     x   =   {
+                        binding   =   "{-365 + progress * 364}"
+                     }
+                     tint   =   {
+                        binding   =   "{barTint}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isLocked}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         icon   =   {
+            visible   =   False
+            __type   =   "ui_challengesScreen_lib::attachPointIcon"
+         }
+         medal   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{GetMedalFrame()}"
+               }
+               visible   =   {
+                  binding   =   "{false and !isLocked and IsChallengeItem()}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::medalChallenge"
+         }
+         tpIcon   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isLocked and HasCounters() and !isComplete}"
+               }
+               frame   =   {
+                  binding   =   "{GetTokenFrame()}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::iconTechPoints"
+         }
+         tfTechPointsReward   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{GetTotalPoints()}"
+               }
+               visible   =   {
+                  binding   =   "{!isLocked and HasCounters() and !isComplete}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfGetItem   =   {
+            isBlinkable   =   True
+            elements   =   {
+               tf   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{GetItemGetTxt()}"
+                     }
+                     textColor   =   {
+                        binding   =   "{GetItemGetTxtColor()}"
+                     }
+                  }
+                  isVerticalCenter   =   True
+                  isAutoVerticalCenter   =   True
+                  __type   =   "ui_widget_text"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isLocked and !HasUnlockItem() and IsChallengeItem() and !isComplete}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         getItemBg   =   {
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{GetLineFrame()}"
+               }
+               visible   =   {
+                  binding   =   "{!isLocked and !HasUnlockItem() and IsChallengeItem() and !isComplete}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::getItemLirBgLine"
+         }
+         tfNumberChallengeCard   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{GetProgressTxt()}"
+               }
+               visible   =   {
+                  binding   =   "{!isLocked}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfDscChallengeCard   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{GetDesc()}"
+               }
+               visible   =   {
+                  binding   =   "{!isLocked}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfRewardCard   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{GetHeaderReward()}"
+               }
+               visible   =   {
+                  binding   =   "{!isLocked and HasUnlockItem()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfChallengeCard   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{GetHeaderRank()}"
+               }
+               visible   =   {
+                  binding   =   "{!isLocked}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         innerLine   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isLocked}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::ChallengeProgressBarInnerLine"
+         }
+         attachChallengeSide   =   {
+            x   =   9
+            y   =   33
+            fixed   =   False
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetChallengeIcon()}"
+               }
+               visible   =   {
+                  binding   =   "{!isLocked and false}"
+               }
+            }
+            isCentered   =   True
+            __type   =   "ui_challengesScreen_lib::attachPointIcon"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::ChallengeProgressBar"
+   }
+   challengeSlidePopUp   =   {
+      sslClass   =   "ChallengeSlidePopup"
+      sslModule   =   "ui.hf2p_SlidingScreens.hf2p_challenges_screen.hf2p_challengeProgressPopup"
+      x   =   1520
+      y   =   925
+      elements   =   {
+         challengeSlideProgress   =   {
+            elements   =   {
+               completeElem   =   {
+                  elements   =   {
+                     tpIcon   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{GetTokenFrame()}"
+                           }
+                        }
+                        __type   =   "ui_challengesScreen_lib::iconTechPoints"
+                     }
+                     tfTechPointsReward   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{GetTotalPoints()}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfRewardCard   =   {
+                        visible   =   False
+                        __type   =   "ui_widget_container"
+                     }
+                     header   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{'msg_challengebox_header'}"
+                           }
+                        }
+                        __type   =   "ui_challengesScreen_lib::cheCompleteHeader"
+                     }
+                     challengeName   =   {
+                        elements   =   {
+                           tf   =   {
+                              impl   =   {
+                                 __type   =   "ui_widget_impl_gfx"
+                              }
+                              bindings   =   {
+                                 text   =   {
+                                    binding   =   "{GetHeaderRank()}"
+                                 }
+                              }
+                              isVerticalCenter   =   True
+                              isAutoVerticalCenter   =   True
+                              __type   =   "ui_widget_text"
+                           }
+                        }
+                        __type   =   "ui_challengesScreen_lib::cheCompleteName"
+                     }
+                     itemAttach   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{GetChallengeIcon()}"
+                           }
+                        }
+                        isCentered   =   True
+                        __type   =   "ui_challengesScreen_lib::attachPointIcon"
+                     }
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{isComplete}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengeCompletePopup"
+               }
+               progressElem   =   {
+                  elements   =   {
+                     attachChallengeSide   =   {
+                        x   =   0
+                        __type   =   "ui_challengesScreen_lib::attachPointIcon"
+                     }
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!isComplete}"
+                     }
+                  }
+                  __type   =   "hf2p_ChallengesScreen_lib::ChallengeProgressBar"
+               }
+               attachChallengeSide   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{GetChallengeIcon()}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isComplete}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_challengesScreen_lib::attachPointIcon"
+               }
+            }
+            bindings   =   {
+               tfChallengeHeader   =   {
+                  binding   =   "{' '}"
+               }
+               tfDescChallenge   =   {
+                  binding   =   "{' '}"
+               }
+               curProgressTf   =   {
+                  binding   =   "{' '}"
+               }
+               maxProgressTf   =   {
+                  binding   =   "{' '}"
+               }
+               DC   =   {
+                  binding   =   "{progress}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::challengeSideLabel"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Waiting   =   {
+            }
+            Initial   =   {
+            }
+            AnimIn   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeIn"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+            AnimOut   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeOut"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_challenges_screen.hf2p_challengeProgressPopup.ChallengeSlidePopupVM'}"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::challengeSideAnim"
+   }
+   ItemChallengesList   =   {
+      elements   =   {
+         list   =   {
+            bindings   =   {
+               items   =   {
+                  binding   =   "{GetItemChallenges()}"
+               }
+               direction   =   {
+                  binding   =   "{'vertical'}"
+               }
+            }
+            lir   =   {
+               isBlinkable   =   True
+               events   =   {
+                  click   =   {
+                     eventRemap   =   "#OnItemChallengeLirClicked"
+                  }
+               }
+               elements   =   {
+                  tfLockedChallengege   =   {
+                     bindings   =   {
+                        visible   =   {
+                           binding   =   "{isLocked}"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+                  lockIcon   =   {
+                     bindings   =   {
+                        visible   =   {
+                           binding   =   "{isLocked}"
+                        }
+                     }
+                     __type   =   "ui_challengesScreen_lib::wc_lock_iconBig"
+                  }
+                  lockBG   =   {
+                     bindings   =   {
+                        visible   =   {
+                           binding   =   "{isLocked}"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+                  tfHeaderChallengeScreen   =   {
+                     isBlinkable   =   True
+                     bindings   =   {
+                        tf   =   {
+                           binding   =   "{GetTechLabel()}"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+                  level1   =   {
+                     isBlinkable   =   True
+                     bindings   =   {
+                        frame   =   {
+                           binding   =   "{GetCurrentRank() >= 0 ? GetMedalFrame(0) : GetMedalFrame(-1)}"
+                        }
+                        visible   =   {
+                           binding   =   "{!isLocked}"
+                        }
+                     }
+                     __type   =   "ui_challengesScreen_lib::medalChallenge"
+                  }
+                  level2   =   {
+                     isBlinkable   =   True
+                     bindings   =   {
+                        frame   =   {
+                           binding   =   "{GetCurrentRank() >= 1 ? GetMedalFrame(1) : GetMedalFrame(-1)}"
+                        }
+                        visible   =   {
+                           binding   =   "{!isLocked}"
+                        }
+                     }
+                     __type   =   "ui_challengesScreen_lib::medalChallenge"
+                  }
+                  level3   =   {
+                     isBlinkable   =   True
+                     bindings   =   {
+                        frame   =   {
+                           binding   =   "{GetCurrentRank() >= 2 ? GetMedalFrame(2) : GetMedalFrame(-1)}"
+                        }
+                        visible   =   {
+                           binding   =   "{!isLocked}"
+                        }
+                     }
+                     __type   =   "ui_challengesScreen_lib::medalChallenge"
+                  }
+                  activeChallenge   =   {
+                     elements   =   {
+                        equipCont   =   {
+                           bindings   =   {
+                              visible   =   {
+                                 binding   =   "{!isLocked and IsItemEquippedForChallenge() and !IsComplete()}"
+                              }
+                           }
+                           __type   =   "ui_weaponConf_lib_slide::equipClip"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+                  challengeIcon   =   {
+                     isBlinkable   =   True
+                     bindings   =   {
+                        pic   =   {
+                           binding   =   "{GetTechIcon()}"
+                        }
+                     }
+                     isCentered   =   True
+                     __type   =   "ui_challengesScreen_lib::challengeAttachPoint"
+                  }
+                  bg   =   {
+                     animated   =   True
+                     isBlink0Alpha   =   False
+                     bindings   =   {
+                        anim   =   {
+                           binding   =   "{GetChallengeStateFrame()}"
+                        }
+                     }
+                     __type   =   "ui_challengesScreen_lib::ChallengeScreenBg"
+                  }
+                  challengeProgress   =   {
+                     isBlinkable   =   True
+                     elements   =   {
+                        icon   =   {
+                           visible   =   True
+                           bindings   =   {
+                              pic   =   {
+                                 binding   =   "{GetChallengeIcon()}"
+                              }
+                              visible   =   {
+                                 binding   =   "{!isLocked}"
+                              }
+                           }
+                           isCentered   =   True
+                           __type   =   "ui_challengesScreen_lib::attachPointIcon"
+                        }
+                     }
+                     bindings   =   {
+                        DC   =   {
+                           binding   =   "{progress}"
+                        }
+                     }
+                     __type   =   "hf2p_ChallengesScreen_lib::ChallengeProgressBar"
+                  }
+               }
+               bindings   =   {
+                  DC   =   {
+                     binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_challenges_screen.hf2p_item_challenges_screen.UiItemChallengesLIRVM', challengeItemId = (:DC2).challengeItemId, tmpVar = (:DC2).tmpVar, tmpVar2 = (:DC2).tmpVar2}"
+                  }
+               }
+               __type   =   "ui_challengesScreen_lib::ItemChallengesLIR"
+            }
+            scrollbar   =   {
+               __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBarNew"
+            }
+            __type   =   "ui_challengesScreen_lib::ItemChallengesList"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::ItemChallengeListCont"
+   }
+   msgBoxRewardContainer   =   {
+      elements   =   {
+         itemAttach   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetRewardIcon()}"
+               }
+            }
+            isCentered   =   True
+            __type   =   "ui_postmatch_lib::RewardItemAttach"
+         }
+         itemTfCont   =   {
+            bindings   =   {
+               itemTf   =   {
+                  binding   =   "{GetRewardLabel()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      __type   =   "ui_postmatch_lib::LevelUpRewardContainer"
+   }
+   victoryChallengeAnim   =   {
+      __type   =   "ui_postmatch_lib::hf2p_pm_victory_challenge"
+   }
+}
+__type   =   "ui_widget_lib"

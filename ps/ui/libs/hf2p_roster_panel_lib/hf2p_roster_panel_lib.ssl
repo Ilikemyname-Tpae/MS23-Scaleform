@@ -1,0 +1,17 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.ui_party_monitor
+import ssl.lib.ui.ui_widget_list_item
+
+class UiRosterPanelLir : UiWidgetListItem
+
+override SetData // (p:params)
+end
+
+func onDisconnectBtnClick(p:params):bool
+   Log("ui~rosterPanelLir", "onDisconnectBtnClick")
+   //PresenceLeaveSession
+   return false   
+end          
+
+end

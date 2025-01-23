@@ -1,0 +1,416 @@
+classes   =   {
+   pc_left_container   =   {
+      elements   =   {
+         topLeftPanel   =   {
+            elements   =   {
+               loadoutAttach   =   {
+                  elements   =   {
+                     KillerPanelContainer   =   {
+                        bindings   =   {
+                           DC   =   {
+                              binding   =   "{loadoutVM}"
+                           }
+                           frame   =   {
+                              binding   =   "{'Visible'}"
+                           }
+                        }
+                        __type   =   "hf2p_KillerPanel_lib::KillerLoadout"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeIn"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+               transitionsOut   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeOut"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_podium_lib::leftPanelContainer"
+   }
+   pc_podium_container   =   {
+      elements   =   {
+         firstPlaceAnimContainer   =   {
+            sslClass   =   "UiFirstPlaceAnimContainer"
+            sslModule   =   "ui.libs.hf2p_podium_screen_lib.hf2p_podium_screen_lib"
+            elements   =   {
+               nicknameTfContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        impl   =   {
+                           __type   =   "ui_widget_impl_gfx"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               scoreContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        impl   =   {
+                           __type   =   "ui_widget_impl_gfx"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Initial   =   {
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                     transitionsOut   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         secondPlaceAnimContainer   =   {
+            sslClass   =   "UiSecondPlaceAnimContainer"
+            sslModule   =   "ui.libs.hf2p_podium_screen_lib.hf2p_podium_screen_lib"
+            elements   =   {
+               scoreContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        impl   =   {
+                           __type   =   "ui_widget_impl_gfx"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               nicknameTfContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        impl   =   {
+                           __type   =   "ui_widget_impl_gfx"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Initial   =   {
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                     transitionsOut   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         thirdPlaceAnimContainer   =   {
+            sslClass   =   "UiThirdPlaceAnimContainer"
+            sslModule   =   "ui.libs.hf2p_podium_screen_lib.hf2p_podium_screen_lib"
+            elements   =   {
+               nicknameTfContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        impl   =   {
+                           __type   =   "ui_widget_impl_gfx"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               scoreContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        impl   =   {
+                           __type   =   "ui_widget_impl_gfx"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Initial   =   {
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                     transitionsOut   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            FirstWent   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        state   =   "firstPlaceAnimContainer.Visible"
+                        __type   =   "ui_widget_action_state"
+                     }
+                  }
+               }
+            }
+            Initial   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        elements   =   {
+                           elem_1   =   {
+                              state   =   "thirdPlaceAnimContainer.Initial"
+                              __type   =   "ui_widget_action_state"
+                           }
+                           elem_2   =   {
+                              state   =   "secondPlaceAnimContainer.Initial"
+                              __type   =   "ui_widget_action_state"
+                           }
+                           elem_3   =   {
+                              state   =   "firstPlaceAnimContainer.Initial"
+                              __type   =   "ui_widget_action_state"
+                           }
+                        }
+                        __type   =   "ui_widget_action_sequence"
+                     }
+                  }
+               }
+            }
+            SecondWent   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        state   =   "secondPlaceAnimContainer.Visible"
+                        __type   =   "ui_widget_action_state"
+                     }
+                  }
+               }
+            }
+            ThirdWent   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        state   =   "thirdPlaceAnimContainer.Visible"
+                        __type   =   "ui_widget_action_state"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_podium_lib::PodiumContainer"
+   }
+   pc_right_container   =   {
+      elements   =   {
+         meleeContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "ui_widget_container"
+         }
+         headshotsContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "ui_widget_container"
+         }
+         assistsContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "ui_widget_container"
+         }
+         killsContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeIn"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+               transitionsOut   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeOut"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_podium_lib::rightPanelContainer"
+   }
+}
+__type   =   "ui_widget_lib"

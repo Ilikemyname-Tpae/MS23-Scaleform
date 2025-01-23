@@ -1,0 +1,221 @@
+classes = {
+	bgQuadroDark = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "bgQuadroDark" 
+			lib     = subMenuLib 
+		}
+	}
+
+	fadeLIRbg = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "fadeLIRbg" 
+			lib     = subMenuLib 
+		}
+	}
+
+	ShirmButton = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ShirmButton" 
+			lib     = subMenuLib 
+			propMapping {
+				buttonTxt = {
+					mapping = "buttonTxt.text"
+				}
+			}
+		}
+
+		elements {
+			iconAttach {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 438.1
+				y         = 64.05
+			} 
+		}
+	}
+
+	SlidingScreen_TabButton = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "SlidingScreen_TabButton" 
+			lib     = subMenuLib 
+		}
+
+		elements {
+			textfield {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 11
+				y         = 10.7
+				animated  = true
+			} 
+		}
+	}
+
+	SubMenuAnim = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "SubMenuAnim" 
+			lib     = subMenuLib 
+		}
+
+		elements {
+			animatedContent {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -1636.9
+				y         = 381.3
+
+				elements {
+					btnContainer {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+
+						elements {
+							btn {
+								__type = "ui_subMenuLib::ShirmButton"
+								x         = 0
+								y         = 0
+								animated  = true
+							} 
+						}
+					} 
+					contentContainer {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = -18
+						y         = 0
+					} 
+					contentBackGround {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = -86
+						y         = -4
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	SubMenuAnimContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "SubMenuAnimContainer" 
+			lib     = subMenuLib 
+		}
+
+		elements {
+			animatedContent {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -1636.9
+				y         = 381.3
+
+				elements {
+					btnContainer {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+
+						elements {
+							btn {
+								__type = "ui_subMenuLib::ShirmButton"
+								x         = 0
+								y         = 0
+								animated  = true
+							} 
+						}
+					} 
+					contentContainer {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = -18
+						y         = 0
+					} 
+					contentBackGround {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = -86
+						y         = -4
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	subm_background = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "subm_background" 
+			lib     = subMenuLib 
+		}
+	}
+
+	subm_background_temp = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "subm_background_temp" 
+			lib     = subMenuLib 
+		}
+	}
+}
+__type = "ui_widget_lib"

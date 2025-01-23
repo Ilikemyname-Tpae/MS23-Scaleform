@@ -1,0 +1,310 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf
+import ssl.lib.ui.ui_widget_container
+
+class BundlesScreen : UiWidgetContainer
+
+var   isSlidingElement  :  bool  = false
+
+func Init()
+end
+
+func SwitchToScreen()
+   Widgets().bundlesList.SetFocus()   
+end
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end          
+
+handle OnEnteringState("Visible")
+   Set("visible", true)
+end
+  
+func PrepareSlide()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   //Widgets().subItemsList.Set("enabled", false)
+   Widgets().subItemsList.Set("focusable", false)
+   Widgets().subItemsList.Set("direction", "vertical")
+   //Widgets().subItemsList.Set("minThumbSize", 3)
+   //Widgets().subItemsList.SetColumnCount(3)
+   GenerateEvent("#OpenedBundles")
+   StartDefaultBlinking(0.3)
+end
+
+func PrepareHideSlide()
+end
+
+func DisableSlide()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+   end
+end
+
+func OnItemPurchased(p : params) : bool
+   if (p.isOK)
+      GenerateEvent("#OnBundlePurchased", p)
+   end
+   return true
+end
+
+func SetListSelection(p : params) : bool
+   Widgets().bundlesList.SetSelectionIdx(p.idx)
+   return false
+end
+
+func OnBlinkItemList(p : params) : bool
+   Widgets().bundlesList.SetSelectionIdx(0)
+   Widgets().bundlesList.StartDefaultBlinking(0.0)
+   Widgets().subItemsList.StartDefaultBlinking(0.0)
+   $root.playSound("screen_rollout")
+   return false
+end
+
+func OnBundleSubItemLirMouseOver(p : params) : bool
+   
+   return true
+end
+
+func OnBundleSubItemLirMouseOut(p : params) : bool
+   
+   return true
+end
+
+end
+
+class BundlesVM : ItemShopBaseVM   
+   var SubItemList         : ObservableProperty = $OM.Calculated(this, "GetSubItemList")
+   var SubItemListLocked   : ObservableProperty = $OM.Property(false)
+   
+   func BundlesVM()      
+      shopType := $uiEnums.SHOP_TYPE_BUNDLES
+   end
+   
+   func Term(p : params)
+      //mouseOverItemId.Unsubscribe(descpanelVM, "UpdateItemId")
+      BaseTerm()
+   end
+   
+         
+   override OnPanelButtonClicked
+      Log("ui~content", "wc_OnPanelButtonClicked: " + Params2Str(p))
+      if (! IsVoid(p.widget.itemType) and ! p.widget.selected)
+         var itemType :  int = p.widget.itemType
+         itemQuality.Set(0)
+         itemCat.Set(itemType)            
+      end
+      DoBlink()      
+      return false
+   end
+   
+   override UpdateSelectedItem
+      descpanelVM.itemId.Set(mouseOverItemId.Get())
+      offersModuleVM.UpdateItemId((string)mouseOverItemId.Get())
+      //TacticalStatsVM.perkItemId.Set(mouseOverItemId.Get())
+   end
+   
+   override GetItemList
+      var ret     :  vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         if (! IsVoid(shop.bundles) and shop.bundles.Get().Count() > (int)itemQuality.Get())
+            var subshop    :  GL_ShopSection = (GL_ShopSection)shop.bundles.Get().Get((int)(itemQuality.Get()))
+            if (! IsVoid(subshop.shelves.Get()) and subshop.shelves.Get().Count() > (int)itemCat.Get())
+               var shelf      :  GL_ShopShelf   = (GL_ShopShelf)subshop.shelves.Get().Get((int)(itemCat.Get()))
+               if (! IsVoid(shelf.items.Get()))
+                  ret := shelf.items.Get()
+               end
+            end
+         end
+      end
+      
+      return ret
+   end
+   
+   func GetSubItemList() : vector      
+      var ret : vector
+      var shop : GL_ComponentShop = (GL_ComponentShop) $UiGlobals.componentsShop.Get(mouseOverItemId.Get())      
+      ret := shop.bundled_items.Get()
+      
+      SubItemListLocked.Set(GetSubItemListLocked())
+      
+      return ret
+   end   
+   
+   func GetSubItemListLocked() : bool
+      var ret : bool
+      ret := $uiEconomy.IsItemLockedGl((string)mouseOverItemId.Get()) and $uiEconomy.IsItemLockedCr((string)mouseOverItemId.Get())
+      
+      return ret
+   end
+      
+   override GetSections
+      var sections   : vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         if (! IsVoid(shop.bundles) and shop.bundles.Get().Count() > (int)itemQuality.Get())
+            var subshop    :  GL_ShopSection = (GL_ShopSection)shop.bundles.Get().Get((int)(itemQuality.Get()))
+            var i          : int
+            
+            for i := 0 to subshop.shelves.Get().Count() - 1
+               var shelf      : GL_ShopShelf    = (GL_ShopShelf)subshop.shelves.Get().Get(i) 
+               var uiID    : string = (string)shelf.shelf_id.Get()
+               var name    : string  = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(uiID)).name.Get()
+               if (name == "")
+                  name := uiID
+               end
+               var sectionDesc : params
+               sectionDesc.label    := name
+               sectionDesc.is_hot   := false //i == 0
+               sectionDesc.has_new  := false //shelf.HasNewItems()
+               sections.Push(sectionDesc.Clone())
+            end
+         end
+      end
+      while (sections.Count() < GetMaxSections())
+         var sectionDesc : params
+         sectionDesc.label    := ""
+         sectionDesc.is_hot   := false
+         sectionDesc.has_new  := false
+         sections.Push(sectionDesc.Clone())
+      end
+      return sections      
+   end
+
+   func OpenedBundles(p : params) : bool      
+      sections.Invalidate()
+      itemCategories.Invalidate()
+      itemList.Invalidate()
+      offersModuleVM.isWide.Set(false)      
+      bigIconPic.Invalidate()
+      if ($UiGlobals.shop.openParams.isValid)         
+         $UiGlobals.shop.openParams.isValid := false
+         itemQuality.Set($UiGlobals.shop.openParams.sectionIdx)
+         itemCat.Set($UiGlobals.shop.openParams.shelfIdx)
+         selectedIdx.Set($UiGlobals.shop.openParams.itemIdx)
+         SetListSelection($UiGlobals.shop.openParams.itemIdx)
+      else
+         itemQuality.Set(0)
+         itemCat.Set(0)         
+      end
+      return true
+   end      
+
+   func OnBundlePurchased(p : params) : bool
+      //offersModuleVM.Go2LoadoutAfterPurchase(p.itemID)
+      return true
+   end
+end
+
+class BundleItemLIR : WeaponItemLIR
+   var itemName              : ObservableProperty = $OM.Calculated(this, "GetItemName")
+   var itemDescShort         : ObservableProperty = $OM.Calculated(this, "GetItemDescShort")
+   
+   func GetItemName() : string
+      var ret : string = $UiGlobals.componentsUI.Get(itemId.Get()).name.Get()
+      return ret
+   end
+   
+   func GetItemDescShort() : string
+      var ret     : string
+      var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)itemId.Get())
+      ret := (string)compUI.desc_short.Get()
+      return ret
+   end
+   
+   override GetIsOffers
+      return true
+   end
+   
+   override GetOfferGp
+      var ret        : string                = "carousel_offer_na_small"
+      if minOffer.Get() != null
+         var offer = (GL_ComponentShopOffer)minOffer.Get()
+         if ((int)offer.gl_cost.Get()>0)
+            ret := (string)(int)offer.gl_cost.Get()
+         end
+      end
+      
+      return ret
+   end
+   
+   override GetOfferCr
+      var ret        : string                = "carousel_offer_na_small"
+      if minOffer.Get() != null
+         var offer = (GL_ComponentShopOffer)minOffer.Get()
+         if ((int)offer.cr_cost.Get()>0)
+            ret := (string)(int)offer.cr_cost.Get()
+         end
+      end
+      
+      return ret
+   end
+end
+
+class BundleSubItemLIR : WeaponItemLIR
+   var duration        : ObservableProperty = $OM.Property(0)
+   
+   override Init
+      wgt := p.widget
+      if (! IsVoid(p.itemId))
+         itemId.Set(p.itemId)
+      end
+      
+      if (! IsVoid(p.duration))
+         duration.Set(p.duration)
+      end      
+   end
+   
+   override IsLocked
+      return false
+   end
+   
+   override IsGlLock
+      return false
+   end
+   
+   override IsCrLock
+      return false
+   end
+   
+   override GetIsOffers // () : bool
+      return false
+   end
+   
+   override GetRentStatus // () : string
+      var t : int = (int)duration.Get()
+      if (t > 0)
+         return $root.MakeUiTimerStringMinutes(t, true)
+      else
+         return ""
+      end
+   end
+   
+   override GetRentStatusColor//() : int
+      return $root.RGB2Clr(0, 200, 0, 255)
+   end
+end
+
+class BundleItemRenderHelper
+   var itemId : string
+   
+   func Init(p : params)
+      itemId := p.itemId
+      if $uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_WEAPON or $uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_UNKNOWN
+         $hq.TextureRenderWeaponShop(itemId)
+      elif $uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_TACTICAL
+         $hq.ShopVideoEndSafe()
+         $hq.ShopVideoBeginSafe($UiGlobals.componentsUI.Get(itemId).video.Get())
+      end
+   end
+   
+   func Term(p : params)
+      if $uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_TACTICAL
+         $hq.ShopVideoEndSafe()
+      end
+   end
+end

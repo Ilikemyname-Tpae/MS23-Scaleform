@@ -1,0 +1,138 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+
+class UiFlowButtons : UiWidgetContainer
+
+var   maxElements    :  int   = 6
+var   curSelection   :  int   = 0
+var   maxWidth       :  int   = 720
+var   elemData       :  vector
+var   isVisibleExt   :  bool = true
+
+func GetElem(_idx: int) : *
+   Log("ui~flowButtons", "GetElem " + (string)(_idx))
+   return GetWidget("elem" + (string)(_idx))
+end
+
+func GetSeparator(_idx: int) : *
+   return GetWidget("separator" + (string)(_idx))
+end
+
+func InitElements(_elements: vector, _idx: int = -1)    
+   SetData(_elements)
+   if (_idx != -1)
+      SetSelectionIdxInternal(_idx)
+   else
+      SetSelectionIdxInternal(0)
+   end
+end
+
+func GetCount(): int
+   return elemData.Count()
+end
+
+func GetDataIdx(_idx: int): params
+   return elemData.Get(_idx)
+end
+
+func SetMaxWidth(_maxW : int)
+   maxWidth := _maxW
+end
+
+func ArrangeElements()
+   var   i     : int
+   var   xsep  : int
+   
+   if (GetCount() > 1)
+      xsep := maxWidth / (GetCount() - 1)
+      
+      for i := 0 to maxElements - 1
+         GetElem(i).Props().localIdx      := i
+         if (i < GetCount())
+            GetElem(i).Props().x             := (float)(i * xsep)
+            GetSeparator(i).Props().x        := (float)(i * xsep) + 37
+            GetSeparator(i).Props().y        := 16
+            GetSeparator(i).Props()._width   := (float)(xsep) - 24
+            
+            GetElem(i).Props().text          := GetDataIdx(i).label
+            GetElem(i).Props().elemIdx       := GetDataIdx(i).idx
+            
+            GetElem(i).Props().visible       := true
+            GetSeparator(i).Props().visible  := i < GetCount() - 1        
+         else
+            GetElem(i).Props().visible       := false
+            GetElem(i).Props().elemIdx       := -1
+            GetSeparator(i).Props().visible  := false
+         end      
+      end
+   end
+   ShowHide(isVisibleExt)
+end
+
+func ShowHide(_visible : bool)
+   var isVisible : bool = false
+   if (GetCount() > 1)
+      isVisible := _visible
+   end
+   Props().mouseEnabled := isVisible
+   Props().visible      := isVisible
+   isVisibleExt         := _visible
+end
+
+func SetData(_elements: vector)
+   elemData := _elements
+   ArrangeElements()
+end
+
+func SetSelectionIdxInternal(_idx: int)
+   Log("ui~flowButtons", "SetSelectionIdxInternal " + (string)(_idx))
+   var   i     : int
+   for i := 0 to GetCount() - 1
+      GetElem(i).Props().selected := i == _idx
+   end
+   curSelection := _idx
+end
+
+func SetSelectionIdx(_idx: int, _genEvent: bool = true)
+   Log("ui~flowButtons", "SetSelectionIdx " + (string)(_idx))
+   if (_idx >= 0 and _idx != GetSelectionIdx() and _idx < elemData.Count())
+      var eventParams: params
+      eventParams.showBg := elemData.Get(_idx).showBg
+      eventParams.prevSelection  := GetSelectionIdx()
+      SetSelectionIdxInternal(_idx)
+      if (_genEvent)
+         eventParams.newSelection   := GetSelectionIdx()
+         GetElem(_idx).GenerateEvent("onFlowTabButtonClicked", eventParams)
+      end
+   end
+end
+
+func GetTotalElems(): int
+   return elemData.Count()
+end
+
+func GetSelectionIdx(): int
+   return curSelection
+end
+
+func GetSelectionOffsetData(_offset: int = 0): params
+   var idx: int = GetSelectionIdx()
+   idx := idx + _offset
+   if (idx < 0)
+      idx := idx + GetTotalElems()
+   else if (idx >= GetTotalElems())
+      idx := idx - GetTotalElems()
+   end
+   return GetDataIdx(idx)
+end
+
+func GetSelectionData(): params
+   return GetSelectionOffsetData(0)
+end
+
+func onTabButtonClicked(p: params): bool
+   SetSelectionIdx(p.widget.localIdx)
+   return false
+end
+
+end

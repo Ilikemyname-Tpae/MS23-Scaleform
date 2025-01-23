@@ -1,0 +1,152 @@
+import ssl.hf2p.engine_ctrl
+import ui.ui_party_monitor
+import ui.roots.hf2p_in_game_menu
+import ssl.lib.ui.ui_widget_container
+
+class UiStartMenuNew : UiWidgetContainer
+   
+/*HANDLERS START*/
+func CloseSettings(_showStartMenu : bool = true)
+   if (Widgets().slidingScreens.GetStateName() != "Initial")
+      Widgets().slidingScreens.SetStateName("Initial")   
+      var pp: params
+      pp.soundName := "menu_back"
+      GenerateEvent("UIPlaySound", pp)
+      if (_showStartMenu)
+         Widgets().ingameContainer.visible := true
+         Widgets().ingameContainer.resumeBtnContainer.resumeGameBtn.SetFocus()
+      end
+   end
+end
+
+func onSettingsDialogRequest(p:params): bool
+   Widgets().messageBox.OpenDialog(p)
+   return false
+end
+
+func onCloseSlidingScreens(p:params):bool
+   Log("ui~hf2p_ingame_menu", "Close sliding screens")
+   OnCloseSettingsScreen(p)
+   return false
+end   
+
+func onExitGameClick(p:params):bool
+   Log("ui~hf2p_ingame_menu", "exit game clicked")
+   EndGameDialog(p)
+   return false
+end   
+
+func onResumeGameClick(p:params):bool
+   Log("ui~hf2p_ingame_menu", "Return to game")
+   $UiIngame.system_menu.state.Set($uiEnums.INGAME_WIDGET_STATE_HIDDEN)
+   return false
+end 
+
+func onControlsSettingsClick(p:params):bool
+   Log("ui~hf2p_ingame_menu", "Controls Settings Open from pause menu")
+   OpenSlidingScreenByName("Controls", "Settings")
+   return false
+end
+
+func onAudioSettingsClick(p:params):bool
+   Log("ui~hf2p_ingame_menu", "Audio Settings Open from pause menu")
+   OpenSlidingScreenByName("Audio", "Settings")
+   return false
+end
+
+func onVideoSettingsClick(p:params):bool
+   Log("ui~hf2p_ingame_menu", "Video Settings Open from pause menu")
+   OpenSlidingScreenByName("Video", "Settings")
+   return false
+end
+
+func onChangeTeamClick(p:params):bool
+   Log("ui~hf2p_ingame_menu", "team change")
+   return false
+end
+
+/*HANDLERS END*/
+   
+func EndGameDialog(p:params): bool
+   var pp:params
+   pp.callbackEvent  := "EndGameApply"
+
+   pp.titleTxt       := "ingame_ui_confirm_end_game"      
+   pp.messageTxt     := "ingame_ui_confirm_end_game" //"Do you really want to " + p.widget.text + "?"
+   pp.isLeaving      := false
+
+   onSettingsDialogRequest(pp)
+   return false
+end
+
+func EndGameApply(p:params): bool
+   if (p.isOK) 
+      SetStateName("Initial")
+      var isLeaving : bool = false
+      if (! IsVoid(p.isLeaving))
+         isLeaving := p.isLeaving
+      end
+      $uiPartyMonitor.SetIsLeavedGame(isLeaving)
+      $hq.MatchmakingLeaveQueue()
+      return true
+   end
+   return false
+end
+
+func OpenSlidingScreenByNameCall () : bool
+   OpenSlidingScreenByName("Gameplay", "Settings")
+   return false
+end 
+
+func OnCloseSettingsScreen(p: params): bool
+   CloseSettings()
+   return false
+end    
+
+func CloseStartMenuDelayed()
+   $UiIngame.system_menu.state.Set($uiEnums.INGAME_WIDGET_STATE_HIDDEN)   
+end
+
+func ProcessESC()
+   if (GetStateName() == "Visible")
+      if (Widgets().slidingScreens.GetStateName() == "Initial")
+         CloseStartMenuDelayed()
+      else
+         CloseSettings()
+      end   
+   end
+end
+
+func OpenSlidingScreenByName(_startingScreen: string, _slidingScreenMode: string = "Settings", _prevState: string = "Visible")
+   Log("ui~hf2p_ingame_menu", "OpenSlidingScreenByName0 " + _startingScreen)   
+   Widgets().slidingScreens.SetViewMode(_slidingScreenMode)
+   GetWidget("slidingScreens").startingScreen   := _startingScreen   
+   Widgets().slidingScreens.SetStateName("Visible")   
+   Widgets().slidingScreens.Props().visible := true
+   Widgets().ingameContainer.visible := false
+end
+
+handle OnEnteringState("Initial")
+end
+
+handle OnEnterState("Initial")               
+   Props().visible := false
+   CloseSettings(false)
+end
+
+handle OnEnteringState("Visible")
+   Props().visible := true
+   Widgets().ingameContainer.visible   := true
+   Widgets().ingameContainer.changeTeamBtnContainer.visible := false   
+   Widgets().ingameContainer.exitBtnContainer.exitGameBtn.Props().label := "ingame_ui_leave_game"   
+   Widgets().ingameContainer.resumeBtnContainer.resumeGameBtn.SetFocus()
+end 
+
+func OnSystemMenuCloseRequest(p : params) : bool
+   if GetStateName()  == "Visible"
+      ProcessESC()
+   end
+   return false
+end
+
+end

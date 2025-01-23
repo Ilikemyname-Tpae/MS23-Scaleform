@@ -1,0 +1,4 @@
+native func IsHost            () : bool
+native func GetLocalClientId  () : int
+native func IsManagedContext  () : bool
+

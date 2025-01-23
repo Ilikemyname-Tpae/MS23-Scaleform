@@ -1,0 +1,74 @@
+class Music
+   var peaceMusic  :  vector
+   var battleMusic :  vector
+   var state       :  string
+   
+   var pauseBetweenTracks :  float = 2.0
+   
+   enum
+      SWITCH_MUSIC_DELAY
+   end
+   
+   func Music()
+      var musList : psSECTION = $sslPSLoader.LoadPS("music_list.ps", false)
+      peaceMusic  := PS2Vector(musList.peaceMusic)
+      battleMusic := PS2Vector(musList.battleMusic)
+      
+      state := "idle"
+   end
+   
+   func SwitchToPeace(switchDelay :  float = 3.0)
+      if (state == "peace")
+         return
+      end
+      
+      state := "peace"
+      
+      if (peaceMusic.Count() == 0)
+         LogError("Music", "Peace music list is empty")
+         return
+      end
+      
+      delay kill, this, SWITCH_MUSIC_DELAY
+
+      var trackIdx : int = RndIntRange(0, peaceMusic.Last())
+      SwitchMusicTo(peaceMusic.Get(trackIdx)) : switchDelay, SWITCH_MUSIC_DELAY
+   end
+      
+   func SwitchToBattle(switchDelay :  float = 1.5)
+      if (state == "battle")
+         return
+      end
+      
+      state := "battle"
+      
+      if (battleMusic.Count() == 0)
+         LogError("Music", "Battle music list is empty")
+         return
+      end
+      
+      delay kill, this, SWITCH_MUSIC_DELAY
+
+      var trackIdx : int = RndIntRange(0, battleMusic.Last())
+      SwitchMusicTo(battleMusic.Get(trackIdx)) : switchDelay, SWITCH_MUSIC_DELAY
+   end
+      
+   func SwitchMusicTo(track : string)
+      MuteMusic(true)
+      PlayMusic(track, true) : pauseBetweenTracks, SWITCH_MUSIC_DELAY
+   end
+   
+   func MuteAll()
+      delay kill, this, SWITCH_MUSIC_DELAY
+      MuteMusic(true)
+      state := ""
+   end
+   
+   func ResetState()
+      MuteAll()
+   end
+   
+   global event term_level
+      ResetState()
+   end
+end

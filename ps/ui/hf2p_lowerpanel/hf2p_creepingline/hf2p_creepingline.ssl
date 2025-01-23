@@ -1,0 +1,19 @@
+import ssl.lib.ui.ui_widget_container
+
+class UiTf : UiWidgetContainer
+
+func SetupTextField()
+	Set("noTranslate",   true)
+	Set("border",        false)
+	Set("multiline",     false)
+	Set("wordWrap",      false)
+end
+
+func SetCreepingLine(p:params)
+   SetupTextField()
+   Set("text", p.text)
+   Set("x", Get("width"))
+   //Set("x", (float)(-p.delta))
+   AddTween("x", p.delta, p.refreshTime, "linear")
+end
+end

@@ -1,0 +1,129 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_manager
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.hf2p.hq
+import ui.root
+import ui.ui_economy
+import ui.ui_player_info
+
+class UiBoostScr : UiWidgetContainer  
+
+handle OnEnteringState("ContentVisible")
+   Log("ui~UiBoostScreen", "UiBoostScreen_ContentVisible")
+   //BoostScreenInit()
+   GenerateEvent("UpdateBoosts")
+   Set("visible", true)
+end
+
+handle OnEnteringState("ContentInitial")
+   Log("ui~UiBoostScreen", "UiBoostScreen_ContentInitial")
+   Set("visible", false)
+end
+
+func BoostScreenInit()
+   var i : int
+   var shop : GL_ShopRace = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get(GetRaceIdx())
+   var shopSection  : GL_ShopSection = shop.FindInternalSection("section_account_modifiers")
+   var shopShelf    : GL_ShopShelf = shopSection.FindShelf("shelf_account_modifiers")
+   for i := 0 to shopShelf.items.Get().Count() - 1  
+      var modifId      : string = (string)shopShelf.items.Get().Get(i).value.Get()
+      FillModifiers(modifId)
+   end
+end
+
+func FillModifiers(modifId : string)
+   $UiGlobals.shop.race_shops.Get().Get($UserDataStorage.local_user.race.Get()).FindInternalSection("section_account_modifiers").FindShelf("shelf_account_modifiers")
+   var compUi       : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(modifId)
+   var shopComp     : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(modifId)
+   var modifOffer   : GL_ComponentShopOffer = (GL_ComponentShopOffer)shopComp.offers.Get().Get(0)
+   
+end
+
+func GetRaceIdx() : int
+   var idx: int = (int)$UserDataStorage.local_user.race.Get()
+   return idx
+end
+
+end // UiBoostScr
+
+class BoostOfferLine : UiWidgetContainer
+   
+   func onBoostGpBtnClick(p : params) : bool
+      var offer = (GL_ComponentShopOffer)Get("DC")
+      var offer_id = (string)offer.gl_offer.Get()
+      return false
+   end
+   
+   func onBoostCrBtnClick(p : params) : bool
+      var offer = (GL_ComponentShopOffer)Get("DC")
+      var offer_id = (string)offer.cr_offer.Get()
+      return false
+   end
+   
+end
+
+class BoostVM
+   var itemIdx : int
+   
+   var modif_id : ObservableProperty = $OM.Calculated(this, "GetModifId")
+   
+   func Init(p : params)
+      itemIdx := p.idx
+   end
+   
+   func OnUpdateBoosts(p : params) : bool
+      modif_id.Invalidate()
+      return false
+   end
+   
+   func GetModifId() : string
+      var ret : string = ""
+      if (! IsVoid ($UiGlobals.shop.race_shops))
+         var shop = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get($UserDataStorage.local_user.race.Get())
+         if (! IsValid(shop.FindInternalSection("section_account_modifiers")))
+            var section = shop.FindInternalSection("section_account_modifiers")
+            if (section != null and ! IsVoid(section.FindShelf("shelf_account_modifiers")))
+               var shelf = section.FindShelf("shelf_account_modifiers")
+               if (shelf != null and ! IsVoid(shelf.items.Get()))
+                  ret := (string)shelf.items.Get().Get(itemIdx).value.Get()
+               end
+            end
+         end
+      end   
+      return ret
+   end
+   
+   func GetOffer(offer_idx : int) : GL_ComponentShopOffer
+      var offers : vector = $UiGlobals.componentsShop.Get(modif_id.Get()).offers.Get()
+      if (offers.Count() > 0)
+         var ret = (GL_ComponentShopOffer)$UiGlobals.componentsShop.Get(modif_id.Get()).offers.Get(offer_idx)
+         return ret
+      end
+      return null
+   end
+   
+   func GetCompUI() : GL_ComponentUI
+      var ret = (GL_ComponentUI)$UiGlobals.componentsUI.Get(modif_id.Get())
+      return ret
+   end
+   
+   func GetTint(idx : int) :  params
+      var p : params
+      if (idx == 0)
+         p.r  := 225
+         p.g  := 162
+         p.b  := 38
+      else
+         p.r  := 68
+         p.g  := 195
+         p.b  := 233
+      end
+      return p
+   end
+   
+end // BoostVM

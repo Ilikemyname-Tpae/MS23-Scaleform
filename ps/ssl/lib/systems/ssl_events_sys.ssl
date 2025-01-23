@@ -1,0 +1,6 @@
+native class SslEventsSys
+   native func Fire(eventName: string, eventParams: params = null)
+   native func SetState(stateName: string, eventParams: *)
+   native func GetState(stateName: string) : *
+end
+var $sslEventSys : SslEventsSys

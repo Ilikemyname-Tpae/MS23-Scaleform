@@ -1,0 +1,59 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_button
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ui.root
+import ui.ui_economy
+
+class UiSpartanWaiting : UiWidgetContainer
+   handle OnLeavingState("Initial")
+      Props().visible := true
+   end
+
+   handle OnEnterState("Initial")
+      Props().visible := false
+   end
+
+   handle OnEnterState("InProgress")
+      GenerateEvent("#OpenedWaitingScreen")      
+   end
+end
+
+class UiSpartanWaitingVM
+   var wgt              :  UiSpartanWaiting  = null
+   var isWaitingOpened  : bool               = false
+   var isCloseRequest   : bool               = false
+
+   func Init(p : params)
+      wgt := p.widget
+   end
+   
+   func GetHeader() : string
+      var ret : string = "main_waiting_loadout"
+      return ret
+   end
+            
+   func OpenedWaitingScreen(p : params) : bool
+      isWaitingOpened := true
+      if (isCloseRequest)
+         wgt.SetStateName("Initial")
+      end
+      return true
+   end
+   
+   func StartWaiting()
+      isWaitingOpened   := false
+      isCloseRequest    := false
+      wgt.SetStateName("InProgress")
+   end
+
+   func StopWaiting()
+      if (isWaitingOpened)
+         wgt.SetStateName("Initial")
+      else
+         isCloseRequest := true
+      end
+   end
+end

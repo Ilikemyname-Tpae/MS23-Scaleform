@@ -1,0 +1,18 @@
+native class UiIface
+   event OnInit()
+   event OnUpdate()
+   event OnTerm()
+   native func Start()
+   native func IsEnabled(): bool
+   native func Finish()
+   native func GetPlayerId(): int
+   native func LockToPrimary(lock :bool)
+   native func GetParams(): params
+   native func GetData(name: string): psSECTION
+   native func ClearDataCache()
+   native func CreateObject(type: string, name: string := ""): object
+   native func ReCreateObjects()
+   native func TermObject(obj: object)
+   native func StartAsyncLoad()
+   native func FinishAsyncLoad()
+end

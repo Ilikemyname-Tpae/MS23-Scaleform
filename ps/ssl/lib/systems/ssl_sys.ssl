@@ -1,0 +1,5 @@
+native class SslSys 
+   native func StartScript(name : string) : int
+   native func StartScriptArgs(name : string, args : params) : int
+   native func TermScript(id : int, isImmediate : bool = false)
+end

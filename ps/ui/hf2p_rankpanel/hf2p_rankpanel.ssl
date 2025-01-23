@@ -1,0 +1,406 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.observables
+import ssl.hf2p.user_data
+import ssl.hf2p.ui_globals
+import ssl.hf2p.options_sys
+import ui.hf2p_RosterDocker.hf2p_rosterDocker
+import ui.hf2p_SlidingScreens.hf2p_Lobby.hf2p_Lobby
+
+class UiRankPanel : UiWidgetContainer
+
+var isListOpen    : bool            = false
+var rosterDocker  : UiRosterDocker  = null
+
+func ToggleDocker()
+   if (rosterDocker.GetStateName() != "Visible")
+      rosterDocker.SetStateName("Visible")
+   else
+      rosterDocker.SetStateName("Initial")
+   end   
+end
+
+func IsDockerOpen() : bool
+   return rosterDocker.GetStateName() == "Visible"
+end
+
+func onRankPanelRosterClick(p:params):bool
+   ToggleDocker()
+   return false
+end
+
+func OnFinishedSearch(p : params) : bool
+   rosterDocker.DoBlink()
+   return false
+end
+
+func CheckDockerVisible(_allowBlink : bool = true)
+   if (rosterDocker.GetStateName() != "Visible")
+      rosterDocker.SetStateName("Visible")
+   elif (_allowBlink)
+      rosterDocker.DoBlink()
+   end
+end
+
+func CheckDockerClosed()
+   if (rosterDocker.GetStateName() != "Initial")
+      rosterDocker.SetStateName("Initial")
+   end   
+end
+
+handle OnEnteringState("Visible")
+   Props().visible := true
+   GotoAndPlay("fadeIn")
+   StartDefaultBlinking(10.0/35.0)
+end   
+ 
+handle OnEnteringState("Hidden")
+   Props().visible := true
+   rosterDocker.SetStateName("Initial")
+   GotoAndPlay("fadeOut")
+end   
+
+handle OnEnterState("Visible")
+   ResetSelection()
+end   
+
+func onPlayersButtonClick(p : params) : bool
+   GenerateEvent("#SwitchToMembers")
+   return false
+end
+
+func onNotificationsButtonClick(p : params) : bool
+   GenerateEvent("#SwitchToNotifications")
+   return false
+end
+
+func MailBtnEnabled(p : params) : bool
+   GenerateEvent("#mailBtnEnabled", p)
+   return false
+end
+
+func ResetSelection()
+   Widgets().rosterBtn.friendsDropDown.dropDownMenu.SetSelectionIdx(0)   
+end
+
+func SetSelection(_idx : int)
+   Widgets().rosterBtn.friendsDropDown.dropDownMenu.SetSelectionIdx(_idx)   
+end
+
+end
+
+
+class InviteIndicator : UiWidgetContainer
+   handle OnEnteringState("Hidden")
+      Widgets().inviteNoteBtn.mouseEnabled := false
+   end
+   
+   handle OnEnterState("Hidden")
+      Props().visible := false
+      Widgets().inviteNoteBtn.visible := false
+   end
+   
+   handle OnEnteringState("Visible")
+      Props().visible := true
+      Widgets().inviteNoteBtn.visible := true
+   end
+   
+   handle OnEnterState("Visible")
+      Widgets().inviteNoteBtn.mouseEnabled := true
+   end
+end
+
+class UiRankPanelVM
+   var dockerVM               : UiRosterDockerVM   = new UiRosterDockerVM() 
+   var curLvl                 : ObservableProperty = $OM.Calculated(this, "GetCurLvl")
+   var curLvlName             : ObservableProperty = $OM.Calculated(this, "GetCurLvlName")
+   var nickName               : ObservableProperty = $OM.Calculated(this, "GetNickName")
+   var notifCount             : ObservableProperty = $OM.Calculated(this, "GetNotifCount")
+   var onlineUsers            : ObservableProperty = $OM.Calculated(this, "GetOnlineUsersTf")
+   var mmUsers                : ObservableProperty = $OM.Calculated(this, "GetMatchmakeUsersTf")
+   var ingameUsers            : ObservableProperty = $OM.Calculated(this, "GetIngameUsersTf")
+   var backendStatsVisible    : ObservableProperty = $OM.Calculated(this, "GetBackendStatsVisible")
+   var sessions               : ObservableProperty = $OM.Calculated(this, "GetSessionsTf")
+   var btnEnabled             : ObservableProperty = $OM.Property(true)
+   var filterElements         : ObservableProperty = $OM.Calculated(this, "GetFilterElements")
+   var filterElementsCount    : ObservableProperty = $OM.Calculated(this, "GetFilterElementsCount")
+   var playerCardYPos         : ObservableProperty = $OM.Calculated(this, "GetPlayerCardYPos")
+   var isPlayerCardVisible    : ObservableProperty = $OM.Calculated(this, "GetIsPlayerCardVisible")
+   var isRosterPanelEnabled    : ObservableProperty = $OM.Calculated(this, "IsRosterPanelEnabled")
+   var rosterCard             : RosterCardVM       = new RosterCardVM()
+   var wgt                    : UiRankPanel        = null
+   
+   func Init(p : params)
+      wgt := p.widget
+      dockerVM.Init((UiRosterDocker)wgt.GetWidget("rosterDocker"))
+      dockerVM.SetFilterSelection(1)
+      $UiGlobals.isDockerEnabled.Subscribe(this, "UpdateDockerEnabled")
+      isRosterPanelEnabled.Invalidate()
+   end
+   
+   func Term()
+      $UiGlobals.isDockerEnabled.Unsubscribe(this, "UpdateDockerEnabled")
+      dockerVM.Term()
+   end
+   
+   func UiRankPanelVM()
+      curLvl.Get()
+      curLvlName.Get()
+      nickName.Get()
+   end
+   
+   func SwitchToMembers(p : params) : bool
+      var allowBlink : bool = false
+      if (wgt.IsDockerOpen() and dockerVM.GetIsPlayerMode())
+         wgt.ToggleDocker()
+      else
+         allowBlink := true
+         if (! dockerVM.GetIsPlayerMode())
+            dockerVM.ToggleContent()
+         end
+         wgt.CheckDockerVisible(allowBlink)
+      end
+      return true
+   end
+   
+   func SwitchToNotifications(p : params) : bool
+      var allowBlink : bool = false
+      if (wgt.IsDockerOpen() and ! dockerVM.GetIsPlayerMode())
+         wgt.ToggleDocker()
+      else
+         allowBlink := true
+         if (dockerVM.GetIsPlayerMode())
+            dockerVM.ToggleContent()
+         end
+         wgt.CheckDockerVisible(allowBlink)
+      end
+      return true
+   end
+   
+   func IsRosterPanelEnabled() : bool
+      var ret : bool = false
+      if (wgt != null)
+         ret := !(bool)(wgt.GetWidget("_parent").GetWidget("leftPanel").isChangingState.Get())
+      end
+      return ret
+   end   
+   
+   func UpdateDockerEnabled()
+      var isDockerEnabled : bool = (bool)$UiGlobals.isDockerEnabled.Get()
+      if (! isDockerEnabled)
+         wgt.CheckDockerClosed()
+      end
+   end
+      
+   func InviteNotifClicked(p : params) : bool
+      wgt.CheckDockerVisible()
+      if (dockerVM.IsPlayersMode())
+         dockerVM.ToggleContent()
+      end
+      wgt.SetSelection(0)
+      dockerVM.SetFilterSelection(dockerVM.FILTER_NOTIF_ALL)
+      dockerVM.SelectLastNotif()
+      dockerVM.ClearInvites()
+      return true
+   end
+   
+   func GetIsPlayerCardVisible() : bool
+      var isCollapsed : bool = (bool)dockerVM.isCollapsed.Get()
+      var ret := ! isCollapsed
+      return ret
+   end
+   
+   func GetPlayerCardVM() : RosterCardVM
+      rosterCard.isActive.Set(true)
+      rosterCard.SetTeam(false, 0)
+      rosterCard.SetUID((GL_UID)dockerVM.selectedPlayerUID.Get())
+      //playerCardYPos.Invalidate()
+      return rosterCard
+   end
+   
+   func GetPlayerCardYPos() : float
+      var ret : float   = 196
+      var idx : int     = (int)dockerVM.selectedIdx.Get()
+      ret := 196.0 + idx / 12.0 * 245
+      // tmp
+      if (ret > 441)
+         ret := 441
+      end
+      return ret
+   end
+   
+   func mailBtnEnabled (p : params) : bool
+      btnEnabled.Set(p.enabled)
+      return false
+   end
+   
+   func OnOpenInvitePanel(p : params) : bool
+      if (! dockerVM.IsPlayersMode())
+         dockerVM.ToggleContent()
+      end
+      wgt.CheckDockerVisible()
+      wgt.SetSelection(1)
+      dockerVM.SetFilterSelection(dockerVM.FILTER_USER_FRIENDS)
+      return true
+   end
+
+   func GetBackendStatsVisible() : bool
+      var ret : bool = (bool)($sslOptionsSys.GetVariable("Debug.ShowBackendStats"))
+      return ret
+   end
+   
+   func GetOnlineUsersTf() : string
+      var ret : string = "Online Users : "
+      ret := ret + (string)$UiGlobals.backend_stats.users_online.Get()
+      return ret 
+   end
+   
+   func GetMatchmakeUsersTf() : string
+      var ret : string = "MM Users : "
+      ret := ret + (string)$UiGlobals.backend_stats.users_in_mm.Get()
+      return ret 
+   end
+   
+   func GetIngameUsersTf() : string
+      var ret : string = "Ingame Users : "
+      ret := ret + (string)$UiGlobals.backend_stats.users_in_game.Get()
+      return ret 
+   end
+   
+   func GetSessionsTf() : string
+      var ret : string = "Sessions : "
+      ret := ret + (string)$UiGlobals.backend_stats.game_sessions.Get()
+      return ret 
+   end
+
+   func GetCurLvl() : *
+      var val  : int = (int)$UserDataStorage.local_user.level.Get()
+      return val
+   end
+
+   func GetCurLvlName() : *
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get($UserDataStorage.local_user.level_id.Get())
+      var val     : string          = (string)uiComp.name.Get()
+      return val
+   end
+
+   func GetNickName() : *
+      var ud   :  UserData = (UserData)$UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+      var val  : wstring   = ud.base.full_nickname.Get()
+      return val
+   end
+   
+   func GetNotifCount() : string
+      var notifVec    : vector =  $UiGlobals.notifications.notifications.Get()
+      var retCount   : int    = 0
+      var idx        : int
+      
+      for idx := 0 to notifVec.Count() - 1
+         var notifRec   : NT_Notification    = (NT_Notification)notifVec.Get(idx)         
+         if ((bool)notifRec.isProcessed.Get() == false)
+            var notifType  : int                = (int)notifRec.type.Get()         
+            if (notifType == $uiEnums.NOTIFICATION_SESSION_REWARDS or notifType == $uiEnums.NOTIFICATION_SESSION_LVLUP or notifType == $uiEnums.NOTIFICATION_SESSION_UNLOCK or notifType == $uiEnums.NOTIFICATION_PARTY_INVITE or notifType == $uiEnums.NOTIFICATION_CLAN_INVITE)
+               retCount := retCount + 1            
+            end            
+         end
+      end
+      var ret        : string = (string)retCount
+      return ret
+   end
+      
+   func ToggleDockerType(p : params) : bool
+      dockerVM.ToggleContent()
+      wgt.ResetSelection()
+      return true
+   end
+   
+   func filterIndexChanged(p : params)
+      var idx : int = p.index
+      if ((int)dockerVM.dockerState.Get() == dockerVM.DOCKER_STATE_PLAYERS)
+         if (idx == 0)
+            idx := dockerVM.FILTER_USER_ALL
+         elif (idx == 1)
+            idx := dockerVM.FILTER_USER_FRIENDS
+         elif (idx == 2)
+            idx := dockerVM.FILTER_USER_RECENT
+         end
+      else
+         idx := dockerVM.FILTER_NOTIF_ALL
+      end
+      dockerVM.SetFilterSelection(idx)
+      wgt.CheckDockerVisible()
+   end
+   
+   func GetPlayersLabel() : string
+      var ret           : string = "main_docker_players"
+      if (dockerVM.GetIsCollapsed() or !dockerVM.GetIsPlayerMode())
+         var selectionIdx  : int    = 1 // friends
+         var filters       : vector = GetPlayerFilters()
+         if (selectionIdx >= 0 and selectionIdx < filters.Count())
+            ret := filters.Get(selectionIdx).label
+         end
+      end
+      return ret
+   end
+   
+   func GetNotificationsLabel() : string
+      var ret           : string = "main_docker_messages"
+      return ret
+   end
+   
+   func GetFilterElementsCount() : int
+      return GetFilterElements().Count()
+   end
+   
+   func GetPlayerFilters() : vector
+      var ret        : vector
+      var listItem   : params
+      
+      var countParty    : int = 101
+      var countHistory  : int = 103
+      var countIgnore   : int = 104
+      
+      listItem.label := "main_dockerfltr_all"
+      listItem.id    := 0
+      ret.Push(listItem.Clone())
+
+      var ud            : UserData  = (UserData)$UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+      var friendList    : vector    = ud.social.following.Get()
+      var countFriends  : int       = friendList.Count()
+      listItem.label    := "main_dockerfltr_friends," + (string)countFriends
+      listItem.id       := 1
+      ret.Push(listItem.Clone())
+      
+      var recentList    : vector    = $UserDataStorage.local_user.recent_users.Get()
+      var countRecent   : int       = recentList.Count()
+      listItem.label    := "main_dockerfltr_recent," + (string)countRecent
+      listItem.id       := 2
+      ret.Push(listItem.Clone())
+         
+      return ret
+   end
+   
+   func GetNotificationFilters() : vector
+      var ret        : vector
+      var listItem   : params
+      
+      var notifCountAll : int = (int)notifCount.Get()
+      listItem.label := "main_dockerfltr_all"
+      listItem.id    := 0
+      ret.Push(listItem.Clone())
+      
+      return ret      
+   end
+   
+   func GetFilterElements() : vector
+      var ret        : vector
+      if ((int)dockerVM.dockerState.Get() == dockerVM.DOCKER_STATE_PLAYERS)
+         ret := GetPlayerFilters()
+      else
+         ret := GetNotificationFilters()
+      end
+            
+      return ret
+   end
+end

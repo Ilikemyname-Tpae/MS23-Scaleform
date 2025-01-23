@@ -1,0 +1,315 @@
+classes = {
+	AsyncWaitingContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "AsyncWaitingContainer" 
+			lib     = msgBox 
+		}
+
+		elements {
+			waitingHeader {
+				__type = "ui_msgBox::WaitingMsgHeading"
+				x         = 429
+				y         = 362.95
+				scaleX    = 1.603
+				scaleY    = 1.603
+				animated  = true
+			} 
+		}
+	}
+
+	attach = {
+		__type = "ui_widget_image"
+
+		impl {
+			__type  = ui_widget_impl_gfx_image
+			symbol  = "attach" 
+			lib     = msgBox 
+		}
+	}
+
+	lowBtnLoadout = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "lowBtnLoadout" 
+			lib     = msgBox 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	MB_EnterFieldCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "MB_EnterFieldCont" 
+			lib     = msgBox 
+			propMapping {
+				txt = {
+					mapping = "txt.text"
+				}
+			}
+		}
+
+		elements {
+			enterFieldBg {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 2.5035
+				scaleY    = 0.7817
+			} 
+		}
+	}
+
+	msgBoxCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "msgBoxCont" 
+			lib     = msgBox 
+			propMapping {
+				textDescMessage = {
+					mapping = "textDescMessage.text"
+				}
+				tfSub = {
+					mapping = "tfSub.text"
+				}
+				textFieldTitle = {
+					mapping = "textFieldTitle.text"
+				}
+				textFieldMessage = {
+					mapping = "textFieldMessage.text"
+				}
+				textFieldMessage2 = {
+					mapping = "textFieldMessage2.text"
+				}
+				textFieldMessage3 = {
+					mapping = "textFieldMessage3.text"
+				}
+				textFieldMessage4 = {
+					mapping = "textFieldMessage4.text"
+				}
+				textTimerMessage = {
+					mapping = "textTimerMessage.text"
+				}
+				textTimer = {
+					mapping = "textTimer.text"
+				}
+			}
+		}
+
+		elements {
+			okButtonMsg {
+				__type = "ui_msgBox::msgBtnGreen"
+				x         = 306.95
+				y         = 281.85
+				scaleX    = 0.9975
+				scaleY    = 1
+				animated  = true
+			} 
+			cancelButtonMsg {
+				__type = "ui_msgBox::msgBtnRed"
+				x         = -51
+				y         = 281.85
+				scaleX    = 0.997
+				scaleY    = 1
+				animated  = true
+			} 
+			imgContainerC {
+				__type = "ui_msgBox::attach"
+				x         = 308.1
+				y         = 90
+			} 
+			currencyAttach {
+				__type = "ui_msgBox::attach"
+				x         = 611.35
+				y         = 230
+			} 
+			enterFieldCont {
+				__type = "ui_msgBox::MB_EnterFieldCont"
+				x         = 112
+				y         = 177
+			} 
+			itemQualityCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -158
+				y         = 124.15
+				scaleX    = 2.3511
+				scaleY    = 2.3511
+			} 
+		}
+	}
+
+	msgBoxCont_old = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "msgBoxCont_old" 
+			lib     = msgBox 
+		}
+	}
+
+	msgBoxInfoS = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "msgBoxInfoS" 
+			lib     = msgBox 
+			propMapping {
+				textFieldTitle = {
+					mapping = "textFieldTitle.text"
+				}
+				textFieldMessage3 = {
+					mapping = "textFieldMessage3.text"
+				}
+				textFieldMessage2 = {
+					mapping = "textFieldMessage2.text"
+				}
+				textFieldMessage4 = {
+					mapping = "textFieldMessage4.text"
+				}
+				textFieldMessage = {
+					mapping = "textFieldMessage.text"
+				}
+			}
+		}
+
+		elements {
+			okButtonMsg {
+				__type = "ui_msgBox::msgBtnGreen"
+				x         = 74
+				y         = 202.65
+			} 
+			cancelButtonMsg {
+				__type = "ui_msgBox::msgBtnRed"
+				x         = 73
+				y         = 275.5
+			} 
+			imgContainerC2 {
+				__type = "ui_msgBox::attach"
+				x         = 155.3
+				y         = 48
+			} 
+			itemQualityCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -72.25
+				y         = 151.7
+				scaleX    = 1.6508
+				scaleY    = 1.6509
+			} 
+		}
+	}
+
+	msgBox_hf2pPanelTile1x1 = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "msgBox_hf2pPanelTile1x1" 
+			lib     = msgBox 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	msgBtnGreen = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "msgBtnGreen" 
+			lib     = msgBox 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	msgBtnRed = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "msgBtnRed" 
+			lib     = msgBox 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	SpartanWaitContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "SpartanWaitContainer" 
+			lib     = msgBox 
+		}
+
+		elements {
+			spartanWaitingText {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 577.95
+				y         = 610.15
+				animated  = true
+			} 
+		}
+	}
+
+	WaitingMsgHeading = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "WaitingMsgHeading" 
+			lib     = msgBox 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+}
+__type = "ui_widget_lib"

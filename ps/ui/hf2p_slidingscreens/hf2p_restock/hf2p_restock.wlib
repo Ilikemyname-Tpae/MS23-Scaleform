@@ -1,0 +1,705 @@
+classes   =   {
+   RestockScreen   =   {
+      sslClass   =   "RestockScreen"
+      sslModule   =   "ui.hf2p_SlidingScreens.hf2p_Restock.hf2p_Restock"
+      elements   =   {
+         hotItemHeader   =   {
+            visible   =   False
+            isBlinkable   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{'carousel_hot_items'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         header   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{'carousel_equipment_restock'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         hotItems   =   {
+            visible   =   False
+            bindings   =   {
+               items   =   {
+                  binding   =   "{HotItems}"
+               }
+            }
+            lir   =   {
+               events   =   {
+                  buttonClick   =   {
+                     eventRemap   =   "#OnBundleClicked"
+                  }
+               }
+               __type   =   "hf2p_Bundles::BundleLir"
+            }
+            __type   =   "ui_weaponConf_lib::restockHotItemList"
+         }
+         offerItems   =   {
+            elements   =   {
+               item0   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{0}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               item1   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{1}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               item2   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{2}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               item3   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{3}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               item4   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{4}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               item5   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{5}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               item6   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{6}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               item7   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{7}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+               renewAll   =   {
+                  isBlinkable   =   True
+                  elements   =   {
+                     offerButtons   =   {
+                        elements   =   {
+                           crBuyBtn   =   {
+                              events   =   {
+                                 buttonClick   =   {
+                                    eventRemap   =   "#OnRenewAllForCredits"
+                                 }
+                              }
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{'' + (#parent.#parent.#parent.#parent)RenewAllCostCredits}"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::rent_creditPurchaseBtn"
+                           }
+                           gpBuyBtn   =   {
+                              events   =   {
+                                 buttonClick   =   {
+                                    eventRemap   =   "#OnRenewAllForGold"
+                                 }
+                              }
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{'' + (#parent.#parent.#parent.#parent)RenewAllCostGold}"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::rent_goldPurchaseBtn"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::rent_offerLineNew"
+                     }
+                  }
+                  bindings   =   {
+                     tfItemName   =   {
+                        binding   =   "{'msg_renew_all'}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::hf2p_RestockRenewAll"
+               }
+               item8   =   {
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{8}"
+                     }
+                  }
+                  __type   =   "hf2p_Restock::restockLoadoutItem"
+               }
+            }
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{RestockItems}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         loadoutSelectors   =   {
+            elements   =   {
+               RestockNav   =   {
+                  elements   =   {
+                     loadoutSelector0   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{0}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::LoadoutSelectorButton"
+                     }
+                     loadoutSelector1   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{1}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::LoadoutSelectorButton"
+                     }
+                     loadoutSelector2   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{2}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::LoadoutSelectorButton"
+                     }
+                     loadoutSelector3   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{3}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::LoadoutSelectorButton"
+                     }
+                     loadoutSelector4   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{4}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::LoadoutSelectorButton"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib_slide::RestockNav"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::attachPoint"
+         }
+         currentLoadout   =   {
+            isBlinkable   =   True
+            elements   =   {
+               txtFld   =   {
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'carousel_loadout_' + ((#parent.#parent:DC).SelectedLoadoutIdx + 1)}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               btnBox   =   {
+                  elements   =   {
+                     btn8   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{booster}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementBooster"
+                     }
+                     btn4   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{consumable_first}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementPerk"
+                     }
+                     btn5   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{consumable_second}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementPerk"
+                     }
+                     btn6   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{consumable_third}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementPerk"
+                     }
+                     btn7   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{consumable_fourth}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementPerk"
+                     }
+                     btn1   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{primary_weapon}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementWeapon"
+                     }
+                     btn2   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{secondary_weapon}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementWeapon"
+                     }
+                     btn3   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           itemId   =   {
+                              binding   =   "{grenades}"
+                           }
+                        }
+                        __type   =   "hf2p_Restock::loadoutElementWeapon"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::loadoutCont"
+               }
+            }
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{$UserDataStorage.users[$UserDataStorage.local_user.uid].weapon_loadouts.spartan.loadouts[SelectedLoadoutIdx]}"
+               }
+               mouseEnabled   =   {
+                  binding   =   "{false}"
+               }
+               focusable   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::hf2p_wc_LoadoutCont"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Hidden"
+         states   =   {
+            Visible   =   {
+            }
+            Hidden   =   {
+            }
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Restock.hf2p_Restock.RestockScreenVM'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::RestockScreen"
+   }
+   LoadoutSelectorButton   =   {
+      isBlinkable   =   True
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#LoadoutSelectorClicked"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            textField   =   {
+               mapping   =   "tfCont.textField.text"
+               isNoTranslate   =   True
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      bindings   =   {
+         textField   =   {
+            binding   =   "{'' + ((#self:idx) + 1)}"
+         }
+         selected   =   {
+            binding   =   "{SelectedLoadoutIdx == (#self:idx)}"
+         }
+         enabled   =   {
+            binding   =   "{EnableSelector((:idx))}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::pageNumberMark"
+   }
+   loadoutElementWeapon   =   {
+      elements   =   {
+         attachCont   =   {
+            elements   =   {
+               imageAttach   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{$UiGlobals.componentsUI[(#self:itemId)].icon}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtFld2   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtFld   =   {
+            elements   =   {
+               tfCont   =   {
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{$UiGlobals.componentsUI[(#self:itemId)].name}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         over   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         highLight   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bg   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         expiringState   =   {
+            binding   =   "{if: $UiGlobals.componentsInventory[(#self:itemId)].ownership_type == $uiEnums.ITEM_OWN_TYPE_RENTED and $UiGlobals.componentsInventory[(#self:itemId)].ownership_time < $uiEnums.ITEM_RENT_ALERT_SECONDS + $UiGlobals.timer, then = 'expiring', else = 'normal'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::hf2pLoadoutBtnBig"
+   }
+   loadoutElementBooster   =   {
+      elements   =   {
+         attachCont   =   {
+            elements   =   {
+               imageAttach   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{$UiGlobals.componentsUI[(#self:itemId)].icon}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtFld2   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtFld   =   {
+            elements   =   {
+               tfCont   =   {
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{$UiGlobals.componentsUI[(#self:itemId)].name}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         over   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         highLight   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bg   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         expiringState   =   {
+            binding   =   "{if: $UiGlobals.componentsInventory[(#self:itemId)].ownership_type == $uiEnums.ITEM_OWN_TYPE_RENTED and $UiGlobals.componentsInventory[(#self:itemId)].ownership_time < $uiEnums.ITEM_RENT_ALERT_SECONDS + $UiGlobals.timer, then = 'expiring', else = 'normal'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::hf2pLoadoutBtnMed"
+   }
+   loadoutElementPerk   =   {
+      elements   =   {
+         attachCont   =   {
+            elements   =   {
+               imageAttach   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{$UiGlobals.componentsUI[(#self:itemId)].icon}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtFld2   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtFld   =   {
+            elements   =   {
+               tfCont   =   {
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{$UiGlobals.componentsUI[(#self:itemId)].name}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         over   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         highLight   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bg   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{(#self:expiringState)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         expiringState   =   {
+            binding   =   "{if: $UiGlobals.componentsInventory[(#self:itemId)].ownership_type == $uiEnums.ITEM_OWN_TYPE_RENTED and $UiGlobals.componentsInventory[(#self:itemId)].ownership_time < $uiEnums.ITEM_RENT_ALERT_SECONDS + $UiGlobals.timer, then = 'expiring', else = 'normal'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::hf2pLoadoutBtnSmall"
+   }
+   restockLoadoutItem   =   {
+      isBlinkable   =   True
+      elements   =   {
+         rentTimer   =   {
+            impl   =   {
+               propMapping   =   {
+                  tfColor   =   {
+                     mapping   =   "tf.textColor"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{rentStatus}"
+               }
+               tfColor   =   {
+                  binding   =   "{rentStatusColor}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::wc_exiredTimeContainer"
+         }
+         offerName   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{$UiGlobals.componentsUI[itemId].name}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         offerTime   =   {
+            bindings   =   {
+               tfValue   =   {
+                  binding   =   "{(:OfferDC).offer.DurationToStrings().daysCount}"
+               }
+               tfScale   =   {
+                  binding   =   "{(:OfferDC).offer.DurationToStrings().daysLabel}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::rent_offersDaysCont"
+         }
+         offerButtons   =   {
+            elements   =   {
+               crBuyBtn   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "#OfferDC.OnBuyForCredits"
+                     }
+                  }
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{'' + (:OfferDC).offer.cr_cost}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::rent_creditPurchaseBtn"
+               }
+               gpBuyBtn   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "#OfferDC.OnBuyForGold"
+                     }
+                  }
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{'' + (:OfferDC).offer.gl_cost}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::rent_goldPurchaseBtn"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::rent_offerLineNew"
+         }
+         attachCont   =   {
+            elements   =   {
+               iconAttach   =   {
+                  fixed   =   False
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{$UiGlobals.componentsUI[itemId].icon}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_weaponConf_lib::attachPoint"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf.WeaponItemLIR', itemId = (:itemId)}"
+         }
+         itemId   =   {
+            binding   =   "{(#parent.#parent)GetRestockItemCount() > (:idx) ? (#parent)[(:idx)] : ''}"
+         }
+         anim   =   {
+            binding   =   "{(:itemId) == '' ? 'inactive' : 'active'}"
+         }
+         OfferDC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Restock.hf2p_Restock.RestockMinimalOfferVM', offer = $UiGlobals.componentsShop[itemId].GetMinimalOffer(), itemId = itemId}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+   }
+}
+__type   =   "ui_wlib"

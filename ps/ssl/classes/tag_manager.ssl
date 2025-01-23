@@ -1,0 +1,27 @@
+class TagManager
+   native func SubscribeObjectWithTag     (obj : object, tag : string)
+   native func UnsubscribeObjectWithTag   (obj : object, tag : string)
+   native func GetObjectsWithTag          (tag : string) : vector
+   native func IsObjectWithTagExist       (obj : object, tag : string) : bool
+   native func Clear                      ()
+
+//   global event term_level
+//      $main.tagManager.Clear()
+//   end
+end 
+
+func SubscribeObjectWithTag(obj : object, tag : string)
+   $main.tagManager.SubscribeObjectWithTag(obj, tag)
+end
+   
+func UnsubscribeObjectWithTag(obj : object, tag : string)
+   $main.tagManager.UnsubscribeObjectWithTag(obj, tag)
+end 
+
+func GetObjectsWithTag(tag : string) : vector
+   return $main.tagManager.GetObjectsWithTag(tag)
+end 
+
+func IsObjectWithTagExist(obj : object, tag : string) : bool
+   return $main.tagManager.IsObjectWithTagExist(obj, tag)
+end 

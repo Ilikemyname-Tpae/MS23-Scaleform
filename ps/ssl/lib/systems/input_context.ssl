@@ -1,0 +1,9 @@
+class refGSI_CONTEXT
+   native func Activate(isActivate: bool = true)
+   native func IsActive() : bool
+   native func ClearInput()
+   native func GetDeviceCount() : int
+   native func GetDeviceLayouts(index : int, ctxName : string) : vector
+   native func PauseAllVibration(isPause : bool)
+   native func StartVibration(name : string)
+end

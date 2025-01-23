@@ -1,0 +1,367 @@
+classes   =   {
+   wc_ItemsListScrollBar   =   {
+      isBlinkable   =   True
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcWeaponListScrollbar_S"
+   }
+   wc_ItemsListNew   =   {
+      sslClass   =   "UiWcItemsListNew"
+      sslModule   =   "ui.libs.hf2p_WeaponList_lib.hf2p_WeaponList_lib"
+      events   =   {
+         indexChange   =   {
+            eventRemap   =   "OnItemClick"
+         }
+         itemRollOut   =   {
+            eventRemap   =   "OnItemRollOut"
+         }
+         itemRollOver   =   {
+            eventRemap   =   "OnItemRollOver"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "_width"
+            propVal   =   {
+               val   =   275
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "wrapping"
+            propVal   =   {
+               val   =   "stick"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      lir   =   {
+         __type   =   "hf2p_WeaponList_lib::wc_ItemsListLIRNew"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBarNew"
+      }
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcWeaponList3_S"
+   }
+   wc_ItemsListScrollBarNew   =   {
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcWeaponListScrollbar_S"
+   }
+   wc_ItemsListLIRNew   =   {
+      sslClass   =   "UiWcItemsListLIRNew"
+      sslModule   =   "ui.libs.hf2p_WeaponList_lib.hf2p_WeaponList_lib"
+      events   =   {
+         click   =   {
+            eventRemap   =   "#OnItemLirClicked"
+         }
+      }
+      elements   =   {
+         priceBtnCr   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnItemPriceCrClicked"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isGpCrLock and isOffers}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::weaponLirPriceBtn"
+         }
+         priceBtnGp   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnItemPriceGoldClicked"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isGpCrLock and isOffers}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::weaponLirPriceBtn"
+         }
+         selectIndicator   =   {
+            elements   =   {
+               content   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!isGpCrLock or !isOffers}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         newShape   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isNew}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::newShape"
+         }
+         lockSymbol   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isGpCrLock and isOffers}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::wc_lock_icon"
+         }
+         greyOverInst   =   {
+            bindings   =   {
+               mouseEnabled   =   {
+                  binding   =   "{isGpCrLock and isOffers}"
+               }
+               visible   =   {
+                  binding   =   "{isGpCrLock and isOffers}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfSaleRightAnim   =   {
+            impl   =   {
+               propMapping   =   {
+                  tfSaleRight   =   {
+                     isNoTranslate   =   True
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!!maxDiscount}"
+               }
+               tfSaleRight   =   {
+                  binding   =   "{maxDiscount}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         saleShapeRight   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!!maxDiscount}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         wpnIndicator   =   {
+            fixed   =   False
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            layer   =   "layer2"
+            __type   =   "ui_widget_container"
+         }
+         expiredTimer   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isOffers}"
+               }
+               timeNoTranslate   =   {
+                  binding   =   "{rentStatus}"
+               }
+               timeColor   =   {
+                  binding   =   "{rentStatusColor}"
+               }
+            }
+            layer   =   "layer2"
+            __type   =   "hf2p_WeaponConf_lib::wc_expTimer"
+         }
+         uiTileCostCont   =   {
+            layer   =   "layer2"
+            __type   =   "hf2p_WeaponConf_lib::wc_uiTileCostCont_s"
+         }
+         textFieldUp   =   {
+            bindings   =   {
+               textFieldUp   =   {
+                  binding   =   "{icon}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::weaponNameTextCont"
+         }
+         attachContainerClass   =   {
+            elements   =   {
+               picAttachPoint   =   {
+                  x   =   -5
+                  y   =   9
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx_image"
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_widget_image"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            layer   =   "layer1"
+            __type   =   "ui_widget_container"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            desc   =   {
+               mapping   =   "textField2.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx_list_item"
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{$UiGlobals.componentsUI[{(#self:DC2).value}]}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::hf2p_WeaponListLIR_S"
+   }
+   ArmorLoadoutSelectorButton   =   {
+      isBlinkable   =   True
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#ArmorLoadoutSelectButtonClicked"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            textField   =   {
+               mapping   =   "tfCont.textField.text"
+               isNoTranslate   =   True
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      bindings   =   {
+         textField   =   {
+            binding   =   "{'' + ((#self:idx) + 1)}"
+         }
+         selected   =   {
+            binding   =   "{$UserDataStorage.local_user.currentArmorLoadoutIdx == (#self:idx)}"
+         }
+         enabled   =   {
+            binding   =   "{(:idx) < $UserDataStorage.local_user.armor_loadouts_unlocked}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::pageNumberMark"
+   }
+   WeaponLoadoutSelectorButton   =   {
+      isBlinkable   =   True
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#LoadoutSelectButtonClicked"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            textField   =   {
+               mapping   =   "tfCont.textField.text"
+               isNoTranslate   =   True
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      bindings   =   {
+         textField   =   {
+            binding   =   "{'' + ((#self:idx) + 1)}"
+         }
+         selected   =   {
+            binding   =   "{$UserDataStorage.local_user.currentWeaponLoadoutIdx == (#self:idx)}"
+         }
+         enabled   =   {
+            binding   =   "{(:idx) < $UserDataStorage.local_user.weapon_loadouts_unlocked}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::pageNumberMark"
+   }
+   ArmorLoadoutSelector   =   {
+      elements   =   {
+         loadoutSelector0   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{0}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::ArmorLoadoutSelectorButton"
+         }
+         loadoutSelector1   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{1}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::ArmorLoadoutSelectorButton"
+         }
+         loadoutSelector2   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{2}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::ArmorLoadoutSelectorButton"
+         }
+         loadoutSelector3   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{3}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::ArmorLoadoutSelectorButton"
+         }
+         loadoutSelector4   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{4}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::ArmorLoadoutSelectorButton"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::loadoutsNav"
+   }
+   WeaponLoadoutSelector   =   {
+      elements   =   {
+         loadoutSelector0   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{0}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::WeaponLoadoutSelectorButton"
+         }
+         loadoutSelector1   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{1}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::WeaponLoadoutSelectorButton"
+         }
+         loadoutSelector2   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{2}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::WeaponLoadoutSelectorButton"
+         }
+         loadoutSelector3   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{3}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::WeaponLoadoutSelectorButton"
+         }
+         loadoutSelector4   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{4}"
+               }
+            }
+            __type   =   "hf2p_WeaponList_lib::WeaponLoadoutSelectorButton"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::loadoutsNav"
+   }
+}
+__type   =   "ui_widget_lib"

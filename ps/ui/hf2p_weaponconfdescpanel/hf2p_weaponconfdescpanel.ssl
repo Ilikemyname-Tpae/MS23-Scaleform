@@ -1,0 +1,35 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.items_mgr
+import ui.ui_economy
+
+class UiWcWeaponDescPanel : UiWidgetContainer
+
+func SetDesc(_itemID:string, _descOnly:bool = false, _alwaysShowPrice:bool = false)
+end
+
+func GetItemDesc(_itemID:string): string      
+   var ret:string = ""
+   return ret
+end
+
+func GetItemLockDesc(_itemID:string): string      
+   var ret:string = ""
+   return ret
+end
+   
+func GetItemName(_itemID:string): string      
+   var ret:string = ""
+   return ret
+end
+
+func OnMouseOver(p:params):bool
+   return true
+end
+
+func OnMouseOut(p:params):bool
+   return true
+end
+
+end

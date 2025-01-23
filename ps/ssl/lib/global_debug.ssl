@@ -1,0 +1,14 @@
+import ssl.lib.logging
+import ssl.lib.dbg_var
+import ssl.lib.assert
+
+native func dbgLastCreatedEnt    () : object
+native func DbgChangeGameMode    (mode : int)
+native func ReloadSceneActorPS   (nameActor : string, ps : string, ssl : string)
+native func DbgCreateActor       (name : string, ps: psSECTION, ssl : string, pos: m3dV, dir: m3dV, up : m3dV) : object
+
+native func DbgDrawText          (text : string, time : float)
+native func DbgDrawLine          (objFrom : object, objTo : object, color : int, offsetY : float = 0, time : float = 0)
+native func DbgDrawLineV         (vFrom : m3dV, vTo : m3dV, color : int, time : float = 0)
+native func DbgDrawSphere        (objCentre : object, radius : float, color : int, time : float = 0)
+native func DbgDrawTextWorld     (objCentre : object, text : string, color : int)

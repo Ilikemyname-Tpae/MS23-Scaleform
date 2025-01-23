@@ -1,0 +1,272 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ui.root
+import ui.ui_economy
+import ssl.hf2p.user_service
+ 
+class UiRewardMessage : UiWidgetContainer
+
+var   dialogTweenTime: float = 0.5   
+var   rewardType     : string
+//var   showInPm       : bool = false
+var   skipBox        : bool = true
+var   lvlBox : *
+// lvlUp
+var   levelName      : string = ""
+var   levelNamePrev  : string = ""
+var   level          : int = 100
+var   levelPrev      : int = 100
+var   levelPromo     : bool = false
+var   rewards        :  vector
+// itemUnlock
+var   unlockItem     : string = ""
+var   unlcItemsVec   : vector
+var   itemIdx        : int = 0
+
+func PrepareInfo(p : params)
+   if (GetStateName() != "Visible")
+      //Props().visible := true
+      Props().mouseChildren := true
+      
+      var vecNone : vector 
+      
+      itemIdx := 0
+      levelPromo := false
+      unlcItemsVec := vecNone
+      
+      if (! IsVoid(p.rewardType))
+         rewardType := p.rewardType
+      end
+      //if (! IsVoid(p.showInPm))
+         //showInPm := p.showInPm
+      //end
+      if (! IsVoid(p.unlockItem))
+         unlockItem := p.unlockItem
+      end
+      if (! IsVoid(p.lvlRewards))
+         if (p.lvlRewards.Count() > 0)
+            rewards := p.lvlRewards
+         end
+      end
+      if (! IsVoid(p.levelName))
+         levelName := p.levelName
+      end
+      if (! IsVoid(p.levelNamePrev))
+         levelNamePrev := p.levelNamePrev
+      end
+      if (! IsVoid(p.level))
+         level := p.level
+      end
+      if (! IsVoid(p.levelPrev))
+         levelPrev := p.levelPrev
+      end
+      if (! IsVoid(p.levelPromo))
+         levelPromo := p.levelPromo
+      end
+      if (! IsVoid(p.unlcItemsVec))
+         unlcItemsVec := p.unlcItemsVec
+      end   
+      SetStateName("Visible")
+   end
+end
+ 
+func FillRewards()
+   var lvlUpCompUI      : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(levelName)
+   
+   var lvlPrevCompUI    : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(levelNamePrev)
+   LvlBox()
+   //lvlUp
+   lvlBox.rankIconAttach.attachRank.pic := (string)lvlPrevCompUI.icon_big.Get()
+   lvlBox.rankIconAttach2.attachRank.pic := (string)lvlUpCompUI.icon_big.Get()
+   lvlBox.rankNameCurrent.tf := (string)lvlPrevCompUI.name.Get()
+   lvlBox.rankNameNew.tf := (string)lvlUpCompUI.name.Get()
+   lvlBox.levelUpHeader.tf := (string)levelPrev
+   lvlBox.levelUpHeader2.tf := (string)level
+   if rewards.Count() > 0
+      var i : int
+      for i := 0 to rewards.Count() - 1
+         var reward_elem :  GL_Reward := rewards.Get(i)
+         if (reward_elem != null and i <= 2)
+            var lvlUnlockItem  :string = (string)reward_elem.item_id.Get()
+            var lvlUnlockItemAmount : int = (int)reward_elem.amount.Get()
+            var lvlUpItemCompUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(lvlUnlockItem)
+            var frame : string = $UiGlobals.GetTokenFrame(lvlUnlockItem)
+            ShowRewardCont()
+            lvlBox.GetWidget("lvlCont" + i).Widgets().tokenCont.GotoAndStop($UiGlobals.GetTokenFrame(lvlUnlockItem))
+            lvlBox.GetWidget("lvlCont" + i).Widgets().tokenCont.tf := "+" + lvlUnlockItemAmount
+            lvlBox.GetWidget("lvlCont" + i).Widgets().rewardTfCont.rewardTf := ""//"main_reward"
+            lvlBox.GetWidget("lvlCont" + i).Widgets().itemAttach.pic := "" //(string)lvlUpItemCompUI.icon_med.Get()
+            lvlBox.GetWidget("lvlCont" + i).Widgets().itemTfCont.itemTf := "" //(string)lvlUpItemCompUI.name.Get()
+            //lvlBox.("lvlCont" + i).Widgets().itemQualityCont.GotoAndPlay((string)lvlUpItemCompUI.quality.Get())
+         end
+      end   
+   else
+      ShowRewardCont()
+   end
+   //itemUnlock
+   if (itemIdx < unlcItemsVec.Count())
+      var itemUnlc : string
+      itemUnlc := (string)unlcItemsVec.Get(itemIdx).value.Get()
+      var unlockItemCompUI : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(itemUnlc)
+      Widgets().itemUnlock.unlockCont.unlockItem.itemTf := (string)unlockItemCompUI.name.Get()
+      Widgets().itemUnlock.unlockCont.unlockAttach.pic := (string)unlockItemCompUI.icon_med.Get()
+      Widgets().itemUnlock.unlockCont.itemQualityCont.GotoAndPlay((string)unlockItemCompUI.quality.Get())
+      itemIdx := itemIdx + 1
+   end   
+end
+
+func LvlBox()
+   if (levelPromo)
+      lvlBox := Widgets().levelUp
+   else
+      lvlBox := Widgets().levelUpMini
+   end
+end
+
+func ShowRewardCont()
+   var j : int
+   for j := 0 to 2
+      lvlBox.GetWidget("lvlCont" + j).Widgets().rewardBg.alpha := 0
+      lvlBox.GetWidget("lvlCont" + j).Widgets().borderRight.alpha := 0
+      lvlBox.GetWidget("lvlCont" + j).Widgets().borderLeft.alpha := 0
+      lvlBox.GetWidget("lvlCont" + j).Widgets().rewardTfCont.alpha := 0
+      lvlBox.GetWidget("lvlCont" + j).Widgets().itemAttach.alpha := 0
+      lvlBox.GetWidget("lvlCont" + j).Widgets().itemTfCont.alpha := 0
+   end
+   if rewards.Count() > 0
+      var i : int
+      for i := 0 to rewards.Count() - 1
+         lvlBox.GetWidget("lvlCont" + i).Widgets().rewardBg.alpha := 100
+         lvlBox.GetWidget("lvlCont" + i).Widgets().borderRight.alpha := 100
+         lvlBox.GetWidget("lvlCont" + i).Widgets().borderLeft.alpha := 100
+         lvlBox.GetWidget("lvlCont" + i).Widgets().rewardTfCont.alpha := 100
+         lvlBox.GetWidget("lvlCont" + i).Widgets().itemAttach.alpha := 100
+         lvlBox.GetWidget("lvlCont" + i).Widgets().itemTfCont.alpha := 100
+      end   
+   end   
+end
+
+func PlayLvlUpAnim()
+   lvlBox.SetStateName("AnimIn")
+   if (rewardType == "lvlUp")
+      $root.playSound("pmLevelUp")
+   end
+end
+
+func StopLvlUpAnim()
+   lvlBox.SetStateName("AnimOut")
+end 
+
+func PlayItemUnlockAnim()
+   Widgets().itemUnlock.SetStateName("AnimIn")
+end
+
+func StopItemUnlockAnim()
+   Widgets().itemUnlock.SetStateName("AnimOut")
+end
+
+func RewardAnimFinished(p : params) : bool
+   if (rewardType == "lvlUp")
+      $UiGlobals.notifications.MarkProcessedFirstByType($uiEnums.NOTIFICATION_SESSION_LVLUP)   
+      FinalCheck()
+   elif (rewardType == "itemUnlock")
+      if (itemIdx >= unlcItemsVec.Count())
+         $UiGlobals.notifications.MarkProcessedFirstByType($uiEnums.NOTIFICATION_SESSION_UNLOCK)
+         FinalCheck()
+      else
+         SetStateName("Initial")
+         SetStateName("Visible")
+      end
+   elif (rewardType == "itemUnlockReplay")
+       if (itemIdx < unlcItemsVec.Count())
+          SetStateName("Initial")
+          SetStateName("Visible")
+       end
+   end
+   return false
+end
+
+func FinalCheck()
+   SetStateName("Initial")
+   if (!$root.CheckAllNotifications())
+      //if (showInPm)
+         GenerateEvent("RewardBoxAnimFinished")
+      //end
+      SetStateName("Initial")
+   end
+end
+
+func SkipClick(p : params) :  bool
+   if (skipBox)
+      SetStateName("Initial")
+   end
+   return false
+end
+
+handle OnEnterState("Initial")                  
+   if (rewardType == "lvlUp" or rewardType == "lvlUpReplay")
+      StopLvlUpAnim()   
+   elif (rewardType == "itemUnlock" or rewardType == "itemUnlockReplay")
+      StopItemUnlockAnim()
+   end
+   Props().visible := false
+end
+
+handle OnEnteringState("Visible")
+   Props().visible := true
+   FillRewards()
+end
+
+handle OnEnterState("Visible")
+   if (rewardType == "lvlUp" or rewardType == "lvlUpReplay")
+      PlayLvlUpAnim()   
+   elif (rewardType == "itemUnlock" or rewardType == "itemUnlockReplay")
+      PlayItemUnlockAnim()
+   end
+end
+
+func AddDialogTween(_start: float, _end: float)
+   var tweenParm:params
+   tweenParm.propName   := "dialogTweenParm"
+   tweenParm.startVal   := _start      
+   tweenParm.endVal     := _end
+   tweenParm.duration   := dialogTweenTime
+   tweenParm.fadeType   := "linear"
+   Props().alpha        := _start
+   AddTweenCb("DialogTween", tweenParm) 
+end
+
+func DialogTween(updType:string)
+   var dialogTweenParm  : float = (float)(Props().dialogTweenParm)
+   Props().alpha := dialogTweenParm
+   if (dialogTweenParm > 0)
+      Props().visible := true
+   else
+      Props().visible := false
+   end
+
+   var pp : params       
+   dialogTweenParm := dialogTweenParm / 100.0
+   pp.dialogTweenParm := dialogTweenParm
+   GenerateEvent("DialogShowTween", pp)
+end
+
+end
+
+class RewardAnim : UiWidgetContainer
+   
+   handle OnEnterState ("AnimIn")
+      SetStateName("Counting")
+   end
+   
+   handle OnEnterState ("Counting")
+      SetStateName("AnimOut")
+   end
+   
+   handle OnEnterState ("AnimOut")
+      GenerateEvent("RewardAnimFinished")
+   end
+end

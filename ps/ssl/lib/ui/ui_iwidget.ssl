@@ -1,0 +1,8 @@
+native class UiIwidget
+   native func SetX(parmX :int)
+   native func testCall()
+   native func TestCallParms(name: string, params: params): bool
+   native func HandleEvent(name: string, params: params)
+   native func GetChildCount(): int
+   native func GetChildName(idx: int): string
+end

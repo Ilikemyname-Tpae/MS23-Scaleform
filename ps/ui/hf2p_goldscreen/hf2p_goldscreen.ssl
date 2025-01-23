@@ -1,0 +1,5 @@
+import ui.libs.hf2p_MainMenu_lib.hf2p_MainMenu_lib
+
+class UiGoldScreen : UiFullscreenScreen
+   
+end

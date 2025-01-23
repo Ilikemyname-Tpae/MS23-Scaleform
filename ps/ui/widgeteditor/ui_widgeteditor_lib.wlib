@@ -1,0 +1,49 @@
+classes   =   {
+   editor_scr   =   {
+      fixed   =   False
+      elements   =   {
+         dbgWidgetInfo   =   {
+            elements   =   {
+               PropsList   =   {
+                  fixed   =   False
+                  customProps   =   [
+                     {
+                        propName   =   "_width"
+                        propVal   =   {
+                           val   =   700
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "_height"
+                        propVal   =   {
+                           val   =   500
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     }
+                  ]
+                  lir   =   "ui_widgeteditor_lib::widgetInfolir"
+                  __type   =   "ui_default_lib::DBG_WidgetInfo_List"
+               }
+            }
+            __type   =   "ui_default_lib::DBG_WidgetInfo"
+         }
+         dbgFrameOutside   =   {
+            fixed   =   False
+            __type   =   "ui_default_lib::DBG_Frame_Outside"
+         }
+      }
+      bindings   =   {
+         EnableDisplay   =   {
+            binding   =   "{false}"
+         }
+      }
+      __type   =   "ui_default_lib::DBG_ScreenContainer"
+   }
+   widgetInfolir   =   {
+      sslClass   =   "UiWidgetInfoItemLir"
+      sslModule   =   "ui.widgeteditor.ui_widgeteditor_scr"
+      __type   =   "ui_default_lib::DBG_WidgetInfo_ListItemRenderer"
+   }
+}
+__type   =   "ui_widget_lib"

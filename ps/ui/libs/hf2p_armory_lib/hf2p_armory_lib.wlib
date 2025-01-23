@@ -1,0 +1,182 @@
+classes   =   {
+   rotateImg   =   {
+      sslClass   =   "UiArmoryRotate"
+      sslModule   =   "ui.libs.hf2p_Armory_lib.hf2p_Armory_lib"
+      handlers   =   {
+         StartArmoryModelDrag   =   {
+            handlerName   =   "OnStartArmoryModelDrag"
+         }
+         EndArmoryModelDrag   =   {
+            handlerName   =   "OnEndArmoryModelDrag"
+         }
+      }
+      bindings   =   {
+         mouseEnabled   =   {
+            binding   =   "{false}"
+         }
+         mouseChildren   =   {
+            binding   =   "{false}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "tF"
+            propVal   =   {
+               val   =   "carousel_click_and_drag"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_armory_lib::rotate"
+   }
+   armoryPreviewCamera   =   {
+      sslClass   =   "UiArmoryPreviewCamera"
+      sslModule   =   "ui.libs.hf2p_Armory_lib.hf2p_Armory_lib"
+      handlers   =   {
+         ArmoryPreviewCameraDrag   =   {
+            handlerName   =   "OnArmoryPreviewCameraDrag"
+         }
+      }
+      __type   =   "ui_activity_lib::ArmoryPreviewCamera"
+   }
+   defaultDragBackground   =   {
+      __type   =   "ui_menu_lib::defaultDragBackground"
+   }
+   selectSpartanPanel   =   {
+      elements   =   {
+         spartanLoadoutSelect1   =   {
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{(#self:idx) < ArmrLoadoutCount}"
+               }
+               idx   =   {
+                  binding   =   "{0}"
+               }
+               x   =   {
+                  binding   =   "{0}"
+               }
+            }
+            __type   =   "hf2p_Armory_lib::LoadoutSelectButton"
+         }
+         spartanLoadoutSelect2   =   {
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{(#self:idx) < ArmrLoadoutCount}"
+               }
+               idx   =   {
+                  binding   =   "{1}"
+               }
+               x   =   {
+                  binding   =   "{132}"
+               }
+            }
+            __type   =   "hf2p_Armory_lib::LoadoutSelectButton"
+         }
+         spartanLoadoutSelect3   =   {
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{(#self:idx) < ArmrLoadoutCount}"
+               }
+               idx   =   {
+                  binding   =   "{2}"
+               }
+               x   =   {
+                  binding   =   "{262}"
+               }
+            }
+            __type   =   "hf2p_Armory_lib::LoadoutSelectButton"
+         }
+         spartanLoadoutSelect4   =   {
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{(#self:idx) < ArmrLoadoutCount}"
+               }
+               idx   =   {
+                  binding   =   "{3}"
+               }
+               x   =   {
+                  binding   =   "{392}"
+               }
+            }
+            __type   =   "hf2p_Armory_lib::LoadoutSelectButton"
+         }
+         spartanLoadoutSelect5   =   {
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{(#self:idx) < ArmrLoadoutCount}"
+               }
+               idx   =   {
+                  binding   =   "{4}"
+               }
+               x   =   {
+                  binding   =   "{522}"
+               }
+            }
+            __type   =   "hf2p_Armory_lib::LoadoutSelectButton"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            ui_widget_button   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "item_confirm"
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "hf2p_Loadout_lib::wc_container"
+   }
+   LoadoutSelectButton   =   {
+      isBlinkable   =   True
+      elements   =   {
+         tfSpartan   =   {
+            elements   =   {
+               attachPointSp   =   {
+                  pic   =   "helmetTempSpartan"
+                  __type   =   "ui_armory_lib::attachPointSp"
+               }
+            }
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{'carousel_armor_' + ((#parent:idx) + 1)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         selected   =   {
+            binding   =   "{$UserDataStorage.users[$UserDataStorage.local_user.uid].armor_loadouts.spartan.active_loadout_index == (#self:idx)}"
+         }
+         enabled   =   {
+            binding   =   "{(#self:idx) < $UiGlobals.UnlockedArmorLoadoutsCount}"
+         }
+      }
+      __type   =   "ui_armory_lib::hf2p_LoadoutSelect"
+   }
+   ArmorModifierLine   =   {
+      impl   =   {
+         propMapping   =   {
+            valueTf   =   {
+               isNoTranslate   =   True
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      bindings   =   {
+         nameTf   =   {
+            binding   =   "{GetModifId((:idx))}"
+         }
+         valueTf   =   {
+            binding   =   "{GetModifValue((:idx))}"
+         }
+         visible   =   {
+            binding   =   "{ShowModif((:idx))}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::ArmorModifierLine"
+   }
+}
+__type   =   "ui_widget_lib"

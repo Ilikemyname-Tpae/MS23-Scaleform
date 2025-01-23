@@ -1,0 +1,6 @@
+native class gsOPTIONS_SYS
+   native func SetVariable(key: string, value: *)
+   native func GetVariable(key: string) : *
+   native func SaveConfig()
+end
+var $sslOptionsSys : gsOPTIONS_SYS

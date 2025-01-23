@@ -1,0 +1,6 @@
+import ssl.lib.ui.ui_widget
+
+native class UiWidgetText : UiWidget
+   native func TestCallText()
+   native func SetText(text: string)
+end

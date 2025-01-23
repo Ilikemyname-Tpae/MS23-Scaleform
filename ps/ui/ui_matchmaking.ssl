@@ -1,0 +1,76 @@
+import ssl.lib.events
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.lib.objects
+import ssl.hf2p.hq
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+
+class UiMatchmaking
+
+
+var isMatchMakingStarted   :  bool                 = false
+var isMatchmaking          :  ObservableProperty   = $OM.Property(false)
+var isRematch              : bool                  = false
+var isMMAvailable          : ObservableProperty    = $OM.Calculated(this, "GetIsMMAvailable")
+var canStartMM             : ObservableProperty    = $OM.Calculated(this, "GetCanStartMM")
+
+func GetIsMMAvailable() : bool
+   return (int)$UiGlobals.matchmaking.state.Get() == $uiEnums.MATCHMAKING_STATE_ONLINE
+end
+
+func GetCanStartMM() : bool
+   var result = $UserDataStorage.local_user.IsPartyLeader()
+   return result
+end
+
+func IsMatchmaking(): bool
+	return true
+end
+
+func SetIsRematch()
+   isRematch := true
+end
+
+func ResetIsRematch()
+   isRematch := false
+end
+
+func GetIsRematch() : bool
+   return isRematch
+end
+
+func IsMatchmakingStarted(): bool
+   return isMatchMakingStarted
+end
+
+func GetIsMathmakingObservable() : bool
+   var partyState : int = (int)$UiGlobals.party.state.Get()
+   return partyState == $uiEnums.PARTY_STATE_IN_QUEUE
+end
+
+func IsMMCustom() : bool
+   return $UiGlobals.matchmaking.queue.Get() == $uiEnums.MM_QUEUE_TYPE_CUSTOM
+end
+
+func IsMMRanked() : bool
+   return $UiGlobals.matchmaking.queue.Get() == $uiEnums.MM_QUEUE_TYPE_RANKED
+end
+
+end // end of UiMatchmaking
+
+var $uiMatchmaking : UiMatchmaking
+
+func ui_init_matchmaking()
+   CreateObjectByClassName("UiMatchmaking", "uiMatchmaking")
+end
+
+func ui_term_matchmaking()
+   DestroyObjectByName("uiMatchmaking")
+end
+
+func ui_recreate_matchmaking()
+   ui_term_matchmaking()
+   ui_init_matchmaking()
+end

@@ -1,0 +1,1324 @@
+classes   =   {
+   ColorButton   =   {
+      x   =   -400
+      y   =   120
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "colorPaletteClick"
+         }
+         mouseOut   =   {
+            eventRemap   =   "colorPaletteOut"
+         }
+         mouseOver   =   {
+            eventRemap   =   "colorPaletteOver"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            colorMultProp   =   {
+               mapping   =   "colorMult"
+            }
+            colorMultProp2   =   {
+               mapping   =   "textField.colorMult"
+            }
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      customProps   =   [
+         {
+            propName   =   "text"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_menu_lib::HaloPaletteListItem"
+   }
+   gp_BuyGold   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "openGoldScreen"
+         }
+      }
+      elements   =   {
+         itemCont   =   {
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx_image"
+            }
+            pic   =   "goldIcon"
+            __type   =   "ui_widget_image"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            this   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "purchase_gold"
+                  }
+               }
+            }
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "label"
+            propVal   =   {
+               val   =   "main_button_buy_gold"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      label   =   "main_button_buy_gold"
+      __type   =   "ui_menu_lib::hf2pPanelTileGold"
+   }
+   lineBG   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::stripeWpn"
+   }
+   msg_CancelBtn   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_msgBox::msgBtnRed"
+   }
+   msg_OkBtn   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_msgBox::msgBtnGreen"
+   }
+   offersModuleContNew   =   {
+      sslClass   =   "UiOffersModuleContNew"
+      sslModule   =   "ui.libs.hf2p_WeaponConf_lib.hf2p_WeaponConf_lib"
+      handlers   =   {
+         OnUpdateOfferContAfterBuy   =   {
+            handlerName   =   "OnUpdateOfferContAfterBuy"
+         }
+      }
+      elements   =   {
+         assignBtn   =   {
+            isBlinkable   =   True
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnAssignBtnClicked"
+               }
+            }
+            impl   =   {
+               propMapping   =   {
+                  tfAlpha   =   {
+                     mapping   =   "tf.alpha"
+                  }
+                  tfLabel   =   {
+                     mapping   =   "animatedTfCont.tfCont.tf.text"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               y   =   {
+                  binding   =   "{assignY}"
+               }
+               visible   =   {
+                  binding   =   "{!isWide}"
+               }
+               tfAlpha   =   {
+                  binding   =   "{assignAlpha}"
+               }
+               enabled   =   {
+                  binding   =   "{assignEnabled}"
+               }
+               tfLabel   =   {
+                  binding   =   "{assignText}"
+               }
+            }
+            layer   =   "layer1"
+            __type   =   "ui_weaponConf_lib_slide::offersAssignBtn"
+         }
+         assignBtnWide   =   {
+            x   =   -3
+            isBlinkable   =   True
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnAssignBtnClicked"
+               }
+            }
+            impl   =   {
+               propMapping   =   {
+                  tfAlpha   =   {
+                     mapping   =   "tf.alpha"
+                  }
+                  tfLabel   =   {
+                     mapping   =   "animatedTfCont.tfCont.tf.text"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               y   =   {
+                  binding   =   "{assignY}"
+               }
+               visible   =   {
+                  binding   =   "{isWide}"
+               }
+               tfAlpha   =   {
+                  binding   =   "{assignAlpha}"
+               }
+               enabled   =   {
+                  binding   =   "{assignEnabled}"
+               }
+               tfLabel   =   {
+                  binding   =   "{assignText}"
+               }
+            }
+            layer   =   "layer1"
+            __type   =   "ui_weaponConf_lib_slide::offersAssignBtn_wide"
+         }
+         offersHeader   =   {
+            isBlinkable   =   True
+            impl   =   {
+               propMapping   =   {
+                  text   =   {
+                     mapping   =   "offersHeader.text"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               y   =   {
+                  binding   =   "{headerY}"
+               }
+               visible   =   {
+                  binding   =   "{!isWide}"
+               }
+               text   =   {
+                  binding   =   "{headerText}"
+               }
+            }
+            layer   =   "layer3"
+            __type   =   "ui_weaponConf_lib_slide::offersHeaderElement"
+         }
+         offersHeaderWide   =   {
+            x   =   -60
+            isBlinkable   =   True
+            elements   =   {
+               tfsaleTopAnim   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+               saleShapeTop   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               propMapping   =   {
+                  text   =   {
+                     mapping   =   "offersHeader.text"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               y   =   {
+                  binding   =   "{headerY}"
+               }
+               visible   =   {
+                  binding   =   "{isWide}"
+               }
+               text   =   {
+                  binding   =   "{headerText}"
+               }
+            }
+            layer   =   "layer3"
+            __type   =   "ui_weaponConf_lib_slide::offersHeaderElementWide"
+         }
+         purchaceModule0   =   {
+            y   =   100
+            layer   =   "layer2"
+            __type   =   "hf2p_WeaponConf_lib::offersModuleRentNew"
+         }
+         purchaceModule1   =   {
+            y   =   150
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "offerIdx"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::offersModuleRentNew"
+         }
+         purchaceModule2   =   {
+            y   =   200
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "offerIdx"
+                  propVal   =   {
+                     val   =   2
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::offersModuleRentNew"
+         }
+         purchaceModule3   =   {
+            y   =   250
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "offerIdx"
+                  propVal   =   {
+                     val   =   3
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::offersModuleRentNew"
+         }
+         purchaceModule4   =   {
+            y   =   300
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "offerIdx"
+                  propVal   =   {
+                     val   =   4
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::offersModuleRentNew"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{offersModuleVM}"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            ui_widget_button   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "tab_select"
+                  }
+               }
+            }
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "inBox"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         },
+         {
+            propName   =   "isWide"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         }
+      ]
+      __type   =   "hf2p_Loadout_lib::wc_container"
+   }
+   offersModuleRentNew   =   {
+      sslClass   =   "UiOffersModuleRentNew"
+      sslModule   =   "ui.libs.hf2p_WeaponConf_lib.hf2p_WeaponConf_lib"
+      isNoTranslate   =   True
+      isBlinkable   =   True
+      handlers   =   {
+         OnUpdateOfferContAfterBuy   =   {
+            handlerName   =   "OnUpdateOfferContAfterBuy"
+         }
+      }
+      elements   =   {
+         gpBuyBtn   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnUnlockWpnGoldBtnClick"
+               }
+            }
+            elements   =   {
+               tfSaleRightAnim   =   {
+                  impl   =   {
+                     propMapping   =   {
+                        tfSaleRight   =   {
+                           isNoTranslate   =   True
+                        }
+                     }
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!gpDiscount}"
+                     }
+                     tfSaleRight   =   {
+                        binding   =   "{gpDiscount}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               saleShapeRight   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!gpDiscount}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfOldPriceAnim   =   {
+                  sslClass   =   "CrossOutLineHelper"
+                  sslModule   =   "ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf"
+                  elements   =   {
+                     lineOldPrice   =   {
+                        fixed   =   False
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     propMapping   =   {
+                        tfOldPriceWidth   =   {
+                           mapping   =   "tfOldPrice.textWidth"
+                        }
+                     }
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!gpDiscount}"
+                     }
+                     tfOldPrice   =   {
+                        binding   =   "{gpOldCost}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfNewPriceAnim   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!gpDiscount}"
+                     }
+                     tfNewPrice   =   {
+                        binding   =   "{gpCost}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               propMapping   =   {
+                  label   =   {
+                     mapping   =   "tf.text"
+                  }
+                  tfVisible   =   {
+                     mapping   =   "tf.visible"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{isGpOffer}"
+               }
+               label   =   {
+                  binding   =   "{gpCost}"
+               }
+               alpha   =   {
+                  binding   =   "{gpAlpha}"
+               }
+               tfVisible   =   {
+                  binding   =   "{!gpDiscount}"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "offerId"
+                  propVal   =   {
+                     val   =   "offGp"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::goldPurchaseBtn"
+         }
+         crBuyBtn   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnUnlockWpnCrBtnClick"
+               }
+            }
+            elements   =   {
+               tfSaleRightAnim   =   {
+                  impl   =   {
+                     propMapping   =   {
+                        tfSaleRight   =   {
+                           isNoTranslate   =   True
+                        }
+                     }
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!crDiscount}"
+                     }
+                     tfSaleRight   =   {
+                        binding   =   "{crDiscount}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               saleShapeRight   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!crDiscount}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfOldPriceAnim   =   {
+                  sslClass   =   "CrossOutLineHelper"
+                  sslModule   =   "ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf"
+                  elements   =   {
+                     lineOldPrice   =   {
+                        fixed   =   False
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  impl   =   {
+                     propMapping   =   {
+                        tfOldPriceWidth   =   {
+                           mapping   =   "tfOldPrice.textWidth"
+                        }
+                     }
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!crDiscount}"
+                     }
+                     tfOldPrice   =   {
+                        binding   =   "{crOldCost}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfNewPriceAnim   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!!crDiscount}"
+                     }
+                     tfNewPrice   =   {
+                        binding   =   "{crCost}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               propMapping   =   {
+                  label   =   {
+                     mapping   =   "tf.text"
+                  }
+                  tfVisible   =   {
+                     mapping   =   "tf.visible"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{isCrOffer}"
+               }
+               label   =   {
+                  binding   =   "{crCost}"
+               }
+               alpha   =   {
+                  binding   =   "{crAlpha}"
+               }
+               tfVisible   =   {
+                  binding   =   "{!crDiscount}"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "offerId"
+                  propVal   =   {
+                     val   =   "offCr"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::creditPurchaseBtn"
+         }
+         daysCont   =   {
+            x   =   -60
+            y   =   -1
+            impl   =   {
+               propMapping   =   {
+                  daysCount   =   {
+                     mapping   =   "tFdays.text"
+                  }
+                  daysLabel   =   {
+                     mapping   =   "tfHours.text"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isWide}"
+               }
+               daysCount   =   {
+                  binding   =   "{durationTxt}"
+               }
+               daysLabel   =   {
+                  binding   =   "{durationLabel}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::offersDaysCont"
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{isVisible}"
+         }
+         DC   =   {
+            binding   =   "{offerLines[{(#self:offerIdx)}]}"
+         }
+         y   =   {
+            binding   =   "{yPos}"
+         }
+      }
+      layer   =   "Layer2"
+      soundMap   =   {
+         soundMaps   =   {
+            ui_widget_button   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "tab_select"
+                  }
+               }
+            }
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "offerIdx"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      __type   =   "ui_weaponConf_lib_slide::offerLineNew"
+   }
+   offersModuleRentNewLoadout   =   {
+      isBlinkable   =   False
+      impl   =   {
+         symbol   =   "offerLineNewLoadout"
+         __type   =   "ui_widget_impl_gfx"
+      }
+      __type   =   "hf2p_WeaponConf_lib::offersModuleRentNew"
+   }
+   wc_BuyGoldButton   =   {
+      x   =   1400
+      y   =   50
+      __type   =   "hf2p_GoldScreen_lib::gp_BuyGold"
+   }
+   wc_DescCr   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::purchaseCreditsStat"
+   }
+   wc_DescGp   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::purchaseGoldStat"
+   }
+   wc_LeftBtn   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib::hf2pPanelLeftBtn"
+   }
+   wc_LeftBtn_s   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2pPanelLeftBtn_S"
+   }
+   wc_LoadoutBtn_s   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2pLoadoutBtn"
+   }
+   wc_PanelBookmarkBtn_s   =   {
+      isBlinkable   =   True
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#wc_OnPanelButtonClicked"
+         }
+      }
+      elements   =   {
+         hotIcon   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         newItemBookmark   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::newShape"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            label   =   {
+               mapping   =   "tf.textField.text"
+            }
+            shadingLineVisible   =   {
+               mapping   =   "shadingLine.visible"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2pPanelBookmarkBtn_S"
+   }
+   wc_PurchCredits   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::purchaseCredits"
+   }
+   wc_PurchGold   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::purchaseGold"
+   }
+   wc_RightBtn   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib::hf2pwcPanelRightBtn"
+   }
+   wc_RightBtn_s   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2pwcPanelRightBtn_S"
+   }
+   wc_TableColumnBg   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcTableColumnBg"
+   }
+   wc_TableHeaderColumnBg   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcTableHeaderColumnBg"
+   }
+   wc_TableItemHeader   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcTableItemHeader"
+   }
+   wc_TreeBtn_s   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2pTreeBtn"
+   }
+   wc_assignBtn   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::assignToLoadoutBtn"
+   }
+   wc_container   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2pWCContainer"
+   }
+   wc_expTimer   =   {
+      sslClass   =   "UiWcExpTimer"
+      sslModule   =   "ui.libs.hf2p_WeaponConf_lib.hf2p_WeaponConf_lib"
+      impl   =   {
+         propMapping   =   {
+            time   =   {
+               mapping   =   "tf.text"
+            }
+            timeNoTranslate   =   {
+               mapping   =   "tf.text"
+            }
+            timeColor   =   {
+               mapping   =   "tf.textColor"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      customProps   =   [
+         {
+            propName   =   "time"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_widget_container"
+   }
+   wc_headerBig   =   {
+      impl   =   {
+         propMapping   =   {
+            selectableTxt   =   {
+               mapping   =   "textField.selectable"
+            }
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      customProps   =   [
+         {
+            propName   =   "selectableTxt"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         }
+      ]
+      __type   =   "ui_weaponConf_lib::headerBig"
+   }
+   wc_headerBigCentered   =   {
+      impl   =   {
+         propMapping   =   {
+            selectableTxt   =   {
+               mapping   =   "textField.selectable"
+            }
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      customProps   =   [
+         {
+            propName   =   "selectableTxt"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         }
+      ]
+      __type   =   "ui_weaponConf_lib::headerBigCentered"
+   }
+   wc_headerBig_s   =   {
+      impl   =   {
+         propMapping   =   {
+            selectableTxt   =   {
+               mapping   =   "textField.selectable"
+            }
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      customProps   =   [
+         {
+            propName   =   "selectableTxt"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         }
+      ]
+      __type   =   "ui_weaponConf_lib_slide::headerBig_S"
+   }
+   wc_imageAttach   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib::hf2pWCContainer"
+   }
+   wc_itemBack   =   {
+      layer   =   "Layer1"
+      __type   =   "ui_weaponConf_lib_slide::SubtabsBackDrop"
+   }
+   wc_labelShort   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2p_label_short"
+   }
+   wc_msgBoxBg   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcMessageBoxBack"
+   }
+   wc_notificationCont   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "txtCont.tF.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::userDataNotification"
+   }
+   wc_uiTileCostCont_s   =   {
+      sslClass   =   "UiWcUiTileCostContS"
+      sslModule   =   "ui.libs.hf2p_WeaponConf_lib.hf2p_WeaponConf_lib"
+      elements   =   {
+         uiCrCost   =   {
+            impl   =   {
+               propMapping   =   {
+                  textClr   =   {
+                     mapping   =   "creditTf.textColor"
+                  }
+                  textCr   =   {
+                     mapping   =   "creditTf.text"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            customProps   =   [
+               {
+                  propName   =   "textCr"
+                  propVal   =   {
+                     val   =   "cr"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_widget_container"
+         }
+         uiGpCost   =   {
+            impl   =   {
+               propMapping   =   {
+                  textClr   =   {
+                     mapping   =   "goldTf.textColor"
+                  }
+                  textGp   =   {
+                     mapping   =   "goldTf.text"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            customProps   =   [
+               {
+                  propName   =   "textGp"
+                  propVal   =   {
+                     val   =   "gp"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_widget_container"
+         }
+      }
+      impl   =   {
+         __type   =   "ui_widget_impl_gfx"
+      }
+      layer   =   "Layer2"
+      __type   =   "ui_widget_container"
+   }
+   wc_wpnBG   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::wpnBG"
+   }
+   ShopSectionTab   =   {
+      elements   =   {
+         hotIcon   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{sections[(:itemType)].is_hot}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         newItemBookmark   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{sections[(:itemType)].has_new}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::newShape"
+         }
+      }
+      bindings   =   {
+         selected   =   {
+            binding   =   "{itemQuality == (#self:wpnQualityIdx)}"
+         }
+         label   =   {
+            binding   =   "{sections[(:itemType)].label}"
+         }
+         visible   =   {
+            binding   =   "{sections[(:itemType)].label != ''}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "itemType"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "wpnQualityIdx"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      __type   =   "hf2p_WeaponConf_lib::wc_PanelBookmarkBtn_s"
+   }
+   ShopSectionTacticalTab   =   {
+      bindings   =   {
+         selected   =   {
+            binding   =   "{itemCat == (#self:wpnQualityIdx)}"
+         }
+      }
+      __type   =   "hf2p_WeaponConf_lib::ShopSectionTab"
+   }
+   GenericShopTab   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "TabClicked"
+         }
+      }
+      bindings   =   {
+         selected   =   {
+            binding   =   "{selectedTabIdx == (:tabIdx)}"
+         }
+         label   =   {
+            binding   =   "{tabLabels[(:tabIdx)].label}"
+         }
+         visible   =   {
+            binding   =   "{tabsCount > (:tabIdx) and tabLabels[(:tabIdx)].label != ''}"
+         }
+         shadingLineVisible   =   {
+            binding   =   "{isShadingLine}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "tabIdx"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      __type   =   "hf2p_WeaponConf_lib::wc_PanelBookmarkBtn_s"
+   }
+   GenericShopTabs   =   {
+      x   =   -5
+      y   =   91
+      handlers   =   {
+         TabClicked   =   {
+            handlerName   =   "#OnTabClickedHandler"
+         }
+      }
+      elements   =   {
+         button0   =   {
+            __type   =   "hf2p_WeaponConf_lib::GenericShopTab"
+         }
+         button1   =   {
+            x   =   190
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::GenericShopTab"
+         }
+         button2   =   {
+            x   =   380
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   2
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::GenericShopTab"
+         }
+         button3   =   {
+            x   =   570
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   3
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::GenericShopTab"
+         }
+         button4   =   {
+            x   =   760
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   4
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::GenericShopTab"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            ui_widget_button   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "tab_select"
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "hf2p_Loadout_lib::wc_container"
+   }
+   ShopDescPanel   =   {
+      elements   =   {
+         classIcon   =   {
+            elements   =   {
+               placeHolder   =   {
+                  visible   =   False
+                  __type   =   "ui_weaponConf_lib_slide::placeHolderContent"
+               }
+            }
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetTechIcon()}"
+               }
+            }
+            isCentered   =   True
+            __type   =   "ui_weaponConf_lib_slide::attachPointArmrStat"
+         }
+         medal2   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{GetChallengeRank() >= 2 ? 'gold' : 'gray'}"
+               }
+               visible   =   {
+                  binding   =   "{GetEagleVisible()}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::medalChallenge"
+         }
+         medal1   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{GetChallengeRank() >= 1 ? 'silver' : 'gray'}"
+               }
+               visible   =   {
+                  binding   =   "{GetEagleVisible()}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::medalChallenge"
+         }
+         medal0   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{GetChallengeRank() >= 0 ? 'bronze' : 'gray'}"
+               }
+               visible   =   {
+                  binding   =   "{GetEagleVisible()}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::medalChallenge"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            stateTextColor   =   {
+               mapping   =   "stateText.textColor"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_WeaponConf_lib.hf2p_WeaponConf_lib.ShopDescPanelVM', itemId = descpanelVM.itemId}"
+         }
+         className   =   {
+            binding   =   "{GetTechName()}"
+         }
+         itemName   =   {
+            binding   =   "{GetName()}"
+         }
+         description   =   {
+            binding   =   "{GetDescription()}"
+         }
+         stateText   =   {
+            binding   =   "{GetStateText()}"
+         }
+         stateTextColor   =   {
+            binding   =   "{GetStateTextColor()}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::ArmoryDescriptionDescNew"
+   }
+   WeaponConfSimpleTab   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "TabClicked"
+         }
+      }
+      elements   =   {
+         hotIcon   =   {
+            visible   =   False
+            __type   =   "ui_widget_container"
+         }
+         newItemBookmark   =   {
+            visible   =   False
+            __type   =   "ui_weaponConf_lib_slide::newShape"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            label   =   {
+               mapping   =   "tf.textField.text"
+            }
+            shadingLineVisible   =   {
+               mapping   =   "shadingLine.visible"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      bindings   =   {
+         shadingLineVisible   =   {
+            binding   =   "{false}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "tabIdx"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      __type   =   "ui_weaponConf_lib_slide::hf2pPanelBookmarkBtn_S"
+   }
+   WeaponConfSimpleTabs   =   {
+      elements   =   {
+         tab0   =   {
+            __type   =   "hf2p_WeaponConf_lib::WeaponConfSimpleTab"
+         }
+         tab1   =   {
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::WeaponConfSimpleTab"
+         }
+         tab2   =   {
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   2
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::WeaponConfSimpleTab"
+         }
+         tab3   =   {
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   3
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::WeaponConfSimpleTab"
+         }
+         tab4   =   {
+            customProps   =   [
+               {
+                  propName   =   "tabIdx"
+                  propVal   =   {
+                     val   =   4
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::WeaponConfSimpleTab"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::WeaponConfTabsRow"
+   }
+}
+__type   =   "ui_widget_lib"

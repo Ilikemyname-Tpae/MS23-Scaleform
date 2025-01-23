@@ -1,0 +1,21 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ui.root
+
+class UiNewWelcomeScreen : UiWidgetContainer
+      
+func SelectModel(model :  int):bool
+   return false
+end
+
+func EliteSelected() :  void
+    GetWidget("_parent").SetStateName("TutorialEmpty")
+    SelectModel(1)
+end
+
+func SpartanSelected() :  void
+    GetWidget("_parent").SetStateName("TutorialEmpty")
+    SelectModel(0)
+end
+end

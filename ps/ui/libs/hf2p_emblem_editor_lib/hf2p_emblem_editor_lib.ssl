@@ -1,0 +1,1116 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.emblem_editor
+
+import ssl.lib.ui.ui_widget_button
+import ssl.lib.ui.ui_widget_list_item
+import ssl.hf2p.game_preferences
+import ssl.lib.ui.ui_widget_stepper
+class UiEcCanvasContainer : UiWidgetContainer
+
+var is_rtti_emblem_rendering : bool = false
+
+override StartDrag   
+   var dragObject: * = null
+   return dragObject
+end
+
+func SetRTTIMode()
+   is_rtti_emblem_rendering := true
+end
+
+func SetNormalMode()
+   is_rtti_emblem_rendering := false
+end
+
+func GetLocalMouseCoordsByGlobalPos(x : float, y : float) : params
+   var p : params
+   p.x := x - Props().x - Props().emblemCanvas.Props().x  //HACK
+   p.y := y - Props().y - Props().emblemCanvas.Props().y  //HACK
+   return p
+end
+
+
+func GetSymbolNameById(symbolId : int) : string
+   var names : vector
+   names.Push("cross")
+   names.Push("triangle")
+   names.Push("quadro")
+   names.Push("round")
+
+   if (0 <= symbolId) and (symbolId <= names.Count())
+      return names.Get(symbolId)
+   end
+   return ""
+end
+
+func CanMoveSymbol(x : float, y : float, drag : bool = false) : bool
+   var res : params = GetAvailableCoords(x, y, drag)
+   return res.flag
+end
+
+func GetAvailableCoords(x : float, y : float, drag : bool = false) : params
+   var res : params
+   var canvas : * = Props().GetWidget("emblemCanvas")
+   var width  : float  = canvas.Props().width
+   var height : float  = canvas.Props().height
+
+   var currentLayer : int
+   var layerWidgetItemCont : *
+   var layerWidth  : float
+   var layerHeight : float
+ 
+   if (!drag)
+      currentLayer := $hf2pEmblemEditor.GetCurrentLayerIndex()    
+      layerWidgetItemCont  := canvas.GetChild(currentLayer).GetWidget("itemCont")
+      layerWidth   := layerWidgetItemCont.Props().width / 2
+      layerHeight  := layerWidgetItemCont.Props().height / 2
+   else
+      layerWidth := (int)(Props().GetWidget("emblemLayerDrag").Props().itemCont.Props().width) / 2
+      layerHeight := (int)(Props().GetWidget("emblemLayerDrag").Props().itemCont.Props().height) / 2
+   end
+
+   res.x := x
+   res.y := y
+   res.flag := true
+
+   if ( (x - layerWidth) < 0 )
+      res.flag := false
+      res.x := layerWidth
+   end
+   if ( (y - layerHeight) < 0 )
+      res.flag := false
+      res.y := layerHeight
+   end
+   if ( (x + layerWidth)  > width )
+      res.flag := false
+      res.x := width - layerWidth
+   end
+   if ( (y + layerHeight) > height )
+      res.flag := false
+      res.y := height - layerHeight
+   end
+
+   return res
+end
+
+// If we layers have been changed we should rebuild canvas
+global event OnEmblemEditorChangeLayers()
+   EmblemEditorChangeLayers($hf2pEmblemEditor.GetLayers())
+end
+
+func EmblemEditorChangeLayers(layerData : vector)
+   Log("ui~ec_canvas_container", "OnEmblemEditorChangeLayers(Canvas)")
+
+   var canvas : * = GetWidget("emblemCanvas")
+   var canvasLayer : * = GetWidget("emblemLayer") 
+   Log("ui~ec_canvas_container", "Layer data count = " + (string)(layerData.Count()))           
+
+   // Resize canvas
+   //canvas.RemoveAllChilds()
+
+   var i : int
+
+   // Add new layers
+   for i := canvas.GetChildCount() + 1 to layerData.Count()
+      Log("ui~ec_canvas_container", "Layer add" + (string)(i))
+      canvasLayer.AttachInstanceToSSL(canvas, "layer"+(string)(i), true)
+   end
+
+   // Remove layers
+   var childCount : int = canvas.GetChildCount() 
+   for i := layerData.Count() + 1 to childCount
+      Log("ui~ec_canvas_container", "Layer remove" + (string)(i))
+      canvas.RemoveChild(canvas.GetChildCount() - 1) // Remove last child
+   end
+
+   // Update layers
+   Widgets().layerGismo.SetVisible(false, null)
+   for i := 1 to layerData.Count()
+      var child : * = canvas.GetChild(i - 1)
+      child.Props().visible := true
+      child.Props().layer   := 100 - i
+      child.Props().x := layerData.Get(i-1).x
+      child.Props().y := layerData.Get(i-1).y
+      child.Props().rotation := layerData.Get(i-1).angle
+      child.Props().visible  := layerData.Get(i-1).visible
+      child.index     := i
+
+      var itemCont : * = child.GetWidget("itemCont")
+      itemCont.Props().pic    := GetSymbolNameById(layerData.Get(i-1).id) // IsObject
+      if (!IsVoid(layerData.Get(i-1).color_ind))
+         itemCont.Props().color := $hf2pEmblemEditor.GetColorById(layerData.Get(i-1).color_ind)
+      else
+         itemCont.Props().color  := layerData.Get(i-1).color
+      end
+      itemCont.Props().scaleX := layerData.Get(i-1).scaleX
+      itemCont.Props().scaleY := layerData.Get(i-1).scaleY
+
+      itemCont.Props().x      := -itemCont.Props().width / 2
+      itemCont.Props().y      := -itemCont.Props().height / 2
+
+      if (itemCont.Props().scaleX < 0)
+         itemCont.Props().x := itemCont.Props().x + itemCont.Props().width
+      end
+
+      if (itemCont.Props().scaleY < 0)
+         itemCont.Props().y := itemCont.Props().y + itemCont.Props().height
+      end
+
+      if (($hf2pEmblemEditor.GetCurrentLayerIndex() == (i - 1)) and (layerData.Get(i-1).visible) and (!is_rtti_emblem_rendering))
+         Widgets().layerGismo.SetVisible(true, child)
+      end
+   end
+end
+end
+
+class UiEmblemLayer : UiWidgetContainer
+
+var index : int = -1
+var gismoAttached : * = null
+
+override EndDrag
+   var availableCoords : params = GetWidget("_parent").Props().GetWidget("_parent").GetAvailableCoords(Props().x, Props().y)
+   Props().x := availableCoords.x
+   Props().y := availableCoords.y
+   if (gismoAttached != null)
+      gismoAttached.UpdatePositions()
+   end
+   $hf2pEmblemEditor.MoveLayer(index - 1, (int)(availableCoords.x), (int)(availableCoords.y))
+end
+
+override StartDrag   
+   var dragObject: * = null
+   dragObject := this
+   $hf2pEmblemEditor.SetCurrentLayerIndex(index - 1)
+   return dragObject
+end
+
+override CanDrop   
+   var isDropAllowed : bool = true
+   if (gismoAttached != null)
+      gismoAttached.UpdatePositions()
+   end
+   return isDropAllowed
+end
+
+end
+
+class UiEmblemLayerDrag : UiWidgetContainer
+
+var   canvasToDrop   : * = null
+var   index          : int = -1
+
+override EndDrag
+   Props().visible := false
+   if (isSuccess)
+      var eventParams   : params
+      eventParams.index := index
+      eventParams.x := Props().x
+      eventParams.y := Props().y
+      GenerateEvent("eventNewSymbol", eventParams)
+   else
+   end
+end
+
+override CanDrop                  
+   var isDropAllowed : bool = false
+   if (canvasToDrop != null)
+      if (!IsVoid(canvasToDrop))
+         isDropAllowed := GetWidget("_parent").CanMoveSymbol(Props().x, Props().y, true)
+      end
+   end
+   return isDropAllowed
+end
+
+override StartDrag
+   Props().visible := true
+   return this
+end
+end
+
+class UiEcGismo : UiWidgetContainer
+
+var layerAttached : * = null
+
+func Flip(flipX : int = 1, flipY : int = 1)
+   var xinvert : float = 0
+   var yinvert : float = 0
+   if (! IsVoid(layerAttached))
+      layerAttached.Props().itemCont.Props().scaleX := layerAttached.Props().itemCont.Props().scaleX * flipX
+      layerAttached.Props().itemCont.Props().scaleY := layerAttached.Props().itemCont.Props().scaleY * flipY
+
+      if (flipX < 0)
+         if (layerAttached.Props().itemCont.Props().scaleX < 0)
+            xinvert := 1
+         else
+            xinvert := -1
+         end
+      end
+
+      if (flipY < 0)
+         if (layerAttached.Props().itemCont.Props().scaleY < 0)
+            yinvert := 1
+         else
+            yinvert := -1
+         end
+      end
+
+      layerAttached.Props().itemCont.Props().x := layerAttached.Props().itemCont.Props().x + xinvert * layerAttached.Props().itemCont.Props().width
+      layerAttached.Props().itemCont.Props().y := layerAttached.Props().itemCont.Props().y + yinvert * layerAttached.Props().itemCont.Props().height
+
+      $hf2pEmblemEditor.ScaleLayer($hf2pEmblemEditor.GetCurrentLayerIndex(), layerAttached.Props().itemCont.Props().scaleX, layerAttached.Props().itemCont.Props().scaleY)
+   end
+end
+
+func UpdatePositions()
+   Props().x := layerAttached.Props().x
+   Props().y := layerAttached.Props().y
+   Props().rotation := layerAttached.Props().rotation
+
+   Widgets().rightCenter.Props().x := layerAttached.Props().itemCont.Props().width / 2
+   Widgets().rightCenter.Props().y := -Widgets().rightCenter.Props().height / 2
+   Widgets().rightCenter.SetUpParametrs(0.0, 1.0, true, false, false)
+
+   Widgets().downCenter.Props().x := -Widgets().rightCenter.Props().width / 2
+   Widgets().downCenter.Props().y := layerAttached.Props().itemCont.Props().height / 2
+   Widgets().downCenter.SetUpParametrs(1.0, 0.0, false, true, false)
+
+   Widgets().leftCenter.Props().x := -layerAttached.Props().itemCont.Props().width / 2 - Widgets().leftCenter.Props().width
+   Widgets().leftCenter.Props().y := -Widgets().rightCenter.Props().height / 2
+   Widgets().leftCenter.SetUpParametrs(0.0, -1.0, true, false, false)
+
+   Widgets().upCenter.Props().x := -Widgets().rightCenter.Props().width / 2
+   Widgets().upCenter.Props().y := -layerAttached.Props().itemCont.Props().height / 2 - Widgets().leftCenter.Props().height
+   Widgets().upCenter.SetUpParametrs(-1.0, 0.0, false, true, false)
+
+   Widgets().rightUpCorner.Props().x := layerAttached.Props().itemCont.Props().width / 2
+   Widgets().rightUpCorner.Props().y := -layerAttached.Props().itemCont.Props().height / 2 - Widgets().rightUpCorner.Props().height
+   Widgets().rightUpCorner.SetUpParametrs(-1.0, 1.0, true, true, false)
+
+   Widgets().rightDownCorner.Props().x := layerAttached.Props().itemCont.Props().width / 2
+   Widgets().rightDownCorner.Props().y := layerAttached.Props().itemCont.Props().height / 2
+   Widgets().rightDownCorner.SetUpParametrs(1.0, 1.0, true, true, false)
+
+   Widgets().leftUpCorner.Props().x := -layerAttached.Props().itemCont.Props().width / 2 - Widgets().leftUpCorner.Props().width
+   Widgets().leftUpCorner.Props().y := -layerAttached.Props().itemCont.Props().height / 2 - Widgets().leftUpCorner.Props().height
+   Widgets().leftUpCorner.SetUpParametrs(-1.0, -1.0, true, true, false)
+
+   Widgets().leftDownCorner.Props().x := -layerAttached.Props().itemCont.Props().width / 2 - Widgets().leftDownCorner.Props().width
+   Widgets().leftDownCorner.Props().y := layerAttached.Props().itemCont.Props().height / 2
+   Widgets().leftDownCorner.SetUpParametrs(1.0, -1.0, true, true, false)
+
+   Widgets().rotationUp.Props().x := -Widgets().rotationUp.Props().width / 2
+   Widgets().rotationUp.Props().y := -layerAttached.Props().itemCont.Props().height / 2 - Widgets().rotationUp.Props().height * 2
+   Widgets().rotationUp.SetUpParametrs(0.0, 0.0, false, false, true)
+end
+
+func SetVisible(flag : bool, layer : *)
+   if (! IsVoid(layerAttached))
+      layerAttached.gismoAttached := null
+   end
+
+Props().visible := flag
+
+   if (flag == false)
+      return
+   end
+
+   layerAttached := layer
+   layerAttached.gismoAttached := this
+   UpdatePositions()
+end
+end
+
+class UiEcGismoElement : UiWidgetButton
+
+var  prev_x : float = -1
+var  prev_y : float = -1
+var  prev_pos_x : float = -1
+var  prev_pos_y : float = -1
+var  start_layer_x : float = -1
+var  start_layer_y : float = -1
+var  start_item_x : float = -1
+var  start_item_y : float = -1
+var  start_width  : float = -1
+var  start_height : float = -1
+var  start_a : float = -1
+var  start_scale_x : float = -1
+var  start_scale_y : float = -1
+var  is_x_scale  : bool = false
+var  is_y_scale  : bool = false
+var  is_rotation : bool = false
+var  down  : float = 0
+var  right : float = 0
+var  min_scale : float = 0.015625
+var  max_scale : float = 4.0
+
+func SetUpParametrs(_down : float, _right : float, _is_x_scale : bool, _is_y_scale : bool, _is_rotation : bool)
+   down := _down
+   right := _right
+   is_x_scale  := _is_x_scale
+   is_y_scale  := _is_y_scale
+   is_rotation := _is_rotation
+end
+
+func ABS(x : float) : float
+   if (x > 0)
+      return x
+   end
+
+   return -x  
+end              
+
+func SIGN(x : float) : float
+   if (x > 0)
+      return 1
+   end
+
+   if (x == 0)
+      return 1
+   end
+
+   return -1  
+end              
+
+override EndDrag
+   var layerAttached : * = GetWidget("_parent").layerAttached
+
+   if (is_rotation)
+      var angle_to_write : float
+      if (layerAttached.Props().rotation < 0)
+         angle_to_write := layerAttached.Props().rotation + 360
+      else
+         angle_to_write := layerAttached.Props().rotation
+      end
+
+      $hf2pEmblemEditor.RotateLayer($hf2pEmblemEditor.GetCurrentLayerIndex(), angle_to_write)
+   else
+      $hf2pEmblemEditor.ScaleLayer($hf2pEmblemEditor.GetCurrentLayerIndex(), layerAttached.Props().itemCont.Props().scaleX, layerAttached.Props().itemCont.Props().scaleY)
+      var availableCoords : params = GetWidget("_parent").GetWidget("_parent").GetAvailableCoords(layerAttached.Props().x, layerAttached.Props().y)
+      $hf2pEmblemEditor.MoveLayer($hf2pEmblemEditor.GetCurrentLayerIndex(), (int)(availableCoords.x), (int)(availableCoords.y))
+   end
+   GetWidget("_parent").UpdatePositions()
+end
+
+override CanDrop                  
+   var isDropAllowed : bool = true
+   var layerAttached : * = GetWidget("_parent").layerAttached
+
+   var mouse : params = GetMousePos()
+   var dx : float = mouse.x - prev_x
+   var dy : float = mouse.y - prev_y
+   var cx : float = layerAttached.Props().x + GetWidget("_parent").GetWidget("_parent").Props().x
+   var cy : float = layerAttached.Props().y + GetWidget("_parent").GetWidget("_parent").Props().y
+
+   if (is_rotation)
+      var d_angle : float = $hf2pEmblemEditor.GetDeltaAngle(prev_x - cx, prev_y - cy, mouse.x - cx, mouse.y - cy)
+
+      var new_angle : float = layerAttached.Props().rotation - d_angle
+
+      layerAttached.Props().rotation := new_angle
+   else
+      if (is_x_scale)
+         var ds : float = $hf2pEmblemEditor.GetXLocalProjection(dx, dy)
+
+         start_width := layerAttached.Props().itemCont.Props().width
+
+         var new_scale : float = layerAttached.Props().itemCont.Props().scaleX * (start_width + right * ds) / start_width
+
+         var old_scale : float = layerAttached.Props().itemCont.Props().scaleX
+         var old_layer_x : float = layerAttached.Props().x
+         var old_layer_y : float = layerAttached.Props().y
+         var old_item_x  : float = layerAttached.Props().itemCont.Props().x
+       
+         if ((ABS(new_scale) >= min_scale) and (ABS(new_scale) <= max_scale) and (SIGN(new_scale) == SIGN(old_scale)))
+            layerAttached.Props().itemCont.Props().scaleX := new_scale
+            layerAttached.Props().x := layerAttached.Props().x + $hf2pEmblemEditor.Cos(start_a) * ds / 2
+            layerAttached.Props().y := layerAttached.Props().y + $hf2pEmblemEditor.Sin(start_a) * ds / 2
+            layerAttached.Props().itemCont.Props().x := layerAttached.Props().itemCont.Props().x - right * ds / 2
+            if (layerAttached.Props().itemCont.Props().scaleX < 0)
+               layerAttached.Props().itemCont.Props().x := layerAttached.Props().itemCont.Props().x + right * ds
+            end
+
+            if (!GetWidget("_parent").GetWidget("_parent").CanMoveSymbol(layerAttached.Props().x, layerAttached.Props().y))
+               layerAttached.Props().itemCont.Props().scaleX := old_scale
+               layerAttached.Props().x := old_layer_x
+               layerAttached.Props().y := old_layer_y
+               layerAttached.Props().itemCont.Props().x := old_item_x
+            end
+         end
+      end
+
+      if (is_y_scale)
+         var ds : float = $hf2pEmblemEditor.GetYLocalProjection(-dx, dy)
+
+         start_height := layerAttached.Props().itemCont.Props().height
+
+         var new_scale : float = layerAttached.Props().itemCont.Props().scaleY * (start_height + down * ds) / start_height
+
+         var old_scale : float = layerAttached.Props().itemCont.Props().scaleY
+         var old_layer_x : float = layerAttached.Props().x
+         var old_layer_y : float = layerAttached.Props().y
+         var old_item_y  : float = layerAttached.Props().itemCont.Props().y
+
+         if ((ABS(new_scale) >= min_scale) and (ABS(new_scale) <= max_scale) and (SIGN(new_scale) == SIGN(old_scale)))
+            layerAttached.Props().itemCont.Props().scaleY := new_scale
+            layerAttached.Props().x := layerAttached.Props().x - $hf2pEmblemEditor.Sin(start_a) * ds / 2
+            layerAttached.Props().y := layerAttached.Props().y + $hf2pEmblemEditor.Cos(start_a) * ds / 2
+            layerAttached.Props().itemCont.Props().y := layerAttached.Props().itemCont.Props().y - down * ds / 2
+            if (layerAttached.Props().itemCont.Props().scaleY < 0)
+               layerAttached.Props().itemCont.Props().y := layerAttached.Props().itemCont.Props().y + down * ds
+            end
+
+            if (!GetWidget("_parent").GetWidget("_parent").CanMoveSymbol(layerAttached.Props().x, layerAttached.Props().y))
+               layerAttached.Props().itemCont.Props().scaleY := old_scale
+               layerAttached.Props().x := old_layer_x
+               layerAttached.Props().y := old_layer_y
+               layerAttached.Props().itemCont.Props().y := old_item_y
+            end
+         end
+      end
+
+   end
+
+   GetWidget("_parent").UpdatePositions()
+
+   prev_x := mouse.x
+   prev_y := mouse.y
+
+   return isDropAllowed
+end
+      
+override StartDrag
+   var layerAttached : * = GetWidget("_parent").layerAttached
+   var mouse : params = GetMousePos()
+   prev_x := mouse.x
+   prev_y := mouse.y
+   prev_pos_x := Props().x
+   prev_pos_y := Props().y
+   start_layer_x := layerAttached.Props().x
+   start_layer_y := layerAttached.Props().y
+   start_item_x := layerAttached.Props().itemCont.Props().x
+   start_item_y := layerAttached.Props().itemCont.Props().y
+   start_width := layerAttached.Props().itemCont.Props().width 
+   start_height := layerAttached.Props().itemCont.Props().height
+   start_a := layerAttached.Props().rotation
+   start_scale_x := layerAttached.Props().itemCont.Props().scaleX
+   start_scale_y := layerAttached.Props().itemCont.Props().scaleY
+   GetWidget("_parent").UpdatePositions()
+   return this
+end
+end
+
+class UiEcHelpLIR : UiWidgetListItem
+
+override SetData//(p:params)
+   Props().action.tf.text      := p.action
+   Props().hot_combine.tf.text := p.hot_combine
+end
+end
+
+class UiEcHelpContainer : UiWidgetContainer
+
+func Init()
+var helpData : vector = $hf2pEmblemEditor.GetHotKeyActionRemapArray()
+   var halpValues : vector
+   var i : int
+
+   for i := 0 to helpData.Last()
+      var pp : params
+      pp.action := helpData.Get(i).desc
+
+      var action_str : string
+
+      if (helpData.Get(i).hot2 != -1)
+         if (helpData.Get(i).hot1 > helpData.Get(i).hot2)
+            action_str := GetKeyText(helpData.Get(i).hot1) + " + " + GetKeyText(helpData.Get(i).hot2)
+         else
+            action_str := GetKeyText(helpData.Get(i).hot2) + " + " + GetKeyText(helpData.Get(i).hot1) 
+         end
+      else
+         action_str := GetKeyText(helpData.Get(i).hot1)
+      end
+
+      pp.hot_combine := action_str
+      halpValues.Push(pp)
+   end 
+
+   Widgets().header.tf.text  := "Help panel"
+   Widgets().leftList.SetData(halpValues)
+   Widgets().submitBtn.textField.text := "UI_BTN_OK"
+end
+
+func GetKeyTextInternal(key_labels:vector, key_code:int):string
+  if (key_code == -1)
+     return "None"
+  else if (key_code < key_labels.Count())
+     return key_labels.Get(key_code)
+  else if (key_code == 106)
+     return "Ctrl"
+  else if (key_code == 105)
+     return "Shift"
+  else if (key_code == 108)
+     return "Alt"
+  end
+  return "[ " + key_code + " ]"
+end
+
+func GetKeyText(key_code:int):string
+   return GetKeyTextInternal($hf2pPreferences.GetKeyLabels(), key_code)
+end
+
+func OnSubmitButtonClicked(p : params) : bool
+   Props().visible := false
+   return false
+end
+end
+
+class UiEcLayerLIR : UiWidgetListItem
+
+var id : int = -1
+override SetData//(p:params)
+   var iconScale : float = 0.08
+
+   id := (int)(p.id)
+   if (p.is_visible != true)
+      Props().visible := false
+   end
+
+   Props().mouseChildren     := true
+   Props().mouseEnabled      := true
+   Props().itemCont.pic      := p.pic 
+   Props().itemCont.scaleX   := iconScale
+   Props().itemCont.scaleY   := iconScale
+   Props().itemCont.visible  := true
+   Props().itemCont.color    := p.color
+   Props().labelText.tf.text := p.text + " " + (string)((int)(p.id))
+   Props().visibleCheckbox.selected := p.visible
+end
+
+func OnCheckBoxValueChange(p:params) : bool
+   Log("ui~ec_layerLIR", Params2Str(p))
+   $hf2pEmblemEditor.SetLayerVisible(Props().index, Props().visibleCheckbox.selected)
+   return false
+end
+
+override StartDrag
+   var eventParams: params
+   if (id >= 0)
+      eventParams.id     := id
+      eventParams.pic    := Props().itemCont.pic
+      eventParams.scaleX := Props().itemCont.scaleX
+      eventParams.scaleY := Props().itemCont.scaleY
+      eventParams.color  := Props().itemCont.color
+      eventParams.text   := Props().labelText.tf.text
+      eventParams.check  := Props().visibleCheckbox.selected
+      eventParams.startY := (int)(id * (Props().height) + (Props().height / 2))
+      eventParams.height := (int)(Props().height)
+      GenerateEvent("StartLayerDrag", eventParams)
+   end
+   return null
+end
+end
+
+class UiEcLeftContainer : UiWidgetContainer
+
+var layerData : vector
+var isInited : bool = false
+var invisible_element : int = -1
+
+func OnEmblemEditorChangeLayersFunc()
+   Log("ui~ec_left_container", "OnEmblemEditorChangeLayers (LayerList)")
+
+   layerData := $hf2pEmblemEditor.GetLayers()
+   var i : int = 0
+
+   for i := 0 to layerData.Last()
+      layerData.Get(i).id := i
+      layerData.Get(i).is_visible := true
+      if (i == invisible_element)
+         layerData.Get(i).is_visible := false
+      end
+   end 
+
+   Widgets().header.tf.text  := "eeditor_layers"
+   Widgets().leftList.SetData(layerData)
+end
+
+global event OnEmblemEditorChangeLayers()
+   OnEmblemEditorChangeLayersFunc()
+end
+
+global event OnEmblemEditorSetCurrentLayerIndex(index : int)
+   Widgets().leftList.SetSelectionIdx(index)
+end
+
+func OnDuplicateButtonClicked(p:params):bool
+   $hf2pEmblemEditor.CloneCurrentLayer()
+
+   return false
+end
+
+func OnDeleteButtonClicked(p:params):bool
+   $hf2pEmblemEditor.RemoveCurrentLayer()
+
+   return false
+end
+
+func OnClearButtonClicked(p:params):bool
+   $hf2pEmblemEditor.RemoveAllLayers()
+
+   return false
+end
+
+func OnUpButtonClicked(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+
+   if currentLayer > 0
+      $hf2pEmblemEditor.ChangeLayerOrder(currentLayer, currentLayer-1)
+      $hf2pEmblemEditor.SetCurrentLayerIndex(currentLayer - 1)
+   end
+
+   return false
+end
+
+func OnDownButtonClicked(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+
+   if (currentLayer != -1) and ((currentLayer+1) < $hf2pEmblemEditor.GetNumLayers())
+      $hf2pEmblemEditor.ChangeLayerOrder(currentLayer + 1, currentLayer)
+      $hf2pEmblemEditor.SetCurrentLayerIndex(currentLayer + 1)
+   end
+
+   return false
+end
+
+func OnItemClicked(p:params):bool
+   $hf2pEmblemEditor.SetCurrentLayerIndex(p.index)
+
+   return false
+end
+
+func Init()
+   var val : int = 1
+   if (isInited)
+      return
+   end
+   isInited := true
+
+   Widgets().duplicateLayerBtn.textField.text := "eeditor_btn_clone"
+   Widgets().deleteLayerBtn.textField.text    := "eeditor_btn_delete"
+   Widgets().clearLayerBtn.textField.text     := "eeditor_btn_clear"
+   Widgets().upLayerBtn.textField.text        := "eeditor_btn_up"
+   Widgets().downLayerBtn.textField.text      := "eeditor_btn_down"
+end
+
+func Update() // was missing somehow
+
+end
+
+func ChangeLayers(index1 : int, index2 : int)
+   var p : params
+   p := layerData.Get(index1)
+   layerData.Set(index1, layerData.Get(index2))
+   layerData.Set(index2, p)
+
+   RenameLayers()
+
+   Update()
+end 
+
+func DeleteLayer(index : int)
+   if ((index >= 0) and (index <= layerData.Last()))
+      layerData.Erase(index, 1)
+      RenameLayers()
+
+      Update()
+   end
+end
+
+func RenameLayers()
+   var i : int
+   for i := 0 to layerData.Last()
+      layerData.Get(i).text := "Layer " + (string)(i)
+   end
+end
+
+func ClearData()
+   layerData.Clear()
+
+   Update()
+end
+
+func SetTextVector(data:vector)
+   Widgets().leftList.SetData(data)
+end
+end
+
+class UiElementLayerDrag : UiWidgetContainer
+
+var   current_index  : int = -1
+var   start_y : int = -1
+var   element_height : int = -1
+var   now_scrolling : bool = false
+
+func ScrollDown()
+   var scroll_pos : int = (int)(GetWidget("_parent").GetWidget("leftList").Props().scrollPosition)
+   GetWidget("_parent").GetWidget("leftList").Props().scrollPosition := scroll_pos + 1
+   now_scrolling := false
+end            
+
+func ScrollUp()
+   var scroll_pos : int = (int)(GetWidget("_parent").GetWidget("leftList").Props().scrollPosition)
+   GetWidget("_parent").GetWidget("leftList").Props().scrollPosition := scroll_pos - 1
+   now_scrolling := false
+end
+
+func GetScrollPos() : int
+   return (int)(GetWidget("_parent").GetWidget("leftList").Props().scrollPosition)
+end
+
+override EndDrag
+   Props().visible := false
+   current_index := -1
+   start_y := -1
+   element_height := -1
+   GetWidget("_parent").invisible_element := -1
+   GetWidget("_parent").OnEmblemEditorChangeLayersFunc()
+end
+
+override CanDrop                  
+   var isDropAllowed : bool = true
+   var down_y_constraint : int = (int)(GetWidget("_parent").GetWidget("leftList").Props().height - element_height)
+   var new_pos_y : int = (int)(Props().y)
+   var old_pos_y : int = new_pos_y
+
+   Props().x := 8 //Magic HACK!!!
+
+   if (new_pos_y > down_y_constraint + GetWidget("_parent").GetWidget("leftList").Props().y)
+      new_pos_y := (int)(down_y_constraint + GetWidget("_parent").GetWidget("leftList").Props().y)
+   end
+
+   if (new_pos_y < GetWidget("_parent").GetWidget("leftList").Props().y)
+      new_pos_y := (int)(GetWidget("_parent").GetWidget("leftList").Props().y)
+   end
+
+   Props().y := new_pos_y 
+
+   if ((current_index != -1) and (now_scrolling != true))
+      var posy : int = (int)(old_pos_y - GetWidget("_parent").GetWidget("leftList").Props().y + element_height / 2)
+      var start_y_was_changed : bool = false
+
+      if ((current_index >= 0) and (current_index < $hf2pEmblemEditor.GetNumLayers()))
+         if ((posy - start_y > element_height / 2) and ((current_index + 1) < $hf2pEmblemEditor.GetNumLayers()))
+            GetWidget("_parent").invisible_element := current_index + 1
+            $hf2pEmblemEditor.ChangeLayerOrder(current_index, current_index + 1)
+            current_index := current_index + 1
+            start_y_was_changed := true
+         end
+
+         if ((posy - start_y < -element_height / 2) and (current_index > 0))
+            GetWidget("_parent").invisible_element := current_index - 1
+            $hf2pEmblemEditor.ChangeLayerOrder(current_index, current_index - 1)
+            current_index := current_index - 1
+            start_y_was_changed := true
+         end
+
+         start_y := (current_index - GetScrollPos()) * element_height + element_height / 2
+                                    
+         $hf2pEmblemEditor.SetCurrentLayerIndex(current_index)
+
+         Props().labelText.tf.text := "Layer " + (string)(current_index)
+      end
+
+      if (posy > down_y_constraint - element_height / 2)
+         now_scrolling := true
+         ScrollDown() : 1
+         return true
+      end
+
+      if (posy < element_height / 2)
+         now_scrolling := true
+         ScrollUp() : 1
+         return true
+      end
+   end                  
+   return isDropAllowed
+end
+
+override StartDrag
+   Props().visible := true
+   GetWidget("_parent").invisible_element := current_index
+   GetWidget("_parent").OnEmblemEditorChangeLayersFunc()
+   return this
+end
+end
+
+class UiEcPaliteLIR : UiWidgetListItem
+
+override SetData//(p:params)
+   var p1 : params
+   var a : int = 255     
+
+   if ((not IsVoid(p.r)) and (not IsVoid(p.g)) and (not IsVoid(p.b)))  
+      p1.r := p.r
+      p1.g := p.g
+      p1.b := p.b
+      p1.a := a
+   end
+
+   Props().paliteItem.colorPlate.color := p1
+end
+end
+
+class UiEcPaliteContainer : UiWidgetContainer
+
+var data : vector
+var isInited : bool = false
+var currentIndex : int = -1
+
+func OnColorSelected(p:params):bool
+   GenerateEvent("NewColorSelected", p)
+   return false
+end
+
+func Init()
+   if (isInited)
+return
+   end
+
+   var val : int = 3
+   var i : int = 0
+
+   currentIndex := -1
+   data.Clear()
+   Widgets().paliteGridShape.SetColumnCount(val)
+
+   data := $hf2pEmblemEditor.GetPaliteColors()
+   isInited := true
+end
+
+func SetPaliteData()
+   if (!isInited)
+      Init()
+   end
+   Widgets().paliteGridShape.SetData(data)
+end
+
+func SetColumnCount(data:int)
+   Widgets().paliteGridShape.SetColumnCount(data)
+end
+end
+
+class UiEcRightContainer : UiWidgetContainer
+
+var data1 : vector
+var data2 : vector
+var data3 : vector
+var data4 : vector
+var isInited : bool = false
+var currentIndex : int = -1
+
+func OnItemDoubleClicked(p:params):bool 
+   var eventParams   : params
+   eventParams.index := p.index
+   var defMousePos : float = 0.0
+   eventParams.x := defMousePos
+   eventParams.y := defMousePos
+
+   GenerateEvent("eventNewSymbol", eventParams)
+
+   return false
+end
+
+func OnStepperIndexChange(p:params):bool
+   var val : int = Widgets().tabsRightStepper.selection
+
+   SetGridItemsByTabIndex(val + 1)
+
+   return false
+end
+
+func OnFirstRightTabClicked(p:params):bool
+   SetGridItemsByTabIndex(1)
+
+   return false
+end
+
+func OnSecondRightTabClicked(p:params):bool
+   SetGridItemsByTabIndex(2)
+
+   return false
+end
+
+func OnThirdRightTabClicked(p:params):bool
+   SetGridItemsByTabIndex(3)
+
+   return false
+end
+
+func OnFourthRightTabClicked(p:params):bool
+   SetGridItemsByTabIndex(4)
+   return false
+end
+
+func Mod(x : int, m : int) : int
+   return x - m * (int)(x / m)
+end
+
+func Init()
+   if (isInited)
+return
+   end
+
+   var tabsData : vector 
+   var tabElem :  params
+   tabElem.label := "1 / 4"
+   tabsData.Push(tabElem.Clone())
+   tabElem.label := "2 / 4"
+   tabsData.Push(tabElem.Clone())
+   tabElem.label := "3 / 4"
+   tabsData.Push(tabElem.Clone())
+   tabElem.label := "4 / 4"
+   tabsData.Push(tabElem.Clone())
+   Widgets().tabsRightStepper.SetData(tabsData)
+
+   var val : int = 4
+   var i : int = 0
+
+   currentIndex := -1
+   data1.Clear()
+   data2.Clear()
+   data3.Clear()
+   data4.Clear()
+
+   var pCross : params
+   pCross.pic   := "cross"
+   pCross.index := 0
+
+   var pTriangle   : params
+   pTriangle.pic   := "triangle"
+   pTriangle.index := 1
+
+   var pQuadro : params
+   pQuadro.pic   := "quadro"
+   pQuadro.index := 2
+
+   var pRound : params
+   pRound.pic   := "round"
+   pRound.index := 3
+
+   var p : vector
+   p.Push(pCross)
+   p.Push(pTriangle)
+   p.Push(pQuadro)
+   p.Push(pRound)
+
+   for i := 0 to 5
+      data1.Push(p.Get(Mod(i+0, 4)))
+      data1.Push(p.Get(Mod(i+1, 4)))
+      data1.Push(p.Get(Mod(i+2, 4)))
+      data1.Push(p.Get(Mod(i+3, 4))) 
+   end
+   for i := 0 to 5
+      data2.Push(p.Get(Mod(i+1, 4)))
+      data2.Push(p.Get(Mod(i+2, 4)))
+      data2.Push(p.Get(Mod(i+3, 4)))
+      data2.Push(p.Get(Mod(i+0, 4))) 
+   end
+   for i := 0 to 5
+      data3.Push(p.Get(Mod(i+2, 4)))
+      data3.Push(p.Get(Mod(i+3, 4)))
+      data3.Push(p.Get(Mod(i+0, 4)))
+      data3.Push(p.Get(Mod(i+1, 4))) 
+   end
+   for i := 0 to 5
+      data4.Push(p.Get(Mod(i+3, 4)))
+      data4.Push(p.Get(Mod(i+0, 4)))
+      data4.Push(p.Get(Mod(i+1, 4)))
+      data4.Push(p.Get(Mod(i+2, 4))) 
+   end
+   
+   SetColumnCount(val)
+
+   isInited := true
+end
+
+func SetGridItemsByTabIndex(index : int)
+   if (!isInited)
+      Init()
+   end
+   if (currentIndex != index)
+      currentIndex := index
+
+      Widgets().firstRightTab.enabled     := true
+      Widgets().secondRightTab.enabled    := true
+      Widgets().thirdRightTab.enabled     := true
+      Widgets().fourthRightTab.enabled    := true
+
+      Widgets().tabsRightStepper.selection := index - 1
+
+      if (index == 1)
+         SetTextVector(data1)
+         Widgets().firstRightTab.enabled  := false
+      end               
+      if (index == 2)
+         SetTextVector(data2)
+         Widgets().secondRightTab.enabled := false
+      end 
+      if (index == 3)
+         SetTextVector(data3)
+         Widgets().thirdRightTab.enabled  := false
+      end 
+      if (index == 4)
+         SetTextVector(data4)
+         Widgets().fourthRightTab.enabled := false
+      end            
+   end
+end
+
+func SetColumnCount(data:int)
+   Widgets().itemsRightGrid.SetColumnCount(data)
+end
+
+func SetTextVector(data:vector)
+   Widgets().itemsRightGrid.SetData(data)
+end
+end
+
+class UiEcStepper : UiWidgetStepper
+
+func OnMouseIn(p:params):bool
+   Props().SetFocus()
+   return false
+end
+end
+
+class UiEcTestLIR : UiWidgetListItem
+
+var   id    : int = -1
+
+override SetData//(p:params)
+   var iconScale : float = 0.19
+   var p1 : params
+
+   id := (int)(p.index)
+
+   Props().mouseChildren := true
+
+   Props().itemCont.pic := p.pic
+
+   Props().itemCont.scaleX := iconScale
+   Props().itemCont.scaleY := iconScale
+   Props().itemCont.visible := true
+end
+
+override StartDrag
+   if (id >= 0)
+      var eventParams: params
+      eventParams.id := id
+      GenerateEvent("StartEmblemDrag", eventParams)
+    end
+   return null
+end
+end

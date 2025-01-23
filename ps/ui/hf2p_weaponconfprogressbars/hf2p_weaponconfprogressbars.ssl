@@ -1,0 +1,8 @@
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.items_mgr
+import ui.ui_economy
+
+class UiWcProgressBars : UiWidgetContainer
+
+end

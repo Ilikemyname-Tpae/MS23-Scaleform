@@ -1,0 +1,953 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.user_service
+import ssl.hf2p.user_data
+import ssl.hf2p.hq
+import ui.ui_player_info
+
+class animatedContent_contentContainer_UiContent_5 : UiWidgetContainer
+
+var   isSlidingElement  :  bool     = false
+//var   markSelect        :  string   = "spartan1"
+//var   subMarkSelect     :  string   = "all"    
+var   curPaintTag       :  string   = "primary"
+var   curNumTag         :  int      = 0
+var   curColor          :  int 
+//var   defaultColor      :  int
+var   defColorPar       :  params
+var   curLoadout        :  int = 0 // tmp
+var   blinkDelay        :  float = 0.0
+var   selectedTab       :  string = "parts"
+var   colorVec          :  vector 
+var   selectedColors    :  vector
+var   closeConfirmationAgreeCallback : refFUNC_PTR = null
+var   unsavedChanges    : bool = false
+var   gotoMark          : string
+
+func animatedContent_contentContainer_UiContent_5()
+   var i:int
+   for i := 1 to 5
+      selectedColors.Push("color_pri_grey_1")
+   end   
+end
+ 
+func SetHeader()
+   Widgets().icnHeader.textField := "carousel_ui_spartan_screen"
+   //Widgets().colorList._width  := 300
+   //Widgets().colorList._height := 100
+end
+
+func SetSubHead(_text:string)
+   Widgets().listSubHead.text := "carousel_ui_choose_color_" + _text
+end
+
+global event SelectedLoadoutChanged()
+   if (selectedTab == "paint")
+      SetPaletteBtnColor()
+      var blinkTime : float = 0
+      var j : int
+      for j := 1 to 5
+         Widgets().Get("paintBtn" + j).StartDefaultBlinking(blinkTime + j * 0.05)
+      end
+      Widgets().Get("paintBtn1").GenerateEvent("onPaintBtnClicked")
+   end
+end
+
+func SetPaletteBtnColor()
+   var i:int
+   for i := 1 to 5
+      var idxTag:int = Widgets().Get("paintBtn" + i).numTag
+      var defColor:params = GetCurrentColor(idxTag)
+      //Log("ui~content", "int2rgb " + Params2Str(p))   
+      Widgets().Get("paintBtn" + i).SetBtnColor(defColor)
+      selectedColors.Set(Widgets().Get("paintBtn" + i).numTag, defColor.name)
+   end   
+   unsavedChanges := false
+end
+
+func SetPartBtnColor(_color : params)   
+   var i : int
+   for i := 1 to 5
+      if Widgets().Get("paintBtn" + i).Get("numTag") == curNumTag
+         Widgets().Get("paintBtn" + i).SetBtnColor(_color)
+      end
+   end
+end
+
+func GetCurrentColor(_paintTag:int): params
+   var ud      : UserData  = (UserData)$UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+   var colors  : vector    = ud.armor_loadouts.spartan.colors.Get()
+   var ret     : params
+   ret.name := "color_pri_grey_1"
+   ret.r := 30
+   ret.g := 30
+   ret.b := 30
+   if (_paintTag < colors.Count())
+      return getClrParFromName((string)(colors.Get(_paintTag).value.Get()))
+   end
+   return ret
+end
+
+func getClrParFromName(_name :  string) :  params
+   var clr        : params
+   var colorComp  : GL_ComponentColor = (GL_ComponentColor)$UiGlobals.componentsColor.Get(_name)
+   clr.name := _name
+   clr.r    := (int)colorComp.r.Get()
+   clr.g    := (int)colorComp.g.Get()
+   clr.b    := (int)colorComp.b.Get()
+   return clr
+end
+
+func getIntClrFromName(_name : string) : int
+   var ret : int = 0
+   var clr : params
+   var colorComp  : GL_ComponentColor = (GL_ComponentColor)$UiGlobals.componentsColor.Get(_name)
+   clr.r    := (int)colorComp.r.Get()
+   clr.g    := (int)colorComp.g.Get()
+   clr.b    := (int)colorComp.b.Get()
+   ret := (int)(clr.r) * 65536 + (int)(clr.g) * 256 + (int)(clr.b)
+   return ret
+end
+
+func SaveDefColor(_paintTag:int)
+   //defaultColor := GetCurrentColor(_paintTag)
+   defColorPar  := GetCurrentColor(_paintTag)
+end
+
+func InitSpartanPaint()
+   Log("ui~content", "InitSpartanPaint")
+   /*
+   var paintParts    : vector
+   var paintPartsPar : params
+   
+   paintPartsPar.id      := "all"
+   paintPartsPar.name    := "carousel_ui_paint"
+   paintParts.Push(paintPartsPar.Clone())
+   
+   paintPartsPar.id   := "parts"
+   paintPartsPar.name := "carousel_ui_parts"
+   //paintPartsPar.enable := false
+   paintParts.Push(paintPartsPar.Clone())
+   
+   paintPartsPar.id   := "acc"
+   paintPartsPar.name := "carousel_accessories"
+   paintPartsPar.enable := false
+   paintParts.Push(paintPartsPar.Clone())
+   
+   Widgets().subMarks.SetListData(paintParts, 0)
+   */
+   // layout
+   Widgets().spartanCont.visible := true
+   Widgets().spartanCont.grid.visible := false
+   Widgets().subMarks.visible := false
+   Widgets().spartanCont.rPanel.visible := false
+   Widgets().spartanMarks.visible := false
+   Widgets().listMask.visible := false
+   Widgets().plrCam.alpha := 0
+   Widgets().spartanCont.maskCont.visible := false
+   Widgets().rotateImg.visible := true
+   Widgets().listSubHead.visible := true
+   Widgets().lineImg.visible := true
+   Widgets().assignColorsBtn.visible := true
+   Widgets().assignColorsHeader.visible := true
+   var i : int
+   for i := 1 to 3
+      Widgets().spartanCont.Get("tabSc" + i).visible := false
+   end
+   Widgets().spartanCont.tabSc1.StartDefaultBlinking(0.15)
+   Widgets().spartanCont.tabSc2.StartDefaultBlinking(0.20)
+   Widgets().spartanCont.tabSc3.StartDefaultBlinking(0.25)
+   Widgets().assignColorsHeader.StartDefaultBlinking(0.50)
+   Widgets().assignColorsBtn.StartDefaultBlinking(0.55)
+   var blinkTime : float = 0.2
+   var j : int
+   for j := 1 to 5
+      Widgets().Get("paintBtn" + j).visible := true
+      Widgets().Get("paintBtn" + j).StartDefaultBlinking(blinkTime + j * 0.05)
+      Widgets().spartanCont.Get("spartanBtn" + j).visible := false
+   end
+   var subTxt: string = Widgets().Get("paintBtn" + (curNumTag + 1)).paintTag
+   SetSubHead(subTxt)
+   Widgets().plrCam.SetView("suit")   
+   Widgets().Get("paintBtn" + (curNumTag + 1)).selected := true
+   populateColorList()
+   //SaveDefColor(curNumTag)
+   //MarkSelect(markSelect)
+   //SubMarkCheck(subMarkSelect)
+   GenerateEvent("#OnCancelBtn")
+end
+
+func PartsPanelUpdate(_curLoadout:int)
+   var loadoutPar : params = $uiPlayerInfo.GetBackendLoadoutParams(curLoadout)
+   // icn
+   //Widgets().spartanCont.spartanBtn1.imageAttach.pic := "iconHelmet"
+   //Widgets().spartanCont.spartanBtn2.imageAttach.pic := "iconShoulder"
+   //Widgets().spartanCont.spartanBtn3.imageAttach.pic := "iconChest"
+   //Widgets().spartanCont.spartanBtn4.imageAttach.pic := "iconArm"
+   //Widgets().spartanCont.spartanBtn5.imageAttach.pic := "iconFoot"
+   // armor cls (tmp)
+   //var i : int
+   //for i := 1 to 5
+      //Widgets().spartanCont.Get("spartanBtn" + i).attachArmorClass.pic := "armorSuit3"
+   //end
+   //txt
+   //Widgets().spartanCont.spartanBtn1.textField := (string)((GL_ComponentUI)($UiGlobals.componentsUI.Get(loadoutPar.helmet))).name.Get()
+   //Widgets().spartanCont.spartanBtn2.textField := (string)(loadoutPar.shoulder)
+   //Widgets().spartanCont.spartanBtn3.textField := (string)(loadoutPar.chest)
+   //Widgets().spartanCont.spartanBtn4.textField := (string)(loadoutPar.arms)
+   //Widgets().spartanCont.spartanBtn5.textField := (string)(loadoutPar.legs)
+end
+
+func StatsPanelUpdate()
+   Widgets().spartanCont.rPanel.visible := true
+   //parts bonus
+   Widgets().spartanCont.rPanel.lvlText1 := "main_ui_bonus"
+   Widgets().spartanCont.rPanel.lvlText2 := "main_ui_bonus"
+   Widgets().spartanCont.rPanel.lvlText3 := "main_ui_bonus"
+   Widgets().spartanCont.rPanel.lvlText4 := "main_ui_bonus"
+   //power lvl & bar update & icn
+   var i : int
+   for i := 1 to 5
+      //Widgets().spartanCont.rPanel.Get("spartanBar" + i).armorClassIcon.pic := "armorSuit3"
+      //Widgets().spartanCont.rPanel.Get("spartanBar" + i).numberTf := ""
+      //Widgets().spartanCont.rPanel.Get("spartanBar" + i).lvl1 := ""
+      //Widgets().spartanCont.rPanel.Get("spartanBar" + i).lvl2 := ""
+      //Widgets().spartanCont.rPanel.Get("spartanBar" + i).lvl3 := ""
+      //Widgets().spartanCont.rPanel.Get("spartanBar" + i).lvl4 := ""
+      ////Widgets().spartanCont.rPanel.Get("spartanBar" + i).armorClassName := "armr_cls_name"
+   end
+end
+
+func InitSpartanParts(_delay : float = 0)
+   // layout
+   Widgets().spartanCont.visible := true
+   Widgets().spartanCont.grid.visible := true
+   Widgets().rotateImg.visible := true
+   Widgets().plrCam.alpha := 0
+   Widgets().lineImg.visible := false
+   Widgets().listSubHead.visible := false
+   Widgets().subMarks.visible := false
+   Widgets().spartanMarks.visible := false
+   Widgets().colorList.visible := false
+   Widgets().listMask.visible := false
+   Widgets().listSubHead.visible := false
+   Widgets().assignColorsBtn.visible := false
+   Widgets().assignColorsHeader.visible := false
+   var blinkTime : float = 0.2 + _delay
+   var i : int
+   for i := 1 to 5
+      Widgets().Get("paintBtn" + i).visible := false
+      Widgets().spartanCont.Get("spartanBtn" + i).visible := true
+      Widgets().spartanCont.Get("spartanBtn" + i).StartDefaultBlinking(blinkTime + i * 0.05)
+   end
+   Widgets().spartanCont.StartDefaultBlinking(0.0)
+   //Widgets().spartanCont.tabSc1.StartDefaultBlinking(_delay + 0.15)
+   //Widgets().spartanCont.tabSc2.StartDefaultBlinking(_delay + 0.20)
+   //Widgets().spartanCont.tabSc3.StartDefaultBlinking(_delay + 0.25)
+   
+   Widgets().spartanLoadoutPanel.StartDefaultBlinking(_delay + 0.30)
+   //Widgets().spartanLoadoutPanel.spartanLoadoutSelect1.selected := true
+   //Widgets().spartanLoadoutPanel.spartanLoadoutSelect2.enabled := false
+   //Widgets().spartanLoadoutPanel.spartanLoadoutSelect3.enabled := false
+   //Widgets().spartanLoadoutPanel.spartanLoadoutSelect4.enabled := false
+   //Widgets().spartanLoadoutPanel.spartanLoadoutSelect5.enabled := false
+   // lefft part
+   PartsPanelUpdate(curLoadout)
+   StatsPanelUpdate()
+   GenerateEvent("#OnCancelBtn")
+end
+/*
+func SubMarkCheck(_subMarkSelect:string)
+   if (_subMarkSelect == "parts")
+      Log("ui~content", "populateColorListParts")
+      Widgets().colorList.visible := false
+      //Widgets().spartanCont.visible := true
+      SetStateName("SpartanVisible")
+   else if (_subMarkSelect == "acc")  
+      Log("ui~content", "populateColorListAcc")
+      Widgets().colorList.visible := false
+   else if (_subMarkSelect == "all") 
+      Widgets().spartanCont.visible := false
+      populateColorList()
+   end   
+end
+*/
+
+func SetListSelection(numTag : int)
+   var clrName : string
+   var i : int
+   var listIdx : int
+   clrName := selectedColors.Get(numTag)
+   for i := 0 to colorVec.Count() - 1   
+      if (clrName == colorVec.Get(i).name)
+         listIdx := i
+         Widgets().colorList.SetSelectionIdx(i)
+      end
+   end
+end
+
+func populateColorList()
+   Log("ui~content", "populateColorList")
+   Widgets().colorList.visible := true
+   Widgets().colorList.StartDefaultBlinking(0.20)
+   //var colorVec : vector
+   var rgbPar   : params
+   var colorList: vector = $UiGlobals.componentsColor.GetKeys()
+   var i        : int
+   
+   colorVec.Clear()
+
+   var clrType : int = 0
+   for i := 0 to colorList.Count() - 1
+      var clrName : string = colorList.Get(i)
+      if (clrName != "")
+         var colorComp  : GL_ComponentColor  = (GL_ComponentColor)$UiGlobals.componentsColor.Get(clrName)
+         if (curNumTag == (int)colorComp.type.Get())
+            // + TYPE + UI_DESC_ID + RACE_ID
+            rgbPar.name       := clrName
+            rgbPar.r          := (int)(colorComp.r.Get())
+            rgbPar.g          := (int)(colorComp.g.Get())
+            rgbPar.b          := (int)(colorComp.b.Get())
+            rgbPar.uiListId   := (int)(colorComp.orderId.Get())
+            colorVec.Push(rgbPar.Clone())
+         end
+      end
+   end
+   colorVec.Sort(this, "SortByListId")
+   Widgets().colorList.SetData(colorVec)
+   SetListSelection(curNumTag)
+end
+
+func SortByListId (p1 : params, p2 :  params): int
+   var ret : int = 0
+   var x   : int = 0
+   var y   : int = 0
+   
+   if (! IsVoid(p1.uiListId))
+      x := (int)(p1.uiListId)
+   end
+   if (! IsVoid(p2.uiListId))
+      y := (int)(p2.uiListId)
+   end
+   
+   if (x < y)
+      ret := -1
+   elif (x > y)
+      ret := 1 
+   end
+   return ret
+end
+/*
+func MarkSelect(_markSelect: string)
+   markSelect := _markSelect
+   var i: int
+   for i := 0 to Widgets().spartanMarks.GetChildCount() - 1
+      if (Widgets().spartanMarks.GetChild(i).Props().spartanSlot == _markSelect)
+         Widgets().spartanMarks.GetChild(i).Props().selected   := true
+      else
+         Widgets().spartanMarks.GetChild(i).Props().selected   := false
+      end
+   end
+end
+*/
+func KillDelays()
+   delay kill, this, PAINT_ROLLOVER 
+   delay kill, this, PAINT_ROLLOUT 
+end
+
+func onSpartanMarkClicked(p:params):bool
+   Log("ui~content", "onSpartanMarkClicked")
+   var mark : string = p.widget.markTag
+   if (mark == "parts" and selectedTab != "parts")
+      if selectedTab == "paint" and unsavedChanges
+         var pp : params
+         pp.titleTxt       := "msg_spartan_unsaved_paint_ttl"
+         pp.messageTxt     := "msg_spartan_unsaved_paint_msg"
+         pp.callbackEvent  := "unsavedPaintConfirmationClosed2"
+         pp.mbType         := $uiEnums.MB_TYPE_NO_YES
+         gotoMark := "parts"
+         GenerateEvent("MainMenuDialogRequest", pp)
+      else
+         SetStateName("Visible")
+         InitSpartanParts(0)
+         selectedTab := mark
+      end
+   else if (mark == "acc" and selectedTab != "acc")  
+      selectedTab := mark
+   else if (mark == "paint" and selectedTab != "paint")
+      SetStateName("SpartanVisible")
+      InitSpartanPaint()
+      selectedTab := mark
+   end
+   return false
+end
+/*
+func wc_OnPanelButtonClicked(p:params):bool
+   Log("ui~content", "wc_OnPanelButtonClicked")
+   return false
+end
+
+func OnSubTabSelected(p:params):bool
+   Log("ui~content", "OnSubTabSelected " + Params2Str(p))
+   SubMarkCheck((string)(p.elemID))
+   return false
+end
+*/
+func onPaintBtnClicked(p:params):bool
+   curPaintTag := p.widget.paintTag
+   curNumTag   := p.widget.numTag
+   var i:int 
+   for i := 1 to 5
+      Widgets().Get("paintBtn" + i).selected := false
+   end
+   p.widget.selected := true
+   SetSubHead(curPaintTag)
+   SaveDefColor(curNumTag)
+   populateColorList()
+   Log("ui~content", "onPaintBtnClicked " + curPaintTag + " " + (string)(curNumTag))
+   //SetListSelection(curNumTag)
+   return false
+end
+
+func onColorListItemClick(p:params):bool
+   Log("ui~content", "onColorListItemClick " + Params2Str(p))
+   var color:params
+   var clrName : string
+   color := Widgets().colorList.GetItemData(p.index)
+   // rgb2int = 65536 * r + 256 * g + b;
+   clrName := color.name
+   selectedColors.Set(curNumTag, clrName)
+   ApplyColors(clrName, true)
+   defColorPar := getClrParFromName(clrName)
+   unsavedChanges := true
+   //SaveDefColor(curNumTag)
+   return false
+end
+
+func onPaletteListItemRollOver(p:params):bool
+   //KillDelays()
+   var color:params
+   var clrName : string
+   color := Widgets().colorList.GetItemData(p.index)
+   clrName := color.name
+   ApplyColors(clrName, false)// : 0.05, PAINT_ROLLOVER
+   return false
+end
+
+func onPaletteListItemRollOut(p:params):bool
+   var defClr : string = (string)(defColorPar.name)
+   //KillDelays()
+   ApplyColors(defClr, false)// : 0.25, PAINT_ROLLOUT
+   return false
+end
+
+/*
+func onColorAssignBtnClicked(p:params):bool
+   Log("ui~content", "onColorAssignBtnClicked")
+   ApplyColors(curNumTag, curColor, true)
+   return false
+end
+*/
+
+func OnApplyColorsClick(p : params) : bool
+   //$user_service.SetArmorLoadoutColors(GetRaceIdx(), 0, )
+   var loadoutIndex : int = $UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get()).armor_loadouts.spartan.active_loadout_index.Get()
+   $user_service.SetArmorLoadoutColors(GetRaceIdx(), loadoutIndex, selectedColors.Get(0), selectedColors.Get(1), selectedColors.Get(2), selectedColors.Get(3), selectedColors.Get(4))
+   unsavedChanges := false
+   
+   var   pp          : params
+   pp.isSkip         := true
+   pp.itemID         := ""
+   pp.messageTxt     := "msg_spartan_paint_assigned_msg"
+   pp.mbType         := "AssignInfo"
+   pp.titleTxt       := "msg_ui_assigned"
+   pp.closeTimeout   := 2 
+   GenerateEvent("MainMenuDialogRequest", pp)
+   
+   return false
+end
+
+func ApplyColors(colorName:string, _doSave:bool = false)
+   Log("ui~content", "ApplyColors " + colorName)
+   //$hq.ShowroomBegin()
+   if (colorName != "")
+      $hq.ShowroomTryOnColor(GetRaceIdx(), colorName)
+      if (_doSave) 
+         //$user_service.SetArmorLoadoutColor(GetRaceIdx(), 0, colorName)
+         //SetBtnColor(tagIdx)
+         //SetPaletteBtnColor()// : 0.25
+         SetPartBtnColor(getClrParFromName(colorName))
+      end
+   end
+end
+
+func GetRaceIdx() : int
+   var idx: int = (int)$UserDataStorage.local_user.race.Get() //$hf2pEngine.GetUIPlayerModelId()
+   return idx
+end
+
+func ShowPaintTmp()
+   Widgets().spartanCont.tabSc1.enabled := false
+   Widgets().spartanCont.tabSc2.enabled := false
+   Widgets().spartanCont.tabSc3.selected := true
+   SetPaletteBtnColor()
+   InitSpartanPaint()
+end
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end          
+
+handle OnEnteringState("Visible")
+   Set("visible", true)
+   $hq.ShowroomBegin()   
+   $hq.isInShowroom := true
+end
+
+handle OnEnterState("Visible")
+   SetHeader()
+   blinkDelay := 0.0
+   //ShowPaintTmp()
+end
+
+handle OnExitState("Visible") // (name : string)
+   $hq.ShowroomEnd()   
+   $hq.isInShowroom := false
+end
+
+handle OnEnteringState("SpartanVisible")
+   //Set("visible", true)
+   $hq.ShowroomBegin()
+   $hq.isInShowroom := true
+end
+
+handle OnEnterState("SpartanVisible")
+   SetHeader()
+   SetPaletteBtnColor()
+end
+
+handle OnExitState("SpartanVisible")
+   $hq.ShowroomEnd()   
+   $hq.isInShowroom := false
+end
+
+func PrepareSlide()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   EnableFakeBg()
+   $hq.ShowroomEnd()
+   $hq.isInShowroom := false
+   $hq.ShowroomBegin()
+   $hq.isInShowroom := true
+   //selectedTab := "parts"
+   //InitSpartanParts(0.3)
+   selectedTab := "paint"
+   SetStateName("SpartanVisible")
+   InitSpartanPaint()
+end
+
+func PrepareHideSlide()
+end
+
+func DisableSlide()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+   end
+end
+
+func EnableFakeBg()
+   var p: params
+   p.state := "spartan"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+func OnCloseConfirmation(onAgree : refFUNC_PTR)
+   if selectedTab == "paint" and unsavedChanges
+      closeConfirmationAgreeCallback := onAgree
+      var pp : params
+      pp.titleTxt       := "msg_spartan_unsaved_paint_ttl"
+      pp.messageTxt     := "msg_spartan_unsaved_paint_msg"
+      pp.callbackEvent  := "unsavedPaintConfirmationClosed"
+      pp.isSaveFocus    := true
+      pp.mbType         := $uiEnums.MB_TYPE_NO_YES
+      GenerateEvent("MainMenuDialogRequest", pp)   
+   else
+      onAgree.Call()
+   end
+end
+
+func OnUnsavedPaintConfirmationClosed(p : params) : bool
+   if p.isOK and closeConfirmationAgreeCallback != null
+      closeConfirmationAgreeCallback.Call()
+   end
+   var nullPtr : refFUNC_PTR
+   closeConfirmationAgreeCallback := nullPtr
+   return false
+end
+
+func OnUnsavedPaintConfirmationClosed2(p : params) : bool
+   if p.isOK
+      SetStateName("Visible")
+      InitSpartanParts(0)
+      selectedTab := gotoMark
+   end
+   return false
+end
+
+func HasUnsavedChanges() : bool
+   return selectedTab =="paint" and unsavedChanges
+end
+
+end
+
+
+class ArmorClassBonusViewModel
+   var Index : int
+   var Parent : SpartanScreenViewModel = null
+
+   var ArmorLoadoutBonus : ObservableProperty = $OM.Calculated(this, "ArmorLoadoutBonusGetter")
+
+   var Name : ObservableProperty = $OM.Calculated(this, "GetName")
+   var IconName : ObservableProperty = $OM.Calculated(this, "GetIconName")
+   var Points : ObservableProperty = $OM.Calculated(this, "GetPoints")
+   var Percent : ObservableProperty = $OM.Calculated(this, "GetPercent")
+   var NewPoints :  ObservableProperty = $OM.Calculated(this, "GetNewPoints")
+   var NewPercent :  ObservableProperty = $OM.Calculated(this, "GetNewPercent")
+   
+   var BonusLevels : vector
+   var CurrentBonusLevelIndex : ObservableProperty = $OM.Calculated(this, "GetCurrentBonusLevelIndex")
+   var NewBonusLevelIndex : ObservableProperty = $OM.Calculated(this, "GetNewBonusLevelIndex")
+   
+   func Init(p : params)
+      //ArmorLoadoutBonus.Subscribe(this, "ArmorLoadoutBonusChanged")
+      Name.Invalidate()
+      IconName.Invalidate()
+      Points.Invalidate()
+      NewPoints.Invalidate()
+      Percent.Invalidate()
+      NewPercent.Invalidate()
+      CurrentBonusLevelIndex.Invalidate()
+      var i : int
+      for i := 0 to 4
+         var bonusLevel : ObservableProperty = $OM.Calculated(this, "GetBonusLevel" + i)
+         BonusLevels.Push(bonusLevel)
+         bonusLevel.Invalidate()
+      end
+   end
+   
+   func Term(p : params)
+      BonusLevels.Clear()
+      //ArmorLoadoutBonus.Unsubscribe(this, "ArmorLoadoutBonusChanged")
+   end
+      
+   func ArmorLoadoutBonusGetter() : *
+      var ud : UserData = (UserData) $UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+      var al :  UD_ArmorLoadout = (UD_ArmorLoadout)ud.armor_loadouts.spartan.loadouts.Get().Get(ud.armor_loadouts.spartan.active_loadout_index.Get())
+      return null
+   end
+      
+   func GetName() : *
+      return ""
+   end
+   
+   func GetIconName() : *
+      return ""
+   end
+   
+   func GetPoints() : *
+      return 0
+   end
+
+   func GetPercent() : *
+      return (float)0
+   end
+
+   func GetNewPoints() : *
+      if Parent.ShoppingState.Get() != 1
+         return Points.Get()
+      end
+      return Points.Get()
+   end
+
+   func GetNewPercent() : *
+      if Parent.ShoppingState.Get() != 1
+         return Percent.Get()
+      end
+      return Percent.Get()
+   end
+   
+   func GetCurrentBonusLevelIndex() : *
+      return -1
+   end
+   
+   func GetNewBonusLevelIndex() : *
+      if Parent.ShoppingState.Get() != 1
+         return CurrentBonusLevelIndex.Get()
+      end
+      return GetCurrentBonusLevelIndex()
+   end
+   
+   func GetBonusLevel0() : *
+      var result : * = GetBonusLevel(0)
+      if (result.Text != "")
+         result:=result
+      end
+      return result
+   end
+   
+   func GetBonusLevel1() : *
+      var result : * = GetBonusLevel(1)
+      if (result.Text != "")
+         result:=result
+      end
+      return result
+   end
+   
+   func GetBonusLevel2() : *
+      var result : * = GetBonusLevel(2)
+      if (result.Text != "")
+         result:=result
+      end
+      return result
+   end
+   
+   func GetBonusLevel3() : *
+      var result : * = GetBonusLevel(3)
+      if (result.Text != "")
+         result:=result
+      end
+      return result
+   end
+   
+   func GetBonusLevel4() : *
+      var result : * = GetBonusLevel(4)
+      if (result.Text != "")
+         result:=result
+      end
+      return result
+   end
+   
+   func GetBonusLevel(index : int) : *
+      var bl : params
+      bl.PointsRequired := 0
+      bl.Text := ""
+      return bl
+   end
+   
+   func OnMouseOver(p : params) : bool
+      Parent.SelectedArmorClassBonusIndex.Set(Index)
+      return true
+   end
+   
+   func OnMouseOut(p : params) : bool
+      Parent.SelectedArmorClassBonusIndex.Set(-1)
+      return true
+   end
+   
+end
+
+class SpartanScreenViewModel
+   var SelectedLoadoutIdx : ObservableProperty = $OM.Calculated(this, "GetSelectedLoadoutIdx")
+   var SelectedLoadout    : ObservableProperty = $OM.Calculated(this, "GetSelectedLoadout")
+   var ArmrLoadoutCount   : ObservableProperty = $OM.Calculated(this, "GetArmrLoadoutCount")
+   
+   var ArmorClassBonuses       : vector
+   var ArmorClassBonusRemapped : vector
+   var SelectedArmorClassBonusIndex : ObservableProperty = $OM.Property(-1)
+   var SelectedArmorClassBonus      : ObservableProperty = $OM.Calculated(this, "GetSelectedArmorClassBonus")
+   var DefaultArmorClassBonus       : params
+   
+   var ShoppingState : ObservableProperty = $OM.Property(-1)
+   var wgt : animatedContent_contentContainer_UiContent_5 = null
+   var confirmLoadoutIdx : int = -1
+   
+   func GetSelectedLoadoutIdx() : *
+      var ud : UserData = (UserData) $UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+      var loadoutIndex :  int = (int)ud.armor_loadouts.spartan.active_loadout_index.Get()
+      return loadoutIndex
+   end
+   
+   func GetSelectedLoadout() : *
+      var ud : UserData = (UserData) $UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+      var al :  UD_ArmorLoadout = (UD_ArmorLoadout)ud.armor_loadouts.spartan.loadouts.Get().Get(ud.armor_loadouts.spartan.active_loadout_index.Get())
+      return al
+   end
+   
+   func GetArmrLoadoutCount() : int
+      var ret : int
+      var udLocal : UserDataLocal = $UserDataStorage.local_user
+      ret := (int)udLocal.armor_loadouts_unlocked.Get()
+      return ret
+   end
+   
+   func GetSelectedArmorClassBonus() : *
+      if (int)SelectedArmorClassBonusIndex.Get() >= 0
+         return ArmorClassBonuses.Get(SelectedArmorClassBonusIndex.Get())
+      end
+      return DefaultArmorClassBonus
+   end
+   
+   func Init(p : params)
+      wgt := p.widget
+      var i : int
+      for i := 0 to 4
+         var ac : ArmorClassBonusViewModel = new ArmorClassBonusViewModel()
+         ac.Index := i
+         ac.Parent := this
+         ac.Points.Subscribe(this, "ReorderArmorClassBonus")
+         ac.NewPoints.Subscribe(this, "ReorderArmorClassBonus")
+         ArmorClassBonuses.Push(ac)
+         ArmorClassBonusRemapped.Push($OM.Property(DefaultArmorClassBonus))
+      end
+      for i := 0 to 4
+         var ac : ArmorClassBonusViewModel = ArmorClassBonuses.Get(i)
+         ac.Init(p)
+      end
+      DefaultArmorClassBonus.Name := ""
+      DefaultArmorClassBonus.IconName := ""
+      DefaultArmorClassBonus.Points := 0
+      DefaultArmorClassBonus.NewPoints := 0
+      DefaultArmorClassBonus.Percent := 0.0385
+      DefaultArmorClassBonus.NewPercent := 0.0385
+      DefaultArmorClassBonus.BonusLevels := new vector
+      for i := 0 to 4
+         DefaultArmorClassBonus.BonusLevels.Push(new params)
+         DefaultArmorClassBonus.BonusLevels.Get(i).Text := ""
+      end
+      DefaultArmorClassBonus.CurrentBonusLevelIndex := -1
+      DefaultArmorClassBonus.NewBonusLevelIndex := -1
+      //SelectedLoadout.Invalidate()
+      ShoppingState.Subscribe(this, "OnShoppingStateChanged")
+      SelectedLoadoutIdx.Subscribe(this, "SelectedLoadoutIdxChanged")
+      SelectedLoadoutIdx.Invalidate()
+   end
+   
+   func ReorderArmorClassBonus(val : *)
+      var i : int
+      var j : int
+      var nextIndex : int = 0
+      for i := 0 to 4
+         var acbVM : ArmorClassBonusViewModel = (ArmorClassBonusViewModel)ArmorClassBonuses.Get(i)
+         var points : int = (int)acbVM.Points.Get()
+         var newPoints : int = (int)acbVM.NewPoints.Get()
+         ArmorClassBonusRemapped.Get(i).Set(DefaultArmorClassBonus)
+         if points > 0 or newPoints > 0
+            ArmorClassBonusRemapped.Get(nextIndex).Set(acbVM)
+            nextIndex += 1
+         end
+      end
+   end
+   
+   func Term(p : params)
+      SelectedLoadoutIdx.Unsubscribe(this, "SelectedLoadoutIdxChanged")
+      ShoppingState.Unsubscribe(this, "OnShoppingStateChanged")
+      var i : int
+      for i := 0 to 4
+         var ac : ArmorClassBonusViewModel = ArmorClassBonuses.Get(i)
+         ac.Term(p)
+         ac.NewPoints.Unsubscribe(this, "ReorderArmorClassBonus")
+         ac.Points.Unsubscribe(this, "ReorderArmorClassBonus")
+         ac.Parent := null
+      end
+      wgt := null
+   end
+   
+   func SelectedLoadoutIdxChanged(newVal : *)
+      if ($hq.isInShowroom)
+         $hq.ShowroomEnd()
+         $hq.ShowroomBegin()
+         Fire("SelectedLoadoutChanged")
+      end
+   end
+   
+   func ArmorPartHeadClicked(p : params) : bool
+      ShoppingState.Set(1)
+      var p1 : params
+      p1.index := 0
+      Fire("SpartanSetDropDownSelection", p1)
+      return true
+   end
+   
+   func ArmorPartTorsoClicked(p : params) : bool
+      ShoppingState.Set(1)
+      var p1 : params
+      p1.index := 1
+      Fire("SpartanSetDropDownSelection", p1)
+      return true
+   end
+   
+   func ArmorPartShouldersClicked(p : params) : bool
+      ShoppingState.Set(1)
+      var p1 : params
+      p1.index := 2
+      Fire("SpartanSetDropDownSelection", p1)
+      return true
+   end
+   
+   func ArmorPartHandsClicked(p : params) : bool
+      ShoppingState.Set(1)
+      var p1 : params
+      p1.index := 3
+      Fire("SpartanSetDropDownSelection", p1)
+      return true
+   end
+   
+   func ArmorPartLegsClicked(p : params) : bool
+      ShoppingState.Set(1)
+      var p1 : params
+      p1.index := 4
+      Fire("SpartanSetDropDownSelection", p1)
+      return true
+   end
+   
+   func OnCancelBtn(p : params) : bool
+      ShoppingState.Set(0)
+      return true
+   end
+   
+   func OnShoppingStateChanged(val : *)
+      if val == 1
+         $root.isSpartanShop := true
+         Fire("OnSpartanStoreOpen")
+      end
+   end
+   
+   global event OnSpartanStoreClose()
+      ShoppingState.Set(0)
+      wgt.Widgets().spartanCont.StartDefaultBlinking(0.0)
+      wgt.Widgets().spartanCont.tabSc1.StartDefaultBlinking(0.0)
+      wgt.Widgets().spartanCont.tabSc2.StartDefaultBlinking(0.05)
+      wgt.Widgets().spartanCont.tabSc3.StartDefaultBlinking(0.10)
+      wgt.Widgets().spartanCont.spartanBtn1.StartDefaultBlinking(0.0)
+      wgt.Widgets().spartanCont.spartanBtn2.StartDefaultBlinking(0.05)
+      wgt.Widgets().spartanCont.spartanBtn3.StartDefaultBlinking(0.10)
+      wgt.Widgets().spartanCont.spartanBtn4.StartDefaultBlinking(0.15)
+      wgt.Widgets().spartanCont.spartanBtn5.StartDefaultBlinking(0.20)
+   end
+
+   func LoadoutSelectButtonClicked(p : params) : bool
+      var loadoutIndex : int = (int)p.widget.Get("idx")
+      if loadoutIndex != SelectedLoadoutIdx.Get() and wgt.HasUnsavedChanges()
+         var pp : params
+         pp.titleTxt       := "msg_spartan_unsaved_paint_ttl"
+         pp.messageTxt     := "msg_spartan_unsaved_paint_msg"
+         pp.callbackEvent  := "unsavedPaintConfirmationClosed3"
+         pp.mbType         := $uiEnums.MB_TYPE_NO_YES
+         confirmLoadoutIdx := loadoutIndex
+         p.widget.GenerateEvent("MainMenuDialogRequest", pp)
+      else
+         $user_service.SetArmorLoadoutActive(0, loadoutIndex)
+      end
+      return true
+   end
+
+   func OnUnsavedPaintConfirmationClosed3(p : params) : bool
+      if p.isOK
+         $user_service.SetArmorLoadoutActive(0, confirmLoadoutIdx)
+      end
+      return false
+   end
+end

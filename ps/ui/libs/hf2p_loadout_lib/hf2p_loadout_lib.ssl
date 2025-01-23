@@ -1,0 +1,331 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.root
+
+import ssl.lib.ui.ui_widget_button
+import ui.ui_economy
+import ssl.lib.types
+import ssl.hf2p.items_mgr
+import ui.ui_player_info
+
+class UiArmorloadoutElement : UiWidgetContainer
+
+func onArmorBtnMouseOver(p:params): bool
+  Log("ui~armorloadoutElement", "onArmorBtnMouseOver")
+  return false
+end
+
+func onArmorBtnClicked(p:params): bool
+  GenerateEvent("onArmorSlotClicked", p)
+  return false
+end
+
+func setArmorClassIcn(_itemID:string)
+  Log("ui~armorloadoutElement", "setArmorClassIcn " + _itemID)
+  //Widgets().attachArmorClass.scaleX := 0.8
+  //Widgets().attachArmorClass.scaleY := 0.8
+  Widgets().attachArmorClass.pic := "" // TODO: Add armor class Icon
+end
+end
+
+class UiArmoryloadoutSlot : UiWidgetButton
+
+   
+end
+
+class UiLoadoutElement : UiWidgetContainer
+
+func onSlotMouseOver(p:params): bool
+  Log("ui~loadoutElement", "loadoutElement_mouseOver")
+  GenerateEvent("onLoadoutMouseOver", p)
+  return false
+end
+end
+
+class UiLoadoutElementBoost : UiWidgetContainer
+
+func onSlotMouseOver(p:params): bool
+  Log("ui~loadoutElementBoost", "loadoutElement_mouseOver")
+  GenerateEvent("onLoadoutMouseOver", p)
+  return false
+end
+end
+
+class UiLoadoutElementPerk : UiWidgetContainer
+
+func onSlotMouseOver(p:params): bool
+  Log("ui~loadoutElementPerk", "loadoutElement_mouseOver")
+  GenerateEvent("onLoadoutMouseOver", p)
+  return false
+end
+end
+
+class UiLoadoutSelectSmallBtn : UiWidgetButton
+
+var   itemId: string
+var   idx   : int
+var   lbl   : string
+var   isArmor : bool
+
+func Init(_idx: int, _itemId: string, _lbl: string, _isArmor : bool)
+   itemId   := _itemId
+   idx      := _idx
+   lbl      := _lbl
+   isArmor  := _isArmor
+   Update()
+end
+
+func Update()
+   Props().txt1.textField     := (string)idx
+   Props().txt2.textField     := lbl
+   var udLocal : UserDataLocal = $UserDataStorage.local_user
+   if (!isArmor)
+      Props().enabled         := idx <= (int)udLocal.weapon_loadouts_unlocked.Get()
+   else
+      Props().enabled         := idx <= (int)udLocal.armor_loadouts_unlocked.Get()
+   end
+end
+end
+
+class UiLoadoutSlot : UiWidgetButton
+var blinkDelay : float = 0.0
+
+//func onSlotClicked(p:params): bool
+   //Log("ui~loadoutSlot", "onSlotClicked " + (string)(p.widget.btnIdx))
+   //return false
+//end
+func StartBlink(_delay : float)
+   blinkDelay := _delay
+   StartDefaultBlinking(_delay)
+end
+
+func BlinkOverride(_phase : int, _dt : float) : bool
+   var ret :  bool = false
+   if (_dt > 4)
+      return true
+   end
+   
+   var t0 :  float = 0.0
+   var t1 :  float = blinkDelay
+   if (_phase == 0)
+      Widgets().ingameBg.StartDefaultBlinking(t1 + 0.9)
+      Widgets().txtFld.StartDefaultBlinking(t1 + 0.2)
+      Widgets().btnBox.btn1.StartDefaultBlinking(t1 + 0.3)
+      Widgets().btnBox.btn2.StartDefaultBlinking(t1 + 0.4)
+      Widgets().btnBox.btn3.StartDefaultBlinking(t1 + 0.5)
+      Widgets().btnBox.btn4.StartDefaultBlinking(t1 + 0.6)
+      Widgets().btnBox.btn5.StartDefaultBlinking(t1 + 0.6)
+      Widgets().btnBox.btn6.StartDefaultBlinking(t1 + 0.7)
+      Widgets().btnBox.btn7.StartDefaultBlinking(t1 + 0.7)
+      Widgets().btnBox.btn8.StartDefaultBlinking(t1 + 0.8)
+      Widgets().btnBox.btn8.StartDefaultBlinking(t1 + 0.8)
+      SetTfAlpha(-1, 0)
+      SetTfAlpha(0, 0)
+      SetTfAlpha(1, 0)
+      SetTfAlpha(2, 0)
+      SetTfAlpha(3, 0)
+      SetTfAlpha(4, 0)
+   elif (_phase == 1)
+      SetTfAlpha(-1, _dt - 0.1 - t0)
+      SetTfAlpha(0, _dt - 0.2 - t0)
+      SetTfAlpha(1, _dt - 0.3 - t0)
+      SetTfAlpha(2, _dt - 0.4 - t0)
+      SetTfAlpha(3, _dt - 0.5 - t0)
+      SetTfAlpha(4, _dt - 0.6 - t0)
+   elif (_phase == 2)
+   end      
+   return ret
+end   
+
+func SetTfAlpha(_tf : int, _dt : float)
+   //Widgets().btnBox.unitCard.tftPrimary.SetTfAlpha(
+   var targetAlpha : float = 0.0
+   if (_dt < 0)
+      targetAlpha := 0.0
+   elif (_dt < 1.0/24.0)
+      targetAlpha := 0.0
+   elif (_dt < 2.0/24.0)
+      targetAlpha := 65
+   elif (_dt < 3.0/24.0)
+      targetAlpha := 30
+   else
+      targetAlpha := 100
+   end
+   if (_tf == 0)
+      Widgets().btnBox.unitCard.txtPrimaryAlpha          := targetAlpha
+   elif (_tf == 1)
+      Widgets().btnBox.unitCard.txtSecondaryAlpha        := targetAlpha
+   elif (_tf == 2)
+      Widgets().btnBox.unitCard.txtGrenadesAlpha         := targetAlpha
+   elif (_tf == 3)
+      Widgets().btnBox.unitCard.txtTacticalPackagesAlpha := targetAlpha
+   elif (_tf == 4)
+      Widgets().btnBox.unitCard.txtBoostersAlpha         := targetAlpha
+   elif (_tf == -1)
+      Props().alpha                                      := targetAlpha
+   end
+end
+
+ func onPerksButtonClicked(p:params): bool
+    Log("ui~loadoutSlot", "onPerksButtonClicked " + (string)(p.widget.GetWidget("_parent").GetWidget("_parent").Props().idx) + ", " + (string)(p.widget.btnIdx - 4))
+    if ((p.widget.btnIdx >= 4) and (p.widget.btnIdx <= 7))
+       GenerateEvent("onPerksSlotClicked", p)
+    end
+    return false
+ end
+ 
+ func onLoadoutElementButtonClicked(p:params): bool
+    if ((p.widget.btnIdx >= 1) and (p.widget.btnIdx <= 3))
+       GenerateEvent("onLoadoutElementClicked", p)
+    end
+    return false
+ end
+ 
+ func onBoosterButtonClicked(p:params): bool
+    Log("ui~loadoutSlot", "onBoosterButtonClicked " + (string)(p.widget.btnIdx)) 
+    if (p.widget.btnIdx == 8)
+       GenerateEvent("onBoosterSlotClicked", p)            
+    end
+    return false
+ end
+ 
+ func SetLockedState(_isLocked: bool, _canBuy: bool)
+    if (_isLocked and _canBuy)
+      //Widgets().offersModule.visible   := false
+    else
+       //Widgets().offersModule.visible      := false
+    end
+ end
+ 
+end
+
+class UiLoadoutOfferLine : UiWidgetContainer
+   
+end
+
+class hf2p_ArmorLoadoutOfferPanel : UiWidgetContainer
+   
+end
+
+class UiStatBarElement : UiWidgetContainer
+
+
+var   maxLevelPoints    : int = 25
+
+func SetBundle(_offerId: string)
+   SetItem(_offerId)
+end
+
+func SetLabelColor(_idx: int, _clr: int)
+   var propName : string = "lvl" + (string)(_idx + 1) + "Color"
+   Set(propName, _clr)
+end
+
+func GetLvlLabel(_idx: int): *
+   return GetWidget("lvl" + (string)(_idx + 1))
+end
+
+func ArrangeLevelLabels(_armorClassCls: string, _armorClassPoints: int) 
+   var   maxLevels         : int = 4
+   var   levelLabelScale   : int = 230
+   var   levelLabelStart   : int = 30
+
+   /*
+   var armorClassDesc : params = $uiPlayerInfo.GetArmorClassDesc(_armorClassCls)
+   if (! IsVoid(armorClassDesc.levels))
+      var   armorClassLevels  : vector = armorClassDesc.levels
+      var   i                 : int 
+      for i := 0 to maxLevels - 1
+         GetLvlLabel(i).Props().visible := false
+         SetLabelColor(i, $root.RGB2Clr(112, 148, 167))
+      end
+      for i := 0 to armorClassLevels.Count() - 1
+         var armorClassLevel  : params = armorClassLevels.Get(i)
+         var lvlLabel         : * = GetLvlLabel(i)
+         lvlLabel.Props().x         := levelLabelStart + (armorClassLevel.threshold - 1) * levelLabelScale / maxLevelPoints
+         lvlLabel.Props().visible   := true
+         if (_armorClassPoints >= armorClassLevel.threshold)
+            SetLabelColor(i, $root.RGB2Clr(255, 255, 255))
+         end
+      end
+   end 
+   */
+   var   i                 : int 
+   for i := 0 to maxLevels - 1
+      GetLvlLabel(i).Props().visible := false
+      SetLabelColor(i, $root.RGB2Clr(112, 148, 167))
+   end
+   for i := 0 to maxLevels - 1
+      var lvlLabel         : * = GetLvlLabel(i)
+      lvlLabel.Props().x         := levelLabelStart + (i * 5 - 1) * levelLabelScale / maxLevelPoints
+      lvlLabel.Props().visible   := true
+      //if (_armorClassPoints >= armorClassLevel.threshold)
+         SetLabelColor(i, $root.RGB2Clr(255, 255, 255))
+      //end
+   end 
+end
+
+func SetProgressBar(_armorClassPoints: int) 
+   Widgets().statBarCont.progressOver.scaleX := (float)(_armorClassPoints) / (float)(maxLevelPoints)
+end
+
+func SetItem(_itemID: string)
+   if (_itemID == "")
+      Props().visible := false
+   end
+   SetItemInternal(_itemID, false)
+end
+
+func UpgVal2Str(_val: float): string
+   var ret: string
+   
+   var val: float = _val
+   if (val < 0)
+      val := -val
+      ret := "-"
+   else
+      ret := "+"
+   end
+   if (val <= 1)
+      val := val * 100.0
+   end
+   ret := ret + (string)((int)(val)) + "%"
+   return ret
+end
+
+func SetItemInternal(_itemID: string, _forBundle: bool = false)
+   if (_itemID == "")
+      Props().visible := false
+      return
+   end
+               
+   Props().visible := true
+   return
+end
+
+end
+
+class ModifierLIneVM
+   var item_id : string
+   var idx : int
+   
+   func Init(p : params)
+      item_id := p.item_id
+      idx := p.idx
+   end
+   
+   func GetModifierText() : wstring
+      var ret : wstring
+      var compArmor  : GL_ComponentArmor                 = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get(item_id)
+      if (idx < compArmor.gameplay_modifiers.Get().Count())
+         var modifier   : GL_ComponentArmorGameplayModifier = (GL_ComponentArmorGameplayModifier)compArmor.gameplay_modifiers.Get().Get(idx)
+         var compUi     : GL_ComponentUI                    = (GL_ComponentUI)$UiGlobals.componentsUI.Get(modifier.gameplay_modifier_id.Get())
+         var t          : params
+         t.id     := $UiGlobals.TranslateText((string)compUi.name.Get())
+         t.space  := $UiGlobals.String2WString(" ")
+         t.value  := $root.FormatArmorModifTempHack((string)modifier.gameplay_modifier_id.Get(), (float)modifier.gameplay_modifier_value.Get())
+         ret := t.id + t.space + t.value
+      end
+      return ret
+   end
+end

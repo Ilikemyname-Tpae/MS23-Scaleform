@@ -1,0 +1,8 @@
+class VideoPlayer
+   native func Load     (id: string, fileName: string, isMuted: bool = false)
+   native func Unload   (id: string)
+   native func Play     (id: string, isLooped: bool)   
+   native func Stop     (id: string)
+   native func Pause    (id: string)
+   //native func Play(name: string)
+end

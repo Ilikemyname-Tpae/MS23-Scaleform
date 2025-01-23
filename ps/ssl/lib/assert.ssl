@@ -1,0 +1,2 @@
+native func DebugBreak      (breakFilter : string, breakMsg : string = "")
+native func StrongAssert    (isPassed : bool, breakMsg : string = "")

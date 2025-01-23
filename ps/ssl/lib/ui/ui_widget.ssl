@@ -1,0 +1,104 @@
+import ssl.observables
+
+class UiEventState
+   var isTerminated : bool = false
+   
+   func UiEventState()
+   end
+   
+   func IsTerminated() : bool
+      return isTerminated
+   end
+   
+   func SetIsTerminated()
+      isTerminated := true
+   end
+end
+
+native class UiWidget
+   event OnChangeState(name: string)
+   event OnChangeStateAny()
+   event OnEnteringState(name: string)
+   event OnEnteringStateAny(name: string)
+   event OnEnterState(name: string)
+   event OnExitState(name: string)
+   event OnExitStateAny(name: string)
+   event OnLeavingState(name: string)
+   event OnLeavingStateAny(name: string)
+   event OnBClick()
+   event OnInit()
+   event OnTerm()
+   event OnActivate()
+   event OnDeactivate()
+   event OnAdvance(dt:float)
+   native func Breakpoint(comment: string)
+   native func IsChangingState(): bool
+   native func TestCall()
+   native func SetModal()
+   native func ApplyAlign()
+   native func GetName(): string
+   native func GetWidget(name: string): *
+   native func Widgets(): params
+   native func Props(): *
+   native func GotoAndPlay(frameId: *): bool
+   native func GotoAndStop(frameId: *): bool
+   native func GetStateName(): string
+   native func SetStateName(stateName: string): bool
+   native func SetParm(parmName: string, propVal: *)
+   native func Set(propName: string, propVal: *): bool
+   native func Get(propName: string, subscribe: bool = false): *
+   native func Invoke(name: string, params: params): bool
+   native func Activate(isInitial: bool = false, isForce: bool = false, level: int = 0): bool
+   native func Deactivate(): bool
+   native func Detach(deactivate: bool): bool
+   native func AttachInstanceToSSL(pWidget: object, name: string, activated: bool): bool
+   native func AttachToSSL(pWidget: object, activated: bool): bool
+   native func AddTween(propName: string, propVal: float, duration: float, fadeType: string, tweenId:int = 1)
+   native func AddTweenCb(callbackFuncName: string, p:params, tweenId:int = 1)
+   native func RemTweens()
+   native func CreateObject(type: string, name: string): object
+   native func GenerateEvent(eventId: string, p: params = null) : bool
+   native func GenerateEventTargeted(eventId: string, p: params, target:*) : bool
+   native func GetChildCount(): int
+   native func GetChild(idx:int): *
+   native func GetChildName(idx:int): string
+   native func GetLayer(): string
+   native func SetLayer(layerId:string): bool
+   native func GetLayerOffset(layerId:string): int
+   native func SetLayerOffset(layerId:string, offset:int): bool
+   native func GetMaxLayerOffset(): int
+   native func GetMinLayerOffset(): int
+   native func IsUnputLocked(): bool
+   native func LockInput(isLocked: bool): bool
+   native func SetFocus()
+   native func GetFocus(): bool
+   native func SaveFocus()
+   native func RestoreFocus()
+   native func ClearFocus()
+   native func ProcessHotKey(p:params): bool
+	native func RemoveChild(childIdx : int)
+   native func FindAlias(alias: string): *
+	native func EnableInput(isInputEnabled: bool): bool
+	native func StartDragManual(): bool
+	native func EndDragManual(isSuccess:bool): bool
+	native func StartDrag(): *
+	native func EndDrag(isSuccess:bool)
+	native func CanDrop(w: object, x: float, y: float):bool
+	native func AcceptDrop(w: object, x: float, y: float)
+	native func HitTestPoint(x:float, y: float, useBbox: bool = true): bool
+	native func HitTestObject(pWidget:object, useBbox: bool = true): bool
+	native func GetMousePos(): params
+   native func GetMousePosLocal(): params
+   native func StartDefaultBlinking(startTime:float = 0, blinkSpeed:float = 1)
+   native func StopBlinking()
+   native func GetDC() :  *
+   native func CloseContextMenu() : bool
+   native func IsChildOf(_parent : object) : bool
+
+   var isChangingState : ObservableProperty = $OM.Property(false)
+   
+   // ssl-only
+   func IsChangingStateInProgress() : bool
+      return (bool)isChangingState.Get()
+   end
+end

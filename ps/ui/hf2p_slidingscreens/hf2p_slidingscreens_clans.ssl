@@ -1,0 +1,63 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.ui_party_monitor
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreens
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreens
+
+class UiSlidingScreensClans : UiSlidingScreens
+
+override Init
+   var flowButtonParm   : params
+   
+   isLooping := true
+   flowElements.Clear()
+   
+   Widgets().background.visible    := true
+   Widgets().flowButtons.Props().y := 145
+   
+   totalElems := 2
+   var localUserClanId = $UserDataStorage.local_user.uid.Get()
+   var ud = $UserDataStorage.users.Get(localUserClanId)
+   if !$UserDataStorage.IsValidUID(ud.base.clan_id.Get())
+      startingScreen := $uiEnums.SLIDING_PAGE_CLAN_CREATE
+      
+      flowButtonParm.label       := "carousel_clan_create"
+      flowButtonParm.idx         := 0
+      flowButtonParm.name        := $uiEnums.SLIDING_PAGE_CLAN_CREATE
+      flowButtonParm.showFrame   := true
+      flowButtonParm.showBg      := true   
+      flowElements.Push(flowButtonParm.Clone())      
+   else
+      startingScreen := $uiEnums.SLIDING_PAGE_CLAN_VIEW
+      
+      flowButtonParm.label       := "carousel_clan_view"
+      flowButtonParm.idx         := 1
+      flowButtonParm.name        := $uiEnums.SLIDING_PAGE_CLAN_VIEW
+      flowButtonParm.showFrame   := true
+      flowButtonParm.showBg      := true   
+      flowElements.Push(flowButtonParm.Clone())
+   end
+   flowButtonParm.label       := "carousel_clan_search"
+   flowButtonParm.idx         := 2
+   flowButtonParm.name        := $uiEnums.SLIDING_PAGE_CLAN_SEARCH
+   flowButtonParm.showFrame   := true
+   flowButtonParm.showBg      := true   
+   flowElements.Push(flowButtonParm.Clone())      
+
+   var startingIndex : int = GetScreenIndexByName(startingScreen)
+   if (startingIndex < 0)
+      startingIndex := 0
+   end
+   GetDC().UpdateCloseBtnVisible()
+   Widgets().flowButtons.SetMaxWidth(720)
+   Widgets().flowButtons.InitElements(flowElements, startingIndex)
+end
+
+override HasLobbyMode // () : bool
+   return false
+end
+
+end

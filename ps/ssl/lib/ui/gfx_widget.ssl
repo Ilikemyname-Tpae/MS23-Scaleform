@@ -1,0 +1,4 @@
+import ssl.lib.ui.ui_iwidget
+
+native class GfxWidget : UiIwidget
+end

@@ -1,0 +1,8 @@
+var $sslPSLoader : PsLoader
+
+native class PsLoader
+   native func LoadPS     (name: string, saveToCache: bool = true): psSECTION
+   native func GetPS      (name: string, saveToCache: bool = true): psSECTION
+   native func UnloadPS   (name: string)
+   native func ClearCache ()
+end

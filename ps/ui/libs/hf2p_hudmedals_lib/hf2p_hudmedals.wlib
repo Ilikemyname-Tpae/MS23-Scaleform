@@ -1,0 +1,321 @@
+classes   =   {
+   HudMedals   =   {
+      sslClass   =   "UiHudMedals"
+      sslModule   =   "ui.libs.hf2p_HudMedals_lib.hf2p_HudMedals"
+      mouseEnabled   =   False
+      mouseChildren   =   False
+      elements   =   {
+         scoreEventsList   =   {
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEventList"
+         }
+         medalsContainer   =   {
+            elements   =   {
+               medalsContent   =   {
+                  elements   =   {
+                     medal3   =   {
+                        bindings   =   {
+                           DC   =   {
+                              binding   =   "{medal3}"
+                           }
+                        }
+                        __type   =   "hf2p_HudMedals::HudMedalElem"
+                     }
+                     medal2   =   {
+                        bindings   =   {
+                           DC   =   {
+                              binding   =   "{medal2}"
+                           }
+                        }
+                        __type   =   "hf2p_HudMedals::HudMedalElem"
+                     }
+                     medal1   =   {
+                        bindings   =   {
+                           DC   =   {
+                              binding   =   "{medal1}"
+                           }
+                        }
+                        __type   =   "hf2p_HudMedals::HudMedalElem"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         scoringEventTotals   =   {
+            sslClass   =   "UiScoringEventsTotal"
+            sslModule   =   "ui.libs.hf2p_HudMedals_lib.hf2p_HudMedals"
+            elements   =   {
+               scoringTotalAnimCont   =   {
+                  elements   =   {
+                     totalsAnimCont   =   {
+                        elements   =   {
+                           scoreTxt   =   {
+                              elements   =   {
+                                 orangeGlow   =   {
+                                    bindings   =   {
+                                       visible   =   {
+                                          binding   =   "{true}"
+                                       }
+                                       _width   =   {
+                                          binding   =   "{glowWidth}"
+                                       }
+                                    }
+                                    __type   =   "ui_hud_medals_lib::OrangeGlowCont"
+                                 }
+                              }
+                              impl   =   {
+                                 propMapping   =   {
+                                    txt   =   {
+                                       isNoTranslate   =   True
+                                    }
+                                 }
+                                 __type   =   "ui_widget_impl_gfx"
+                              }
+                              bindings   =   {
+                                 txt   =   {
+                                    binding   =   "{scoringTotalTxt}"
+                                 }
+                              }
+                              __type   =   "ui_hud_medals_lib::ScoringEventsTotalAnimTxt"
+                           }
+                        }
+                        __type   =   "ui_hud_medals_lib::ScoringEventTotalAnimInCont"
+                     }
+                  }
+                  __type   =   "ui_hud_medals_lib::ScoringEventsTotalAnim"
+               }
+            }
+            impl   =   {
+               propMapping   =   {
+                  textW   =   {
+                     mapping   =   "scoringTotalAnimCont.totalsAnimCont.scoreTxt.txt.textWidthEx"
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{scoringTotal}"
+               }
+            }
+            __type   =   "ui_hud_medals_lib::ScoringEventsTotal"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+            }
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_HudMedals_lib.hf2p_HudMedals.UiHudMedalsVM'}"
+         }
+      }
+      __type   =   "ui_hud_medals_lib::HudMedalsContainer"
+   }
+   HudMedalElem   =   {
+      animated   =   True
+      elements   =   {
+         medalPic   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{medalIcon}"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "medalTxt"
+                  propVal   =   {
+                     val   =   [
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\\",
+                        "\"\""
+                     ]
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            isCentered   =   True
+            __type   =   "ui_hud_medals_lib::medal_attach"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{medal}"
+         }
+         medalName   =   {
+            binding   =   "{medalName}"
+         }
+      }
+      __type   =   "ui_hud_medals_lib::medal_container"
+   }
+   HudScoringEventList   =   {
+      sslClass   =   "UiScoringEventsList"
+      sslModule   =   "ui.libs.hf2p_HudMedals_lib.hf2p_HudMedals"
+      elements   =   {
+         item0   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[0]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item1   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[1]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item2   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[2]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item3   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[3]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item6   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[6]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item4   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[4]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item5   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[5]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item7   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[7]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item8   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[8]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item9   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[9]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item10   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[10]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+         item11   =   {
+            bindings   =   {
+               DC   =   {
+                  binding   =   "{events[11]}"
+               }
+            }
+            __type   =   "hf2p_HudMedals::HudScoringEvent"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{scoringEvents}"
+         }
+      }
+      __type   =   "ui_hud_medals_lib::hudMedalsEventsList"
+   }
+   HudScoringEvent   =   {
+      sslClass   =   "UiScoringEvent"
+      sslModule   =   "ui.libs.hf2p_HudMedals_lib.hf2p_HudMedals"
+      elements   =   {
+         item   =   {
+            elements   =   {
+               content   =   {
+                  bindings   =   {
+                     tfText   =   {
+                        binding   =   "{eventName}"
+                     }
+                  }
+                  __type   =   "ui_hud_medals_lib::FragListItemTextContainer"
+               }
+            }
+            __type   =   "ui_hud_medals_lib::FragListItem"
+         }
+      }
+      __type   =   "ui_hud_medals_lib::FragListItemMove"
+   }
+}
+__type   =   "ui_wlib"

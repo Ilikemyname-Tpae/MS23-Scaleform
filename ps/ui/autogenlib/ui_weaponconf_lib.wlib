@@ -1,0 +1,4279 @@
+classes = {
+	addsubBtnArrow = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "addsubBtnArrow" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			icon {
+				__type = "ui_weaponConf_lib::addsubIcon"
+				x         = 10.9
+				y         = 21.35
+			} 
+		}
+	}
+
+	addsubIcon = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "addsubIcon" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	ArmorClassBonusLevels = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ArmorClassBonusLevels" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			lvl4 {
+				__type = "ui_weaponConf_lib::bonusLevelItem"
+				x         = 88.9
+				y         = 169
+			} 
+			lvl3 {
+				__type = "ui_weaponConf_lib::bonusLevelItem"
+				x         = 88.9
+				y         = 122
+			} 
+			lvl2 {
+				__type = "ui_weaponConf_lib::bonusLevelItem"
+				x         = 88.9
+				y         = 75
+			} 
+			lvl1 {
+				__type = "ui_weaponConf_lib::bonusLevelItem"
+				x         = 88.9
+				y         = 28
+			} 
+		}
+	}
+
+	ArmorPieceLir = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ArmorPieceLir" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			itemName {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = -0.5
+				y         = 0
+			} 
+			prop1 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 41.2
+				y         = 23.55
+			} 
+			prop2 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 41.2
+				y         = 41.35
+			} 
+			prop3 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 41.2
+				y         = 59.15
+			} 
+			prop4 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 41.2
+				y         = 77.05
+			} 
+			imageAttach {
+				__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+				x         = 42.2
+				y         = 60.95
+				scaleX    = 0.5
+				scaleY    = 0.5
+			} 
+		}
+	}
+
+	armoryLoadoutCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "armoryLoadoutCont" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+				textField2 = {
+					mapping = "textField2.text"
+				}
+			}
+		}
+
+		elements {
+			helmetItem {
+				__type = "ui_weaponConf_lib::ArmorPieceLir"
+				x         = 1.1
+				y         = 217.4
+			} 
+			chestItem {
+				__type = "ui_weaponConf_lib::ArmorPieceLir"
+				x         = 1.1
+				y         = 316.85
+			} 
+			shouldersItem {
+				__type = "ui_weaponConf_lib::ArmorPieceLir"
+				x         = 1.1
+				y         = 416.3
+			} 
+			armsItem {
+				__type = "ui_weaponConf_lib::ArmorPieceLir"
+				x         = 1.1
+				y         = 515.75
+			} 
+			legsItem {
+				__type = "ui_weaponConf_lib::ArmorPieceLir"
+				x         = 1.1
+				y         = 615.3
+			} 
+			lock {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 158.05
+				y         = 129.15
+				scaleX    = 0.9492
+				scaleY    = 0.9492
+			} 
+			camContainer {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 1
+				y         = 46.65
+			} 
+			armoryModuleCont {
+				__type = "ui_weaponConf_lib::listTemplate"
+				x         = 14.25
+				y         = 272.65
+			} 
+			loadoutBg {
+				__type = "ui_weaponConf_lib::armoryLoadoutUnitCard"
+				x         = 0
+				y         = 0
+			} 
+			ingameBg {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0.15
+			} 
+		}
+	}
+
+	armoryLoadoutUnitCard = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "armoryLoadoutUnitCard" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	ArmoryStatsBar = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ArmoryStatsBar" 
+			lib     = weaponConf_lib 
+			propMapping {
+				armorClassName = {
+					mapping = "armorClassName.text"
+				}
+				modifierTf = {
+					mapping = "modifierTf.text"
+				}
+				numberTf = {
+					mapping = "numberTf.text"
+				}
+			}
+		}
+
+		elements {
+			statBarCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 3
+				y         = 5
+			} 
+			armorClassIcon {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = -19
+				y         = 4
+			} 
+			lvl4 {
+				__type = "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+				x         = 208.25
+				y         = 26
+			} 
+			lvl3 {
+				__type = "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+				x         = 119.25
+				y         = 26
+			} 
+			lvl2 {
+				__type = "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+				x         = 35
+				y         = 26
+			} 
+			lvl1 {
+				__type = "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+				x         = 1.5
+				y         = 26
+			} 
+			acShade {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -22
+				y         = 2
+			} 
+		}
+	}
+
+	armor_class_lvl_bonus_cont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "armor_class_lvl_bonus_cont" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	arrowLeft = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "arrowLeft" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	arrowRight = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "arrowRight" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	attachPoint = {
+		__type = "ui_widget_image"
+
+		impl {
+			__type  = ui_widget_impl_gfx_image
+			symbol  = "attachPoint" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			placeHolder {
+				__type = "ui_weaponConf_lib::placeHolderContent"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	backsubBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "backsubBtn" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			labelText {
+				__type = "ui_weaponConf_lib::backsubBtnText"
+				x         = 50.5
+				y         = 7.8
+			} 
+			icon {
+				__type = "ui_weaponConf_lib::addsubIcon"
+				x         = 10.9
+				y         = 21.35
+			} 
+		}
+	}
+
+	backsubBtnText = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "backsubBtnText" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+	}
+
+	battlerifle_m1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "battlerifle_m1" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	blackHole = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "blackHole" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	bonusLevelItem = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "bonusLevelItem" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			bonus {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 86
+				y         = 2.5
+				animated  = true
+			} 
+			lvl {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	bundleIcon1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "bundleIcon1" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	bundleIcon2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "bundleIcon2" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	bundleIcon3 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "bundleIcon3" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	bundleItemTooltip = {
+		__type = "ui_widget_popup"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "bundleItemTooltip" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			content {
+				__type = "ui_weaponConf_lib::bundleItemTooltipContent"
+				x         = 60.95
+				y         = -161.5
+				animated  = true
+			} 
+		}
+	}
+
+	bundleItemTooltipContent = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "bundleItemTooltipContent" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			iconAttach {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = 129.7
+				y         = 74.8
+				scaleX    = 0.8
+				scaleY    = 0.8
+				animated  = true
+			} 
+			weaponRenderAttach {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 3
+				scaleX    = 0.3969
+				scaleY    = 0.3968
+				animated  = true
+			} 
+			perkRenderAttach {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 3
+				scaleX    = 0.4961
+				scaleY    = 0.4957
+				animated  = true
+			} 
+			desc {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 0
+				y         = 178
+			} 
+			header {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 0
+				y         = 149.7
+			} 
+		}
+	}
+
+	BundlesScreenBundleHeader = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "BundlesScreenBundleHeader" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+	}
+
+	carabineIcon = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "carabineIcon" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	crCostH = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "crCostH" 
+			lib     = weaponConf_lib 
+			propMapping {
+				creditTf = {
+					mapping = "creditTf.text"
+				}
+			}
+		}
+	}
+
+	crCostSmall = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "crCostSmall" 
+			lib     = weaponConf_lib 
+			propMapping {
+				creditTf = {
+					mapping = "creditTf.text"
+				}
+			}
+		}
+	}
+
+	crCostUpgSlot = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "crCostUpgSlot" 
+			lib     = weaponConf_lib 
+			propMapping {
+				creditTf = {
+					mapping = "creditTf.text"
+				}
+			}
+		}
+	}
+
+	defaultTooltip = {
+		__type = "ui_widget_popup"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "defaultTooltip" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	denyGridState = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "denyGridState" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	glowHGLIR = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "glowHGLIR" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	gpCostH = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "gpCostH" 
+			lib     = weaponConf_lib 
+			propMapping {
+				goldTf = {
+					mapping = "goldTf.text"
+				}
+			}
+		}
+	}
+
+	gpCostSmall = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "gpCostSmall" 
+			lib     = weaponConf_lib 
+			propMapping {
+				goldTf = {
+					mapping = "goldTf.text"
+				}
+			}
+		}
+	}
+
+	gpCostUpgSlot = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "gpCostUpgSlot" 
+			lib     = weaponConf_lib 
+			propMapping {
+				goldTf = {
+					mapping = "goldTf.text"
+				}
+			}
+		}
+	}
+
+	headerBig = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "headerBig" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	headerBigCentered = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "headerBigCentered" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2pArmotyLoadoutBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pArmotyLoadoutBtn" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField2 = {
+					mapping = "textField2.text"
+				}
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+
+		elements {
+			attachArmorClass {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = 279.8
+				y         = 39.4
+			} 
+			imageAttach {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = 45.95
+				y         = 29.4
+			} 
+		}
+	}
+
+	hf2pCreditPurchase = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pCreditPurchase" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			denyGrid {
+				__type = "ui_weaponConf_lib::denyGridState"
+				x         = 8.85
+				y         = 7
+			} 
+			btnBox {
+				__type = "ui_weaponConf_lib::purchaseCredits"
+				x         = 8.85
+				y         = 7
+			} 
+		}
+	}
+
+	hf2pGoldPurchase = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pGoldPurchase" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			denyGrid {
+				__type = "ui_weaponConf_lib::denyGridState"
+				x         = 8.85
+				y         = 7
+			} 
+			btnBox {
+				__type = "ui_weaponConf_lib::purchaseGold"
+				x         = 8.85
+				y         = 7
+			} 
+		}
+	}
+
+	hf2pLoadoutBtnBig = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pLoadoutBtnBig" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			wpnStatIndicator {
+				__type = "ui_weaponConf_lib::statLine"
+				x         = 1
+				y         = 72.2
+			} 
+			attachCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 153
+				y         = 32
+
+				elements {
+					imageAttach {
+						__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			itemQualityCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -45
+				y         = 0
+			} 
+			txtFld2 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 152.95
+				y         = 3.3
+				animated  = true
+			} 
+			txtFld {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 2.95
+				y         = 50.6
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								textField = {
+									mapping = "textField.text"
+								}
+							}
+						}
+						x         = 0
+						y         = 1
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			over {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 0.8085
+
+				elements {
+					content {
+						__type = "ui_weaponConf_lib::loadout_btn_big_back"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			highLight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.987
+				scaleY    = 1.1015
+
+				elements {
+					content {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 0.8086
+
+				elements {
+					content {
+						__type = "ui_weaponConf_lib::loadout_btn_big_back"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pLoadoutBtnMed = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pLoadoutBtnMed" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			attachCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 152.95
+				y         = 35
+
+				elements {
+					imageAttach {
+						__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			txtFld2 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 152.95
+				y         = 3.3
+				animated  = true
+			} 
+			txtFld {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 2.95
+				y         = 53.3
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								textField = {
+									mapping = "textField.text"
+								}
+							}
+						}
+						x         = 0
+						y         = 1
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			over {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					content {
+						__type = "ui_weaponConf_lib::loadout_btn_med_back"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			highLight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.987
+				scaleY    = 1.1015
+
+				elements {
+					content {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					content {
+						__type = "ui_weaponConf_lib::loadout_btn_med_back"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pLoadoutBtnSmall = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pLoadoutBtnSmall" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			attachCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 75
+				y         = 32
+
+				elements {
+					imageAttach {
+						__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			txtFld2 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 40.5
+				y         = 1.2
+				animated  = true
+			} 
+			txtFld {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 4
+				y         = 53.3
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								textField = {
+									mapping = "textField.text"
+								}
+							}
+						}
+						x         = -2
+						y         = -3
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			over {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.0065
+				scaleY    = 0.8961
+
+				elements {
+					content {
+						__type = "ui_weaponConf_lib::loadout_btn_small_back"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			highLight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					content {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.0065
+				scaleY    = 0.8961
+
+				elements {
+					content {
+						__type = "ui_weaponConf_lib::loadout_btn_small_back"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pPanelLeftBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pPanelLeftBtn" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2pPanelSmallestBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pPanelSmallestBtn" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2pPanelTileWeaponConf = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pPanelTileWeaponConf" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textFieldSlot = {
+					mapping = "textFieldSlot.text"
+				}
+				textFieldBottom = {
+					mapping = "textFieldBottom.text"
+				}
+				textFieldMultiplier = {
+					mapping = "textFieldMultiplier.text"
+				}
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+
+		elements {
+			propertyItem {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 35
+				y         = 37
+			} 
+			uiTileCostCont {
+				__type = "ui_weaponConf_lib::TileCostContSmall"
+				x         = -2.3
+				y         = 86.15
+				scaleX    = 0.751
+				scaleY    = 0.751
+			} 
+			itemCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 5.35
+				y         = 4.95
+				scaleX    = 0.8929
+				scaleY    = 0.9009
+
+				elements {
+					img {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2pPanelTileWeaponConfBig = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pPanelTileWeaponConfBig" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textFieldSlot = {
+					mapping = "textFieldSlot.text"
+				}
+				textFieldBottom = {
+					mapping = "textFieldBottom.text"
+				}
+				textFieldMultiplier = {
+					mapping = "textFieldMultiplier.text"
+				}
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+
+		elements {
+			lockSymbol {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 47
+				y         = 48.95
+			} 
+			uiTileCostCont {
+				__type = "ui_weaponConf_lib::TileCostContUpgSlot"
+				x         = -0.6
+				y         = 112.7
+			} 
+			itemCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 5.35
+				y         = 4.95
+				scaleX    = 0.8929
+				scaleY    = 0.9009
+
+				elements {
+					img {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2pTopdownBookmarkScale = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pTopdownBookmarkScale" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 3.5
+				y         = 12.55
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pWCContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pWCContainer" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2pwcPanelRightBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pwcPanelRightBtn" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2pWeaponCont = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2pWeaponCont" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+				textField2 = {
+					mapping = "textField2.text"
+				}
+			}
+		}
+
+		elements {
+			iconCont {
+				__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+				x         = 0
+				y         = 18
+			} 
+		}
+	}
+
+	hf2p_ArmorLoadoutOfferPanel = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_ArmorLoadoutOfferPanel" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tfItemName = {
+					mapping = "tfItemName.text"
+				}
+			}
+		}
+
+		elements {
+			offerButtons {
+				__type = "ui_weaponConf_lib::rent_offerLineNew"
+				x         = 0.25
+				y         = 68.95
+				scaleX    = 1.061
+				scaleY    = 1
+			} 
+		}
+	}
+
+	hf2p_armorSets_desc_LIR = {
+		__type = "ui_widget_list_item"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list_item
+			symbol  = "hf2p_armorSets_desc_LIR" 
+			lib     = weaponConf_lib 
+			propMapping {
+				partsTxt = {
+					mapping = "partsTxt.text"
+				}
+			}
+		}
+	}
+
+	hf2p_armorSet_list = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_armorSet_list" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_HotItemsListLIR = {
+		__type = "ui_widget_list_item"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list_item
+			symbol  = "hf2p_HotItemsListLIR" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tfBundleDesc = {
+					mapping = "tfBundleDesc.text"
+				}
+			}
+		}
+
+		elements {
+			tfSaleRightAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfSaleRight = {
+							mapping = "tfSaleRight.text"
+						}
+					}
+				}
+				x         = 253.35
+				y         = -6.1
+			} 
+			saleShapeRight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 244.45
+				y         = 1.05
+			} 
+			discount {
+				__type = "ui_weaponConf_lib::restockHotItemDiscount"
+				x         = 2.5
+				y         = 71.75
+			} 
+			lockSymbol {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 114.85
+				y         = 23.85
+			} 
+			greyOverInst {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.0021
+				scaleY    = 1.1668
+			} 
+			tfBundleNameConatainer {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfBundleName = {
+							mapping = "tfBundleName.text"
+						}
+					}
+				}
+				x         = 14.25
+				y         = 20.75
+				animated  = true
+			} 
+			uiTileCostCont {
+				__type = "ui_weaponConf_lib::TileCostContH"
+				x         = 150.75
+				y         = 126
+			} 
+			iconAttach {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = 31.25
+				y         = 28.4
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_label_short = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_label_short" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2p_LoadoutOfferPanel = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_LoadoutOfferPanel" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tfItemName = {
+					mapping = "tfItemName.text"
+				}
+			}
+		}
+
+		elements {
+			offerButtons {
+				__type = "ui_weaponConf_lib::rent_offerLineNew"
+				x         = 0.2
+				y         = 68.95
+				scaleX    = 0.9664
+				scaleY    = 1
+			} 
+		}
+	}
+
+	hf2p_RenewAllListLIR = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_RenewAllListLIR" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textFieldUp = {
+					mapping = "textFieldUp.text"
+				}
+			}
+		}
+
+		elements {
+			tileCostCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 141.45
+				y         = 72
+
+				elements {
+					uiCrCost {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								creditTf = {
+									mapping = "creditTf.text"
+								}
+							}
+						}
+						x         = -114.65
+						y         = -1
+					} 
+					uiGpCost {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								goldTf = {
+									mapping = "goldTf.text"
+								}
+							}
+						}
+						x         = 44.05
+						y         = -1
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2p_RestockLoadoutItem = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_RestockLoadoutItem" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			rentTimer {
+				__type = "ui_weaponConf_lib::wc_exiredTimeContainer"
+				x         = 228.75
+				y         = 49.75
+				animated  = true
+			} 
+			offerName {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 93.5
+				y         = 18.5
+				animated  = true
+			} 
+			offerTime {
+				__type = "ui_weaponConf_lib::rent_offersDaysCont"
+				x         = 0
+				y         = 79.2
+				scaleX    = 0.758
+				scaleY    = 0.7512
+				animated  = true
+			} 
+			offerButtons {
+				__type = "ui_weaponConf_lib::rent_offerLineNew"
+				x         = 46.25
+				y         = 79.2
+				scaleX    = 0.7894
+				scaleY    = 0.7818
+				animated  = true
+			} 
+			attachCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 90
+				y         = 40
+
+				elements {
+					iconAttach {
+						__type = "ui_weaponConf_lib::attachPoint"
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_RestockRenewAll = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_RestockRenewAll" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tfItemName = {
+					mapping = "tfItemName.text"
+				}
+			}
+		}
+
+		elements {
+			offerButtons {
+				__type = "ui_weaponConf_lib::rent_offerLineNew"
+				x         = 0.15
+				y         = 68.95
+				scaleX    = 0.9361
+				scaleY    = 1
+			} 
+		}
+	}
+
+	hf2p_TP_DescriptionPanel = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_TP_DescriptionPanel" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2p_TP_DescriptionPanel_vertical = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_TP_DescriptionPanel_vertical" 
+			lib     = weaponConf_lib 
+			propMapping {
+				armorClassHeader = {
+					mapping = "armorClassHeader.text"
+				}
+				armorClassDesc = {
+					mapping = "armorClassDesc.text"
+				}
+				setBonusesHeader = {
+					mapping = "setBonusesHeader.text"
+				}
+				setBonusesTxt = {
+					mapping = "setBonusesTxt.text"
+				}
+				setElementsHeader = {
+					mapping = "setElementsHeader.text"
+				}
+			}
+		}
+
+		elements {
+			setElements {
+				__type = "ui_weaponConf_lib::hf2p_armorSet_list"
+				x         = 20
+				y         = 266
+			} 
+			armorClassAttach {
+				__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+				x         = 302.5
+				y         = 6
+			} 
+		}
+	}
+
+	hf2p_TP_upgradeBonuses = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_TP_upgradeBonuses" 
+			lib     = weaponConf_lib 
+			propMapping {
+				bonusesHeader = {
+					mapping = "bonusesHeader.text"
+				}
+			}
+		}
+
+		elements {
+			totalBonuses {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 14.6
+				y         = 32.5
+			} 
+			armorClassAttach {
+				__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+				x         = 300.5
+				y         = 8
+			} 
+		}
+	}
+
+	hf2p_wcMessageBoxBack = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcMessageBoxBack" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcProgressBack = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcProgressBack" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcProgressBar = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcProgressBar" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			progressTop {
+				__type = "ui_weaponConf_lib::hf2p_wcProgressTop"
+				x         = 0
+				y         = -0.1
+			} 
+			progressMiddle {
+				__type = "ui_weaponConf_lib::hf2p_wcProgressMiddle"
+				x         = 0.15
+				y         = -0.1
+			} 
+			progressBack {
+				__type = "ui_weaponConf_lib::hf2p_wcProgressBack"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	hf2p_wcProgressMiddle = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcProgressMiddle" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcProgressTop = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcProgressTop" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcTableColumnBg = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcTableColumnBg" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2p_wcTableHeaderColumnBg = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcTableHeaderColumnBg" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2p_wcTableItemHeader = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcTableItemHeader" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2p_wcUpgradeBarItem = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wcUpgradeBarItem" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcWeaponList = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_wcWeaponList" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcWeaponList2 = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_wcWeaponList2" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcWeaponList3 = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_wcWeaponList3" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wcWeaponListScrollbar = {
+		__type = "ui_widget_scrollbar"
+
+		impl {
+			__type  = ui_widget_impl_gfx_scrollbar
+			symbol  = "hf2p_wcWeaponListScrollbar" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			thumb {
+				__type = "ui_weaponConf_lib::scrollbar_thumb"
+				x         = 7.05
+				y         = 16
+				scaleX    = 1.3592
+				scaleY    = 2
+			} 
+			upArrow {
+				__type = "ui_weaponConf_lib::ScrollBar_arrow"
+				x         = 1.75
+				y         = 0
+				scaleX    = 1.3108
+				scaleY    = 1
+			} 
+			downArrow {
+				__type = "ui_weaponConf_lib::ScrollBar_arrow"
+				x         = 1.75
+				y         = 128
+				scaleX    = 1.3108
+				scaleY    = 1
+			} 
+			track {
+				__type = "ui_weaponConf_lib::scrollbar_track"
+				x         = -20.2
+				y         = 16
+				scaleX    = 8.213
+				scaleY    = 0.4
+			} 
+		}
+	}
+
+	hf2p_wc_ArmoryLoadoutCont = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wc_ArmoryLoadoutCont" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			lockSymbolBig {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 135.8
+				y         = 317.4
+
+				elements {
+					lockPic {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			loadoutBg {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0.35
+				y         = 0.8
+
+				elements {
+					loadoutBg {
+						__type = "ui_weaponConf_lib::armoryLoadoutUnitCard"
+						x         = 0
+						y         = 0
+					} 
+					ingameBg {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0.15
+					} 
+				}
+				animated  = true
+			} 
+			btnBox {
+				__type = "ui_weaponConf_lib::armoryLoadoutCont"
+				x         = 0.35
+				y         = 0.8
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_wc_LoadoutBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wc_LoadoutBtn" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	hf2p_wc_LoadoutCont = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wc_LoadoutCont" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			selectedHighlight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.0001
+				scaleY    = 1
+				animated  = true
+			} 
+			highlight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.0001
+				scaleY    = 1
+				animated  = true
+			} 
+			txtFld {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 11.5
+				y         = 12
+				animated  = true
+			} 
+			btnBox {
+				__type = "ui_weaponConf_lib::loadoutCont"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+			ingameBg {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 1
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_wc_manyProgressBar = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wc_manyProgressBar" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			bar1 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 33.5
+				y         = 47.05
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+					subBar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+				}
+			} 
+			bar2 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 33.5
+				y         = 87.05
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+					subBar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+				}
+			} 
+			bar3 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 33.5
+				y         = 127.05
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+					subBar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+				}
+			} 
+			bar4 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 33.5
+				y         = 168.05
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+					subBar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+				}
+			} 
+			bar5 {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 33.5
+				y         = 209.95
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+					subBar {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								impl {
+									__type  = ui_widget_impl_gfx
+								}
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2p_WC_TestMessageBoxBG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_WC_TestMessageBoxBG" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	hf2p_wc_weaponContBig = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "hf2p_wc_weaponContBig" 
+			lib     = weaponConf_lib 
+			propMapping {
+				wpnDesc = {
+					mapping = "wpnDesc.text"
+				}
+				wpnName = {
+					mapping = "wpnName.text"
+				}
+			}
+		}
+
+		elements {
+			lockSymbol {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 178
+				y         = 128.45
+			} 
+			wpnImage {
+				__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+				x         = 21.1
+				y         = 90.1
+				scaleX    = 0.9261
+				scaleY    = 0.9261
+			} 
+		}
+	}
+
+	hf2p_WeaponListLIR = {
+		__type = "ui_widget_list_item"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list_item
+			symbol  = "hf2p_WeaponListLIR" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textFieldUp = {
+					mapping = "textFieldUp.text"
+				}
+				textField2 = {
+					mapping = "textField2.text"
+				}
+			}
+		}
+
+		elements {
+			uiTileCostCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 133.2
+				y         = 76.05
+
+				elements {
+					uiCrCost {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								creditTf = {
+									mapping = "creditTf.text"
+								}
+							}
+						}
+						x         = -20.9
+						y         = 1.75
+					} 
+					uiGpCost {
+						__type = "ui_weaponConf_lib::old_gpCostH"
+						x         = 55.55
+						y         = 1.5
+					} 
+				}
+			} 
+			lockSymbol {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 117.5
+				y         = 31
+			} 
+			picAttachPoint {
+				__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+				x         = 20
+				y         = 6
+				animated  = true
+			} 
+		}
+	}
+
+	iconBundle = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "iconBundle" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	iconBundleMed = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "iconBundleMed" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	iconRangerClass = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "iconRangerClass" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	iconSniperClass = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "iconSniperClass" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	iconTacticianClass = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "iconTacticianClass" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	inputFieldContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "inputFieldContainer" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	listTemplate = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "listTemplate" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	loadoutBg = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadoutBg" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	loadoutBg2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadoutBg2" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	loadoutCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadoutCont" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			lock {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 138.05
+				y         = 129.15
+				scaleX    = 0.9492
+				scaleY    = 0.9492
+			} 
+			GoldV {
+				__type = "ui_weaponConf_lib::purchaseGoldStat1"
+				x         = 67.05
+				y         = 237.7
+			} 
+			CreditsV {
+				__type = "ui_weaponConf_lib::purchaseCreditsStat"
+				x         = 66.05
+				y         = 295.75
+			} 
+			btn8 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnMed"
+				x         = 0
+				y         = 532.05
+				animated  = true
+			} 
+			btn4 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnSmall"
+				x         = 0
+				y         = 370.65
+				animated  = true
+			} 
+			btn5 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnSmall"
+				x         = 153
+				y         = 370.7
+				scaleX    = 0.9934
+				scaleY    = 1
+				animated  = true
+			} 
+			btn6 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnSmall"
+				x         = 0
+				y         = 438.65
+				animated  = true
+			} 
+			btn7 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnSmall"
+				x         = 153
+				y         = 438.65
+				scaleX    = 0.9935
+				scaleY    = 1
+				animated  = true
+			} 
+			btn1 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnBig"
+				x         = 0
+				y         = 70.95
+				animated  = true
+			} 
+			btn2 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnBig"
+				x         = 0
+				y         = 169.9
+				animated  = true
+			} 
+			btn3 {
+				__type = "ui_weaponConf_lib::hf2pLoadoutBtnBig"
+				x         = 0
+				y         = 270.2
+				animated  = true
+			} 
+			unitCard {
+				__type = "ui_weaponConf_lib::loadoutUnitCard"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	loadoutItemIconAttachPoint = {
+		__type = "ui_widget_image"
+
+		impl {
+			__type  = ui_widget_impl_gfx_image
+			symbol  = "loadoutItemIconAttachPoint" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	loadoutUnit = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadoutUnit" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+
+		elements {
+			imageAttach {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 13.1
+				y         = 14.5
+			} 
+			attach {
+				__type = "ui_weaponConf_lib::loadoutItemIconAttachPoint"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	loadoutUnitCard = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadoutUnitCard" 
+			lib     = weaponConf_lib 
+			propMapping {
+				txtGrenades = {
+					mapping = "txtGrenades.text"
+				}
+				txtSecondary = {
+					mapping = "txtSecondary.text"
+				}
+				txtTacticalPackages = {
+					mapping = "txtTacticalPackages.text"
+				}
+				txtBoosters = {
+					mapping = "txtBoosters.text"
+				}
+				txtPrimary = {
+					mapping = "txtPrimary.text"
+				}
+			}
+		}
+	}
+
+	loadout_btn_big_back = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadout_btn_big_back" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	loadout_btn_med_back = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadout_btn_med_back" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	loadout_btn_small_back = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "loadout_btn_small_back" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	l_arrow = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "l_arrow" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	old_gpCostH = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "old_gpCostH" 
+			lib     = weaponConf_lib 
+			propMapping {
+				goldTf = {
+					mapping = "goldTf.text"
+				}
+			}
+		}
+	}
+
+	pageNumberButton = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "pageNumberButton" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	pageSelector = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "pageSelector" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			loadoutSelector0 {
+				__type = "ui_weaponConf_lib::pageNumberButton"
+				x         = 32
+				y         = 17.05
+			} 
+			loadoutSelector1 {
+				__type = "ui_weaponConf_lib::pageNumberButton"
+				x         = 96
+				y         = 17.05
+			} 
+			loadoutSelector2 {
+				__type = "ui_weaponConf_lib::pageNumberButton"
+				x         = 160
+				y         = 17.05
+			} 
+			loadoutSelector3 {
+				__type = "ui_weaponConf_lib::pageNumberButton"
+				x         = 224
+				y         = 17.05
+			} 
+			loadoutSelector4 {
+				__type = "ui_weaponConf_lib::pageNumberButton"
+				x         = 288
+				y         = 15.5
+			} 
+		}
+	}
+
+	placeHolderContent = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "placeHolderContent" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	plasmaRifleIcon = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "plasmaRifleIcon" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	progressCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "progressCont" 
+			lib     = weaponConf_lib 
+			propMapping {
+				armorClassesHeaderTf = {
+					mapping = "armorClassesHeaderTf.text"
+				}
+			}
+		}
+
+		elements {
+			bonusLevels {
+				__type = "ui_weaponConf_lib::ArmorClassBonusLevels"
+				x         = -382.4
+				y         = -28
+			} 
+			spartanBar5 {
+				__type = "ui_weaponConf_lib::ArmoryStatsBar"
+				x         = 40.55
+				y         = 442.2
+			} 
+			spartanBar4 {
+				__type = "ui_weaponConf_lib::ArmoryStatsBar"
+				x         = 40.55
+				y         = 334.2
+			} 
+			spartanBar3 {
+				__type = "ui_weaponConf_lib::ArmoryStatsBar"
+				x         = 40.55
+				y         = 227.2
+			} 
+			spartanBar2 {
+				__type = "ui_weaponConf_lib::ArmoryStatsBar"
+				x         = 40.55
+				y         = 122.2
+			} 
+			spartanBar1 {
+				__type = "ui_weaponConf_lib::ArmoryStatsBar"
+				x         = 40.55
+				y         = 15.2
+			} 
+		}
+	}
+
+	purchaseCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "purchaseCont" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	purchaseCredits = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "purchaseCredits" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	purchaseCreditsStat = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "purchaseCreditsStat" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	purchaseCreditsStat1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "purchaseCreditsStat1" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	purchaseGold = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "purchaseGold" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	purchaseGoldStat = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "purchaseGoldStat" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	purchaseGoldStat1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "purchaseGoldStat1" 
+			lib     = weaponConf_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	RecievingBonusesPopup = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "RecievingBonusesPopup" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			modifiers {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 17
+				y         = 60
+			} 
+			tfInfoSet {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 17
+				y         = 36
+
+				elements {
+					tfSetIncomplete {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								tf = {
+									mapping = "tf.text"
+								}
+							}
+						}
+						x         = -1
+						y         = 0
+						animated  = true
+					} 
+				}
+			} 
+			recievingBonusTf {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 17
+				y         = 16
+			} 
+			background {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				scaleX    = 1.5895
+				scaleY    = 2.0833
+			} 
+		}
+	}
+
+	rent_creditPurchaseBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rent_creditPurchaseBtn" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+	}
+
+	rent_goldPurchaseBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rent_goldPurchaseBtn" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+	}
+
+	rent_offerLineNew = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rent_offerLineNew" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			crBuyBtn {
+				__type = "ui_weaponConf_lib::rent_creditPurchaseBtn"
+				x         = -0.15
+				y         = 0
+				scaleX    = 1
+				scaleY    = 1
+			} 
+			gpBuyBtn {
+				__type = "ui_weaponConf_lib::rent_goldPurchaseBtn"
+				x         = 156.85
+				y         = 0
+				scaleX    = 1
+				scaleY    = 1
+			} 
+		}
+	}
+
+	rent_offersDaysCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rent_offersDaysCont" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tfScale = {
+					mapping = "tfScale.text"
+				}
+				tfValue = {
+					mapping = "tfValue.text"
+				}
+			}
+		}
+	}
+
+	restockHotItemDiscount = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "restockHotItemDiscount" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tfDiscountValue = {
+					mapping = "tfDiscountValue.text"
+				}
+			}
+		}
+	}
+
+	restockHotItemList = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "restockHotItemList" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	RestockScreen = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "RestockScreen" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			hotItemHeader {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 1550.25
+				y         = 249.35
+			} 
+			header {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 465.65
+				y         = 249.35
+			} 
+			hotItems {
+				__type = "ui_weaponConf_lib::restockHotItemList"
+				x         = 1549.2
+				y         = 315
+			} 
+			offerItems {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 465.65
+				y         = 325
+
+				elements {
+					item0 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 0
+						y         = -9
+					} 
+					item1 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 320
+						y         = -7.8
+					} 
+					item2 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 640
+						y         = -9
+					} 
+					item3 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 0
+						y         = 138
+					} 
+					item4 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 320
+						y         = 138
+					} 
+					item5 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 640
+						y         = 138
+					} 
+					item6 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 0
+						y         = 285
+					} 
+					item7 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 320
+						y         = 285
+					} 
+					renewAll {
+						__type = "ui_weaponConf_lib::hf2p_RestockRenewAll"
+						x         = 320
+						y         = 483
+					} 
+					item8 {
+						__type = "ui_weaponConf_lib::hf2p_RestockLoadoutItem"
+						x         = 640
+						y         = 285
+					} 
+				}
+			} 
+			loadoutSelectors {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = 79.65
+				y         = 253.35
+			} 
+			currentLoadout {
+				__type = "ui_weaponConf_lib::hf2p_wc_LoadoutCont"
+				x         = 78.95
+				y         = 315.15
+			} 
+		}
+	}
+
+	ScrollBar_arrow = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ScrollBar_arrow" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	scrollbar_thumb = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "scrollbar_thumb" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	scrollbar_track = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "scrollbar_track" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	selectClassCard = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "selectClassCard" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			description {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 35
+				y         = 327.8
+			} 
+			className {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 24.95
+				y         = 119.65
+				animated  = true
+			} 
+			kitIcon {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = 196
+				y         = 267.35
+			} 
+			iconCont {
+				__type = "ui_weaponConf_lib::starterKitIconAttach"
+				x         = 196.5
+				y         = 65.25
+				animated  = true
+			} 
+		}
+	}
+
+	SelectClassScreen = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "SelectClassScreen" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			renameScreen {
+				__type = "ui_weaponConf_lib::selectNicknameScreen"
+				x         = 0
+				y         = 0
+			} 
+			renderAttach {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 64
+				y         = 251.05
+				animated  = true
+			} 
+			class2 {
+				__type = "ui_weaponConf_lib::selectClassCard"
+				x         = 1359.45
+				y         = 282
+				animated  = true
+			} 
+			class1 {
+				__type = "ui_weaponConf_lib::selectClassCard"
+				x         = 931.45
+				y         = 282
+				animated  = true
+			} 
+			class0 {
+				__type = "ui_weaponConf_lib::selectClassCard"
+				x         = 503.45
+				y         = 282
+				animated  = true
+			} 
+			description {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 501.65
+				y         = 250.9
+				animated  = true
+			} 
+			header {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 521.55
+				y         = 181.55
+				animated  = true
+			} 
+		}
+	}
+
+	selectNicknameScreen = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "selectNicknameScreen" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			inputNameContainer {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					heading {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								textField = {
+									mapping = "textField.text"
+								}
+							}
+						}
+						x         = 707.75
+						y         = 335.35
+					} 
+					headingUnderline {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								textField = {
+									mapping = "textField.text"
+								}
+							}
+						}
+						x         = 697.7
+						y         = 377.5
+						scaleX    = 1.04
+						scaleY    = 1.04
+					} 
+					inputContainer {
+						__type = "ui_weaponConf_lib::inputFieldContainer"
+						x         = 778.15
+						y         = 426.75
+					} 
+					errorText {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								textField = {
+									mapping = "textField.text"
+								}
+							}
+						}
+						x         = 773.4
+						y         = 459.8
+					} 
+					rulersTextContainer {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+							propMapping {
+								textField = {
+									mapping = "textField.text"
+								}
+							}
+						}
+						x         = 773.4
+						y         = 483.85
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	SpartanBackdropFrame = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "SpartanBackdropFrame" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	spartanCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "spartanCont" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			grid {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 322.5
+				y         = 435.45
+			} 
+			tabSc1 {
+				__type = "ui_weaponConf_lib::hf2pTopdownBookmarkScale"
+				x         = 323.25
+				y         = 382
+			} 
+			tabSc2 {
+				__type = "ui_weaponConf_lib::hf2pTopdownBookmarkScale"
+				x         = 442.25
+				y         = 382
+			} 
+			tabSc3 {
+				__type = "ui_weaponConf_lib::hf2pTopdownBookmarkScale"
+				x         = 567.7
+				y         = 382
+			} 
+			maskCont {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 322.5
+				y         = 381.95
+
+				elements {
+					maskScaleTab {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0.05
+					} 
+				}
+			} 
+			rPanel {
+				__type = "ui_weaponConf_lib::progressCont"
+				x         = 1306
+				y         = 483.15
+			} 
+			spartanBtn1 {
+				__type = "ui_weaponConf_lib::hf2pArmotyLoadoutBtn"
+				x         = 322.15
+				y         = 433.95
+			} 
+			spartanBtn2 {
+				__type = "ui_weaponConf_lib::hf2pArmotyLoadoutBtn"
+				x         = 322.15
+				y         = 513.45
+			} 
+			spartanBtn3 {
+				__type = "ui_weaponConf_lib::hf2pArmotyLoadoutBtn"
+				x         = 322.15
+				y         = 593
+			} 
+			spartanBtn4 {
+				__type = "ui_weaponConf_lib::hf2pArmotyLoadoutBtn"
+				x         = 322.15
+				y         = 672.5
+			} 
+			spartanBtn5 {
+				__type = "ui_weaponConf_lib::hf2pArmotyLoadoutBtn"
+				x         = 322.15
+				y         = 752
+			} 
+			superBlackHole {
+				__type = "ui_weaponConf_lib::blackHole"
+				x         = 869.5
+				y         = 232.05
+			} 
+		}
+	}
+
+	starterKitIconAttach = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "starterKitIconAttach" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			icon {
+				__type = "ui_weaponConf_lib::attachPoint"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	statLine = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "statLine" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	stdContextMenu = {
+		__type = "ui_widget_popup"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "stdContextMenu" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			mask {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -200
+				y         = -4.2
+				scaleX    = 1
+				scaleY    = 0.0288
+				animated  = true
+			} 
+			contentAttach {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+			clientArea {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	stdContextMenuBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "stdContextMenuBtn" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			btnLabel {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tf = {
+							mapping = "tf.text"
+						}
+					}
+				}
+				x         = 14.4
+				y         = 5.3
+				scaleX    = 0.9778
+				scaleY    = 1
+				animated  = true
+			} 
+		}
+	}
+
+	stdContextMenuContent = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "stdContextMenuContent" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			btn0 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 0
+			} 
+			btn1 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 26
+				animated  = true
+			} 
+			btn2 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 52
+				animated  = true
+			} 
+			btn3 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 78
+				animated  = true
+			} 
+			btn4 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 104
+				animated  = true
+			} 
+			btn5 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 130
+				animated  = true
+			} 
+			btn6 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 156
+				animated  = true
+			} 
+			btn7 {
+				__type = "ui_weaponConf_lib::stdContextMenuBtn"
+				x         = 0
+				y         = 182
+				animated  = true
+			} 
+		}
+	}
+
+	stripeWpn = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "stripeWpn" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	tileBG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "tileBG" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	TileCostContH = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "TileCostContH" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			uiCrCost {
+				__type = "ui_weaponConf_lib::crCostH"
+				x         = -71.65
+				y         = -2
+			} 
+			uiGpCost {
+				__type = "ui_weaponConf_lib::gpCostH"
+				x         = 37.05
+				y         = -2
+			} 
+		}
+	}
+
+	TileCostContSmall = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "TileCostContSmall" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			uiCrCost {
+				__type = "ui_weaponConf_lib::crCostUpgSlot"
+				x         = 0.9
+				y         = 1.3
+			} 
+			uiGpCost {
+				__type = "ui_weaponConf_lib::gpCostUpgSlot"
+				x         = 56.45
+				y         = 1.05
+			} 
+		}
+	}
+
+	TileCostContUpgSlot = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "TileCostContUpgSlot" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			uiCrCost {
+				__type = "ui_weaponConf_lib::crCostUpgSlot"
+				x         = 1.25
+				y         = 1.75
+			} 
+			uiGpCost {
+				__type = "ui_weaponConf_lib::gpCostUpgSlot"
+				x         = 55.05
+				y         = 1.5
+			} 
+		}
+	}
+
+	treeParts = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "treeParts" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	wc_attachContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "wc_attachContainer" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			picAttachPoint {
+				__type = "ui_weaponConf_lib::wc_attachPointArmrStat"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	wc_attachPointArmrStat = {
+		__type = "ui_widget_image"
+
+		impl {
+			__type  = ui_widget_impl_gfx_image
+			symbol  = "wc_attachPointArmrStat" 
+			lib     = weaponConf_lib 
+		}
+
+		elements {
+			placeHolder {
+				__type = "ui_weaponConf_lib::placeHolderContent"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	wc_exiredTimeContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "wc_exiredTimeContainer" 
+			lib     = weaponConf_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+	}
+
+	wc_orig_lock_icon = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "wc_orig_lock_icon" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	weapon_primary_battle_rifle = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "weapon_primary_battle_rifle" 
+			lib     = weaponConf_lib 
+		}
+	}
+
+	wpnBG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "wpnBG" 
+			lib     = weaponConf_lib 
+		}
+	}
+}
+__type = "ui_widget_lib"

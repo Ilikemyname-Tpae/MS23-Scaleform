@@ -1,0 +1,4 @@
+import ssl.lib.ui.ui_iface
+
+native class UiSplitMgr : UiIface
+end

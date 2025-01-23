@@ -1,0 +1,52 @@
+import ssl.lib.logging
+import ssl.lib.events
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.user_service
+import ssl.hf2p.user_data
+import ui.ui_party_monitor
+
+class UiMain : UiWidgetContainer
+
+
+func ToggleEnabled(widgetObj: *, isEnabled: bool)
+   var isNowEnabled : bool = (bool)(widgetObj.enabled)
+   if ((string)(isNowEnabled) != (string)(isEnabled))
+      Log("ui~main", "OnEnableBtns toggle for " + widgetObj.GetName() + " changed from " + (string)(isNowEnabled) + " to " + (string)(isEnabled))
+      widgetObj.enabled := isEnabled
+   end
+end
+
+func OnEnableBtns(p:params): bool
+   //Log("ui~main", "OnEnableBtns")
+   //ToggleEnabled(Widgets().JoinFriends,      true)
+   //ToggleEnabled(Widgets().QuickMatch,       true)
+   //ToggleEnabled(Widgets().SelectPlaylist,   true)
+   //ToggleEnabled(Widgets().HostGame,         true)
+   //ToggleEnabled(Widgets().JoinGame,         true)
+   //ToggleEnabled(Widgets().HostFirefight,    true)
+   //ToggleEnabled(Widgets().JoinFirefight,    true)
+   return false
+end
+
+end
+
+class LeftMenuVM
+   
+   var pListName :  ObservableProperty = $OM.Calculated(this, "GetPlayListName")
+   var pListIcn  :  ObservableProperty = $OM.Calculated(this, "GetPlayListIcon")
+   
+   func GetPlayListName() : string
+      var ret : string
+      var playlistId : string = $uiPartyMonitor.GetPlaylistId()
+      ret := (string)$UiGlobals.componentsUI.Get(playlistId).name.Get()
+      return ret   
+   end
+
+   func GetPlayListIcon() : string
+      var ret : string
+      var playlistId : string = $uiPartyMonitor.GetPlaylistId()
+      ret := (string)$UiGlobals.componentsUI.Get(playlistId).icon.Get()
+      return ret   
+   end
+   
+end

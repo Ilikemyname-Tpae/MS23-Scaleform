@@ -1,0 +1,12 @@
+import ssl.lib.ui.ui_iface
+
+native class UiGfxFrame : UiIface
+   native func ASCall(name: string, params: params = null): bool
+   native func SetCursorCenter()
+   native func GotoAndPlay(obj: string, frame: *)
+   native func GotoAndStop(obj: string, frame: *)
+   native func SetVisible(obj: string, visible: bool)
+   native func SetInputMode(mode: string, userIdx: int = 0)
+   native func EnableWMKeyHandling(enable: bool = true)
+   native func PostKeyPressRequest()
+end

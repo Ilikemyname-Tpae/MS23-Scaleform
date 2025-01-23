@@ -1,0 +1,9 @@
+native func IntFloat  (arg : float) : float
+native func FracFloat (arg : float) : float
+native func AbsInt    (arg : int) : int
+native func AbsFloat  (arg : float) : float
+native func Cos       (arg : float) : float
+native func Sin       (arg : float) : float
+native func GetIntModulo(a : int, b : int) : int
+
+native func AdjustColor(argb: int, c: float): int

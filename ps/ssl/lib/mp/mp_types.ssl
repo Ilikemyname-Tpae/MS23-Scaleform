@@ -1,0 +1,102 @@
+class player
+   native func Set          (id : string, val : *)
+   native func Get          (id : string)          : *
+   native func Params       ()                     : params
+   native func GetPlayerID  ()                     : int
+   native func GetClientID  ()                     : int
+   native func Merge        (par : params)
+end
+
+class session
+   native func GetSessionID               () : int
+   native func Set                        (id : string , data : *)
+   native func Get                        (id : string) : *
+   native func GetServer                  ()            : server
+   native func Params                     ()            : params
+   native func LocalParams                ()            : params
+   native func PlayersCount               ()            : int
+   native func GetLocalPlayerParams       (idx : int)   : params
+   native func GetSysPlayerParams         (idx : int)   : params
+   native func GetLocalPlayerID           (idx : int)   : int
+   native func GetLocalClientID           ()            : int
+   native func IsLocalPlayerID            (id : int)    : bool
+   native func IsLocalClientID            (id : int)    : bool
+   native func GetPlayerByIdx             (idx : int)   : player
+   native func GetPlayerById              (id : int)    : player
+   native func AddLocalPlayer             (par : params) : int
+   native func AddRemotePlayer            (clientID : int, par : params)  : int
+   native func RemovePlayer               (idx : int)
+   native func SendScriptEvent            (clientID : int, name : string, par : params)
+   native func ServerSendScriptEvent      (name : string, par : params)
+   native func SendScriptEventAll         (name : string, par : params)
+   native func SendScriptEventAllPlayers  (name : string, par : params)
+   native func GetState                   (name : string) : sessionstate
+   native func IsServer                   () : bool
+   native func IsMainSession              () : bool
+   native func SetMainSession             (bMain : bool)
+   native func ApplyParams                (par : params)
+   native func UpdateSession              ()
+   native func IsConnected                () : bool
+   native func IsPlayerCreated            (id : int) : bool
+   native func GetMasterUID               ()         : string
+   native func GetMasterID                ()         : int
+   native func SetTeamMode                (bTeam : bool)
+   native func GetTeamID                  ()         : int
+   native func StartHostMigration         ()
+   native func EnableMigration            (bEnable : bool)
+   native func DisconnectClient           (clientID : int, reason : string)
+end
+
+class server
+   native func GetServerUID ()      : string
+   native func Params       ()      : params
+end
+
+native class sessionstate
+   native func GetClientState    (clientID : int) : bool
+   native func Get               ()               : bool
+   native func Set               ()
+   native func Clear             ()
+   native func Request           ()
+   native func Count             ()               : int
+   native func AddHandler        (handler : refFUNC_PTR)
+   native func RemoveHandler     (handler : refFUNC_PTR)
+end
+
+class timer 
+   native func Start             (time : int, cbHost : object, cbFuncName : string, tick : bool)
+   native func Stop              ()
+   native func StartNet          (time : int, remoteTimestamp : int, sess : session, cbHost : object, cbFuncName : string, tick : bool)
+   native func Elapsed           () : int
+   native func IsRunning         () : bool
+end
+
+native class ref_BrowsingDiffs
+   native func SendDiffs            ()   
+   native func SetMySession         (s : session)   
+   native func GetServerIDX         (sessionID : string) : int   
+   native func GetServer            (idx : int) : server
+   native func GetServersCount      () : int
+   native func Clear                ()
+   native func ClearNew             ()
+   native func SetLocalSession      (p : params)
+   native func SetIsSingle          (isSingle : bool)
+   native func GetLocalPlayersCount () : int
+   native func SetShowOflineFriends (show : bool)
+   native func SetFilter            (funcFilter : refFUNC_PTR)
+   native func Refresh              ()
+   native func RefreshComState      ()
+   native func GetPlayerCommState   (playerID : string, p : params) : int
+   native func GetCurrentSession    (): session
+end
+
+class RECIPIENT_LIST
+   native func Clear     ()
+   native func SetIdx    (idx : int) 
+   native func ResetIdx  (idx : int)
+   native func SetList   (list : RECIPIENT_LIST)
+   native func ResetList (list : RECIPIENT_LIST)
+   native func Is        (idx : int) : bool
+   native func IsEmpty   () : bool
+   native func GetVal    () : int
+end

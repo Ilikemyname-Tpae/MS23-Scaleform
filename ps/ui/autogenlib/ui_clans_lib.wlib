@@ -1,0 +1,879 @@
+classes = {
+	attachContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "attachContainer" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			picAttachPoint {
+				__type = "ui_clans_lib::attachPointArmrStat"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	attachContainerContainer = {
+		__type = "ui_widget_image"
+
+		impl {
+			__type  = ui_widget_impl_gfx_image
+			symbol  = "attachContainerContainer" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			attachContainerInt {
+				__type = "ui_clans_lib::attachContainer"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	attachPointArmrStat = {
+		__type = "ui_widget_image"
+
+		impl {
+			__type  = ui_widget_impl_gfx_image
+			symbol  = "attachPointArmrStat" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			placeHolder {
+				__type = "ui_clans_lib::placeHolderContent"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	clanMottoCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "clanMottoCont" 
+			lib     = clans_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	clanNameCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "clanNameCont" 
+			lib     = clans_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	ClansInputFieldsCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ClansInputFieldsCont" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			clanTag {
+				__type = "ui_clans_lib::clanTagCont"
+				x         = 409.3
+				y         = 0.05
+			} 
+			clanMotto {
+				__type = "ui_clans_lib::clanMottoCont"
+				x         = 5.6
+				y         = 63.8
+			} 
+			clanName {
+				__type = "ui_clans_lib::clanNameCont"
+				x         = 5.6
+				y         = 0
+			} 
+		}
+	}
+
+	ClansScreenCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ClansScreenCont" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			teamEditCont {
+				__type = "ui_clans_lib::teamEditContainer"
+				x         = 1299.75
+				y         = 355
+			} 
+			listHeaderTf {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 319.6
+				y         = 355
+			} 
+			emblemHeaderTf {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 694
+				y         = 355
+			} 
+			infoHeaderTf {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 691
+				y         = 640.35
+			} 
+			emblemAttach {
+				__type = "ui_clans_lib::emblemAttachPoint"
+				x         = 797.3
+				y         = 331.95
+			} 
+			inputFieldsContainer {
+				__type = "ui_clans_lib::ClansInputFieldsCont"
+				x         = 694
+				y         = 686.6
+				scaleX    = 0.9996
+				scaleY    = 1
+			} 
+			emblemList {
+				__type = "ui_clans_lib::hf2p_emblemsList"
+				x         = 319.6
+				y         = 403.1
+				scaleX    = 1.0133
+				scaleY    = 0.8
+			} 
+		}
+	}
+
+	ClansSearchCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ClansSearchCont" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			membersHeader {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 1298
+				y         = 354.6
+			} 
+			statisticsHeader {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 691
+				y         = 354.6
+			} 
+			searchHeader {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						textField = {
+							mapping = "textField.text"
+						}
+					}
+				}
+				x         = 320.1
+				y         = 354.6
+			} 
+			searchBar {
+				__type = "ui_clans_lib::searchTextCont"
+				x         = 325.95
+				y         = 391.35
+			} 
+			membersList {
+				__type = "ui_clans_lib::hf2p_topContributors"
+				x         = 1300.3
+				y         = 427.85
+			} 
+			statisctics {
+				__type = "ui_clans_lib::hf2p_ClanStatisticsList"
+				x         = 658.9
+				y         = 427.85
+			} 
+			searchResult {
+				__type = "ui_clans_lib::hf2p_searchList"
+				x         = 322.1
+				y         = 427.85
+			} 
+		}
+	}
+
+	clanTagCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "clanTagCont" 
+			lib     = clans_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	creditPurchaseBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "creditPurchaseBtn" 
+			lib     = clans_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+
+		elements {
+			tfSaleRightAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfSaleRight = {
+							mapping = "tfSaleRight.text"
+						}
+					}
+				}
+				x         = -4.65
+				y         = 9.5
+			} 
+			saleShapeRight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 45.45
+				y         = 47
+				rotation  = 180
+			} 
+			tfOldPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfOldPrice = {
+							mapping = "tfOldPrice.text"
+						}
+					}
+				}
+				x         = 3
+				y         = 23.3
+
+				elements {
+					lineOldPrice {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 96
+						y         = 11.55
+					} 
+				}
+			} 
+			tfNewPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfNewPrice = {
+							mapping = "tfNewPrice.text"
+						}
+					}
+				}
+				x         = 3
+				y         = 1
+			} 
+		}
+	}
+
+	creditPurchaseBtnLoadout = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "creditPurchaseBtnLoadout" 
+			lib     = clans_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+
+		elements {
+			tfSaleRightAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfSaleRight = {
+							mapping = "tfSaleRight.text"
+						}
+					}
+				}
+				x         = -4.9
+				y         = 7.95
+			} 
+			saleShapeRight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 45.9
+				y         = 46
+				rotation  = 180
+			} 
+			tfOldPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfOldPrice = {
+							mapping = "tfOldPrice.text"
+						}
+					}
+				}
+				x         = 3
+				y         = 23.3
+
+				elements {
+					lineOldPrice {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 96
+						y         = 11.55
+					} 
+				}
+			} 
+			tfNewPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfNewPrice = {
+							mapping = "tfNewPrice.text"
+						}
+					}
+				}
+				x         = 3
+				y         = 1
+			} 
+		}
+	}
+
+	emblemAttachPoint = {
+		__type = "ui_widget_image"
+
+		impl {
+			__type  = ui_widget_impl_gfx_image
+			symbol  = "emblemAttachPoint" 
+			lib     = clans_lib 
+		}
+	}
+
+	goldPurchaseBtn = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "goldPurchaseBtn" 
+			lib     = clans_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+
+		elements {
+			tfSaleRightAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfSaleRight = {
+							mapping = "tfSaleRight.text"
+						}
+					}
+				}
+				x         = 117.55
+				y         = -7.15
+			} 
+			saleShapeRight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 110.85
+				y         = 0
+			} 
+			tfOldPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfOldPrice = {
+							mapping = "tfOldPrice.text"
+						}
+					}
+				}
+				x         = 16.5
+				y         = 23.3
+
+				elements {
+					lineOldPrice {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 96
+						y         = 11.55
+					} 
+				}
+			} 
+			tfNewPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfNewPrice = {
+							mapping = "tfNewPrice.text"
+						}
+					}
+				}
+				x         = 16.5
+				y         = 1
+			} 
+		}
+	}
+
+	goldPurchaseBtnLoadout = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "goldPurchaseBtnLoadout" 
+			lib     = clans_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+
+		elements {
+			tfSaleRightAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfSaleRight = {
+							mapping = "tfSaleRight.text"
+						}
+					}
+				}
+				x         = 112.55
+				y         = -7.15
+			} 
+			saleShapeRight {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 105.85
+				y         = 0
+			} 
+			tfOldPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfOldPrice = {
+							mapping = "tfOldPrice.text"
+						}
+					}
+				}
+				x         = 16.5
+				y         = 23.3
+
+				elements {
+					lineOldPrice {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 96
+						y         = 11.55
+					} 
+				}
+			} 
+			tfNewPriceAnim {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+					propMapping {
+						tfNewPrice = {
+							mapping = "tfNewPrice.text"
+						}
+					}
+				}
+				x         = 16.5
+				y         = 1
+			} 
+		}
+	}
+
+	hf2p_ClanStatisticsList = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_ClanStatisticsList" 
+			lib     = clans_lib 
+		}
+	}
+
+	hf2p_EmblemListLIR_S = {
+		__type = "ui_widget_list_item"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list_item
+			symbol  = "hf2p_EmblemListLIR_S" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			selectIndicator {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -9.75
+				y         = 0
+
+				elements {
+					content {
+						__type = "ui_widget_container"
+
+						impl {
+							__type  = ui_widget_impl_gfx
+						}
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			greyOverInst {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 1
+				y         = 0
+			} 
+			textFieldUp {
+				__type = "ui_clans_lib::weaponNameTextCont"
+				x         = 62.5
+				y         = 27
+				animated  = true
+			} 
+			attachContainerContainer {
+				__type = "ui_clans_lib::attachContainerContainer"
+				x         = 26.25
+				y         = 16.75
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_emblemsList = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_emblemsList" 
+			lib     = clans_lib 
+		}
+	}
+
+	hf2p_searchList = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_searchList" 
+			lib     = clans_lib 
+		}
+	}
+
+	hf2p_tableSearchClansLIR = {
+		__type = "ui_widget_list_item"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list_item
+			symbol  = "hf2p_tableSearchClansLIR" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			tfStatisticsClanSearch2 {
+				__type = "ui_clans_lib::tfStatistics2"
+				x         = 278.9
+				y         = 6.9
+			} 
+			tfStatisticsClanSearch1 {
+				__type = "ui_clans_lib::tfStatistics1"
+				x         = 3.5
+				y         = 6.5
+			} 
+		}
+	}
+
+	hf2p_topContributors = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "hf2p_topContributors" 
+			lib     = clans_lib 
+		}
+	}
+
+	offerLineNew = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "offerLineNew" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			gpBuyBtn {
+				__type = "ui_clans_lib::goldPurchaseBtn"
+				x         = 156.8
+				y         = 0
+			} 
+			crBuyBtn {
+				__type = "ui_clans_lib::creditPurchaseBtn"
+				x         = -0.15
+				y         = 0
+			} 
+		}
+	}
+
+	offerLineNewLoadout = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "offerLineNewLoadout" 
+			lib     = clans_lib 
+		}
+
+		elements {
+			gpBuyBtn {
+				__type = "ui_clans_lib::goldPurchaseBtnLoadout"
+				x         = 152.8
+				y         = 0
+			} 
+			crBuyBtn {
+				__type = "ui_clans_lib::creditPurchaseBtnLoadout"
+				x         = -0.15
+				y         = 0
+			} 
+		}
+	}
+
+	offersHeaderElement = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "offersHeaderElement" 
+			lib     = clans_lib 
+			propMapping {
+				offersHeader = {
+					mapping = "offersHeader.text"
+				}
+			}
+		}
+	}
+
+	placeHolderContent = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "placeHolderContent" 
+			lib     = clans_lib 
+		}
+	}
+
+	searchTextCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "searchTextCont" 
+			lib     = clans_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	teamEditContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "teamEditContainer" 
+			lib     = clans_lib 
+		}
+	}
+
+	tfStatistics1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "tfStatistics1" 
+			lib     = clans_lib 
+			propMapping {
+				tfStatistics1Txt = {
+					mapping = "tfStatistics1Txt.text"
+				}
+			}
+		}
+	}
+
+	tfStatistics2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "tfStatistics2" 
+			lib     = clans_lib 
+			propMapping {
+				tfStatistics2Txt = {
+					mapping = "tfStatistics2Txt.text"
+				}
+			}
+		}
+	}
+
+	weaponNameTextCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "weaponNameTextCont" 
+			lib     = clans_lib 
+			propMapping {
+				textFieldUp = {
+					mapping = "textFieldUp.text"
+				}
+			}
+		}
+	}
+}
+__type = "ui_widget_lib"

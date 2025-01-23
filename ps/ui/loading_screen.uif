@@ -1,0 +1,3 @@
+__type   =   "ui_gfx_frame"
+gfx_movie   =   "loading_lib"
+loading_screen   =   True

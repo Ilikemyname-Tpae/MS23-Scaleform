@@ -1,0 +1,1208 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_button
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ui.root
+import ui.ui_economy
+
+/*************************************************************
+* UiMessageBox
+* 
+*************************************************************/
+class UiMessageBox : UiWidgetContainer
+
+   func OpenDialog(p:params)
+      GetDC().OpenDialog(p)
+   end
+
+   func GetVM() : UiMessageBoxVM
+      return (UiMessageBoxVM)GetDC()
+   end
+
+   handle OnChangeStateAny
+      Log("ui~messageBox", "Message Box OnChangeStateAny:" + GetStateName())
+      if (! IsVoid(GetDC()))
+         GetVM().OnChangeStateAny()
+      end
+   end
+
+   handle OnEnteringState("OnHidden")
+   end
+
+   handle OnEnterState("OnHidden")
+   end
+
+   handle OnEnteringState("Hidden")                  
+      if (! IsVoid(GetDC()))
+         GetVM().CancelTimeoutTimer()
+      end
+   end
+
+   handle OnEnterState("Hidden")
+      Props().visible := false
+      if (! IsVoid(GetDC()))
+         GetVM().CloseDialog()
+      end
+   end
+
+   handle OnEnteringState("Visible")
+      bLog("UI/MSGBOX", "Msg_Box_Visible")
+      Log("ui~messageBox", "OnEnteringState_Visible")
+      Props().visible := true
+   end
+
+   handle OnEnterState("Visible")
+   end
+
+   handle OnEnteringState("VisibleBuyMsg")
+      Props().visible := true
+   end
+
+   handle OnEnteringState("ForceClose")   
+      if (! IsVoid(GetDC()))
+         GetVM().ForceClose()
+      end
+   end
+
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (keyCode == $uiKeys.VK_ESC or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+         if (p.isDown)
+            if (keyCode == $uiKeys.VK_ENTER)
+               GenerateEvent("#MBCloseOK")
+            elif (keyCode == $uiKeys.VK_ESC)
+               GenerateEvent("#MBCloseCancel")
+            end
+         end
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+end
+
+/*************************************************************
+* UiMessageBoxInput
+* 
+*************************************************************/
+class UiMessageBoxInput : UiWidgetButton
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (p.isDown == true)
+         if (keyCode == $uiKeys.VK_UP or (keyCode == $uiKeys.VK_TAB and p.isShiftPressed))
+            GenerateEvent("SelectLoginBtn")
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_DOWN or (keyCode == $uiKeys.VK_TAB and ! p.isShiftPressed))
+            GenerateEvent("SelectUserPassword")
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_ENTER)
+            GenerateEvent("#MBCloseOk")
+            isTerminated := true
+         end
+      end
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+end
+
+/*************************************************************
+* UiMessageBoxOk
+* 
+*************************************************************/
+class UiMessageBoxOk : UiWidgetButton
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (keyCode != $uiKeys.VK_ENTER)
+         isTerminated := true
+         if (p.isDown)
+            if (keyCode == $uiKeys.VK_LEFT or keyCode == $uiKeys.VK_RIGHT or keyCode == $uiKeys.VK_TAB)
+               GenerateEvent("MBSelectCancel")
+            elif (keyCode == $uiKeys.VK_ESC)
+               GenerateEvent("MBCloseCancel")
+            end
+         end
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+end
+
+/*************************************************************
+* UiMessageBoxCancel
+* 
+*************************************************************/
+class UiMessageBoxCancel : UiWidgetButton
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (keyCode != $uiKeys.VK_ENTER)
+         isTerminated := true
+         if (p.isDown)
+            if (keyCode == $uiKeys.VK_LEFT or keyCode == $uiKeys.VK_RIGHT or keyCode == $uiKeys.VK_TAB)
+               GenerateEvent("MBSelectOK")
+            elif (keyCode == $uiKeys.VK_ESC)
+               GenerateEvent("MBCloseCancel")
+            end
+         end
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+end
+
+/*************************************************************
+* UiMessageBoxVM
+* 
+*************************************************************/
+class UiMessageBoxVM
+   var txtTitle         : ObservableProperty    = $OM.Property("")
+   var txtMessage1      : ObservableProperty    = $OM.Property("")
+   var txtMessage2      : ObservableProperty    = $OM.Property("")
+   var txtMessage3      : ObservableProperty    = $OM.Property("")
+   var txtMessage4      : ObservableProperty    = $OM.Property("")
+   var txtDesc          : ObservableProperty    = $OM.Property("")
+   var txtSub           : ObservableProperty    = $OM.Property("")
+   var uid              : ObservableProperty    = $OM.Property($UiGlobals.GetInvalidUIDVal())
+   var pic1             : ObservableProperty    = $OM.Property("")
+   var pic1Visible      : ObservableProperty    = $OM.Property(false)
+   var pic1X            : ObservableProperty    = $OM.Property(0)
+   var pic1Y            : ObservableProperty    = $OM.Property(0)
+   var pic1Scale        : ObservableProperty    = $OM.Property(1.0)
+   var quality1Anim     : ObservableProperty    = $OM.Property("")
+   var pic2             : ObservableProperty    = $OM.Property("")
+   var pic2Visible      : ObservableProperty    = $OM.Property(false)
+   var pic2X            : ObservableProperty    = $OM.Property(0)
+   var pic2Y            : ObservableProperty    = $OM.Property(0)
+   var pic2Scale        : ObservableProperty    = $OM.Property(1.0)
+   var quality2Anim     : ObservableProperty    = $OM.Property("")
+   var frame1Visible    : ObservableProperty    = $OM.Property(false)
+   var frame1Anim       : ObservableProperty    = $OM.Property("")
+   var frame1Frame      : ObservableProperty    = $OM.Property("Info")
+   var frame2Visible    : ObservableProperty    = $OM.Property(false)
+   var frame2Anim       : ObservableProperty    = $OM.Property("")
+   var okEnabled        : ObservableProperty    = $OM.Property(false)
+   var okVisible        : ObservableProperty    = $OM.Property(false)
+   var cancelEnabled    : ObservableProperty    = $OM.Property(false)
+   var cancelVisible    : ObservableProperty    = $OM.Property(false)
+   var cancelX          : ObservableProperty    = $OM.Property(0.0)
+   var cancelY          : ObservableProperty    = $OM.Property(0.0)
+   var inputEnabled     : ObservableProperty    = $OM.Property(false)
+   var inputVisible     : ObservableProperty    = $OM.Property(false)
+   var waitingVisible   : ObservableProperty    = $OM.Property(false)
+   var currencyPic      : ObservableProperty    = $OM.Property("")
+   var animContVisible  : ObservableProperty    = $OM.Property(false)
+   var animContX        : ObservableProperty    = $OM.Property(150.0)
+   var animContY        : ObservableProperty    = $OM.Property(380.0)
+   var globalFrameX     : ObservableProperty    = $OM.Property(0.0)
+   var globalFrameY     : ObservableProperty    = $OM.Property(0.0)
+   var txtTimerMes      : ObservableProperty    = $OM.Property("")
+   var txtTimerTime     : ObservableProperty    = $OM.Property("")
+   var wgt              : UiMessageBox          = null
+   var isPartyInvite    : bool                  = false
+   
+   func Init(p : params)
+      wgt := p.widget
+   end
+   
+   
+      
+   var   mbType               : string
+   var   callbackEvent        : string
+   var   callbackParams       : params
+   var   originalParams       : params
+   var   callbackTarget       : *
+   var   callbackTargetInited : bool
+   var   priceCredit          : int
+   var   priceGold            : int
+   var   buyCount             : int
+   var   itemID               : string
+   var   titleTxt             : string
+   var   subTxt               : string
+   var   messageTxt           : wstring
+   var   messageTxt2          : string
+   var   messageTxt3          : string
+   var   messageTxt4          : string
+   var   isSaveFocus          : bool
+   var   isMulti              : bool
+   var   buyType              : string
+   var   xpos                 : int
+   var   ypos                 : int
+   var   isOK                 : bool
+   var   isOkOnTimeOut        : bool
+   var   isCancelledBuy       : bool
+   var   isAutoBuy            : bool
+   var   closeTimeout         : int
+   var   curTimeout           : int
+   var   offer                : string
+   var   offers               : vector
+   var   txtTrans             : bool
+   var   isWaitRespond        : bool = false
+   var   skipMsg              : bool = false
+   var   isClosing            : bool = false
+
+   func OpenDialog(p:params)
+      var   emptyParams    : params
+      var   emptyRefWidget : *
+      
+      mbType         := $uiEnums.MB_TYPE_NO_YES
+      callbackEvent  := ""
+      callbackParams := emptyParams
+      callbackTarget := emptyRefWidget
+      callbackTargetInited := false
+      originalParams := p
+      isClosing      := false
+      xpos           := 640
+      ypos           := 480   
+      itemID         := ""
+      buyCount       := 0
+      priceCredit    := 0
+      priceGold      := 0
+      titleTxt       := "Dialog title"
+      subTxt         := "Sub text"
+      messageTxt     := $UiGlobals.String2WString("Dialog message")
+      messageTxt2    := ""
+      messageTxt3    := ""
+      messageTxt4    := ""
+      isMulti        := false
+      isOK           := false
+      buyType        := "none"
+      isCancelledBuy := false
+      isAutoBuy      := false
+      closeTimeout   := 0
+      curTimeout     := 0
+      isOkOnTimeOut  := true
+      offer          := ""
+      offers         := new vector
+      txtTrans       := false 
+      isWaitRespond  := false
+      isPartyInvite  := false
+      uid.Set($UserDataStorage.GetInvalidUID())
+      wgt.Props().mouseChildren := true
+
+      if (! IsVoid(p.offer))
+         offer := p.offer
+      end
+      if (! IsVoid(p.offers))
+         offers := p.offers
+      end
+      if (! IsVoid(p.isSkip))
+         skipMsg := p.isSkip
+      end
+      if (! IsVoid(p.isOkOnTimeOut))
+         isOkOnTimeOut := p.isOkOnTimeOut
+      end      
+      if (! IsVoid(p.closeTimeout))
+         closeTimeout := p.closeTimeout
+      end
+      if (! IsVoid(p.isAutoBuy))
+         isAutoBuy := p.isAutoBuy
+      end
+      if (! IsVoid(p.callbackEvent))
+         callbackEvent := p.callbackEvent
+      end
+      if (! IsVoid(p.callbackParams))
+         callbackParams := p.callbackParams
+      end
+      if (! IsVoid(p.mbType))
+         mbType := p.mbType
+      end
+      if (! IsVoid(p.xpos))
+         xpos := p.xpos
+      end
+      if (! IsVoid(p.ypos))
+         ypos := p.ypos
+      end
+      if (! IsVoid(p.itemID))
+         itemID := p.itemID
+     else 
+        itemID := ""		 
+      end
+      if (! IsVoid(p.isSaveFocus))
+         isSaveFocus := p.isSaveFocus
+      end
+      if (! IsVoid(p.uid))
+         uid.Set(p.uid)
+      end
+      if (! IsVoid(p.InviteUid))
+         uid.Set(p.InviteUid)
+      end
+      if (!IsVoid(p.isPartyInvite))
+         isPartyInvite := p.isPartyInvite
+      end
+      if (isSaveFocus)
+         wgt.SaveFocus()
+      end
+      
+      if (! IsVoid(p.callbackTarget))
+         Log("ui~messageBox", "callbackTarget is set: " + p.callbackTarget.GetName())
+         callbackTarget := p.callbackTarget
+         callbackTargetInited := true
+      else
+         Log("ui~messageBox", "callbackTarget is NOT set")
+      end      
+      
+            
+      if (! IsVoid(p.priceCredit))
+         priceCredit := p.priceCredit
+      end
+      if (! IsVoid(p.priceGold))
+         priceGold := p.priceGold
+      end
+      
+      EnableControls()
+      
+      if (! IsVoid(p.titleTxt))
+         titleTxt := p.titleTxt
+      end   
+      if (! IsVoid(p.subTxt))
+         subTxt   := p.subTxt
+      end      
+      if (! IsVoid(p.messageTxt))
+         var pp : params
+         pp.messageTxt := $UiGlobals.String2WString("")
+         pp.messageTxt := pp.messageTxt + p.messageTxt
+         messageTxt := pp.messageTxt
+      end
+      if (! IsVoid(p.messageTxt2))
+         messageTxt2 := p.messageTxt2
+      end
+      if (! IsVoid(p.messageTxt3))
+         messageTxt3 := p.messageTxt3
+      end
+      if (! IsVoid(p.messageTxt4))
+         messageTxt4 := p.messageTxt4
+      end
+      if (! IsVoid(p.txtTrans))
+         txtTrans := p.txtTrans
+      end
+      UpdateTitle()
+      ResetTexts()
+      if (! IsVoid(p.isRent) and p.isRent)
+         setDescTxt("msg_rent_logic_desc")
+      end
+      setMessage(messageTxt, txtTrans)
+      setSubMessage(messageTxt2, messageTxt3, messageTxt4)
+      if (mbType == $uiEnums.MB_TYPE_CONFIRM_BUY or mbType == $uiEnums.MB_TYPE_RENAME) // ! IsSmall()
+         setSubTxt(subTxt)
+      else
+         setSubTxt("")
+      end
+      
+      if (mbType == "BindBox")
+         UpdateTitle()
+      end
+      
+      // TODO: make it modal            
+      SetCoords(xpos, ypos)
+      //EnableGoldCredits()
+      SetItem()
+      
+      //Update()
+      StartTimeOut()
+      //SetModal()   
+      wgt.SetStateName("Visible")
+      startBlinkAnim()
+      $root.playSound("window_prompt")
+   end
+
+   func TimeOutTimerTick()
+      if (curTimeout > 0)
+         UpdateTitle()
+         TimeOutTimerTick() : 1, MESSAGE_BOX_AUTO_CLOSE_TIMER         
+      else
+         CloseManually()
+      end
+      curTimeout := curTimeout - 1      
+   end
+
+   func IsCloseTimeout(): bool
+      return closeTimeout > 0
+   end
+
+   func CancelTimeoutTimer()
+      delay kill, this, MESSAGE_BOX_AUTO_CLOSE_TIMER
+   end
+
+   func StartTimeOut()
+      CancelTimeoutTimer()
+      if ((mbType == "Info" or mbType == $uiEnums.MB_TYPE_NO_YES or mbType == "ErrInfo" or mbType == "AssignInfo" or mbType == "BindBox" or mbType == "Waiting") and closeTimeout > 0)
+         curTimeout := closeTimeout
+         TimeOutTimerTick()
+      else
+         closeTimeout := 0
+      end
+   end
+
+   func UpdateTitle()
+      setTitle(titleTxt)
+      if (IsCloseTimeout() and (mbType != "AssignInfo"))
+         setTimerMessage("msg_ui_settings_timer_auto_close")
+         setTimerValue((string)curTimeout)
+      else
+         setTimerMessage("")
+         setTimerValue("")
+      end   
+   end
+
+   func setTitle(_title:string)
+      txtTitle.Set(_title)
+   end
+
+   func setTimerMessage(_title:string)
+      if (! IsSmall())
+         txtTimerMes.Set(_title)
+      end
+   end
+
+   func setTimerValue(_seconds:string)
+      if (! IsSmall())
+         txtTimerTime.Set(_seconds)
+      end
+   end
+
+   func ResetTexts()   
+      txtMessage1.Set("")
+      txtMessage2.Set("")
+      txtMessage3.Set("")
+      txtMessage4.Set("")
+      txtSub.Set("")
+      txtDesc.Set("")
+   end
+
+   func setMessage(_message:*, _trans:bool)
+      var pp : params
+      pp.message := $UiGlobals.String2WString("")
+      pp.message += _message
+      txtMessage1.Set(pp.message)
+   end
+   
+   func GetMbFrame() : UiWidget
+      var ret : UiWidget = null
+      if (IsSmall())
+         ret := (UiWidget)(wgt.Widgets().msgBoxFrame.GetWidget("abackgroundSmall"))
+      else
+         ret := (UiWidget)(wgt.Widgets().msgBoxFrame.GetWidget("abackground"))
+      end   
+      return ret
+   end
+
+   func GetOKCancelButton(_isOK : bool): UiWidget
+      var ret : UiWidget = null
+      if (_isOK)
+         ret := (UiWidget)(GetMbFrame().GetWidget("okButtonMsg"))
+      else
+         ret := (UiWidget)(GetMbFrame().GetWidget("cancelButtonMsg"))
+      end
+      return ret
+   end
+
+   func GetOkButton() : UiWidget
+      return GetOKCancelButton(true)
+   end
+
+   func GetCancelButton() : UiWidget
+      return GetOKCancelButton(false)
+   end
+
+
+   func CanClose(_isOK : bool) : bool
+      var ret : bool = false
+      if (! isWaitRespond and ! wgt.IsChangingStateInProgress())
+         ret := GetOKCancelButton(_isOK).Props().visible and GetOKCancelButton(_isOK).Props().enabled
+         if (mbType == "Info" or mbType == "AssignInfo")
+            ret := ret and _isOK
+         else
+         end
+      end
+      return ret
+   end
+
+   func MBClose(_isOK : bool)
+      if (CanClose(_isOK))
+         GetOKCancelButton(_isOK).SetFocus()
+         OnDialogCloseInternal(_isOK)
+      end
+   end
+
+   func MBCloseOK(p : params) : bool
+      MBClose(true)
+      return false
+   end
+
+   func MBCloseCancel(p : params) : bool
+      if (mbType == "Info" or mbType == "AssignInfo")
+         MBClose(true)
+      else
+         MBClose(false)
+      end
+      return false
+   end
+
+   func MBSelectCancel(p : params) : bool
+      if (mbType != "Info" or mbType != "AssignInfo")
+         if (CanClose(false))
+            GetOKCancelButton(false).SetFocus()
+         end
+      end
+      return false
+   end
+
+   func MBSelectOK(p : params) : bool
+      if (CanClose(true))
+         GetOKCancelButton(true).SetFocus()
+      end
+      return false
+   end
+
+   func CloseDialog()
+      isClosing := true
+      var myParams: params = GetMyParams()
+      if (callbackEvent != "")
+         Log("ui~messageBox", "CloseDialog, calling callback = " + callbackEvent + ", flag=" + callbackTargetInited) 
+         if (callbackTargetInited)
+            wgt.GenerateEventTargeted(callbackEvent, myParams, callbackTarget)
+            callbackTargetInited := false
+         else
+            wgt.GenerateEvent(callbackEvent, myParams)
+         end
+         callbackEvent := ""
+      end
+      if (isSaveFocus)
+         wgt.RestoreFocus()
+      end
+
+      isClosing := false
+   end
+
+   func CloseDialogForce()
+      CancelTimeoutTimer()
+      isOK     := false
+      buyType  := ""
+      buyCount := 0      
+      if (callbackEvent != "")
+         if (callbackTargetInited)
+            wgt.GenerateEventTargeted(callbackEvent, GetMyParams(), callbackTarget)
+            callbackTargetInited := false
+         else
+            wgt.GenerateEvent(callbackEvent, GetMyParams())
+         end
+         callbackEvent := ""
+      end
+   end
+
+   func OnBuyButtonClicked(p:params):bool
+      //TODO: make check for available credits
+      
+      if (! IsVoid(p.widget.buyType))
+         buyType := p.widget.buyType
+      else
+         buyType := "none"
+      end            
+      isOK := true
+            
+      if (isMulti)
+         /*if (! IsVoid(callbackTarget))
+            GenerateEventTargeted("OnItemBuyComplete", GetMyParams(), callbackTarget)
+         else
+            GenerateEvent("OnItemBuyComplete", GetMyParams())
+         end
+         buyCount := 1   
+         Update()*/
+         wgt.SetStateName("Hidden")
+      else
+         wgt.SetStateName("Hidden")
+      end      
+      return true
+   end
+
+   func CloseManually()
+      CancelTimeoutTimer()
+      if (mbType == "Info" or mbType == $uiEnums.MB_TYPE_NO_YES or mbType == "ErrInfo")
+         isOK := isOkOnTimeOut
+      else
+         isOK     := false
+         buyCount := 0
+      end      
+      wgt.SetStateName("Hidden")            
+   end
+
+   func OnDialogCloseInternal(_isOK : bool)
+      isOK := _isOK
+      if (isCancelledBuy)
+         isOK     := false
+         buyCount := 0
+      end
+      if (isOK and ((mbType == $uiEnums.MB_TYPE_CONFIRM_BUY and offer != "") or (mbType == $uiEnums.MB_TYPE_CONFIRM_BATCH_BUY and offers.Count() > 0) or (mbType == $uiEnums.MB_TYPE_RENAME)))
+         wgt.SetStateName("OnHidden")
+      else
+         wgt.SetStateName("Hidden")            
+      end   
+   end
+
+   func OnDialogClose(p:params):bool
+      bLog("UI/MSGBOX", "Msg_Box_DialogClose")
+      Log("ui~messageBox", "OnDialogClose")
+      CancelTimeoutTimer()      
+      
+      var isOKLocal : bool
+      if (! IsVoid(p.widget.isOK))
+         isOKLocal := p.widget.isOK
+      else
+         isOKLocal := false
+      end      
+      OnDialogCloseInternal(isOKLocal)   
+      return true
+   end
+      
+   func setSubMessage(_message2:string, _message3:string, _message4:string)
+      txtMessage2.Set(_message2)
+      txtMessage3.Set(_message3)
+      txtMessage4.Set(_message4)
+   end
+
+   func setSubTxt(_txt:string)
+      txtSub.Set(_txt)
+   end
+
+   func setDescTxt(_txt:string)
+      txtDesc.Set(" ")
+   end
+
+   func IsSmall(): bool
+      var ret: bool
+      if (mbType == "AssignInfo" or mbType == "BindBox")      
+         ret := true
+      else
+         ret := false
+      end      
+      return ret  
+   end
+
+   func ShowIcon(_visible:bool)
+      //Widgets().msgBoxFrame.icon.visible           := false
+      var scl:float = 1.25
+      var itemQ : string = "common"
+      if (itemID != "")
+         itemQ := (string)$UiGlobals.componentsUI.Get(itemID).quality.Get()
+      end
+      pic1Visible.Set(false)
+      pic1.Set("")
+      pic2Visible.Set(false)
+      pic2.Set("")
+      if (mbType == "Info" and _visible)
+         quality1Anim.Set("common")
+         pic1Visible.Set(true)
+         pic1.Set("errorIcon")
+      end
+      if (mbType == $uiEnums.MB_TYPE_CONFIRM_BATCH_BUY and _visible)
+         quality1Anim.Set("common")
+         pic1Visible.Set(true)
+         pic1.Set("errorIcon")
+      end
+      if (! IsSmall() and _visible and itemID != "")
+         var iconInfoBig      : params
+         var compUI           : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(itemID)
+         
+         iconInfoBig.iconName := (string)compUI.icon_med.Get()
+         quality1Anim.Set(itemQ)
+         pic1Visible.Set(true)
+         pic1.Set(iconInfoBig.iconName)
+         pic1Scale.Set(1.0)
+      else // Small (abackgroundSmall)
+         var iconInfo : params = $root.GetItemIconAndScale(itemID, true)
+         quality2Anim.Set(itemQ)
+         if ($uiEconomy.IsItemArmor(itemID))          
+            pic2Visible.Set(true)
+            pic2.Set(iconInfo.iconName)
+            pic2X.Set(203.0)
+            pic2Y.Set(70.0)
+            pic2Scale.Set(1.3)
+         else   
+            if (! $uiEconomy.IsItemWeapon(itemID))
+               pic2Visible.Set(true)
+               pic2.Set(iconInfo.iconName)
+               pic2X.Set(195.0)
+               pic2Y.Set(25.0)
+               pic2Scale.Set(1.7)
+            else
+               pic2Visible.Set(true)
+               pic2.Set(GetItemIcon(itemID))
+               pic2X.Set(100.0)
+               pic2Y.Set(50.0)
+               pic2Scale.Set(1.3)
+            end
+         end   
+      end      
+   end
+
+   func EnableControls()
+      Log("ui~messageBox", "EnableControls")
+      var test : string = mbType
+      okEnabled.Set(true)
+      cancelEnabled.Set(true)
+      inputVisible.Set(false)
+      waitingVisible.Set(false)
+            
+      wgt.Widgets().msgBoxFrame.SetFocus() // HACKY
+
+      if (IsSmall())
+         xpos := 725
+         ypos := 400
+         frame1Visible.Set(false)
+         frame2Visible.Set(true)
+         frame2Anim.Set(0)
+         frame2Anim.Set("fadeIn")
+      else
+         xpos := 650
+         ypos := 400
+         frame1Visible.Set(true)
+         frame2Visible.Set(false)
+         currencyPic.Set("")
+         
+         frame1Frame.Set(0)
+         animContX.Set(0.0)
+         animContY.Set(0.0)
+         if (mbType == "Info" or mbType == "ErrInfo")
+            frame1Frame.Set("Info")
+         else if (mbType == "Waiting")
+            frame1Frame.Set("Info")
+         else
+            frame1Frame.Set("YesNo")
+         end
+         frame1Anim.Set(1)
+         frame1Anim.Set("fadeIn")
+      end
+      
+      ShowIcon(false)
+      okVisible.Set(true)
+      okVisible.Set(false)
+      cancelVisible.Set(true)
+      cancelVisible.Set(false)
+      
+      if (! IsSmall())
+         if (mbType == "Info" or mbType == "ErrInfo")
+            cancelVisible.Set(false)
+         else if (mbType == "Waiting")
+            cancelVisible.Set(false)
+            animContX.Set(65.0)
+            animContY.Set(50.0)
+            animContVisible.Set(true)
+         end         
+      end
+
+      if (mbType == $uiEnums.MB_TYPE_NO_YES)
+         okVisible.Set(true)
+         cancelVisible.Set(true)
+      else if (mbType == "Info")
+         ShowIcon(true)
+         okVisible.Set(true)
+         cancelVisible.Set(false)
+      else if (mbType == $uiEnums.MB_TYPE_RENAME)
+         ShowIcon(false)
+         okVisible.Set(true)
+         cancelVisible.Set(true)
+         inputVisible.Set(true)
+
+         var ud   : UserData  = (UserData)$UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+         var nick : wstring    = ud.base.nickname.Get()
+         wgt.Widgets().msgBoxFrame.abackground.enterFieldCont.txt.text := nick // HACKY
+      else if (mbType == "AssignInfo") // small
+         ShowIcon(true)
+         okVisible.Set(false)
+         cancelVisible.Set(false)
+         messageTxt := $UiGlobals.String2WString(GetItemName())
+      else if (mbType == "BindBox") // small
+         okVisible.Set(false)
+         cancelVisible.Set(false)
+      else if (mbType == "ErrInfo")
+         okVisible.Set(true)
+         cancelVisible.Set(false)
+      else if (mbType == "BuyItem")       
+         buyCount                                     := 1
+         ShowIcon(true)
+         titleTxt    := GetItemName()
+         messageTxt  := $UiGlobals.String2WString("Purchase " + GetItemDesc() + "?")
+      else if (mbType == "BuyItemCount")        
+         buyCount                                     := 1
+         isMulti                                      := true
+         ShowIcon(true)
+         titleTxt    := GetItemName()
+         messageTxt  := $UiGlobals.String2WString("SELECT PURCHASE COUNT")
+      else if (mbType == $uiEnums.MB_TYPE_CONFIRM_BUY)
+         buyCount                                     := 1
+         titleTxt    := "msg_confirm_purchase"
+         subTxt := GetItemName()
+         messageTxt  := $UiGlobals.String2WString("msg_are_you_sure_purch")
+         messageTxt2 := " " //subTxt
+         messageTxt3 := "msg_purch_price"
+         if (priceCredit == 0)
+            messageTxt4 := (string)(priceGold) //+ " Gp "
+            currencyPic.Set("goldIcon")
+         else
+            messageTxt4 := (string)(priceCredit) //+ " Cr "
+            currencyPic.Set("creditIcon")
+         end
+         GetPriceWidth() : 0
+         ShowIcon(true)
+      else if (mbType == $uiEnums.MB_TYPE_CONFIRM_BATCH_BUY)
+         buyCount := 1
+         titleTxt := "msg_confirm_purchase"
+         subTxt := "msg_renew_all"
+         messageTxt  := $UiGlobals.String2WString("msg_are_you_sure_purch")
+         messageTxt2 := " " //subTxt
+         messageTxt3 := "msg_purch_price"
+         if (priceCredit == 0)
+            messageTxt4 := (string)(priceGold) //+ " Gp "
+            currencyPic.Set("goldIcon")
+         else
+            messageTxt4 := (string)(priceCredit) //+ " Cr "
+            currencyPic.Set("creditIcon")
+         end
+         GetPriceWidth() : 0
+      else if (mbType == "ConfirmBuyCredits")
+         buyCount                                     := 1
+         priceGold                                    := 0
+         titleTxt    := "Confirm purchase by credits"
+         messageTxt  := $UiGlobals.String2WString("Spend " + (string)(priceCredit) + " credits?")
+      else if (mbType == "ConfirmBuyGold")
+         buyCount                                     := 1
+         priceCredit                                  := 0
+         titleTxt    := "Confirm purchase by gold"
+         messageTxt  := $UiGlobals.String2WString("Spend " + (string)(priceCredit) + " gold?")
+      end            
+   end
+
+   // HACKY
+   func GetPriceWidth()
+       var width : float
+       width := wgt.Widgets().msgBoxFrame.abackground.textWidth
+       wgt.Widgets().msgBoxFrame.abackground.currencyAttach.x := width + 325
+       wgt.Widgets().msgBoxFrame.abackground.currencyAttach.y := 250.5
+   end
+
+   func GetItemName(): string      
+      var ret:string = ""
+      if (itemID != "")
+         var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(itemID)
+         ret := (string)compUI.name.Get()
+      end      
+      return ret
+   end
+
+   func GetItemDesc(): string      
+      var ret:string = ""
+      if (itemID != "")
+         ret := GetItemName()
+      end
+      return ret
+   end
+
+   func GetItemIcon(_itemID:string): string
+      var iconName: string = ""
+      if (_itemID != "")
+         iconName := $root.GetItemIcon(_itemID, false)
+      end
+      return iconName      
+   end
+
+   func SetItem()
+      ShowIcon(true)
+      //if (itemID != "")
+      //   ShowIcon(true, isMulti)
+      //   Widgets().msgBoxFrame.icon.pic := GetItemIcon(itemID)
+      //else
+      //   Widgets().msgBoxFrame.icon.visible := false
+      //end
+   end
+      
+   func GenMsg(gp:bool, cr:bool, xp:bool, totalGp:int, totalCr:int):string
+      Log("ui~messageBox", "GenMsg " + gp + " " + cr + " " + xp + " totalCr " + totalCr)
+     
+      var txt1: string = ""
+      var txt2: string = ""
+      var txt3: string = ""
+      var ret : string = ""
+      
+     if (!gp)
+         txt1 := "Gold !"
+      else
+         txt1 := ""   
+      end
+
+      if (!cr)
+         txt2 := "Credits !"
+      else
+         txt2 := ""   
+      end
+
+      if (!xp)
+         txt3 := "Level !"
+      else
+         txt3 := ""   
+      end
+     
+     if (totalGp == 0)
+        txt1 := ""
+     end
+
+     if (totalCr == 0)
+        txt2 := ""
+     end
+      // "," 
+        ret := txt1 + " " + txt2 + " " + txt3
+     Log("ui~messageBox", "GenMsg " + ret)
+     return ret 
+   end
+         
+   func Update()
+      //var buyCount :int = Widgets().msgBoxFrame.buyCount
+      var mul1Txt:string = ""
+      var mul2Txt:string = ""
+      if (isMulti)
+         mul1Txt  := "x" + (string)(buyCount)
+      end
+   end
+               
+   func SetCoords(xpos:float, ypos:float)
+      globalFrameX.Set(xpos)
+      globalFrameY.Set(ypos)
+   end
+
+   func GetMyParams(): params
+      var p:params = originalParams
+      if (isOK)
+         p.buyCount     := buyCount
+      else
+         p.buyCount     := 0
+      end
+      p.isOK            := isOK
+      p.callbackParams  := callbackParams
+      p.buyType         := buyType
+      p.ItemID          := itemID
+      return p
+   end
+
+
+   func OnFrameClick(p : params) :  bool
+      if (skipMsg and mbType == "AssignInfo" and mbType != "BindBox")
+         wgt.SetStateName("Hidden")
+      end
+      return true
+   end
+
+   func onAssignSmallClose(p:params):bool
+      Log("ui~messageBox", "onAssignSmallClose")
+      wgt.SetStateName("Hidden")
+      return true
+   end
+
+   func startBlinkAnim()
+      if (IsSmall())  
+         //Widgets().msgBoxFrame.StartDefaultBlinking(0.3)
+         wgt.Widgets().msgBoxFrame.abackgroundSmall.StartDefaultBlinking(0.3)
+         wgt.Widgets().msgBoxFrame.abackgroundSmall.okButtonMsg.StartDefaultBlinking(0.45) 
+         wgt.Widgets().msgBoxFrame.abackgroundSmall.cancelButtonMsg.StartDefaultBlinking(0.6)
+      else
+         //Widgets().msgBoxFrame.StartDefaultBlinking(0.2)
+         wgt.Widgets().msgBoxFrame.abackground.StartDefaultBlinking(0.3)
+         wgt.Widgets().msgBoxFrame.abackground.okButtonMsg.StartDefaultBlinking(0.45) 
+         wgt.Widgets().msgBoxFrame.abackground.cancelButtonMsg.StartDefaultBlinking(0.6)
+      end
+   end
+
+   func fireDummy()
+      Fire("OnNewInventoryItem", null)
+   end
+
+   func StartRequestWait(_hidden : bool = false)
+      isWaitRespond           := true
+      wgt.Props().mouseChildren   := false
+      if (!IsSmall())
+         if (_hidden)
+            frame1Anim.Set("fadeOut")
+         end
+      end
+   end
+
+   func FinishRequestWait()
+      if (IsWaitingRequest())
+         isWaitRespond           := false
+         wgt.Props().mouseChildren   := true
+         wgt.SetStateName("Hidden")
+      end      
+   end
+
+   func IsWaitingRequest() : bool
+      return isWaitRespond and wgt.GetStateName() == "OnHidden"
+   end
+   
+   func onMessageBoxControl(p : params) : bool
+      if (p.desc == "key_already_used")
+         Log("ui~MEssageBOX", "Control event was delivered")
+         setSubMessage(p.message, "", "")
+      end
+      return true
+   end
+
+   func OnChangeNickNameComplete(p : params) : bool
+      if (IsWaitingRequest())
+         FinishRequestWait()
+      end
+      NickChangedMsg()
+      return false
+   end
+
+   func NickChangedMsg()
+      var p : params
+      p.newNick := $UiGlobals.backend_requests.change_nickname.nickname.Get()
+      var   pp          : params 
+      pp.mbType         := "AssignInfo"
+      pp.isSkip         := true
+      pp.closeTimeout   := 3
+      pp.messageTxt     := p.newNick + "~"
+      pp.titleTxt       := "msg_ui_nickname_changed" 
+      wgt.GenerateEvent("MainMenuDialogRequest", pp)
+   end
+
+   func NickIsNullMsg()
+      var   pp          : params 
+      pp.mbType         := "Info"
+      pp.messageTxt     := "msg_ui_nick_is_null"
+      pp.titleTxt       := "msg_ui_nick_is_null" 
+      wgt.GenerateEvent("MainMenuDialogRequest", pp)
+   end
+
+   func OnOfferPurchaseComplete(p : params) : bool
+      if (IsWaitingRequest())
+         FinishPurchase()   
+      end
+      
+      return false
+   end
+
+   func OnBatchAllpyOffer(p : params) : bool
+      if !IsWaitingRequest()
+         return false
+      end
+      if offers.Count() == 0
+         if (IsWaitingRequest())
+            FinishPurchase()   
+         end
+         return true
+      end
+      $UiGlobals.backend_requests.apply_offer.Start(offers.Get(offers.Count() - 1), "OnBatchAllpyOffer")
+      offers.Erase(offers.Count() - 1, 1)
+      return false
+   end
+
+   func PlayOfferSound()
+      if (mbType == $uiEnums.MB_TYPE_CONFIRM_BUY)
+         if (priceCredit != 0)
+            $root.playSound("spend_credits")
+         end
+         if (priceGold != 0)
+            $root.playSound("spend_gold")
+         end
+      end
+   end
+
+
+   func UnlockWeaponDialogBuyMsg(p:params): bool 
+      Log("ui~messageBox", "UnlockWeaponDialogBuyMsg")
+      offer := p.offer
+      // tmp
+      wgt.GenerateEvent("UpdateLoadoutSlotAfterBuy", p)
+      wgt.SetStateName("OnHidden")   
+      return false
+   end 
+
+   global event OnKeyPress(p:params)
+      if (mbType == "BindBox")   
+         if (p.key == 0)
+            CloseManually()
+            return 
+         end
+         if (callbackTargetInited and wgt.Widgets().msgBoxFrame.abackgroundSmall.textFieldMessage == "")
+            setMessage(callbackTarget.GetKeyText(p.key), false)
+            closeTimeout := 1
+            StartTimeOut()
+         end
+      end
+      
+   end
+   func FinishPurchase()
+      if (isWaitRespond and wgt.GetStateName() == "OnHidden")
+         PlayOfferSound()
+         FinishRequestWait()
+      end   
+   end
+
+   global event OnNewInventoryItem
+      FinishPurchase()
+   end
+   
+   func OnChangeStateAny()
+      if (wgt.GetStateName() == "OnHidden")
+         okEnabled.Set(false)
+         cancelEnabled.Set(false)
+         if (offer != "")
+            StartRequestWait(true)
+            $UiGlobals.backend_requests.apply_offer.Start(offer, "OfferPurchaseComplete")
+            Log("ui~messageBox", "RequestApplyOffer")
+         elif (offers.Count() > 0)
+            StartRequestWait(true)
+            OnBatchAllpyOffer(new params)
+         else if (mbType == $uiEnums.MB_TYPE_RENAME)
+            StartRequestWait()
+            var pp : params
+            pp.newNick := wgt.Widgets().msgBoxFrame.abackground.enterFieldCont.txt.wtext
+            if (pp.newNick != $UiGlobals.String2WString(""))
+               $UiGlobals.backend_requests.change_nickname.Start(pp.newNick, "ChangeNickNameComplete")
+            else
+               NickIsNullMsg()
+            end
+         else
+            wgt.SetStateName("Hidden")
+         end
+      end      
+   end
+   
+   func ForceClose()
+      CancelTimeoutTimer()
+      wgt.Props().visible := false         
+      if (! isClosing)
+         CloseDialogForce()
+      end      
+   end
+   
+   func GetMessage1() : wstring
+      var ret : wstring
+      if (isPartyInvite)         
+         var ud   : UserData = $UserDataStorage.GetUserDataAndData(uid.Get(), true)
+         var p    : params
+         p.nick   := ud.base.nickname.Get()
+         p.mes    := $UiGlobals.String2WString("msg_accept_invite_txt,")
+         p.mes    := p.mes + p.nick
+         ret      := p.mes
+      else
+         ret := txtMessage1.Get()
+      end
+      return ret
+   end
+end

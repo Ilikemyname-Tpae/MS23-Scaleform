@@ -1,0 +1,115 @@
+/*
+native func PS2Params(ps: psSECTION): params
+native func PS2Vector(ps: psARRAY): vector
+native func Params2PS(p: params): psSECTION
+native func Vector2PS(v: vector): psARRAY
+*/
+
+class Serializable
+   func Save() : params
+      var p : params
+      return p
+   end
+   func Load(p : params)
+   end
+end
+
+// IN  : vSerializable - vector<Seriazable>
+// RET : vector<params>
+func Convert2PSVector(vSerializables : vector) : vector
+   var retVec : vector
+   var i : int
+   for i := 0 to vSerializables.Last()
+      retVec.Push(vSerializables.Get(i).Save())
+   end
+   return retVec
+end
+
+// IN  : vecPS - vector<params>
+//     : className - obvious
+// RET : vector<Seriazable>
+func ConvertFromPSVector(vecPS : vector, className : string) : vector
+   var retVec : vector
+   var i : int
+   for i := 0 to vecPS.Last()
+      var obj : * = CreateObjectByClassName(className)
+      obj.Load(vecPS.Get(i))
+      retVec.Push(obj)
+   end
+   return retVec
+end
+
+
+func SaveParams2Profile (key : string, p : params)
+   var ps : psSECTION = Params2PS(p)
+   $sslOptionsSys.SetVariable($sslUserMng.PrimaryUserIdx(), key, ps)
+   $sslOptionsSys.SaveConfig($sslUserMng.PrimaryUserIdx())
+end
+
+func LoadParamsFromProfile (key : string) : params
+   var ps : * = $sslOptionsSys.GetVariable($sslUserMng.PrimaryUserIdx(), key)
+   return PS2Params(ps)
+end
+
+func SaveVector2Profile (key : string, v : vector)
+   var pa : psARRAY = Vector2PS(v)
+   $sslOptionsSys.SetVariable($sslUserMng.PrimaryUserIdx(), key, pa)
+   $sslOptionsSys.SaveConfig($sslUserMng.PrimaryUserIdx())
+end
+
+func LoadVectorFromProfile (key : string) : vector
+   var pa : * = $sslOptionsSys.GetVariable($sslUserMng.PrimaryUserIdx(), key)
+   return PS2Vector(pa)
+end
+
+func SaveSerializablesVector2Profile (key : string, vecSerializables : vector)
+   SaveVector2Profile(key, Convert2PSVector(vecSerializables))
+end
+
+func LoadSerializablesVectorFromProfile (key : string, className : string) : vector
+   return ConvertFromPSVector(LoadVectorFromProfile(key), className)
+end
+
+
+func SaveData2Profile (key : string, val : *)
+   $sslOptionsSys.SetVariable($sslUserMng.PrimaryUserIdx(), key, val)
+   $sslOptionsSys.SaveConfig($sslUserMng.PrimaryUserIdx())
+end
+
+func LoadDataFromProfile (key : string) : *
+   return $sslOptionsSys.GetVariable($sslUserMng.PrimaryUserIdx(), key)
+end
+
+// Examples
+// Serializable class example 
+/*
+class TestSerializable : Serializable
+   var a : float
+   var b : int
+   
+   override Save
+      var p : params := parent.Save()
+      p.a := a
+      p.b := b
+      return p
+   end
+   
+   override Load
+      a := p.a
+      b := p.b
+      parent.Load(p)
+   end
+end
+*/
+/*
+var v : vector
+var a : TestSerializable
+a.a := 5.0
+a.b := 7
+v.Push(a)
+SaveSerializablesVector2Profile("GAME_INFO.REBELS_POOL", v)
+*/
+/*
+var v : vector
+v := LoadSerializablesVectorFromProfile("GAME_INFO.REBELS_POOL", "TestSerializable" )
+*/

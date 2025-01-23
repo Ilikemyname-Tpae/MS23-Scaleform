@@ -1,0 +1,37 @@
+import ssl.lib.ui.ui_iface
+//import ssl.lib.systems.input_context
+
+class BootUpScreen : UiIface
+
+/*var interpolateDuration: float := 5
+var extrapolateDuration: float := 40
+var extrapolateValue: float := 0.1
+
+handle OnInit
+   Log("->LoadingScreen.OnInit()")
+
+   asSetupProgress(interpolateDuration, extrapolateDuration, extrapolateValue)
+   var p: params
+   p.state := "preload"
+   ASCall("asSetState", p)      
+end
+
+func asSetupProgress(interpolateDuration:float, extrapolateDuration:float, extrapolateValue:float)
+   var p: params
+   p.interpolateDuration := interpolateDuration
+   p.extrapolateDuration := extrapolateDuration
+   p.extrapolateValue := extrapolateValue
+   ASCall("asSetupProgress", p)
+end
+
+
+handle OnTerm
+   Log("->LoadingScreen.OnTerm()")
+   
+   var pp : params
+   pp.idx := 0
+   Fire("ReleasePauseController", pp)
+end
+*/
+
+end

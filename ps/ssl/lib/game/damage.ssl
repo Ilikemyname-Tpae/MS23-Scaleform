@@ -1,0 +1,16 @@
+class Damage
+   native func GetAmount        ()                       : float
+   native func SetAmount        (amount : float)
+   native func Bone             ()                       : string
+   native func Type             ()                       : string
+   native func SetType          (type : string)
+   native func GetGunType       ()                       : string
+   native func SetGunType       (gunType : string)
+   native func SetSourceEntity  (ent : object)
+   native func SetShooter       (ent : object)
+   native func SetSender        (ent : object)
+   native func GetShooter       ()                       : object
+   native func GetSender        ()                       : object
+   native func IsDirectHit      ()                       : bool
+   native func IsDerivedFrom    (type : string)      : bool
+end

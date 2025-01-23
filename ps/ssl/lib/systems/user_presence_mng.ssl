@@ -1,0 +1,5 @@
+native class UserPresenceMng
+   native func SetMode            (userIdx: int, mode: string)
+   native func GetMode            (userIdx: int): string
+   native func NormalizeLevelName (levelName: string): string
+end

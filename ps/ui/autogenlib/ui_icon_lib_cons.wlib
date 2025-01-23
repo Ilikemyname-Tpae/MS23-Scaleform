@@ -1,0 +1,940 @@
+classes = {
+	arms_platinum_1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "arms_platinum_1" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	arms_platinum_2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "arms_platinum_2" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	arms_platinum_3 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "arms_platinum_3" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	arms_premium = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "arms_premium" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	arms_standard = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "arms_standard" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_cooldown = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_cooldown" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_cooldown_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_cooldown_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_feffort = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_feffort" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_feffort_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_feffort_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_grenade = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_grenade" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_grenade_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_grenade_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_nemesis = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_nemesis" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_nemesis_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_nemesis_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_respawn = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_respawn" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_respawn_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_respawn_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_revenge = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_revenge" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_revenge_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_revenge_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_scavenger = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_scavenger" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_scavenger_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_scavenger_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_silent = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_silent" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_silent_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_silent_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_vehicle = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_vehicle" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_vehicle_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_vehicle_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_zoom = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_zoom" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	boost_zoom_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "boost_zoom_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	chest_platinum_1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "chest_platinum_1" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	chest_platinum_2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "chest_platinum_2" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	chest_platinum_3 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "chest_platinum_3" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	chest_premium = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "chest_premium" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	chest_standard = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "chest_standard" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	ConsumableRenderContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ConsumableRenderContainer" 
+			lib     = icon_lib_cons 
+		}
+
+		elements {
+			consumableRenderContent {
+				__type = "ui_icon_lib_cons::ConsumableRendterTexture"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ConsumableRendterTexture = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "ConsumableRendterTexture" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_adrenaline = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_adrenaline" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_adrenaline_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_adrenaline_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_ammo = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_ammo" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_ammo_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_ammo_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_armorlock = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_armorlock" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_armorlock_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_armorlock_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_bombrun = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_bombrun" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_bombrun_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_bombrun_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_bubble = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_bubble" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_bubble_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_bubble_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_camo = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_camo" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_camo_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_camo_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_cblast = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_cblast" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_cblast_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_cblast_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_dcover = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_dcover" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_dcover_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_dcover_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_drain = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_drain" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_drain_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_drain_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_flare = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_flare" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_flare_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_flare_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_holo = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_holo" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_holo_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_holo_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_jammer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_jammer" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_jammer_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_jammer_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_lstrike = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_lstrike" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_lstrike_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_lstrike_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_magpulse = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_magpulse" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_magpulse_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_magpulse_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_mine = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_mine" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_mine_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_mine_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_reactive = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_reactive" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_reactive_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_reactive_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_regen = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_regen" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_regen_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_regen_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_reload = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_reload" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_reload_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_reload_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_scrambler = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_scrambler" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_scrambler_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_scrambler_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_tank = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_tank" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_tank_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_tank_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_trans = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_trans" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_trans_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_trans_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_turret = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_turret" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_turret_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_turret_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_wjammer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_wjammer" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	cons_wjammer_BIG = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "cons_wjammer_BIG" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	helmet_platinum_1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "helmet_platinum_1" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	helmet_platinum_2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "helmet_platinum_2" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	helmet_platinum_3 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "helmet_platinum_3" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	helmet_premium = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "helmet_premium" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	helmet_standard = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "helmet_standard" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	legs_platinum_1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "legs_platinum_1" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	legs_platinum_2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "legs_platinum_2" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	legs_platinum_3 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "legs_platinum_3" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	legs_premium = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "legs_premium" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	legs_standard = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "legs_standard" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	shoulders_platinum_1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "shoulders_platinum_1" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	shoulders_platinum_2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "shoulders_platinum_2" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	shoulders_platinum_3 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "shoulders_platinum_3" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	shoulders_premium = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "shoulders_premium" 
+			lib     = icon_lib_cons 
+		}
+	}
+
+	shoulders_standard = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "shoulders_standard" 
+			lib     = icon_lib_cons 
+		}
+	}
+}
+__type = "ui_widget_lib"

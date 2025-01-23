@@ -1,0 +1,16 @@
+import ssl.lib.mp.mp_types
+
+native class UserStatMng
+   event OnSessionStart()
+   event OnSessionEnd()
+   native func GetPropertyValue(name: string, drtIdx :  int, stat : params): *
+   native func GetScoreboard(name: string): *
+   native func GetScoreboardList(): vector
+   native func ResetAllScoreboards()
+   native func SetFinalStatTable(stat: vector)
+   native func RequestOwnStat()
+   native func Update(userID: int)
+   native func SetSession(s: session)
+   native func StopSession()
+   native func CanSaveTrophies(): bool
+end

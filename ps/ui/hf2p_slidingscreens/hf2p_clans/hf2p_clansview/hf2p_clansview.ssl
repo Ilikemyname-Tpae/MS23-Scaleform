@@ -1,0 +1,133 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.hf2p.hq
+import ui.root
+import ui.ui_economy
+import ui.ui_player_info
+import ssl.hf2p.clan_data
+
+class UiClansView : UiWidgetContainer
+
+func SwitchToScreen()
+end
+
+handle OnEnterState("Hidden")
+end          
+
+handle OnEnteringState("Visible")
+end  
+
+func PrepareSlide()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+      var p : params
+      p.user_id := $UserDataStorage.local_user.uid.Get()
+      GenerateEvent("#OnClanViewOpened", p)
+   end
+end
+
+func PrepareHideSlide()
+end
+
+func DisableSlide()
+   if (GetStateName() != "Hidden")
+      SetStateName("Hidden")
+   end
+end
+
+end
+
+class UiClansViewVM
+   var wgt : *
+   
+   var clan_id : ObservableProperty = $OM.Calculated(this, "GetClanId")
+   var user_id : ObservableProperty = $OM.Property($UserDataStorage.invalidUID.value.Get())
+   
+   func Init(p : params)
+      wgt := p.widget
+   end
+   
+   func OnClanViewOpened(p : params) : bool
+      user_id.Set(p.user_id)
+      return true
+   end
+   
+   func GetClanId() : *
+      if !$UserDataStorage.IsValidUID(user_id.Get())
+         return $UserDataStorage.invalidUID.value.Get()
+      end
+      var local_user_id = $UserDataStorage.local_user.uid.Get()
+      var ud = (UserData)$UserDataStorage.users.Get(local_user_id)
+      if ud.has_base.Get() == false
+         $user_service.RequestData(local_user_id, $uiEnums.USER_DATA_BASE)
+      end
+      var result = ud.base.clan_id.Get()
+      return result
+   end
+   
+   func GetClanData() : ClanData
+      if !$UserDataStorage.IsValidUID(clan_id.Get())
+         return null
+      end
+      var cd : ClanData = (ClanData)$ClanDataStorage.clans.Get(clan_id.Get())
+      if cd.has_base.Get() == false
+         $clan_service.RequestData(clan_id.Get(), $uiEnums.CLAN_DATA_BASE)
+      end
+      //if cd.has_membership.Get() == false
+      //   $clan_service.RequestData(clan_id.Get(), $uiEnums.CLAN_DATA_MEMBERSHIP)
+      //end
+      return cd
+   end
+   
+   func GetClanName() : *
+      var cd = GetClanData()
+      if !IsValid(cd)
+         return "???"
+      end
+      var result = cd.base.clan_name.Get()
+      return result
+   end
+   
+   func GetClanTag() : *
+      var cd = GetClanData()
+      if !IsValid(cd)
+         return "???"
+      end
+      var result = cd.base.clan_tag.Get()
+      return result
+   end
+   
+   func GetClanMotto() : *
+      var cd = GetClanData()
+      if !IsValid(cd)
+         return "???"
+      end
+      var result = cd.base.clan_description.Get()
+      return result
+   end
+   
+   func OnLeaveButtonClicked(p : params) : bool
+      var pp : params
+      pp.titleTxt       := "msg_clan_leave_title"
+      pp.messageTxt     := "msg_clan_leave_message"
+      pp.callbackEvent  := "onClanLeaveAccept"
+      pp.mbType         := $uiEnums.MB_TYPE_NO_YES
+      wgt.GenerateEvent("MainMenuDialogRequest", pp)
+      return true
+   end
+   
+   func OnClanLeaveAccept(p : params) : bool
+      if p.isOK
+         $UiGlobals.async_operations.clan_leave.Start("", "onClanLeaveFinished") : 0
+      end
+      return true
+   end
+   
+   func OnClanLeaveFinished(p : params) : bool
+      wgt.GenerateEvent("closeSlidingScreens")
+      return true
+   end
+end

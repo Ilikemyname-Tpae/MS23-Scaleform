@@ -1,0 +1,2 @@
+native func LoadSSLModule   (moduleName : string) : bool
+native func UnloadSSLModule (moduleName : string)

@@ -1,0 +1,7 @@
+import ssl.lib.systems.input_context
+class UserInputMng
+   native func SetGlobalInput()
+   native func SetSingleInput()
+   native func SetSplitScreenInput()
+   native func GetDbgContext(): refGSI_CONTEXT
+end

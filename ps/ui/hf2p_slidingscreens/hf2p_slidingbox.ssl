@@ -1,0 +1,56 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.ui_party_monitor
+
+class UiSlidingBox : UiWidgetContainer
+
+func Init()
+   Widgets().animatedContent.contentContainer.content.SetStateName("ContentVisible")
+   GotoAndPlay("topDownFadeIn")
+   GenerateEvent("onSlideBoxOpen")
+end
+
+func HideSlideBox()
+   Widgets().animatedContent.contentContainer.content.SetStateName("ContentInitial")
+   GotoAndPlay("topDownFadeOut")
+   GenerateEvent("onSlideBoxClose")
+end
+
+handle OnEnteringState("Visible")
+   Init()
+   StartDefaultBlinking(0, 2)
+   Set("visible", true)
+end
+
+handle OnEnteringState("Hidden")
+   HideSlideBox()
+end
+
+handle OnChangeState ("Hidden")
+   SetStateName("Initial")
+end
+
+handle OnEnteringState("Initial")
+   Set("visible", false) : 0.25
+end
+
+func IsActive() : bool
+   return GetStateName() != "Initial"
+end
+
+func onSlidingBoxCloseBtnClick(p : params) : bool
+   SetStateName("Hidden")
+   return false
+end
+
+end // UiSlidingBox
+
+class UiSlidingBoxVM
+   
+   func Init(p : params)
+   end
+   
+   func Term()
+   end
+   
+end

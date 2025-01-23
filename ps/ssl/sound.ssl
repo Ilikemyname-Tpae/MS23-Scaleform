@@ -1,0 +1,10 @@
+native func PlayMusic      (name : string, fade : bool)
+native func MuteMusic      (fade : bool)
+native func PlayAmbient    (name : string)
+native func MuteAmbient    ()
+
+native func PlayMusicCue   (name : string)
+native func MuteMusicCue   (name : string)
+native func TriggerMusicCue(name : string)
+native func SetMusicParam  (name : string, value : float)
+native func GetMusicParam  (name : string) : float

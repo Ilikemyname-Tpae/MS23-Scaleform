@@ -1,0 +1,368 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_list_item
+import ui.root
+
+/*************************************************************
+* UiHf2pChallengesInfoRenderer
+* 
+*************************************************************/
+class UiHf2pChallengesInfoRenderer : UiWidgetListItem
+
+override SetData
+   /* 
+   Log("ui~content", "UiHf2pChallengesInfoRenderer_SetData")
+   Props().desc := p.label
+   Props().curValue := (string)p.curProgress
+   Props().maxValue := (string)p.maxValue
+   Props().progress := p.scale
+   */
+end
+
+end
+
+/*************************************************************
+* UiHf2pChallengesRenderer
+* 
+*************************************************************/
+class UiHf2pChallengesRenderer : UiWidgetListItem
+
+override SetData
+   /*
+   Log("ui~content", "UiHf2pChallengesRenderer_SetData")
+   Props().label := p.label
+   Props().barScale := p.progress
+   Widgets().attachChallengeIcn.pic := "boost_cooldown" //p.img
+   */
+end
+
+end
+
+/*************************************************************
+* ChallengeProgressVM
+* 
+*************************************************************/
+class ChallengeProgressVM
+   var challengeItemId     : ObservableProperty = $OM.Property("")   
+   var challengeId         : ObservableProperty = $OM.Property("")   
+   var challengeRank       : ObservableProperty = $OM.Property(0)
+   var isComplete          : ObservableProperty = $OM.Property(false)
+   var progress            : ObservableProperty = $OM.Calculated(this, "GetProgress")
+   var barTint             : ObservableProperty = $OM.Calculated(this, "GetBarTint")
+   var blinkFactor         : ObservableProperty = $OM.Property(1.0)
+   var isLocked            : ObservableProperty = $OM.Calculated(this, "GetIsLocked")          
+   var isChallengeStarted  : ObservableProperty = $OM.Calculated(this, "GetIsChallengeStarted")
+   var itemWarning         : ObservableProperty = $OM.Calculated(this, "GetItemWarning")
+   var progressOverride    : ObservableProperty = $OM.Property(1.0)
+      
+   func InitVM(_challengeItemId : string, _challengeId : string, _rank : int, _progressOverride : float = 0, _isComplete : bool = false)
+      challengeItemId.Set(_challengeItemId)
+      challengeId.Set(_challengeId)
+      challengeRank.Set(_rank)
+      progressOverride.Set(_progressOverride)
+      isComplete.Set(_isComplete)
+      progress.Invalidate()      
+   end
+      
+   func SetChallengeId(_challengeId : string)
+   end
+      
+   func SetChallengeRank(_rank : int)
+   end
+      
+   func GetChallengeRank() : int
+      return  (int)challengeRank.Get()
+   end
+   
+   func IsChallengeItem() : bool
+      return challengeItemId.Get() != ""
+   end
+   
+   func GetIsLocked() : bool
+      var ret : bool = false
+      if (IsChallengeItem())
+         if (!(bool)isChallengeStarted.Get())
+            var shopComp   : GL_ComponentShop      = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+            var inventComp : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(challengeItemId.Get())
+            ret := shopComp.IsLocked() or (int)inventComp.ownership_type.Get() != $uiEnums.ITEM_OWN_TYPE_PURCHASED
+         end
+      end
+      return ret
+   end   
+         
+   func GetHeaderRank() : string
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(challengeId.Get())
+      var ret     : string          = (string)uiComp.name.Get()
+      return ret     
+   end
+   
+   func GetHeaderReward() : string
+      var ret : string = "carousel_tech_reward"
+      return ret           
+   end
+   
+   func GetItemEquipState() : int
+      var ret : int = $uiEnums.CHALLENGE_ITEM_STATE_EQUIPPED
+      if (IsChallengeItem())
+         var compShop   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+         var item       : string             = compShop.GetUnlockItem()
+         ret := $uiPlayerInfo.GetItemEquipState(item)         
+      end      
+      return ret
+   end
+   
+   func HasCounters() : bool
+      return GetCounter() != null
+   end
+      
+   func HasUnlockItem() : bool
+      var ret : bool = true
+      if (IsChallengeItem())
+         var compShop   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+         var item       : string             = compShop.GetUnlockItem()
+         if (item != "")
+            var equipState : int = GetItemEquipState()
+            ret := equipState == $uiEnums.CHALLENGE_ITEM_STATE_EQUIPPED
+         end
+      end
+      return ret
+   end
+         
+   func GetMedalFrame() : string
+      var rank : int    = GetChallengeRank()
+      var ret  : string = ""
+      if (rank == -1)
+         ret := "gray"
+      elif (rank == 0)
+         ret := "bronze"
+      elif (rank == 1)
+         ret := "silver"
+      elif (rank == 2)
+         ret := "gold"
+      else
+         ret := "gray"
+      end
+      return ret
+   end
+         
+   func GetTokenFrame() : string
+      var ret : string
+      var comp : GL_ComponentChallenge = GetChallenge()
+      var reward_tokens : vector = comp.rewards_tokens.Get()
+      if reward_tokens.Count() > 0
+         var token : GL_TokenState = reward_tokens.Get(0)
+         ret := $UiGlobals.GetTokenFrame((string)token.name.Get())
+      end
+      return ret
+   end
+   
+   func GetChallenge() : GL_ComponentChallenge
+      var ret : GL_ComponentChallenge = (GL_ComponentChallenge)$UiGlobals.componentsChallenge.Get(challengeId.Get())
+      return ret
+   end
+      
+   func GetChallengeIcon() : string
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(challengeId.Get())
+      var ret     : string          = (string)uiComp.icon.Get()
+      return ret
+   end
+   
+   func GetCounter() : GL_ComponentChallengeCounter
+      var ret        : GL_ComponentChallengeCounter = null
+      var challenge  : GL_ComponentChallenge = GetChallenge()
+      if (challenge != null)
+         var counters   : vector = challenge.counters.Get()
+         if (counters.Count() > 0)
+            ret := (GL_ComponentChallengeCounter)counters.Get(0)
+         end
+      end
+      return ret
+   end
+   
+   func IsChallengeFinished() : bool
+      return (bool)isComplete.Get()
+   end
+   
+   func GetIsChallengeStarted() : bool
+      var ret : bool = true
+      if (IsChallengeItem())
+         var challengeItem : GL_ComponentItem = (GL_ComponentItem)$UiGlobals.componentsItem.Get(challengeItemId.Get())
+         ret := challengeItem.IsChallengesStarted()
+      end
+      return ret      
+   end
+   
+   func GetItemWarning() : string
+      var ret : string = "carousel_get_challenge_item"
+      if (IsChallengeItem())
+         var eqipState : int = GetItemEquipState()
+         if (eqipState == $uiEnums.CHALLENGE_ITEM_STATE_LOCKED)
+            ret := "carousel_get_challenge_item"
+         elif (eqipState == $uiEnums.CHALLENGE_ITEM_STATE_UNAVAILABLE)
+            ret := "carousel_get_challenge_item"
+         elif (eqipState == $uiEnums.CHALLENGE_ITEM_STATE_NOT_EQUIPPED)
+            ret := "carousel_equip_challenge_item"
+         elif (eqipState == $uiEnums.CHALLENGE_ITEM_STATE_PARTIALLY_EQUIPPED)
+            ret := "carousel_equip_challenge_item_set"
+         end
+      end
+      return ret      
+   end
+         
+   func GetItemGetTxt() : string
+      var ret : string
+      ret := (string)itemWarning.Get()
+      return ret
+   end
+   
+   func GetItemGetTxtColor() : int
+      var ret : int = $root.RGB2Clr(255, 0, 0)
+      if (IsChallengeItem())
+         var eqipState : int = GetItemEquipState()
+         if (eqipState == $uiEnums.CHALLENGE_ITEM_STATE_LOCKED or eqipState == $uiEnums.CHALLENGE_ITEM_STATE_UNAVAILABLE)
+            ret := $root.RGB2Clr(255, 255, 255)
+         end
+      end
+      return 0
+   end
+   
+   func GetLineFrame() : string
+      var ret : string = "equip"
+      if (IsChallengeItem())
+         var eqipState : int = GetItemEquipState()
+         if (eqipState == $uiEnums.CHALLENGE_ITEM_STATE_LOCKED or eqipState == $uiEnums.CHALLENGE_ITEM_STATE_UNAVAILABLE)
+            ret := "get"
+         end
+      end
+      return ret
+   end
+   
+   func GetProgressTxt() : string
+      var ret        : string
+      var counter    : GL_ComponentChallengeCounter = GetCounter()
+      if (counter != null)
+         if ((bool)isComplete.Get())
+            ret := "carousel_challenge_completed"
+         else
+            ret := (string)(int)counter.value.Get() + "/" + (string)(int)counter.value_max.Get() + "~"
+         end
+      end
+      return ret     
+   end
+   
+   func GetTotalPoints() : string
+      var ret : string
+      var comp : GL_ComponentChallenge = GetChallenge()
+      var reward_tokens : vector = comp.rewards_tokens.Get()
+      if reward_tokens.Count() > 0
+         var token : GL_TokenState = reward_tokens.Get(0)
+         ret := (string)$UiGlobals.Int64ToInt(token.value.Get())
+      end
+      return ret     
+   end
+   
+   func GetDesc() : string
+      var ret        : string
+      var challenge  : GL_ComponentChallenge = GetChallenge()
+      if (challenge != null)    
+         ret := challenge.GetDescString((string)challengeId.Get())
+      end
+      return ret     
+   end
+   
+   func GetProgress() : float
+      var ret        : float
+      if (IsChallengeItem())
+         var counter    : GL_ComponentChallengeCounter = GetCounter()
+         if (counter != null)
+            ret := (float)counter.progress.Get() * (float)blinkFactor.Get()
+         end
+      else
+         if ((bool)isComplete.Get())
+            ret := 1.0
+         else
+            ret := (float)progressOverride.Get()
+         end   
+      end
+      return ret     
+   end
+   
+   func GetBarTint() : params
+      var clr : params
+      var counter    : GL_ComponentChallengeCounter = GetCounter()
+      clr.r  := 71
+      clr.g  := 122
+      clr.b  := 169
+      if (counter != null)
+         if ((bool)isComplete.Get())
+            clr.r  := 225
+            clr.g  := 204
+            clr.b  := 84
+         end   
+      end   
+      return clr
+   end
+   
+   func GetProgressX() : float
+      var progress   : float = (float)progress.Get()
+      var ret        : float = -365 + progress * 364
+      return ret     
+   end
+   
+   func blinkProgress(p : params) : bool
+      if (!IsVoid(p.blinkProgress))
+         blinkFactor.Set(p.blinkProgress)
+      end
+      return false
+   end
+end
+
+
+/*************************************************************
+* ChallengeProgress
+* 
+*************************************************************/
+class ChallengeProgress : UiWidgetContainer
+   var   blinkStartVal  : float = 0
+   var   maxTime        : float = 0.4
+      
+   func BlinkOverride(_phase : int, _dt : float) : bool
+      var ret           : bool   = false
+      var blinkProgress : float  = 1.0
+      
+      if (_dt > maxTime)
+         ret := true
+      end
+      
+      if (_phase == 0)
+         blinkProgress := 0.0
+      elif (_phase == 1)
+         blinkProgress := _dt / maxTime
+         if (_dt >= 0)
+            blinkProgress := $root.sqrt(blinkProgress)
+         else 
+            blinkProgress := 0
+         end
+         if (blinkProgress > 0)
+            blinkProgress := blinkProgress
+         end
+         
+         if (blinkProgress > 1)
+            blinkProgress := 1.0
+         end
+         if (blinkProgress < 0)
+            blinkProgress := 0.0
+         end
+      elif (_phase == 2)
+         blinkProgress := 1.0
+      end
+      
+      var p : params
+      p.blinkProgress := blinkProgress
+      GenerateEvent("#blinkProgress", p)
+      
+      return ret
+   end   
+
+end

@@ -1,0 +1,16 @@
+import ssl.lib.ui.ui_iface
+
+native class UiFrameMgr : UiIface
+   event OnChildExit(name: string)
+   native func Show(name: string, frameParams: params = null)
+   native func ShowOver(name: string, frameParams: params = null)
+   native func Hide(name: string)
+   native func GetFrameParams(name: string): params
+   native func Reset()
+   native func ForceUpdate(dt: float)
+   native func DisableActive()
+   native func EnableActive()
+   native func GetStackTopName(): string
+   native func IsFrameOnStack(name : string): bool
+   native func SetLoadMode(name: string, whenLoad: string, whenUnload: string)
+end

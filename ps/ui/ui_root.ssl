@@ -1,0 +1,27 @@
+import ssl.lib.ui.ui_gfx_frame
+//import ssl.lib.systems.input_context
+
+import ssl.lib.ui.ui_widget_manager
+
+class UiRoot : UiGfxFrame
+
+handle OnInit
+   $sslWidgetMgr.LoadWidget("hf2p_main_menu_screen", "hf2p_main_menu", "ui_root")
+end
+
+handle OnTerm    
+   $sslWidgetMgr.UnloadWidget("hf2p_main_menu")
+end                                             
+
+global event uiReloadCurrentWidget()
+   //$root.SetMainStartState("TutorialEmpty")
+   $sslWidgetMgr.UnloadWidget("hf2p_main_menu")
+   //$root.ReCreateObjects()
+   $sslWidgetMgr.LoadWidget("hf2p_main_menu", "hf2p_main_menu", "ui_root")
+end
+
+//global event uiReloadCurrentWidget2()
+//   $hf2p_main_menu.SetStateName("TutorialEmpty")
+//end
+
+end

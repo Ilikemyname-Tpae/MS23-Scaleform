@@ -1,0 +1,36 @@
+native class HF2P_EMBLEM_EDITOR
+	native func CanUndo               () : bool
+	native func CanRedo               () : bool
+	native func Undo                  () : void
+	native func Redo                  () : void
+	native func AddLayer              (symbolId : int, x : float, y : float, color : int = 0) : void
+	native func RemoveCurrentLayer    () : void
+	native func RemoveAllLayers       () : void
+	native func CloneCurrentLayer     () : void
+	native func ChangeLayerOrder      (layerIdx : int, newIdx : int) : void
+	native func ChangeLayerColor      (layerIdx : int, newColorIdx : int) : void
+	native func MoveLayer             (layerIdx : int, x : int, y : int) : void
+	native func RotateLayer           (layerIdx : int, angle : float) : void
+	native func ScaleLayer            (layerIdx : int, xScale : float, yScale : float) : void
+	native func GetDeltaAngle         (x0 : float, y0 : float, x1 : float, y1 : float) : float
+	native func GetCurrentLayerIndex  () : int
+	native func SetCurrentLayerIndex  (index : int) : void
+	native func SetLayerVisible       (layerIdx : int, visible : bool) : void
+	native func GetXLocalProjection   (dx : float, dy : float) : float
+	native func GetYLocalProjection   (dx : float, dy : float) : float
+	native func Cos                   (a : float) : float
+	native func Sin                   (a : float) : float
+	native func GetNumLayers          () : int
+	native func GetLayers             () : vector
+	native func GetCurrentLayer       () : params
+	native func GetPaliteColors       () : vector
+	native func LoadEmblemFromPlayerProfiler (type : int) : void
+	native func SaveEmblemToPlayerProfiler (type : int) : void
+	native func GetColorById          (id : int) : params
+	native func EMGetEmblemData       (emblem_id : int) : vector
+	native func EMSetEmblemIsReady    (emblem_id : int) : void
+	native func EMSetFrameIsActive    () : void
+	native func HotKeyActionRemap     (hot_action : int) : string
+	native func GetHotKeyActionRemapArray() : vector
+end
+var $hf2pEmblemEditor : HF2P_EMBLEM_EDITOR

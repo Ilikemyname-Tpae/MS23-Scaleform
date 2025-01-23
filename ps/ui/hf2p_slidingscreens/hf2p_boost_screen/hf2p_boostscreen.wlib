@@ -1,0 +1,286 @@
+classes   =   {
+   BoostScreen   =   {
+      elements   =   {
+         animatedContent   =   {
+            elements   =   {
+               contentContainer   =   {
+                  elements   =   {
+                     content   =   {
+                        sslClass   =   "UiBoostScr"
+                        sslModule   =   "ui.hf2p_SlidingScreens.hf2p_Boost_screen.hf2p_BoostScreen"
+                        isBlinkable   =   True
+                        elements   =   {
+                           boosterCont2   =   {
+                              elements   =   {
+                                 bgBoostImg   =   {
+                                    bindings   =   {
+                                       pic   =   {
+                                          binding   =   "{'boostersCrImag'}"
+                                       }
+                                    }
+                                    __type   =   "ui_playerInfoPanel_lib::attachPoint"
+                                 }
+                              }
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{1}"
+                                 }
+                              }
+                              __type   =   "hf2p_BoostScreen::BoosterCont"
+                           }
+                           boosterCont1   =   {
+                              elements   =   {
+                                 bgBoostImg   =   {
+                                    bindings   =   {
+                                       pic   =   {
+                                          binding   =   "{'boostersXpImag'}"
+                                       }
+                                    }
+                                    __type   =   "ui_playerInfoPanel_lib::attachPoint"
+                                 }
+                              }
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{0}"
+                                 }
+                              }
+                              __type   =   "hf2p_BoostScreen::BoosterCont"
+                           }
+                           tfHeadBooster   =   {
+                              isBlinkable   =   True
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{'carousel_modifiers_screen'}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                           boostOfferCont1   =   {
+                              x   =   1003
+                              y   =   108.85
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{0}"
+                                 }
+                              }
+                              __type   =   "hf2p_BoostScreen::BoostOfferCont"
+                           }
+                           boostOfferCont2   =   {
+                              x   =   1003
+                              y   =   329.85
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{1}"
+                                 }
+                              }
+                              __type   =   "hf2p_BoostScreen::BoostOfferCont"
+                           }
+                        }
+                        stateMap   =   {
+                           startState   =   "ContentInitial"
+                           states   =   {
+                              ContentVisible   =   {
+                              }
+                              ContentInitial   =   {
+                              }
+                           }
+                        }
+                        __type   =   "ui_playerInfoPanel_lib::boosterShopCont"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      __type   =   "hf2p_SlidingScreens_lib::SlidingScreenBox"
+   }
+   BoosterCont   =   {
+      isBlinkable   =   True
+      handlers   =   {
+         UpdateBoosts   =   {
+            handlerName   =   "#OnUpdateBoosts"
+         }
+      }
+      elements   =   {
+         tfBoostDesc   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{GetCompUI().desc}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfBoostHead   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{GetCompUI().name}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfBoost   =   {
+            visible   =   False
+            __type   =   "ui_widget_container"
+         }
+         colorShopBooster   =   {
+            bindings   =   {
+               tint   =   {
+                  binding   =   "{GetTint((:idx))}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Boost_screen.hf2p_BoostScreen.BoostVM', idx = (:idx)}"
+         }
+      }
+      __type   =   "ui_playerInfoPanel_lib::boosterXpCr"
+   }
+   BoostOfferCont   =   {
+      isBlinkable   =   True
+      handlers   =   {
+         UpdateBoosts   =   {
+            handlerName   =   "#OnUpdateBoosts"
+         }
+      }
+      elements   =   {
+         boostOfferLine0   =   {
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{0}"
+               }
+            }
+            __type   =   "hf2p_BoostScreen::BoostOfferLine"
+         }
+         boostOfferLine1   =   {
+            y   =   47
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{1}"
+               }
+            }
+            __type   =   "hf2p_BoostScreen::BoostOfferLine"
+         }
+         boostOfferLine2   =   {
+            y   =   94
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{2}"
+               }
+            }
+            __type   =   "hf2p_BoostScreen::BoostOfferLine"
+         }
+         boostOfferLine3   =   {
+            y   =   141
+            bindings   =   {
+               idx   =   {
+                  binding   =   "{3}"
+               }
+            }
+            __type   =   "hf2p_BoostScreen::BoostOfferLine"
+         }
+      }
+      bindings   =   {
+         modif_id   =   {
+            binding   =   "{modif_id}"
+         }
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Boost_screen.hf2p_BoostScreen.BoostVM', idx = (:idx)}"
+         }
+      }
+      __type   =   "hf2p_WeaponConf_lib::wc_container"
+   }
+   BoostOfferLine   =   {
+      sslClass   =   "BoostOfferLine"
+      sslModule   =   "ui.hf2p_SlidingScreens.hf2p_Boost_screen.hf2p_BoostScreen"
+      isBlinkable   =   True
+      elements   =   {
+         gpBuyBtn   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "onBoostGpBtnClick"
+               }
+            }
+            elements   =   {
+               tfSaleRightAnim   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+               saleShapeRight   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+               tfOldPriceAnim   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+               tfNewPriceAnim   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{''+gl_cost}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::goldPurchaseBtn"
+         }
+         crBuyBtn   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "onBoostCrBtnClick"
+               }
+            }
+            elements   =   {
+               tfSaleRightAnim   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+               saleShapeRight   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+               tfOldPriceAnim   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+               tfNewPriceAnim   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{''+cr_cost}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::creditPurchaseBtn"
+         }
+         daysCont   =   {
+            x   =   -60
+            y   =   -1
+            bindings   =   {
+               tFdays   =   {
+                  binding   =   "{DurationToStrings().daysCount}"
+               }
+               tfHours   =   {
+                  binding   =   "{DurationToStrings().daysLabel}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::offersDaysCont"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{GetOffer((:idx))}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::offerLineNew"
+   }
+}
+__type   =   "ui_widget_lib"

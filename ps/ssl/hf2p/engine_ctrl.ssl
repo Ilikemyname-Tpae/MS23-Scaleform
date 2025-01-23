@@ -1,0 +1,21 @@
+native class HF2P_ENGINE_CTRL
+   native func ExitGame               ()
+   native func PlaySound              (sound_index: int)
+   native func StopSound              (sound_index: int)
+   native func PlaySoundHaloUI        (sound_idx: int)
+   native func SetCredentials         (login: string, password: string, provider: string)
+   native func PerformLogin           ()
+   native func PerformRelogin         ()
+   native func SetUIMusicId           (music_id: int)
+   native func SuppressIngameInput    (_suppress:bool)
+   native func ShowFinishedPostpone   (stage: int)
+   native func GetPostgameStat 		  (): params
+   native func SetUIPlayerModelId     (model_id: int)
+   native func SetGamePlayerModelId   (model_id: int)
+   native func GetUIPlayerModelId     (): int
+   native func SetRotatePlayerModel   (angle:float)
+   native func GetRotatePlayerModel   (): float
+   native func InitUIScreenSounds     ()
+   native func TermUIScreenSounds     ()
+end
+var $hf2pEngine : HF2P_ENGINE_CTRL

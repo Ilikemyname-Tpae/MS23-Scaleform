@@ -1,0 +1,7 @@
+// random
+//native func RndInt          () : int
+//native func RndIntMax       (max : int) : int
+native func RndIntRange     (a : int, b : int) : int
+//native func RndFloat        () : float
+//native func RndFloatMax     (max : float) : float
+native func RndFloatRange   (a : float, b : float) : float

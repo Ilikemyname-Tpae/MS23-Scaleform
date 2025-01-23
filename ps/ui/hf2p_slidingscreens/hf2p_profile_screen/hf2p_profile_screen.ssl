@@ -1,0 +1,220 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_service
+import ui.root
+
+
+class ProfileScreen : UiWidgetContainer
+
+
+func fillDataProfile()
+   var wpnStat: params
+   wpnStat.primaryKills := "N/A"
+   wpnStat.primaryAccuracy := "N/A"
+   wpnStat.secKills := "N/A"
+   wpnStat.secAccuracy := "N/A"
+   wpnStat.grenadeKills := "N/A"
+   wpnStat.grenadeAccuracy := "N/A"
+   Widgets().profileCont.fillLeftTab(wpnStat)
+   Widgets().profileCont.playerCont.plrCamera.scaleX := 1.0
+   Widgets().profileCont.playerCont.plrCamera.scaleY := 1.0
+   /*
+   var myLvl: int = 0 //$sslUserStates.GetLevel()  
+   var plrStat: params
+   plrStat.rank := "Maximka" //$sslUserStates.GetLevelName(myLvl)
+   plrStat.lvl := myLvl
+   plrStat.time := 540
+   plrStat.kd := 23
+   plrStat.wl := 14
+   plrStat.score := 21
+   plrStat.achievCount := 48
+   plrStat.matchVount := 367
+   plrStat.killsCount := 368
+   plrStat.timeCount := 78
+   Widgets().profileCont.fillRightTab(plrStat)
+   */
+   Widgets().profileCont.SetIcon()
+end	
+
+
+
+handle OnEnteringState("Initial")
+end   
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end   
+
+handle OnEnteringState("Visible")
+   fillDataProfile()
+   GenerateEvent("#RequestDataProfile")
+   Set("visible", true)       
+end   
+
+handle OnEnterState("Visible")
+   Log("ui~content", "OnEnterState")         
+end   
+
+func PrepareSlide()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   EnableFakeBg()
+end
+
+func PrepareHideSlide()
+end
+
+func DisableSlide()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+   end
+end
+
+func SwitchToScreen()
+end
+
+func EnableFakeBg()
+   var p: params
+   p.state := "profile"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+func inputEvent(p : params) : bool
+   var isTerminated  : bool   = false
+   var keyCode       : int    = p.keyCode
+   if (keyCode == $uiKeys.VK_LEFT or keyCode == $uiKeys.VK_RIGHT)
+      isTerminated := true
+   end
+   if (isTerminated)
+      p.eventState.SetIsTerminated(isTerminated)
+   end
+   return false
+end
+
+end // ProfileScreen
+
+class ProfileVM
+   var stats            : ObservableProperty = $OM.Calculated(this, "GetStats")
+   var plrBase          : ObservableProperty = $OM.Calculated(this, "GetPlrBase")
+   var rank             : ObservableProperty = $OM.Calculated(this, "GetRank")
+   var onlineTime       : ObservableProperty = $OM.Calculated(this, "GetOnlineTime")
+   var matchTime        : ObservableProperty = $OM.Calculated(this, "GetMatchTime")
+   var isRenameEnabled  : ObservableProperty = $OM.Calculated(this, "GetIsRenameEnabled")
+   var renamesCount     : ObservableProperty = $OM.Calculated(this, "GetRenamesCount")
+   
+   func GetUID() : *
+      return $UiGlobals.profileScreenUID.Get()
+   end
+   
+   func RequestDataProfile(p : params) : bool
+      var plrId : * = GetUID()
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_BASE)
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_STATS)            
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_ARMOR_LOADOUT)
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_WEAPON_LOADOUT)
+      stats.Invalidate()
+      plrBase.Invalidate()
+      $hq.TextureRenderBipedProfile(plrId)
+      return true
+   end
+   
+   func IsLocalUser() : bool
+      return $UserDataStorage.IsLocalUID(GetUID())
+   end
+   
+   func GetRenamesCount() : int
+      var renamesCountVal : int = (int)$UserDataStorage.local_user.token_renames.Get()
+      return renamesCountVal
+   end
+   
+   func GetRenamesLabel() : string
+      var ret : string = ""
+      if (GetIsRenameEnabled())
+         ret := "profile_ui_renames_avail"
+      end
+      return ret
+   end
+   
+   func GetUserName() : wstring
+      var ud   : UserData  = GetUserData()
+      var ret  : wstring    = ud.base.full_nickname.Get()
+      ret := $root.MakeColorCodedWText(ret, $UserDataStorage.GetPlayerStatusColorCode(GetUID()))
+      return ret
+   end
+   
+   func GetRenamesCountTxt() : string
+      var ret : string = ""
+      if (GetIsRenameEnabled())
+         ret := (string)GetRenamesCount()
+      end
+      return ret
+   end
+   
+   func GetIsRenameEnabled() : bool
+      var ret : bool = false
+      if (IsLocalUser())
+         var renamesCountVal  : int    = (int)$UserDataStorage.local_user.token_renames.Get()
+         ret := renamesCountVal > 0 and ! $UiGlobals.backend_requests.change_nickname.progress.IsInProgress()
+      end
+      return ret
+   end
+
+   func GetIsRenameVisible() : bool
+      return IsLocalUser()
+   end
+   
+   func GetUserData() : UserData
+      var ret : UserData = (UserData) $UserDataStorage.users.Get(GetUID())
+      return ret
+   end
+      
+   func GetStats() : UD_Stats
+      var ud : UserData = GetUserData()
+      return ud.stats
+   end
+   
+   func GetPlrBase() : UD_Base
+      var ud : UserData = GetUserData()
+      return ud.base
+   end
+   
+   
+   func GetRank() : *
+      var ud      : UserData        = GetUserData()
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)ud.base.level_id.Get())
+      var levelName     : string          = (string)uiComp.name.Get()
+      return levelName
+   end
+   
+   func GetOnlineTime() : string
+      var ret  : string
+      var ud   : UserData  = GetUserData()
+      var time : int       = (int)ud.stats.online_time_sec.Get()
+      if (IsLocalUser())
+         time := time + (int)$UiGlobals.timer.Get() - (int)ud.stats.online_time_last_change_sec.Get()
+      end
+      ret := $root.MakeUiTimerString(time)
+      return ret
+   end
+   
+   func GetMatchTime() : string
+      var ret : string
+      var ud : UserData = GetUserData()
+      var time  : int  = (int)ud.stats.game_time_played_sec.Get()
+      ret := $root.MakeUiTimerString(time)
+      return ret
+   end
+   
+   func OnRenamePlayerClicked(p : params) : bool
+      var par: params
+      par.mbType     := "Rename"
+      par.titleTxt   := "msg_ui_rename_header"
+      par.messageTxt := ""
+      par.subTxt     := "msg_ui_rename_message"
+      $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)         
+      return true
+   end   
+end

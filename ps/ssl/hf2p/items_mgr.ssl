@@ -1,0 +1,6 @@
+native class gsITEMS_MGR
+   native func GetItemCategory        (item_category_id: string): *
+   native func GetItem                (item_id: string): *
+   native func GetItemStatsBase       (item_id: string): params
+end
+var $sslItemsMgr : gsITEMS_MGR

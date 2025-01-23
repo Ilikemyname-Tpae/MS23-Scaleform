@@ -1,0 +1,10 @@
+native class TrophySys
+   event       OnPostLoadInit           ()
+   event       OnLoadFinished           ()
+   native func GetChildrenInfo          (trophy: string): vector
+   native func GetUnlockedChildrenCount (trophy: string): int
+   native func GetUserIdx               (): int
+   native func Enable                   (trophy: string)
+   native func Disable                  (trophy: string)
+   native func IsUnlocked               (trophy: string): bool
+end

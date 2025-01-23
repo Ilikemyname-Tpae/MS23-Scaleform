@@ -1,0 +1,61 @@
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.lib.ui.bindings.bindings
+import ui.root
+
+/***************************************************************
+* CD_Base
+*
+***************************************************************/   
+class CD_Base
+   var clan_name          : ObservableProperty = null
+   var clan_tag           : ObservableProperty = null
+   var clan_description   : ObservableProperty = null
+      
+end
+
+/***************************************************************
+* CD_MembershipMember
+*
+***************************************************************/   
+class CD_MembershipMember
+   var user_id          : ObservableProperty = null
+   var role             : ObservableProperty = null
+      
+end
+
+/***************************************************************
+* CD_Membership
+*
+***************************************************************/   
+class CD_Membership
+   var members           : ObservableProperty = null
+      
+end
+
+/***************************************************************
+* ClanData
+*
+***************************************************************/   
+class ClanData
+   var has_base                  : ObservableProperty = null
+   var has_membership            : ObservableProperty = null
+
+   var base                      : CD_Base               = null
+   var membership                : CD_Membership         = null
+      
+end
+
+/***************************************************************
+* ClanDataStorage
+*
+***************************************************************/   
+class ClanDataStorage
+   var clans      : UiSslBindableMap   = null
+   
+   func ClanDataStorage()
+      $UiGlobals.Init()
+   end
+   
+end
+var $ClanDataStorage : ClanDataStorage

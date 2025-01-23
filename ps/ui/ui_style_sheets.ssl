@@ -1,0 +1,148 @@
+import ssl.hf2p.user_data
+
+/*************************************************************
+* UiSSMainChat
+* 
+*************************************************************/
+class UiSSMainChat
+   func GetStyleSheet() : vector
+      var result : vector
+      var styleDesc : params
+      var style : params
+      
+      styleDesc.name  := "span"
+      style.color     := "#FFFFFF"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".me"
+      style.color     := $UserDataStorage.GetColorLocal()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      styleDesc.name  := ".clanmate"
+      style.color     := $UserDataStorage.GetColorClanmate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".defuser"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      styleDesc.name  := "a:link"
+      style.color     := "inherit"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := "a:hover"
+      style.color     := $UserDataStorage.GetColorSelected()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      return result
+   end   
+end
+   
+/*************************************************************
+* UiSSIngameChat
+* 
+*************************************************************/
+class UiSSIngameChat
+   func GetStyleSheet() : vector
+      var result : vector
+      var styleDesc : params
+      var style : params
+      
+      styleDesc.name  := "span"
+      style.color     := "#00FFFF"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".me"
+      style.color     := $UserDataStorage.GetColorLocal()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".clanmate"
+      style.color     := $UserDataStorage.GetColorClanmate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".defuser"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      styleDesc.name  := "a:link"
+      style.color     := "inherit"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := "a:hover"
+      style.color     := $UserDataStorage.GetColorSelected()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      return result
+   end
+end
+
+/*************************************************************
+* UiSSScoreboard
+* 
+*************************************************************/
+class UiSSScoreboard
+   func GetStyleSheet() : vector
+      var result : vector
+      var styleDesc : params
+      var style : params
+      
+      styleDesc.name  := "span"
+      style.color     := "#FFFFFF"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".me"
+      style.color     := $UserDataStorage.GetColorLocal()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      styleDesc.name  := ".clanmate"
+      style.color     := $UserDataStorage.GetColorClanmate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+
+      styleDesc.name  := ".defuser"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      styleDesc.name  := "a:link"
+      style.color     := "inherit"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := "a:hover"
+      style.color     := $UserDataStorage.GetColorSelected()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      return result
+   end   
+end

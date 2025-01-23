@@ -1,0 +1,13 @@
+class OptionsSys
+   native func SetVariable        (userID: int, key: string, value: *)
+   native func GetVariable        (userID: int, key: string): *
+   native func InvalidateConfig   (userID: int)
+   native func SaveConfig         (userID: int)
+   native func AutoDetectVideoCfg (): params
+   native func GetScreenResList   (): vector
+   native func GetScreenResID     (): int
+   native func SetScreenResByID   (id: int)
+   native func GetControlKey      (userID: int, action: string): string
+   native func SetControlKey      (userID: int, action: string, value: string)
+   native func GetControlKeyName  (value: string): string
+end

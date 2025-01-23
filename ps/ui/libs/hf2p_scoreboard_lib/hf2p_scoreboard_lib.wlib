@@ -1,0 +1,260 @@
+classes   =   {
+   sc_backGround   =   {
+      __type   =   "ui_summary_lib::SummaryBackGround"
+   }
+   sc_personalStats   =   {
+      elements   =   {
+         list   =   {
+            __type   =   "hf2p_scoreboard_lib::sc_statList"
+         }
+      }
+      __type   =   "ui_summary_lib::PersonalStatsContainer"
+   }
+   sc_playerLIR   =   {
+      sslClass   =   "UiScPlayerLIR"
+      sslModule   =   "ui.libs.hf2p_scoreboard_lib.hf2p_scoreboard_lib"
+      elements   =   {
+         bombClassAttach   =   {
+            fixed   =   False
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx_image"
+            }
+            __type   =   "ui_widget_image"
+         }
+         color_bg   =   {
+            fixed   =   False
+            __type   =   "ui_widget_container"
+         }
+         armorClassAttach   =   {
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx_image"
+            }
+            __type   =   "ui_widget_image"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            assists   =   {
+               mapping   =   "tfAssists.text"
+            }
+            assistsClr   =   {
+               mapping   =   "tfAssists.textColor"
+            }
+            deaths   =   {
+               mapping   =   "tfDeaths.text"
+            }
+            deathsClr   =   {
+               mapping   =   "tfDeaths.textColor"
+            }
+            kills   =   {
+               mapping   =   "tfKills.text"
+            }
+            killsClr   =   {
+               mapping   =   "tfKills.textColor"
+            }
+            name   =   {
+               mapping   =   "tfName.text"
+            }
+            nameClr   =   {
+               mapping   =   "tfName.textColor"
+            }
+            score   =   {
+               mapping   =   "tfScore.text"
+            }
+            scoreClr   =   {
+               mapping   =   "tfScore.textColor"
+            }
+            tag   =   {
+               mapping   =   "tfTag.text"
+            }
+            tagClr   =   {
+               mapping   =   "tfTag.textColor"
+            }
+            wscore   =   {
+               mapping   =   "tfWScore.text"
+            }
+            wscoreClr   =   {
+               mapping   =   "tfWScore.textColor"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx_list_item"
+      }
+      __type   =   "ui_summary_lib::ScoreBoardLIR"
+   }
+   sc_playerList   =   {
+      impl   =   {
+         __type   =   "ui_widget_impl_gfx_list"
+      }
+      lir   =   {
+         impl   =   {
+            propMapping   =   {
+               assists   =   {
+                  isNoTranslate   =   True
+               }
+               deaths   =   {
+                  isNoTranslate   =   True
+               }
+               kills   =   {
+                  isNoTranslate   =   True
+               }
+               name   =   {
+                  isNoTranslate   =   True
+               }
+               score   =   {
+                  isNoTranslate   =   True
+               }
+               tag   =   {
+                  isNoTranslate   =   True
+               }
+               tagClr   =   {
+                  isNoTranslate   =   True
+               }
+               wscore   =   {
+                  isNoTranslate   =   True
+               }
+               tfName   =   {
+                  isNoTranslate   =   True
+               }
+               tfKills   =   {
+                  isNoTranslate   =   True
+               }
+               tfDeaths   =   {
+                  isNoTranslate   =   True
+               }
+               tfAssists   =   {
+                  isNoTranslate   =   True
+               }
+               tfScore   =   {
+                  isNoTranslate   =   True
+               }
+               tfTag   =   {
+                  isNoTranslate   =   True
+               }
+               tfWScore   =   {
+                  isNoTranslate   =   True
+               }
+            }
+            __type   =   "ui_widget_impl_gfx_list_item"
+         }
+         __type   =   "hf2p_scoreboard_lib::sc_playerLIR"
+      }
+      __type   =   "ui_widget_list"
+   }
+   sc_rounds   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "tf.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      customProps   =   [
+         {
+            propName   =   "text"
+            propVal   =   {
+               val   =   "lobby_waiting_for"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_summary_lib::hf2p_pm_end_of_round_module"
+   }
+   sc_statList   =   {
+      impl   =   {
+         __type   =   "ui_widget_impl_gfx_list"
+      }
+      lir   =   {
+         __type   =   "hf2p_scoreboard_lib::sc_statsLIR"
+      }
+      __type   =   "ui_widget_list"
+   }
+   sc_statsLIR   =   {
+      sslClass   =   "UiScStatsLIR"
+      sslModule   =   "ui.libs.hf2p_scoreboard_lib.hf2p_scoreboard_lib"
+      impl   =   {
+         propMapping   =   {
+            tfName   =   {
+               isNoTranslate   =   True
+            }
+            tfScore   =   {
+               isNoTranslate   =   True
+            }
+            name   =   {
+               mapping   =   "tfName.text"
+               isNoTranslate   =   True
+            }
+            score   =   {
+               mapping   =   "tfScore.text"
+               isNoTranslate   =   True
+            }
+         }
+         __type   =   "ui_widget_impl_gfx_list_item"
+      }
+      __type   =   "ui_summary_lib::PersonalStatsLIR"
+   }
+   sc_team   =   {
+      elements   =   {
+         heading   =   {
+            elements   =   {
+               colorBG   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfName   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfStatus   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfTeamScore   =   {
+                  impl   =   {
+                     __type   =   "ui_widget_impl_gfx"
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "ui_widget_container"
+         }
+         list   =   {
+            lir   =   {
+               __type   =   "hf2p_scoreboard_lib::sc_playerLIR"
+            }
+            __type   =   "hf2p_scoreboard_lib::sc_playerList"
+         }
+      }
+      __type   =   "ui_summary_lib::ScoreboardTeamContainer"
+   }
+   sc_waitingInfo   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "tf.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      customProps   =   [
+         {
+            propName   =   "text"
+            propVal   =   {
+               val   =   "lobby_waiting_for"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_summary_lib::waitingInfo"
+   }
+}
+__type   =   "ui_widget_lib"

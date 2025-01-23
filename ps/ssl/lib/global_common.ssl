@@ -1,0 +1,13 @@
+// core global functions and classes
+import ssl.lib.math
+import ssl.lib.rand
+import ssl.lib.types
+import ssl.lib.objects
+import ssl.lib.modules
+import ssl.lib.string
+import ssl.lib.path
+import ssl.lib.events
+
+// game related global functions
+import ssl.lib.global_engine
+import ssl.lib.global_debug

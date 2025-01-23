@@ -1,0 +1,98 @@
+import ssl.hf2p.user_data
+
+
+native class SSL_HQ
+   native func OpenURL                  (url: string)
+
+   native func BackendEnvironmentSet    (environment_index: int)
+
+   native func NewsMarkAsRead           (id: string)
+
+   native func ShopVideoBegin           (video_id: string)
+   native func ShopVideoEnd             ()
+   native func ShopNewClear             (id: string)
+
+   native func TutorialStart            ()
+
+   native func ShowroomBegin            ()
+   native func ShowroomTryOn            (id: string)
+   native func ShowroomTryOnArmor       (race: int, armorId: string)
+   native func ShowroomTryOnColor       (race: int, colorId: string)
+   native func ShowroomEnd              ()
+
+   native func ChatSendPrivate          (to_user_id: *, message: wstring)
+   native func ChatSendGeneral          (message: wstring)
+   native func ChatSendParty            (message: wstring)
+   native func ChatSendClan             (message: wstring)
+   native func ChatSendGameAll          (message: wstring)
+   native func ChatSendGameTeam         (message: wstring)
+   native func ChatSendCommand          (command: wstring)
+   native func ChatExtractCommand       (message: wstring) : wstring
+
+   native func PartyCreate              ()
+   native func PartyLeave               ()
+   native func PartyInviteSend          (to_uid: *)
+   native func PartyInviteAccept        (invite_from_uid: *)
+   native func PartyKick                (uid: *)
+
+   native func MatchmakingSetQueue      (matchmaking_queue: int)
+   native func MatchmakingEnterQueue    ()
+   native func MatchmakingLeaveQueue    ()
+  
+   native func MatchmakingSetPlaylist   (playlist_id: string)
+
+   native func CustomGameSetMode        (mode_id: string)
+   native func CustomGameSetMap         (map_id: string)
+   
+   native func LobbyRenderToTexture     (uid: *)
+   native func LobbyVote                (selection_index: int)
+   native func LobbyVoteReset           ()
+
+   native func TextureRenderBipedProfile        (uid: *)
+   native func TextureRenderBipedClassSelection (uid: *, class_name: string)
+   native func TextureRenderBipedLobbyLeft      (uid: *)
+   native func TextureRenderBipedLobbyRight     (uid: *)
+   native func TextureRenderBipedKiller         (uid: *)
+   native func TextureRenderBipedScoreboard     (uid: *)
+   native func TextureRenderWeaponShop          (weapon_id: string)
+   
+   var isInShowroom : bool = false
+   
+   var         canRender : bool = false
+   func GetCanRender() : bool
+      return canRender
+   end
+   
+   func SetCanRender(_canRender : bool) 
+      canRender := _canRender
+   end
+   
+   func LobbyRenderToTextureSafe(uid: *)
+      if (GetCanRender())
+         //LobbyRenderToTexture(uid)
+      end
+   end
+   
+   func RenderLocalPlayer()
+      if (GetCanRender())
+         //LobbyRenderToTexture($UserDataStorage.local_user.uid.Get())
+      end
+   end
+   
+   var isShopVideoStarted : bool = false   
+   
+   func ShopVideoBeginSafe(video_id: string)
+      if (! isShopVideoStarted)
+         ShopVideoBegin(video_id)
+         isShopVideoStarted := true
+      end
+   end
+   
+   func ShopVideoEndSafe()
+      if (isShopVideoStarted)
+         ShopVideoEnd()
+         isShopVideoStarted := false
+      end
+   end   
+end
+var $hq : SSL_HQ

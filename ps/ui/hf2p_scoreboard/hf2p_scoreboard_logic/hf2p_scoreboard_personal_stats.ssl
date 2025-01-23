@@ -1,0 +1,29 @@
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.hq
+import ssl.hf2p.user_data
+
+class UiScoreboardPersonalStats : UiWidgetContainer
+
+func RenderBiped()
+   if ($UserDataStorage.IsValidUID($UserDataStorage.local_user.uid.Get()))
+      $hq.TextureRenderBipedScoreboard($UserDataStorage.local_user.uid.Get())
+   end
+end
+   
+handle OnEnteringState("Initial")
+   Props().visible := false
+end
+
+handle OnEnteringState("Visible")
+   RenderBiped()
+   Widgets().gamerTag.tfName := "ingame_scoreboard_lir_name"
+   Widgets().positionTag.tfName := "ingame_scoreboard_lir_rank"
+   Widgets().kills.tfName := "ingame_scoreboard_lir_kills"
+   Widgets().assists.tfName := "ingame_scoreboard_lir_assists"
+   Widgets().deaths.tfName := "ingame_scoreboard_lir_deaths"
+   Widgets().total.tfName := "ingame_scoreboard_lir_score"
+   
+   Props().visible := true
+end
+end

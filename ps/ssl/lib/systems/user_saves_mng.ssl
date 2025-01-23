@@ -1,0 +1,10 @@
+native class UserSavesMng
+   native func IsLoaded(userIdx: int, cnt: string = "savedata"): bool
+   native func Load(userIdx: int)
+   native func LoadContent(userIdx: int, cntMask: vector)
+   native func SetPendingContent(userIdx: int, cntMask: vector)
+   native func Save(userIdx: int): bool
+   native func SaveContent(userIdx: int, cntMask: vector): bool
+   native func ClearUserData(userID: int)
+   native func DisableUserSaving(userID: int)
+end

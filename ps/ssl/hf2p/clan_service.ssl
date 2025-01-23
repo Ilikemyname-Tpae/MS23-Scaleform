@@ -1,0 +1,17 @@
+native class SSL_CLAN_SERVICE
+   native func IsValidClanName            (clan_name: wstring) : int
+   native func IsValidClanTag             (clan_tag: wstring) : int
+   native func IsValidClanDescription     (clan_description: wstring) : int
+
+   native func AsyncFindClansByName       (clan_name: wstring)
+
+   native func RequestData                (clan_id: *, data_type: int)
+
+   native func ClanCreate                 (clan_name: wstring, clan_tag: wstring, clan_description: wstring)
+   native func ClanLeave                  ()
+   native func ClanInviteSend             (to_user_id: *)
+   native func ClanInviteAccept           (to_clan_id: *)
+   native func ClanKick                   (user_id: *)
+
+end
+var $clan_service : SSL_CLAN_SERVICE

@@ -1,0 +1,9 @@
+native class UiProxy
+   native func ShowLoadingScreen(isImmediately: bool = false)
+   native func HideLoadingScreen()
+   native func StartSystemUI(userIdx: int, feature: string, p: params): bool
+   native func HasSystemUI(feature: string): bool
+   native func HandleEvent(eventName: string, p: params)
+   native func GetIngameFrameByTag(tag: string): object
+   native func EnableScreenSaver(enable: bool)
+end

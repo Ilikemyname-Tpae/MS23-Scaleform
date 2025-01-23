@@ -1,0 +1,304 @@
+classes   =   {
+   pm_CounterBase   =   {
+      sslClass   =   "UiPmCounterBase"
+      sslModule   =   "ui.libs.hf2p_postgame_lib.hf2p_postgame_lib"
+      elements   =   {
+         counter   =   {
+            animated   =   True
+            impl   =   {
+               __type   =   "ui_widget_impl_gfx"
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      impl   =   {
+         propMapping   =   {
+            counterTxt   =   {
+               mapping   =   "counter.textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      stateMap   =   {
+         states   =   {
+            sAnimCycle   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        elements   =   {
+                           elem_1   =   {
+                              state   =   "sAnimIn"
+                              __type   =   "ui_widget_action_state"
+                           }
+                           elem_2   =   {
+                              state   =   "sCounting"
+                              __type   =   "ui_widget_action_state"
+                           }
+                        }
+                        __type   =   "ui_widget_action_sequence"
+                     }
+                  }
+               }
+            }
+            sAnimIn   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "this.animIn"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+            sAnimOut   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "animOut"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+            sCounting   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "Counting"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+            sInitial   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "this.none"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "countingTime"
+            propVal   =   {
+               val   =   1.5
+               __type   =   "ui_widget_desc_prop_float"
+            }
+         },
+         {
+            propName   =   "xpAdded"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "crAdded"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "nextCounter"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "inSoundDelay"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_float"
+            }
+         },
+         {
+            propName   =   "randomItemDrop"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_widget_container"
+   }
+   pm_CounterCredits   =   {
+      impl   =   {
+         symbol   =   "hf2p_pm_credits_gain"
+         __type   =   "ui_widget_impl_gfx"
+      }
+      __type   =   "hf2p_postgame_lib::pm_CounterBase"
+   }
+   pm_CounterXP   =   {
+      impl   =   {
+         symbol   =   "hf2p_pm_XP_gain"
+         __type   =   "ui_widget_impl_gfx"
+      }
+      __type   =   "hf2p_postgame_lib::pm_CounterBase"
+   }
+   pm_CounterXpBonus   =   {
+      impl   =   {
+         symbol   =   "hf2p_pm_bonus_XP_gain"
+         __type   =   "ui_widget_impl_gfx"
+      }
+      __type   =   "hf2p_postgame_lib::pm_CounterBase"
+   }
+   pm_EndOfRound   =   {
+      __type   =   "ui_postmatch_lib::hf2p_pm_end_of_round_module"
+   }
+   pm_RandomItemDrop   =   {
+      sslClass   =   "UiPmRandomItemDrop"
+      sslModule   =   "ui.libs.hf2p_postgame_lib.hf2p_postgame_lib"
+      impl   =   {
+         propMapping   =   {
+            itemTxt   =   {
+               mapping   =   "randomDropItem.desc.text"
+            }
+            messageTxt   =   {
+               mapping   =   "randomDropItem.message.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      stateMap   =   {
+         states   =   {
+            sAnimCycle   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        elements   =   {
+                           elem_1   =   {
+                              state   =   "sAnimIn"
+                              __type   =   "ui_widget_action_state"
+                           }
+                           elem_2   =   {
+                              state   =   "sCounting"
+                              __type   =   "ui_widget_action_state"
+                           }
+                        }
+                        __type   =   "ui_widget_action_sequence"
+                     }
+                  }
+               }
+            }
+            sAnimIn   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "this.animIn"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+            sAnimOut   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "animOut"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+            sCounting   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "Counting"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+            sInitial   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "this.none"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "messageTxt"
+            propVal   =   {
+               val   =   "NEW ITEM FOUND"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "itemTxt"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "countingTime"
+            propVal   =   {
+               val   =   1.5
+               __type   =   "ui_widget_desc_prop_float"
+            }
+         },
+         {
+            propName   =   "nextCounter"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "inSoundDelay"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_float"
+            }
+         }
+      ]
+      __type   =   "ui_postmatch_lib::hf2p_pm_random_drop"
+   }
+   pm_statsBg   =   {
+      impl   =   {
+         propMapping   =   {
+            text   =   {
+               mapping   =   "textField.text"
+            }
+         }
+         __type   =   "ui_widget_impl_gfx"
+      }
+      __type   =   "ui_postmatch_lib::hf2p_pm_statsBg"
+   }
+   postMatchStatsLIR   =   {
+      sslClass   =   "UiPostMatchStatsLIR"
+      sslModule   =   "ui.libs.hf2p_postgame_lib.hf2p_postgame_lib"
+      impl   =   {
+         __type   =   "ui_widget_impl_gfx_list_item"
+      }
+      __type   =   "ui_postmatch_lib::postMatchSummaryLir"
+   }
+   postMatchStatsList   =   {
+      impl   =   {
+         __type   =   "ui_widget_impl_gfx_list"
+      }
+      lir   =   {
+         __type   =   "hf2p_postgame_lib::postMatchStatsLIR"
+      }
+      __type   =   "ui_widget_list"
+   }
+   postMatchCountersPanel   =   {
+      impl   =   {
+         lib   =   ""
+         __type   =   "ui_widget_impl_gfx"
+      }
+      __type   =   "ui_postmatch_lib::RightCountersPanel"
+   }
+   pm_medals   =   {
+      sslClass   =   "UiMedalsCont"
+      sslModule   =   "ui.libs.hf2p_postgame_lib.hf2p_postgame_lib"
+      __type   =   "ui_postmatch_lib::medalsCont"
+   }
+}
+__type   =   "ui_widget_lib"

@@ -1,0 +1,417 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.root
+import ssl.lib.types
+import ssl.hf2p.items_mgr
+import ssl.lib.ui.ui_widget_list
+import ssl.lib.ui.ui_widget_list_item
+
+class UiPmCounterBase : UiWidgetContainer
+
+var   xpAdded     : int    = 0
+var   crAdded     : int    = 0
+var   isSkip      : bool   = false
+var   skipCount   : bool   = false
+var   tweenEnd    : bool   = false
+
+func DoSkip()
+   isSkip := true
+end
+
+func StartCycle()
+   Log("ui~pm_CounterBase", "!!!StartCycle!!!")
+   isSkip := false
+   SetStateName("sAnimIn")
+end
+
+func playInSound()
+   $root.playSound("bonusxp_appear")
+   if xpAdded > 0 or crAdded > 0
+      $root.playSound("bonusxp_tally_loop") //:1 
+   end
+   //$root.playSound("pmElementSlide")
+end
+
+func skipSound()
+   $root.stopSound("bonusxp_appear")
+   $root.stopSound("bonusxp_tally_loop") //:1 
+   //$root.playSound("pmElementSlide")
+end
+
+handle OnEnteringState("sAnimIn")
+   Log("ui~pm_CounterBase", "!!!OnEnteringState_sAnimIn!!!")
+   xpAdded := Props().xpAdded
+   crAdded := Props().crAdded
+   
+   var inSoundDelay: float = -1 //Props().inSoundDelay
+   if (inSoundDelay >= 0)
+      playInSound() : inSoundDelay
+   else
+      playInSound()
+   end
+   Props().counterTxt := ""        
+end
+
+handle OnEnteringState("Initial")
+   Log("ui~pm_CounterBase", "!!!OnEnteringState_Initial!!!")
+end
+
+func SendSkipepd()
+   Log("ui~pm_CounterBase", "!!!Sending pm_itemCounterSkipped!!!")
+   skipSound()
+   SetStateName("Initial")
+   GenerateEvent("pm_itemCounterSkipped")
+end
+
+handle OnChangeState("sAnimIn")
+   Log("ui~pm_CounterBase", "!!!OnChangeState_sAnimIn!!!")
+   if (! isSkip)
+      SetStateName("sCounting")
+   else
+      SendSkipepd()
+   end
+end      
+
+handle OnEnteringState("sCounting")
+   Log("ui~pm_CounterBase", "!!!OnEnteringState_sCounting!!!")
+   skipCount := true
+   tweenEnd  := false
+   var tweenParm:params
+   tweenParm.propName   := "counterVal"
+   tweenParm.startVal   := 0         
+   if (xpAdded != 0) 
+      tweenParm.endVal  := xpAdded
+      skipCount         := false
+      Fire("AddXpAnim")
+   else if (crAdded != 0) 
+      tweenParm.endVal  := crAdded
+      skipCount         := false
+      Fire("AddCreditsAnim")
+   else
+      tweenParm.endVal  := 0
+   end
+   tweenParm.duration   := 2 //Props().countingTime
+   tweenParm.fadeType   := "linear"
+
+   OnItemAnimInFinished()
+   if (! skipCount)
+      var p : params
+      p.rpCounter := Props().rpCounter
+      GenerateEvent("rPanelCount", p)
+      AddTweenCb("counterValTween", tweenParm)
+      $root.playSound("pmElementFillFast")
+      $root.playSound("pmBarFill")
+   else 
+      Props().counterTxt := "0"
+      //completeCounting(true)
+   end         
+end
+
+func OnItemAnimInFinished()
+   Log("ui~pm_CounterBase", "OnItemAnimInFinished [xp=" + xpAdded + ", cr = " + crAdded + "]")
+   if (xpAdded != 0)
+      //$sslUserStates.AddXP(xpAdded)
+      GenerateEvent("uiUpdatePlayerInfoAnim")
+   end
+   if (crAdded != 0)
+      //$sslUserStates.AddCr(crAdded)
+      GenerateEvent("uiUpdatePlayerInfoAnim")
+   end
+end
+
+handle OnChangeState("sCounting")
+   Log("ui~pm_CounterBase", "!!!OnChangeState_sCounting!!!")
+   if (tweenEnd)
+      completeCounting()
+   elif (skipCount)
+      Props().counterTxt := "0"
+      completeCounting(true)
+   elif (isSkip)
+      SendSkipepd()
+   end
+end      
+
+handle OnEnteringState("sAnimOut")
+   Log("ui~pm_CounterBase", "!!!OnEnteringState_sAnimOut!!!")
+   $root.playSound("bonusxp_tally_end") // "pmElementFillDone"    
+   //$root.playSound("pmElementSlide") :1//, POSTMATCH_SOUND_DELAY                 
+end
+
+handle OnChangeState("sAnimOut")
+   var p:params
+   p.nextCounter := Props().nextCounter
+   if (! isSkip)
+      GenerateEvent("pm_itemCounterFinished", p)
+   else
+      SendSkipepd()
+   end
+end      
+
+func completeCounting(isZero:bool = false)
+   if (! isZero)
+      $root.stopSound("pmBarFill")
+      $root.stopSound("pmElementFillFast")
+   end
+   if (! isSkip)
+      if (! isZero)
+         $root.playSound("pmCreditsAdd")
+      end
+      SetStateName("sAnimOut") //: 1
+   else
+      SendSkipepd()
+   end
+end
+
+func counterValTween(updType:string)
+   Props().counterTxt := (string)((int)(Props().counterVal))
+   var state : string = GetStateName()
+   if (updType == "complete")
+      completeCounting()
+      if (GetStateName() != "sCounting")
+         tweenEnd := true
+      end
+   end
+end
+end
+
+class UiPmRandomItemDrop : UiWidgetContainer
+
+var   itemId      : string = ""
+var   isSkip      : bool   = false
+var   skipCount   : bool   = false
+
+
+func DoSkip()
+   isSkip := true
+end
+
+func StartCycle()
+   isSkip := false
+   if (itemId != "")
+      Props().itemTxt := itemId
+      SetStateName("sAnimIn")
+   else
+      SendFinished()
+   end
+end
+
+func playInSound()
+   $root.playSound("pmElementAppear")
+   $root.playSound("pmElementSlide") :1 
+end
+
+handle OnEnteringState("sAnimIn")
+   var inSoundDelay: float = Props().inSoundDelay
+   if (inSoundDelay >= 0)
+      playInSound() : inSoundDelay
+   else
+      playInSound()
+   end
+end
+
+func SendSkipepd()
+   Log("ui~pm_RandomItemDrop", "Sending pm_itemCounterSkipped")
+   GenerateEvent("pm_itemCounterSkipped")
+end
+
+handle OnChangeState("sAnimIn")
+   if (! isSkip)
+      SetStateName("sCounting")
+   else
+      SendSkipepd()
+   end
+end      
+
+handle OnEnteringState("sCounting")
+   skipCount := false
+   if (! skipCount)
+      $root.playSound("pmElementFillFast")
+      $root.playSound("pmBarFill")
+   else 
+      Props().counterTxt := "0"
+      completeCounting(true)
+   end
+end
+
+handle OnChangeState("sCounting")
+   if (skipCount)
+      completeCounting(true)
+   else if (isSkip)
+      SendSkipepd()
+   end
+   SetStateName("sAnimOut")
+end      
+
+handle OnEnteringState("sAnimOut")
+   $root.playSound("pmElementFillDone")    
+   $root.playSound("pmElementSlide") :1//, POSTMATCH_SOUND_DELAY                 
+end
+
+func SendFinished()
+   var p:params
+   p.nextCounter := Props().nextCounter
+   Log("ui~pm_RandomItemDrop", "PostGame_OnChangeState_pm_itemCounterFinished: " + Params2Str(p))
+   GenerateEvent("pm_itemCounterFinished", p)
+end
+
+handle OnChangeState("sAnimOut")
+   $root.stopSound("pmBarFill")
+   $root.stopSound("pmElementFillFast")
+   if (! isSkip)
+      Log("ui~pm_RandomItemDrop", "PostGame_OnChangeState_SendFinished")
+      SendFinished()
+   else
+      Log("ui~pm_RandomItemDrop", "PostGame_OnChangeState_SendSkipepd")
+      SendSkipepd()
+   end
+end      
+
+func completeCounting(isZero:bool = false)
+   if (! isZero)
+      $root.stopSound("pmBarFill")
+      $root.stopSound("pmElementFillFast")
+   end
+   if (! isSkip)
+      if (! isZero)
+         $root.playSound("pmCreditsAdd")
+      end
+      SetStateName("sAnimOut")
+   else
+      SendSkipepd()
+   end
+end
+end
+
+class UiRpanelCounterBase : UiWidgetContainer
+
+   var   counter      : int = 0
+   var   counterId    : string = ""
+   var   xp : int
+   var   xpBonus : int
+   var   xpCons : int
+   var   xpComplete : int
+   
+   func StartCount(p:params)
+      counterId := (string)p.rpCounter
+      if (counterId == "counterXpTotal")
+         counter := Props().xpTotal
+      elif (counterId == "counterCrTotal")
+         counter := Props().crTotal
+      end
+      
+      var tweenParm:params
+      
+      tweenParm.propName   := "counterValRp"
+      tweenParm.duration   := 2
+      tweenParm.fadeType   := "linear"
+      tweenParm.startVal   := 0         
+      tweenParm.endVal     := counter
+      AddTweenCb("counterValRpTween", tweenParm)
+   end
+   
+   func counterValRpTween(updType:string)
+      if (counterId == "counterXpTotal")
+         Props().xpTotal := (string)((int)(Props().counterValRp))
+      elif (counterId == "counterCrTotal")
+         Props().crTotal := (string)((int)(Props().counterValRp))
+      end
+   end
+   
+   func RightPanelStartCount(_xp : int, _xpBonus : int, _xpCons : int, _xpComplete : int)
+      
+      xp := _xp
+      xpBonus := _xpBonus
+      xpCons := _xpCons
+      xpComplete := _xpComplete 
+      
+      var tweenParm:params
+      
+      tweenParm.propName   := "counterValRp"
+      tweenParm.duration   := 2.5
+      tweenParm.fadeType   := "easeInExpo"
+      tweenParm.startVal   := 0         
+      tweenParm.endVal     := 100
+      AddTweenCb("counterValRightPanelTween", tweenParm)
+   end
+   
+   func counterValRightPanelTween (updType:string)
+      var k : float = (float)(Props().counterValRp) / 100
+      Props().xp := (string)(int)(k * xp) 
+      Props().xpBonus := (string)(int)(k * xpBonus)
+      Props().xpCons := (string)(int)(k * xpCons)
+      Props().xpComplete := (string)(int)(k * xpComplete)
+   end
+   
+end
+
+class UiMedalsCont : UiWidgetContainer
+   
+   func ShowMedals(medals : vector, _i : int = 0)
+      var i : int
+      var j : int
+      var count : int = medals.Count() - 1
+      var maxMedals : int = 10
+      for i := _i to count
+         var medalName : string = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get((string)medals.Get(i).id.Get())).name.Get()
+         var medalIcn : string = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get((string)medals.Get(i).id.Get())).icon.Get()
+         Widgets().Get("m" + (i+1 - _i)).visible := true
+         Widgets().Get("m" + (i+1 - _i)).iconAttach.pic := medalIcn //"statAssist"
+         Widgets().Get("m" + (i+1 - _i)).iconAttach.scaleX := 0.65
+         Widgets().Get("m" + (i+1 - _i)).iconAttach.scaleY := 0.65
+         Widgets().Get("m" + (i+1 - _i)).tf := "x " + (string)medals.Get(i).count.Get()
+         Widgets().Get("m" + (i+1 - _i)).tf2 := medalName // medals.Get(i).name
+      end
+      for j := i + 1 - _i to maxMedals 
+         Widgets().Get("m" + j).visible := false
+      end
+   end
+
+end
+
+class UiPostMatchStatsLIR : UiWidgetListItem
+   
+   var reward : int = 0
+   var sum : int = 0 
+   
+   override SetData
+      Props().statName     := (string)(p.statName)
+      Props().statCount    := (string)(p.statCount)
+      Props().statBonuses  := (string)(p.statBonuses)
+      reward := (int)p.statBonuses
+      sum := (int)p.statCount
+      if (p.anim)
+         Props().statBonuses  := "0"
+         StartCountSum()
+         StartCountReward()
+      end   
+   end
+   
+   func StartCountReward()
+      var tweenParm:params
+      tweenParm.propName   := "counterValReward"
+      tweenParm.duration   := 2.5
+      tweenParm.fadeType   := "easeInExpo"
+      tweenParm.startVal   := 0         
+      tweenParm.endVal     := reward
+      AddTweenCb("counterValRewardTween", tweenParm)
+   end
+   
+   func StartCountSum()
+      var tweenParm:params
+      tweenParm.propName   := "counterValSum"
+      tweenParm.duration   := 1.5
+      tweenParm.fadeType   := "easeInExpo"
+      tweenParm.startVal   := 0         
+      tweenParm.endVal     := sum
+      AddTweenCb("counterValSumTween", tweenParm)
+   end
+   
+   func counterValRewardTween(updType:string)
+      Props().statBonuses := (string)((int)(Props().counterValReward))
+   end
+   
+   func counterValSumTween(updType:string)
+      Props().statCount := (string)((int)(Props().counterValSum))
+   end
+   
+end

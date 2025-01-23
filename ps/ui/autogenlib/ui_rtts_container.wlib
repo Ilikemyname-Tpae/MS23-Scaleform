@@ -1,0 +1,132 @@
+classes = {
+	rtts_class_selection = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_class_selection" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_consumable = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_consumable" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_killer_biped = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_killer_biped" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_loadout_biped_0 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_loadout_biped_0" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_loadout_biped_1 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_loadout_biped_1" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_loadout_biped_2 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_loadout_biped_2" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_loadout_biped_3 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_loadout_biped_3" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_loadout_biped_4 = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_loadout_biped_4" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_lobby_biped_left = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_lobby_biped_left" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_lobby_biped_right = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_lobby_biped_right" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_profile_biped = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_profile_biped" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_scoreboard_biped = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_scoreboard_biped" 
+			lib     = rtts_container 
+		}
+	}
+
+	rtts_weapons = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "rtts_weapons" 
+			lib     = rtts_container 
+		}
+	}
+}
+__type = "ui_widget_lib"

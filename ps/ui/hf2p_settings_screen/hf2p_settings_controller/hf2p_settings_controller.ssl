@@ -1,0 +1,106 @@
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.game_preferences
+
+class UiController : UiWidgetContainer
+
+
+var num_options : int = 4
+var labels_left : int = 400
+var items_top : int = 200
+
+var is_inited :  bool = false
+
+func Arrange()
+   var i : int
+
+   for i := 0 to (num_options - 1)
+      var subWidget : * = GetWidget("label" + (string)(i))
+      subWidget.Props().x  := labels_left
+      subWidget.Props().y  := items_top + subWidget.Props().y_offset
+   end
+end
+
+func Init()
+   is_inited := true
+   Widgets().sliderLookSensitivity.value := $hf2pPreferences.GetLookSensitivity()
+   Widgets().buttonInvertLook.selected := $hf2pPreferences.GetInvertLook()
+   Widgets().buttonAutoCentering.selected := $hf2pPreferences.GetAutoCentering()
+   
+   var stepperElems :  vector
+   var elem1   :  params
+   elem1.label := "settings_controller_layout_default"
+   elem1.pic   := "last_resort_300x200"
+   stepperElems.Push(elem1)
+   
+   var elem2   :  params
+   elem2.label := "settings_controller_layout_southpaw"
+   elem2.pic   := "pit_300x200"
+   stepperElems.Push(elem2)
+   
+   Widgets().stepperButtonLayout.SetData(stepperElems)
+   Widgets().stepperButtonLayout.selection := $hf2pPreferences.GetButtonLayout()
+   UpdateControllerImage()
+end
+
+func HaveUnsavedChanges() :  bool
+   var result : int = 0
+   
+   if (!is_inited)
+      return false
+   end
+
+   result := result + (int)(Widgets().sliderLookSensitivity.value != $hf2pPreferences.GetLookSensitivity())
+   result := result + (int)(Widgets().buttonInvertLook.selected != $hf2pPreferences.GetInvertLook())
+   result := result + (int)(Widgets().buttonAutoCentering.selected != $hf2pPreferences.GetAutoCentering())
+   result := result + (int)(Widgets().stepperButtonLayout.selection != $hf2pPreferences.GetButtonLayout())
+   
+   return (result > 0)
+end
+
+func Reset()
+   Widgets().sliderLookSensitivity.value := 0
+   Widgets().buttonInvertLook.selected := false
+   Widgets().buttonAutoCentering.selected := false
+   Widgets().stepperButtonLayout.selection := 0
+end
+
+func Apply()
+   $hf2pPreferences.SetLookSensitivity(Widgets().sliderLookSensitivity.value)
+   $hf2pPreferences.SetInvertLook(Widgets().buttonInvertLook.selected)
+   $hf2pPreferences.SetAutoCentering(Widgets().buttonAutoCentering.selected)
+   $hf2pPreferences.SetButtonLayout(Widgets().stepperButtonLayout.selection)
+   GenerateEvent("OnApplyFinished")
+end
+
+func UpdateControllerImage()
+   var pic : string
+
+   var data : params = Widgets().stepperButtonLayout.GetItemData( Widgets().stepperButtonLayout.selection )
+   if (data.IsPropExist("pic"))
+      pic := data.pic
+   end
+
+   Widgets().imageController.pic := pic
+end
+
+func OnStepperIndexChange():bool
+   UpdateControllerImage()
+   return false
+end
+
+handle OnEnteringState("Initial")
+   AddTween("alpha", 0.0, Props().adelay, "linear")
+end          
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end  
+        
+handle OnEnteringState("Visible")
+   Arrange()
+   Init()
+   GenerateEvent("OnEnterNewTab")
+   Set("visible", true)
+   AddTween("alpha", 1.0, Props().adelay, "linear")
+end 
+end

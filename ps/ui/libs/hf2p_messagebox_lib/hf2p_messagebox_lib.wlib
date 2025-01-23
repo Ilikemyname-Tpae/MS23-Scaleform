@@ -1,0 +1,7 @@
+classes   =   {
+   wc_container   =   {
+      layer   =   "Layer2"
+      __type   =   "ui_weaponConf_lib_slide::hf2pWCContainer"
+   }
+}
+__type   =   "ui_widget_lib"

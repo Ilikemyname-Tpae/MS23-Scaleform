@@ -1,0 +1,398 @@
+classes = {
+	DBG_Frame = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DBG_Frame" 
+			lib     = default_lib 
+		}
+	}
+
+	DBG_Frame_Outside = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DBG_Frame_Outside" 
+			lib     = default_lib 
+		}
+	}
+
+	DBG_ScreenContainer = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DBG_ScreenContainer" 
+			lib     = default_lib 
+		}
+
+		elements {
+			dbgWidgetInfo {
+				__type = "ui_default_lib::DBG_WidgetInfo"
+				x         = 31.2
+				y         = 85.35
+			} 
+		}
+	}
+
+	DBG_WidgetInfo = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DBG_WidgetInfo" 
+			lib     = default_lib 
+		}
+
+		elements {
+			PropsList {
+				__type = "ui_default_lib::DBG_WidgetInfo_List"
+				x         = 0.35
+				y         = 0.35
+			} 
+		}
+	}
+
+	DBG_WidgetInfo_List = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "DBG_WidgetInfo_List" 
+			lib     = default_lib 
+		}
+	}
+
+	DBG_WidgetInfo_ListItemRenderer = {
+		__type = "ui_widget_list_item"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list_item
+			symbol  = "DBG_WidgetInfo_ListItemRenderer" 
+			lib     = default_lib 
+			propMapping {
+				column1 = {
+					mapping = "column1.text"
+				}
+			}
+		}
+	}
+
+	DefaultScrollBarSkinned = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultScrollBarSkinned" 
+			lib     = default_lib 
+		}
+
+		elements {
+			thumb {
+				__type = "ui_default_lib::DefaultScrollBar_thumb"
+				x         = 0
+				y         = 16
+			} 
+			downArrow {
+				__type = "ui_default_lib::DefaultScrollBar_arrow"
+				x         = 0
+				y         = 128
+			} 
+			upArrow {
+				__type = "ui_default_lib::DefaultScrollBar_arrow"
+				x         = 0
+				y         = 0
+			} 
+			track {
+				__type = "ui_default_lib::DefaultScrollBar_track"
+				x         = 0
+				y         = 16
+				scaleX    = 1
+				scaleY    = 5.9987
+			} 
+		}
+	}
+
+	DefaultScrollBar_arrow = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultScrollBar_arrow" 
+			lib     = default_lib 
+		}
+	}
+
+	DefaultScrollBar_thumb = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultScrollBar_thumb" 
+			lib     = default_lib 
+		}
+	}
+
+	DefaultScrollBar_track = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultScrollBar_track" 
+			lib     = default_lib 
+		}
+	}
+
+	DefaultScrollIndicatorSkinned = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultScrollIndicatorSkinned" 
+			lib     = default_lib 
+		}
+
+		elements {
+			thumb {
+				__type = "ui_default_lib::DefaultScrollIndicator_thumb"
+				x         = 0
+				y         = 0
+			} 
+			track {
+				__type = "ui_default_lib::DefaultScrollIndicator_track"
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 8
+			} 
+		}
+	}
+
+	DefaultScrollIndicator_thumb = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultScrollIndicator_thumb" 
+			lib     = default_lib 
+		}
+	}
+
+	DefaultScrollIndicator_track = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultScrollIndicator_track" 
+			lib     = default_lib 
+		}
+	}
+
+	def_AnimatedButtonSkinned = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_AnimatedButtonSkinned" 
+			lib     = default_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	def_AnimatedToggleButtonSkinned = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_AnimatedToggleButtonSkinned" 
+			lib     = default_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	def_ButtonSkinned = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_ButtonSkinned" 
+			lib     = default_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	def_ListItemRendererSkinned = {
+		__type = "ui_widget_list_item"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list_item
+			symbol  = "def_ListItemRendererSkinned" 
+			lib     = default_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	def_ScrollBarSkinned = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_ScrollBarSkinned" 
+			lib     = default_lib 
+		}
+
+		elements {
+			thumb {
+				__type = "ui_default_lib::def_s_ScrollBar_thumb"
+				x         = 0
+				y         = 16
+			} 
+			downArrow {
+				__type = "ui_default_lib::def_s_ScrollBar_arrow"
+				x         = 0
+				y         = 128
+			} 
+			upArrow {
+				__type = "ui_default_lib::def_s_ScrollBar_arrow"
+				x         = 0
+				y         = 0
+			} 
+			track {
+				__type = "ui_default_lib::def_s_ScrollBar_track"
+				x         = 0
+				y         = 16
+				scaleX    = 1
+				scaleY    = 5.9987
+			} 
+		}
+	}
+
+	def_ScrollIndicatorSkinned = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_ScrollIndicatorSkinned" 
+			lib     = default_lib 
+		}
+
+		elements {
+			thumb {
+				__type = "ui_default_lib::def_s_ScrollIndicator_thumb"
+				x         = 0
+				y         = 0
+			} 
+			track {
+				__type = "ui_default_lib::def_s_ScrollIndicator_track"
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 8
+			} 
+		}
+	}
+
+	def_ScrollingListSkinned = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "def_ScrollingListSkinned" 
+			lib     = default_lib 
+		}
+	}
+
+	def_ScrollingListSkinnedNoBG = {
+		__type = "ui_widget_list"
+
+		impl {
+			__type  = ui_widget_impl_gfx_list
+			symbol  = "def_ScrollingListSkinnedNoBG" 
+			lib     = default_lib 
+		}
+	}
+
+	def_s_ScrollBar_arrow = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_s_ScrollBar_arrow" 
+			lib     = default_lib 
+		}
+	}
+
+	def_s_ScrollBar_thumb = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_s_ScrollBar_thumb" 
+			lib     = default_lib 
+		}
+	}
+
+	def_s_ScrollBar_track = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_s_ScrollBar_track" 
+			lib     = default_lib 
+		}
+	}
+
+	def_s_ScrollIndicator_thumb = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_s_ScrollIndicator_thumb" 
+			lib     = default_lib 
+		}
+	}
+
+	def_s_ScrollIndicator_track = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_s_ScrollIndicator_track" 
+			lib     = default_lib 
+		}
+	}
+
+	def_ToggleButtonSkinned = {
+		__type = "ui_widget_button"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "def_ToggleButtonSkinned" 
+			lib     = default_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+}
+__type = "ui_widget_lib"

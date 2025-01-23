@@ -1,0 +1,5 @@
+native class LevelControl
+   native func LoadLevel(level : string)
+   native func SetMP(isMP : bool, isHost : bool)
+   native func IsMP() : bool
+end

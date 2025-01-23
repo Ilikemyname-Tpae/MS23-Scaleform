@@ -1,0 +1,195 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_manager
+import ssl.hf2p.engine_ctrl
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ui.ui_economy
+import ssl.hf2p.user_data
+import ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib
+import ui.root
+
+/*************************************************************
+* ChallengeSlidePopup
+* 
+*************************************************************/
+class ChallengeSlidePopup : UiWidgetContainer
+   func ShowChallengePopupSlide()
+      if (GetStateName() != "AnimIn")
+         SetStateName("AnimIn")
+      end
+   end
+
+   handle OnEnterState("Waiting")                  
+      GenerateEvent("#PopupWaiting")
+   end
+   
+   handle OnEnterState("Initial")                  
+      GenerateEvent("#PopupDisabled")
+      Props().visible := false
+   end
+
+   handle OnEnteringState("AnimIn")
+      Props().visible := true
+   end
+
+   handle OnEnterState("AnimIn")                  
+      SetStateName("AnimOut") : 3
+   end
+
+   handle OnEnterState("AnimOut")
+      SetStateName("Waiting")
+   end
+end // ChallengeSlidePopup
+
+/*************************************************************
+* ChallengeSlidePopupVM
+* 
+*************************************************************/
+class ChallengeSlidePopupVM
+   var wgt                 : ChallengeSlidePopup   = null
+   var isNewNotifications  : ObservableProperty    = $OM.Calculated(this, "GetIsNewNotifications") 
+   var progress            : ChallengeProgressVM   = new ChallengeProgressVM()
+   var currentNotif        : NT_Notification       = null
+   var challengeId         : ObservableProperty    = $OM.Property("")
+   var isWaiting           : ObservableProperty    = $OM.Property(false)
+   var desiredState        : string                = "Initial"
+   
+   func Init(p : params)
+      wgt := p.widget
+      isNewNotifications.Subscribe(this, "UpdateNotifications")
+      isNewNotifications.Get()
+   end
+   
+   func Term()
+      isNewNotifications.Unsubscribe(this, "UpdateNotifications")      
+   end   
+   /*
+   var testProgress : float = 0
+   
+   //for tests
+   global event uiDbgKey42()
+      testProgress := testProgress + 0.2
+      if (testProgress > 1.0)
+         testProgress := 0.2
+      end
+
+      var notifRef : NT_Notification      = new NT_Notification()
+      var notifRec : NT_ChallengeComplete = new NT_ChallengeComplete()
+      
+      notifRef.type           := $OM.Property($uiEnums.NOTIFICATION_CHALLENGE_COMPLETE)
+      notifRef.index          := $OM.Property($UiGlobals.notifications.challenge_complete.Get().Count())
+      
+      notifRec.challenge_id   := $OM.Property("challenge_oracle_1")
+      //notifRec.progress       := $OM.Property(testProgress)
+      
+      $UiGlobals.notifications.challenge_complete.Get().Push(notifRec)      
+      $UiGlobals.notifications.notifications.Get().Push(notifRef)
+      
+      $UiGlobals.notifications.notifications.OnChanged()
+   end
+   */
+   func GetNewNotifRef() : NT_Notification
+      var ret : NT_Notification = $UiGlobals.notifications.GetFirstUnprocessedByType($uiEnums.NOTIFICATION_CHALLENGE_PROGRESS, true)
+      if (ret == null) 
+         ret := $UiGlobals.notifications.GetFirstUnprocessedByType($uiEnums.NOTIFICATION_CHALLENGE_COMPLETE, true)
+      end   
+      return ret
+   end
+         
+   func GetIsNewNotifications() : bool
+      var ret : bool = GetNewNotifRef() != null and GetIsWaiting()
+      return ret
+   end
+   
+   func GetCurrentNotifRec() : NT_ChallengeProgress
+      return (NT_ChallengeProgress)$UiGlobals.notifications.GetNotifDetails(currentNotif)      
+   end   
+   
+   func GetCurrentCompleteNotifRec() : NT_ChallengeComplete
+      return (NT_ChallengeComplete)$UiGlobals.notifications.GetNotifDetails(currentNotif)      
+   end
+   
+   func GetChallengeId() : string
+      return (string)challengeId.Get()
+   end
+   
+   func GetChallengeIcon() : string
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(GetChallengeId())
+      var ret     : string          = (string)uiComp.icon.Get()
+      return ret
+   end
+   
+   func GetIsWaiting() : bool
+      return (bool)isWaiting.Get()
+   end
+      
+   func UpdateNotifications(_val : *)
+      if (wgt != null and GetIsWaiting())
+         currentNotif := GetNewNotifRef()
+         if (currentNotif != null)
+            if ((int)GetNewNotifRef().type.Get() == $uiEnums.NOTIFICATION_CHALLENGE_PROGRESS)
+               var progressNotif : NT_ChallengeProgress = GetCurrentNotifRec()
+               if (float)progressNotif.progress.Get() < 1.0
+                  $root.playSound("challenge_progress")
+                  challengeId.Set((string)progressNotif.challenge_id.Get())
+                  progress.InitVM("", (string)challengeId.Get(), -1, (float)progressNotif.progress.Get())
+                  wgt.ShowChallengePopupSlide()
+               else
+                  currentNotif.isIngameProcessed.Set(true)
+               end
+            elif ((int)GetNewNotifRef().type.Get() == $uiEnums.NOTIFICATION_CHALLENGE_COMPLETE)
+               var progressNotif : NT_ChallengeComplete = GetCurrentCompleteNotifRec()
+               $root.playSound("challenge_complete")
+               challengeId.Set((string)progressNotif.challenge_id.Get())
+               progress.InitVM("", (string)challengeId.Get(), -1, 1, true)
+               wgt.ShowChallengePopupSlide()
+            end
+         end
+      end
+   end
+   
+   func PopupWaiting(p : params) : bool
+      CheckDesiredState()
+      if (desiredState == "Waiting")
+         if (currentNotif != null)            
+            currentNotif.isIngameProcessed.Set(true)
+            currentNotif := null
+            challengeId.Set("")
+         end
+         isWaiting.Set(true)
+         UpdateNotifications(null)
+      end
+      return true
+   end   
+   
+   func PopupDisabled(p : params) : bool
+      isWaiting.Set(false)
+      CheckDesiredState()
+      return true
+   end   
+   
+   func CheckDesiredState()
+      if (wgt != null and desiredState != wgt.GetStateName())
+         wgt.SetStateName(desiredState)
+      end
+   end
+   
+   func EnablePopups(_enabled : bool, isIngame : bool = true)
+      var newDesiredState : string = desiredState
+      if (isIngame) 
+         wgt.Props().alpha := 100
+      else
+         wgt.Props().alpha := 0
+      end
+      if (_enabled)
+         newDesiredState := "Waiting"
+      else
+         newDesiredState := "Initial"
+      end
+      if (newDesiredState != desiredState)
+         desiredState := newDesiredState
+         CheckDesiredState()
+      end
+   end
+end // ChallengeSlidePopupVM

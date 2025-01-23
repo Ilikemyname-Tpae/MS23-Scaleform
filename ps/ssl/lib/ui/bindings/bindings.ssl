@@ -1,0 +1,9 @@
+class UiSslBindableBase
+   native func HasSubscribers() : bool
+end
+
+class UiSslBindableMap
+   native func Exist(key : *) : bool
+   native func Get(key : *) : *
+   native func GetKeys() : vector
+end

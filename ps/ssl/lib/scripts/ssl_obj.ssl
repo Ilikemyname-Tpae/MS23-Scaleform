@@ -1,0 +1,6 @@
+import ssl.lib.scripts.ssl_base
+
+native class SslObj : SslBase
+   native func GetUserId(): int
+   native func GetScriptId(): int
+end

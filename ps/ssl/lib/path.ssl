@@ -1,0 +1,2 @@
+native func PathName    (str : string) : string
+native func fnmGetName  (n: string): string

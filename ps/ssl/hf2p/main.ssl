@@ -1,0 +1,7 @@
+import ssl.lib.logging
+
+class GameMain
+   func GameMain()
+      Log("main", "HOUUURRA!! GameMain constructor")		
+   end
+end

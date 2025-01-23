@@ -1,0 +1,11 @@
+__type   =   "ui_frame_mgr"
+frames   =   [
+	"menu_manager_as3"
+]
+import   =   [
+	"ui_sounds"
+]
+startFrame   =   "NULL"
+menu_manager_as3   =   {
+	load   =   "ON_SHOW"
+}

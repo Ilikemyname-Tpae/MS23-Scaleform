@@ -1,0 +1,3 @@
+native func Fire            (eventName: string, eventParams: params = null)
+native func GetState        (stateName: string) : *
+native func SetState        (stateName: string, eventParams: *)

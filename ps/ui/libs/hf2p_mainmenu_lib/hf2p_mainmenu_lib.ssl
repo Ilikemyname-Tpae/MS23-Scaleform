@@ -1,0 +1,31 @@
+import ssl.lib.ui.ui_widget_container
+
+class UiFullscreenScreen : UiWidgetContainer
+
+handle OnEnteringState("Initial")
+   StartFadeOut()
+end   
+
+handle OnEnteringState("Visible")
+   StartFadeIn()
+end   
+
+func StartFadeIn()
+   Set("visible", true)
+   GotoAndPlay("fadeIn")   
+end
+
+func StartFadeOut()
+   if (GetStateName() != "IN")
+      GotoAndPlay("fadeOut")
+      SetInvisibleDelayed() : 0.5   
+   else
+      SetInvisibleDelayed()
+   end
+end
+
+func SetInvisibleDelayed()
+   Set("visible", false)
+end
+
+end

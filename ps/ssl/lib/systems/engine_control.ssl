@@ -1,0 +1,46 @@
+native class EngineControl
+   native func InitEngine()
+   native func LoadLevel(level : string)
+   native func ShowLoadingScreen(name : string)
+   native func HideLoadingScreen()
+   native func CreatePlayer(cls : string, name : string)
+   native func DestroyPlayer(name : string)
+   native func IsMenuLevel() : bool
+   native func IsSplitScreen() : bool
+   native func GetLevelName() : string
+   native func GetDefaultLevelName() : string
+   native func GetBuildInfo() : string
+   native func SetCameraToStartPos(idxStartPos : int)
+   native func SetSplitScreen(isOn: bool)
+   native func SetSmtSharedScreen(isOn: bool)
+   native func GetVariable(sect : string, key : string, type : string) : *
+   native func SetVariable(sect : string, key : string, type : string, val : *)
+   native func GetGlobalVar(key : string) : *
+   native func SetGlobalVar(key : string, val : *)
+   native func GetUserVar(userID : int, key : string) : *
+   native func SetUserVar(userID : int, key : string, val : *)
+   native func IsUserSignedIn(userID: int): bool
+   native func IsReadyToCheckSignIn(): bool
+   native func ReloadBrands(prefix : string, postfix : string, macro : string)
+   native func GetActualMapList(): vector
+   native func GetPlatformName(): string
+   native func IsTrial(): bool
+   native func IsDemo(): bool
+   native func SetSavegameOverwrite(userID: int, allow: bool)
+   native func UnloadUITextures(frame: string)
+   native func UnloadFromFioCache(path: string)
+   native func GetGameRegion(): string
+   native func GetLocaleName(short: bool = false): string
+   native func GetRegionLocaleShort(): string
+   native func GotoWebLink(link: string, closeGame: bool)
+   native func ShowCameraPosition(show: bool)
+   native func IsShowCameraPosition() : bool
+   native func ShowSoundsDbgInfo(show: bool)
+   native func IsShowSoundsDbgInfo() : bool
+   native func ShowMPDbgInfo(show: bool)
+   native func IsShowMPDbgInfo() : bool
+   native func UpdateMPDbgInfo(info: string)
+   native func OnManagedHostChanged(name: string)
+   native func SetOnPreLevelLoad(funcName: refFUNC_PTR)
+   native func CheckNetType(netType: string, cb: refFUNC_PTR)
+end

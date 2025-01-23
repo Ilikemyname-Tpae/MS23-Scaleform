@@ -1,0 +1,22 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.emblem_editor
+
+class UiEmblemWidgetRender : UiWidgetContainer
+
+handle OnActivate
+   Log("ui~emblem_widget_render", "EmblemEditor_obj_activated!")
+   $hf2pEmblemEditor.EMSetFrameIsActive()
+   Widgets().ec_canvas_container.emblemBckg.visible := false
+end
+
+func LoadEmblem(p:params)
+   Log("ui~emblem_widget_render", "EmblemEditorRender: loading...")
+   var emblemData : vector =  $hf2pEmblemEditor.EMGetEmblemData(p.emblem_id)
+   Widgets().ec_canvas_container.SetRTTIMode()
+   Widgets().ec_canvas_container.EmblemEditorChangeLayers(emblemData)
+   Log("ui~emblem_widget_render", "EmblemEditorRender: loaded, setting ready...")
+   $hf2pEmblemEditor.EMSetEmblemIsReady(p.emblem_id)
+end
+end
+var $emblem_widget_render:UiEmblemWidgetRender

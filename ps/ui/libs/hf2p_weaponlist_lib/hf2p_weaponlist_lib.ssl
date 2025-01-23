@@ -1,0 +1,150 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ui.root
+import ui.ui_economy
+import ssl.lib.ui.ui_widget_list
+
+import ssl.lib.ui.ui_widget_list_item
+
+class UiWcItemsListLIR : UiWidgetListItem
+override SetData
+end
+end
+
+class UiWcItemsList2 : UiWidgetList
+   func OnItemClick(p:params):bool
+      if (! IsVoid(p.index))
+         if (p.index >= 0)
+            SelectByIdx(p.index, false)
+         end
+      end
+      return false
+   end
+
+   func SelectByIdx(idx:int, isTemp:bool=false)
+      if (idx >= 0)
+         var pp:params
+         pp.idx      := idx
+         GenerateEvent("#OnItemSlotSelect", pp)
+      end
+   end
+         
+   func OnItemRollOver(p:params):bool
+      if (! IsVoid(p.index))
+         if (p.index >= 0)
+            SelectByIdx(p.index, true)
+         end
+      end         
+      return false
+   end
+         
+   func OnItemRollOut(p:params):bool
+      GenerateEvent("#OnItemSlotMouseOut")
+      return false
+   end
+end
+
+class UiWcItemsListLIR2 : UiWidgetListItem
+
+override SetData
+   if (! IsVoid(p.itemName))               
+      Props().textField := p.itemName
+   end   
+end
+end
+
+class UiWcItemsListNew : UiWidgetList
+   var isRolledOver = false
+   var rolledOverIndex = -1
+   var rolledOverScrollPos = -1
+   
+   func OnItemClick(p:params):bool
+      if (! IsVoid(p.index))
+         if (p.index >= 0)
+            SelectByIdx(p.index, false)
+         end
+      end
+      return false
+   end
+
+   func SelectByIdx(idx:int, isFocusOnly:bool=false)
+      if (idx >= 0)
+         var pp:params
+         pp.idx         := idx
+         pp.isFocusOnly := isFocusOnly
+         GenerateEvent("#OnItemSlotSelect", pp)
+      end
+   end
+         
+   func OnItemRollOver(p:params):bool
+      if (! IsVoid(p.index))
+         if (p.index >= 0)
+            isRolledOver := true
+            rolledOverIndex := p.index
+            rolledOverScrollPos := p.widget.Get("scrollPosition")
+            SelectByIdx(p.index, true)
+         end
+      end         
+      return false
+   end
+         
+   func OnItemRollOut(p:params):bool
+      isRolledOver := false
+      rolledOverIndex := -1
+      GenerateEvent("#OnItemSlotMouseOut")
+      return false
+   end
+   
+   func OnBundlesListScroll(p : params) : bool
+      if isRolledOver
+         var scrollPos : int = p.widget.Get("scrollPosition")
+         var delta = scrollPos - rolledOverScrollPos
+         rolledOverIndex += delta
+         rolledOverScrollPos := scrollPos
+         SelectByIdx(rolledOverIndex, true)
+      end
+      return false
+   end
+end
+
+class UiWcItemsListLIRNew : UiWidgetListItem
+
+override SetData // (p : params)
+   Props().mouseChildren := true
+end
+
+//override SetData
+func SetData2(p : params) 
+   var   text     : string
+   var   desc     : string
+   var   pic      : string = ""
+   if (! IsVoid(p.itemName))               
+      text := p.itemName
+   end
+   if (! IsVoid(p.itemDesc)) 
+      desc := p.itemDesc
+   end
+   if (! IsVoid(p.pic)) 
+      pic := p.pic
+   end
+   Props().itemName  := text
+   Props().desc      := ""
+   
+   Widgets().textFieldUp.x := 94
+end
+end
+
+class WeaponItemLIRVM
+   var wpnIcon : ObservableProperty = $OM.Calculated(this, "GetWpnIcon")
+
+   func WeaponItemLIRVM()
+   end
+   
+   func GetWpnIcon() : *
+      var ret : string
+      return ret
+   end      
+end

@@ -1,0 +1,55 @@
+func MinFloat(a : float, b : float) : float
+   if (a < b)
+      return a
+   end
+   return b
+end
+
+func MinInt(a : int, b : int) : int
+   if (a < b)
+      return a
+   end
+   return b
+end
+
+func ClampFloat(value :  float, min :  float, max :  float) :  float
+   if(value > max) 
+      return max
+   elif(value < min)
+      return min
+   end
+   return value
+end
+
+func ClampInt(value :  int, min :  int, max :  int) :  int
+   if(value > max) 
+      return max
+   elif(value < min)
+      return min
+   end
+   return value
+end
+
+func AbsoluteInt(value :  int) :  int // Why i cant name AbsInt????
+   var v :  int = value
+   if(value < 0)
+      return -value
+   end
+   return value
+end
+
+func AbsoluteFloat(value :  float) :  float
+   var v :  float = value
+   if(value < 0)
+      return -value
+   end
+   return value
+end
+
+func SquareInt(value :  int) :  int
+   return value * value
+end
+
+func SquareFloat(value :  float) :  float
+   return value * value
+end

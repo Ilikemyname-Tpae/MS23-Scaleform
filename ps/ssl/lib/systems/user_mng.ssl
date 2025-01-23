@@ -1,0 +1,21 @@
+class UserMng
+   native func Get                      (userIdx: int): params
+   native func IsActive                 (userIdx: int): bool
+   native func IsSignedIn               (userIdx: int): bool
+   native func IsOnline                 (userIdx: int): bool
+   native func IsMultiplayerAllowed     (userIdx: int): bool
+   native func IsViewScoreboardAllowed  (userIdx: int): bool
+   native func IsCommunicationsAllowed  (userIdx: int): bool
+   native func IsGuest                  (userIdx: int): bool
+   native func GetName                  (userIdx: int): string
+   native func GetIdentifyString        (userIdx: int): string
+   native func GetUIString              (userIdx: int): string
+   native func PrimaryUserIdx           (): int
+   native func SetPrimaryUserIdx        (userIdx: int)
+   native func Count                    (): int
+   native func SecondaryUserIdx         (): int
+   native func SetSecondaryUserIdx      (userIdx: int)
+   native func SetData                  (userIdx: int, prop: string, data:*) : bool
+   native func HasData                  (userIdx: int, prop: string): bool
+   native func RemoveData               (userIdx: int, prop: string): bool
+end

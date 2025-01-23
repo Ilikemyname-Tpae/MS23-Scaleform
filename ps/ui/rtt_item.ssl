@@ -1,0 +1,35 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.hf2p.hq
+import ui.ui_economy
+import ui.ui_party_monitor
+import ui.ui_player_info
+import ssl.lib.ui.ui_gfx_frame
+import ui.roots.emblem_widget_render
+
+class RttItem : UiGfxFrame
+
+handle OnInit
+   Log("ui~RttItem", "RTT_ITEM_OnInit")
+   if (! $sslWidgetMgr.IsWidgetLoaded("emblem_widget_render"))
+      Log("ui~RttItem", "RTT_ITEM_LoadingWidget")
+      $sslWidgetMgr.LoadWidget("emblem_widget_render", "emblem_widget_render", "rtt_item")
+   end
+end
+
+handle OnTerm
+   Log("ui~RttItem", "RTT_ITEM_OnTerm")
+   $sslWidgetMgr.UnloadWidget("emblem_widget_render")
+end
+
+global event PutNewEmblem(emblem_id : int)
+   Log("ui~RttItem", "RTT_ITEM_NewEmblem")
+   var p : params
+   p.emblem_id := emblem_id
+   $emblem_widget_render.LoadEmblem(p)
+end
+
+end

@@ -1,0 +1,724 @@
+classes   =   {
+   BundlesScreen   =   {
+      sslClass   =   "BundlesScreen"
+      sslModule   =   "ui.hf2p_SlidingScreens.hf2p_Bundles.hf2p_Bundles"
+      visible   =   False
+      handlers   =   {
+         handler_3   =   {
+            handlerName   =   "OnLeaveLobby"
+            source   =   "leaveLobbyBtn.leaveLobby"
+         }
+         OnBundleSubItemLirMouseOver   =   {
+            handlerName   =   "OnBundleSubItemLirMouseOver"
+         }
+         OnBundleSubItemLirMouseOut   =   {
+            handlerName   =   "OnBundleSubItemLirMouseOut"
+         }
+         BlinkItemList   =   {
+            handlerName   =   "OnBlinkItemList"
+         }
+      }
+      elements   =   {
+         header   =   {
+            x   =   -5
+            y   =   32
+            isBlinkable   =   True
+            customProps   =   [
+               {
+                  propName   =   "selectableTxt"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               },
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_bundles"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "hf2p_WeaponConf_lib::wc_headerBig_s"
+         }
+         bundleHeader   =   {
+            x   =   340
+            y   =   185
+            isBlinkable   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{'carousel_bundle_content'}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::BundlesScreenBundleHeader"
+         }
+         purchaceModuleCont   =   {
+            x   =   1005
+            y   =   341
+            elements   =   {
+               assignBtn   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib_slide::offersAssignBtn"
+               }
+            }
+            __type   =   "hf2p_WeaponConf_lib::offersModuleContNew"
+         }
+         descPanel   =   {
+            x   =   365
+            y   =   500
+            handlers   =   {
+               OnAttribMouseOver   =   {
+                  handlerName   =   "OnMouseOver"
+               }
+               OnItemSlotMouseOver   =   {
+                  handlerName   =   "OnMouseOver"
+               }
+            }
+            layer   =   "layerDesc"
+            __type   =   "hf2p_WeaponConfDescPanel"
+         }
+         panelButtons   =   {
+            x   =   -5
+            y   =   91
+            elements   =   {
+               button0   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "itemType"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "wpnQualityIdx"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "shadingLineVisible"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_bool"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_WeaponConf_lib::ShopSectionTacticalTab"
+               }
+               button1   =   {
+                  x   =   190
+                  customProps   =   [
+                     {
+                        propName   =   "itemType"
+                        propVal   =   {
+                           val   =   1
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "wpnQualityIdx"
+                        propVal   =   {
+                           val   =   1
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "shadingLineVisible"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_bool"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_WeaponConf_lib::ShopSectionTacticalTab"
+               }
+               button2   =   {
+                  x   =   380
+                  customProps   =   [
+                     {
+                        propName   =   "itemType"
+                        propVal   =   {
+                           val   =   2
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "wpnQualityIdx"
+                        propVal   =   {
+                           val   =   2
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "shadingLineVisible"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_bool"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_WeaponConf_lib::ShopSectionTacticalTab"
+               }
+               button3   =   {
+                  x   =   570
+                  customProps   =   [
+                     {
+                        propName   =   "itemType"
+                        propVal   =   {
+                           val   =   3
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "wpnQualityIdx"
+                        propVal   =   {
+                           val   =   3
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "shadingLineVisible"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_bool"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_WeaponConf_lib::ShopSectionTacticalTab"
+               }
+               button4   =   {
+                  x   =   760
+                  customProps   =   [
+                     {
+                        propName   =   "itemType"
+                        propVal   =   {
+                           val   =   4
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "wpnQualityIdx"
+                        propVal   =   {
+                           val   =   4
+                           __type   =   "ui_widget_desc_prop_int"
+                        }
+                     },
+                     {
+                        propName   =   "shadingLineVisible"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_bool"
+                        }
+                     }
+                  ]
+                  __type   =   "hf2p_WeaponConf_lib::ShopSectionTacticalTab"
+               }
+            }
+            layer   =   "layer1"
+            soundMap   =   {
+               soundMaps   =   {
+                  ui_widget_button   =   {
+                     mapping   =   {
+                        buttonClick   =   {
+                           uiSoundEvent   =   "tab_select"
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "hf2p_Loadout_lib::wc_container"
+         }
+         subItemsList   =   {
+            x   =   350
+            y   =   240
+            isBlinkable   =   True
+            bindings   =   {
+               items   =   {
+                  binding   =   "{SubItemList}"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "minThumbSize"
+                  propVal   =   {
+                     val   =   48
+                     __type   =   "ui_widget_desc_prop_float"
+                  }
+               },
+               {
+                  propName   =   "wrapping"
+                  propVal   =   {
+                     val   =   "stick"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "_width"
+                  propVal   =   {
+                     val   =   940
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "_height"
+                  propVal   =   {
+                     val   =   245
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            lir   =   {
+               __type   =   "hf2p_Bundles::BundleSubItemLir"
+            }
+            scrollbar   =   {
+               __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBarNew"
+            }
+            __type   =   "ui_emblemEditor::DefTileList"
+         }
+         bundlesList   =   {
+            x   =   -6
+            y   =   190
+            isBlinkable   =   True
+            events   =   {
+               scroll   =   {
+                  eventRemap   =   "OnBundlesListScroll"
+               }
+            }
+            bindings   =   {
+               items   =   {
+                  binding   =   "{itemList}"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "minThumbSize"
+                  propVal   =   {
+                     val   =   48
+                     __type   =   "ui_widget_desc_prop_float"
+                  }
+               },
+               {
+                  propName   =   "wrapping"
+                  propVal   =   {
+                     val   =   "stick"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "_width"
+                  propVal   =   {
+                     val   =   320
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "_height"
+                  propVal   =   {
+                     val   =   455
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            lir   =   {
+               __type   =   "hf2p_Bundles::BundleLir"
+            }
+            __type   =   "hf2p_WeaponList_lib::wc_ItemsListNew"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+            }
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Bundles.hf2p_Bundles.BundlesVM'}"
+         }
+      }
+      layers   =   {
+         layer1   =   {
+            offset   =   10
+         }
+         layer2   =   {
+            offset   =   11
+         }
+         layerMaskCloud   =   {
+            offset   =   21
+         }
+         layerDesc   =   {
+            offset   =   22
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "width"
+            propVal   =   {
+               val   =   1920
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "height"
+            propVal   =   {
+               val   =   1080
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      __type   =   "hf2p_Loadout_lib::wc_container"
+   }
+   BundleSubItemLir   =   {
+      isBlinkable   =   True
+      events   =   {
+         click   =   {
+            eventRemap   =   "#NO_EVENT"
+         }
+         mouseOver   =   {
+            eventRemap   =   "OnBundleSubItemLirMouseOver"
+         }
+         mouseOut   =   {
+            eventRemap   =   "OnBundleSubItemLirMouseOut"
+         }
+      }
+      elements   =   {
+         newShape   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::newShape"
+         }
+         equipCont   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::equipClip"
+         }
+         lockSymbol   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::wc_lock_icon"
+         }
+         greyOverInst   =   {
+            bindings   =   {
+               mouseEnabled   =   {
+                  binding   =   "{false}"
+               }
+               visible   =   {
+                  binding   =   "{(#parent.#parent)SubItemListLocked}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfSaleRightAnim   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         saleShapeRight   =   {
+            visible   =   False
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         wpnIndicator   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         expiredTimer   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{rentStatus != ''}"
+               }
+            }
+            __type   =   "hf2p_WeaponConf_lib::wc_expTimer"
+         }
+         uiTileCostCont   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "hf2p_WeaponConf_lib::wc_uiTileCostCont_s"
+         }
+         textFieldUp   =   {
+            bindings   =   {
+               textFieldUp   =   {
+                  binding   =   "{$UiGlobals.componentsUI[itemId].name}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::weaponNameTextCont"
+         }
+         attachContainerClass   =   {
+            elements   =   {
+               picAttachPoint   =   {
+                  fixed   =   False
+                  __type   =   "ui_weaponConf_lib_slide::attachPointArmrStat"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         attachContainerContainer   =   {
+            elements   =   {
+               attachContainerInt   =   {
+                  fixed   =   False
+                  elements   =   {
+                     picAttachPoint   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{$UiGlobals.componentsUI[itemId].icon}"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib_slide::attachPointArmrStat"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib_slide::attachContainer"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::AttachContainerContainer"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Bundles.hf2p_Bundles.BundleSubItemLIR', itemId = (:DC2).item_id, duration = (:DC2).duration}"
+         }
+         EnabledLabels   =   {
+            binding   =   "{'up'}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "textField2"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      tooltipWidget   =   {
+         elements   =   {
+            content   =   {
+               elements   =   {
+                  iconAttach   =   {
+                     elements   =   {
+                        placeHolder   =   {
+                           visible   =   False
+                           __type   =   "ui_weaponConf_lib::placeHolderContent"
+                        }
+                     }
+                     bindings   =   {
+                        pic2   =   {
+                           binding   =   "{$uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_ARMOR ? $UiGlobals.componentsUI[itemId].icon : ''}"
+                        }
+                        pic   =   {
+                           binding   =   "{$UiGlobals.componentsUI[itemId].icon_med}"
+                        }
+                     }
+                     isCentered   =   True
+                     __type   =   "ui_weaponConf_lib::attachPoint"
+                  }
+                  weaponRenderAttach   =   {
+                     elements   =   {
+                        rtts_weapons   =   {
+                           __type   =   "ui_rtts_container::rtts_weapons"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+                  perkRenderAttach   =   {
+                     elements   =   {
+                        ConsumableRenderContainer   =   {
+                           elements   =   {
+                              consumableRenderContent   =   {
+                                 elements   =   {
+                                    rtts_consumable   =   {
+                                       __type   =   "ui_rtts_container::rtts_consumable"
+                                    }
+                                 }
+                                 __type   =   "ui_icon_lib_cons::ConsumableRendterTexture"
+                              }
+                           }
+                           __type   =   "ui_icon_lib_cons::ConsumableRenderContainer"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+                  desc   =   {
+                     bindings   =   {
+                        textField   =   {
+                           binding   =   "{$UiGlobals.componentsUI[itemId].desc}"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+                  header   =   {
+                     bindings   =   {
+                        textField   =   {
+                           binding   =   "{$UiGlobals.componentsUI[itemId].name}"
+                        }
+                     }
+                     __type   =   "ui_widget_container"
+                  }
+               }
+               bindings   =   {
+                  anim2   =   {
+                     binding   =   "{$uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_ARMOR ? 'icon' : $uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_TACTICAL ? 'video' : 'render'}"
+                  }
+                  anim   =   {
+                     binding   =   "{$UiGlobals.componentsUI[itemId].video != 'unknown' ? 'video' : $UiGlobals.componentsUI[itemId].icon_big ? 'icon' : 'render'}"
+                  }
+               }
+               __type   =   "ui_weaponConf_lib::bundleItemTooltipContent"
+            }
+         }
+         bindings   =   {
+            renderHelper   =   {
+               binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Bundles.hf2p_Bundles.BundleItemRenderHelper', itemId = itemId}"
+            }
+         }
+         __type   =   "ui_weaponConf_lib::bundleItemTooltip"
+      }
+      __type   =   "hf2p_WeaponList_lib::wc_ItemsListLIRNew"
+   }
+   BundleLir   =   {
+      isBlinkable   =   True
+      events   =   {
+         click   =   {
+            eventRemap   =   "#OnItemLirClicked"
+         }
+      }
+      elements   =   {
+         tfSaleRightAnim   =   {
+            impl   =   {
+               propMapping   =   {
+                  tfSaleRight   =   {
+                     isNoTranslate   =   True
+                  }
+               }
+               __type   =   "ui_widget_impl_gfx"
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!!maxDiscount}"
+               }
+               tfSaleRight   =   {
+                  binding   =   "{maxDiscount}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         saleShapeRight   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!!maxDiscount}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         discount   =   {
+            bindings   =   {
+               tfDiscountValue   =   {
+                  binding   =   "{''}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::restockHotItemDiscount"
+         }
+         lockSymbol   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isGpCrLock}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         greyOverInst   =   {
+            bindings   =   {
+               mouseEnabled   =   {
+                  binding   =   "{isGpCrLock}"
+               }
+               visible   =   {
+                  binding   =   "{isGpCrLock}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfBundleNameConatainer   =   {
+            bindings   =   {
+               tfBundleName   =   {
+                  binding   =   "{itemName}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         uiTileCostCont   =   {
+            elements   =   {
+               uiCrCost   =   {
+                  bindings   =   {
+                     creditTf   =   {
+                        binding   =   "{offerCr}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::crCostH"
+               }
+               uiGpCost   =   {
+                  bindings   =   {
+                     goldTf   =   {
+                        binding   =   "{offerGp}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::gpCostH"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isOffers}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::TileCostContH"
+         }
+         iconAttach   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{$UiGlobals.componentsUI[itemId].icon}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::attachPoint"
+         }
+         newShape   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isNew}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::newShape"
+         }
+      }
+      bindings   =   {
+         tfBundleDesc   =   {
+            binding   =   "{itemDescShort}"
+         }
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf.BundleItemLIR', itemId = (:DC2).value}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::hf2p_HotItemsListLIR"
+   }
+}
+__type   =   "ui_wlib"

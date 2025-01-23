@@ -1,0 +1,8 @@
+// object accessing
+native func FindObject      (name : string) : object
+native func FindSslObj      (name : string) : object
+native func HasObject       (name : string) : bool
+
+// virtual constructor/desctructor
+native func CreateObjectByClassName (className : string, name : string = "") : object
+native func DestroyObjectByName     (name : string)

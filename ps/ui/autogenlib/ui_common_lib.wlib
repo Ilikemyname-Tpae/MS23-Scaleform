@@ -1,0 +1,174 @@
+classes = {
+	CommonHorizontalTabs = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "CommonHorizontalTabs" 
+			lib     = common_lib 
+		}
+	}
+
+	common_text = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "common_text" 
+			lib     = common_lib 
+			propMapping {
+				tf = {
+					mapping = "tf.text"
+				}
+			}
+		}
+	}
+
+	DefaultTextArea = {
+		__type = "ui_widget_text_area"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultTextArea" 
+			lib     = common_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	DefaultTextAreaCont = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultTextAreaCont" 
+			lib     = common_lib 
+		}
+
+		elements {
+			txtArea {
+				__type = "ui_common_lib::DefaultTextArea"
+				x         = 1
+				y         = 1
+			} 
+		}
+	}
+
+	DefaultTextInputSkinned = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "DefaultTextInputSkinned" 
+			lib     = common_lib 
+			propMapping {
+				textField = {
+					mapping = "textField.text"
+				}
+			}
+		}
+	}
+
+	progressBar = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "progressBar" 
+			lib     = common_lib 
+		}
+
+		elements {
+			progressOver {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 4.75
+				y         = 4.15
+			} 
+		}
+	}
+
+	progressDiffBar = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "progressDiffBar" 
+			lib     = common_lib 
+		}
+
+		elements {
+			upperMask {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -1
+				y         = 2.15
+			} 
+			progress {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+			} 
+			progressYellow {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+			} 
+			lowerMask {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = -1
+				y         = 2.15
+			} 
+			progressRed {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+			} 
+			progressGreen {
+				__type = "ui_widget_container"
+
+				impl {
+					__type  = ui_widget_impl_gfx
+				}
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	universalFakeBackground = {
+		__type = "ui_widget_container"
+
+		impl {
+			__type  = ui_widget_impl_gfx
+			symbol  = "universalFakeBackground" 
+			lib     = common_lib 
+		}
+	}
+}
+__type = "ui_widget_lib"

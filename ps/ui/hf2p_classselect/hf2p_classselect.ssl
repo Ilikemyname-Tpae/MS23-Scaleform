@@ -1,0 +1,195 @@
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.lib.string
+import ui.libs.hf2p_MainMenu_lib.hf2p_MainMenu_lib
+
+class ClassSelectScreenContainer : UiFullscreenScreen
+   global event OnClassSelectionOpen
+      SetStateName("Visible")
+   end
+end
+
+class RenameScreen : UiFullscreenScreen
+   
+   handle OnEnteringState("Initial")
+      Props().visible := false
+   end
+   
+   handle OnEnteringState("Visible")
+      Props().visible := true
+   end
+   
+   handle OnEnterState("Hidden")
+      Props().visible := false
+   end
+end
+
+class UiClassSelectInputTf : UiWidgetContainer
+end
+
+class ClassSelectVM
+   var isActive            : ObservableProperty = $OM.Property(false)
+   var selectedIdx         : ObservableProperty = $OM.Property(-1)
+   var selectNicknameState : ObservableProperty = $OM.Property("Visible")
+   var errorText           : ObservableProperty = $OM.Property("")
+   var acceptBtnVisible    : ObservableProperty = $OM.Property(false)
+   var wgt : *
+   
+   func Init(p : params)
+      wgt := p.widget
+   end
+   
+   global event OnClassSelectionOpen
+      //wgt.Widgets().renameScreen.inputNameContainer.inputContainer.textField := ""
+      SetInitialState()
+      if (int)$UserDataStorage.local_user.token_renames.Get() == 0
+         selectNicknameState.Set("Initial")
+         ClassSelectFadeIn()
+      else
+         errorText.Set("")
+         selectNicknameState.Set("Visible")
+      end
+      selectedIdx.Set(-1)
+      isActive.Set(true)
+      $hq.TextureRenderBipedClassSelection($UserDataStorage.local_user.uid.Get(), GetClassKit(0))
+   end
+   
+   global event OnClassSelectionClose
+      isActive.Set(false)
+   end
+
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      errorText.Set("")
+      if (p.isDown == true and keyCode == $uiKeys.VK_ENTER)
+         OnNicknameAcceptBtnClicked(new params)
+         isTerminated := true
+      end
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return true
+   end
+
+   func OnNicknameAcceptBtnClicked(p : params) : bool
+      var pp : params
+      pp.newNick := wgt.Widgets().renameScreen.inputNameContainer.inputContainer.textFieldW
+      if (pp.newNick == $UiGlobals.String2WString(""))
+         errorText.Set("msg_empty_nickname")
+         return true
+      end
+      var nickCheckRet  : int       = $user_service.IsValidNickname(pp.newNick)
+      if (nickCheckRet != 0)
+         errorText.Set("msg_nick_err_" + (string)nickCheckRet)
+      else
+         $UiGlobals.backend_requests.change_nickname.Start(pp.newNick, "OnSelectNicknameComplete", "OnSelectNicknameError", false)
+      end
+      return true
+   end
+      
+   func SetInitialState()
+      wgt.GotoAndStop(1)
+      acceptBtnVisible.Set(false)
+   end
+   
+   func EnableAcceptBtn()
+      acceptBtnVisible.Set(true)
+   end
+      
+   func PlayFadeInAnim()
+      wgt.GotoAndPlay(2)
+      EnableAcceptBtn() : 1.25 
+   end
+      
+   func ClassSelectFadeIn()
+      PlayFadeInAnim() : 1.25
+   end
+   
+   func OnSelectNicknameComplete(p : params) : bool
+      selectNicknameState.Set("Hidden")   
+      ClassSelectFadeIn()
+      return true
+   end
+   
+   func OnSelectNicknameError(p : params) : bool
+      errorText.Set(p.messageTxt2)
+      return true
+   end
+   
+   func OnAcceptBtnClicked(p : params) : bool
+      if selectedIdx.Get() == -1
+         return true
+      end
+      
+      var id : string = ""
+      
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         var section : GL_ShopSection = shop.FindInternalSection("section_career")
+         if section != null
+            var shelf :  GL_ShopShelf = section.FindShelf("shelf_bundles_start_kits")
+            if shelf != null
+               if shelf.items.Get().Count() > selectedIdx.Get()
+                  id := (string)shelf.items.Get().Get((int)selectedIdx.Get()).value.Get()
+               end
+            end
+         end
+      end
+      
+      if id != ""
+         var compShop : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(id)
+         if compShop.offers.Get().Count() > 0
+            var compOffer : GL_ComponentShopOffer = compShop.offers.Get().Get(0)
+            var price : GL_ComponentShopOfferPricing = compOffer.pricing.Get().Get(0)
+            var offer : string = (string)price.offer.Get()
+            $UiGlobals.backend_requests.apply_offer.Start(offer, "OnApplyStarterKitOfferComplete")
+         end
+      end
+      
+      return true
+   end
+
+   func OnApplyStarterKitOfferComplete(p : params) : bool
+      Fire("OnClassSelectionClose")
+      return true
+   end
+   
+   func GetClassKit(idx: int) : string
+      var ret : string
+      if ((bool)isActive.Get())
+         if (! IsVoid($UiGlobals.shop.race_shops.Get()) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+            var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+            var section : GL_ShopSection = shop.FindInternalSection("section_career")
+            if section != null
+               var shelf :  GL_ShopShelf = section.FindShelf("shelf_bundles_start_kits")
+               if shelf != null
+                  if shelf.items.Get().Count() > idx
+                     ret := (string)shelf.items.Get().Get(idx).value.Get()
+                  end
+               end
+            end
+         end
+      end
+      return ret
+   end
+   
+   func GetClassCompUI(idx: int) : GL_ComponentUI
+      //hack (isActive)
+      var id : string = GetClassKit(idx)
+      var ret = (GL_ComponentUI)$UiGlobals.componentsUI.Get(id)
+      return ret
+   end
+
+   func OnClassCardClicked(p : params) : bool
+      var idx : int = p.widget.Get("idx")
+      selectedIdx.Set(idx)
+      
+      $hq.TextureRenderBipedClassSelection($UserDataStorage.local_user.uid.Get(), GetClassKit(idx))
+      
+      return true
+   end
+end

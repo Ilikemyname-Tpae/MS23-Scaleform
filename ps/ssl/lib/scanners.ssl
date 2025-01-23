@@ -1,0 +1,87 @@
+class ScannerPlayer
+   native func SetDistEnter(dist : float)
+   native func SetDistLeave(dist : float)
+   native func SetPos      (obj : object)
+   native func AddEnterCB  (f : refFUNC_PTR)
+   native func AddLeaveCB  (f : refFUNC_PTR)
+   native func Start       ()
+   native func Stop        ()
+end
+
+class ScannerSmtDomain
+   native func SetDomain   (obj : object)
+   native func SetMinDist  (dist : float)
+   native func SetIdealDist(dist : float)
+   native func SetFilter   (filter : StridFlags)
+   native func SetOwner    (obj : object)
+   native func SetPrevSmt  (obj : object)
+   native func AddSelectCB (f : refFUNC_PTR)
+   native func Select      ()
+end 
+
+class ScannerRetreatPoint
+   native func SetOwner    (obj : object)
+   native func SetFilter   (isMil : bool = false, isCiv : bool = false, isRbl : bool = false)
+   native func AddSelectCB (f : refFUNC_PTR)
+   native func Select      ()
+end
+
+class ScannerSmt
+   native func SetMinDist  (dist : float)
+   native func SetIdealDist(dist : float)
+   native func SetOwner    (obj : object)
+   native func SetFilter   (filter : StridFlags)
+   native func AddSelectCB (f : refFUNC_PTR)
+   native func Select      ()
+end
+
+class ScannerInterestAI
+   native func SetRadius            (radius : float)
+   native func SetOwner             (obj : object)
+   native func Start                ()
+   native func Stop                 ()
+   native func OnInterestEvent      (f : refFUNC_PTR)
+end
+
+class ScannerCivProximityAI
+   native func SetRadius            (radius : float)
+   native func SetOwner             (obj : object)
+   native func Start                ()
+   native func Stop                 ()
+   native func Reset                ()
+   native func OnProximityEvent     (f : refFUNC_PTR)
+end
+
+class ScannerCountCivNear
+   native func SetRadius            (radius : float)
+   native func SetOwner             (obj : object)
+   native func Start                ()
+   native func Stop                 ()
+   native func SetCallback          (f : refFUNC_PTR)   
+end
+
+class ScannerNearestAI
+   native func SetSearchParams      (actor : object, radius : float, team : string = "all", searchSphere : bool = false, alive : bool = true)
+   native func FindNearestAI        ()
+   native func OnFoundedNearestAI   (f : refFUNC_PTR)
+end
+
+class ScannerAI
+   native func SetDistEnter(dist : float)
+   native func SetDistLeave(dist : float)
+   native func SetPos      (obj : object)
+   native func AddEnterCB  (f : refFUNC_PTR)
+   native func AddLeaveCB  (f : refFUNC_PTR)
+   native func Start       ()
+   native func Stop        ()
+end
+
+class ScannerSquadSurround
+   native func AddSurroundCB   (f : refFUNC_PTR)
+   native func SetCenter       (center : object)
+   native func SetRadius       (radius : float)
+   native func SetAngle        (angle : float)
+   native func SetTeam         (team : string)
+   native func Start           ()
+   native func Stop            ()
+end

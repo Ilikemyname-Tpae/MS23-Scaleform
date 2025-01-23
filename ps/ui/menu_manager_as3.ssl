@@ -1,0 +1,40 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.lib.ui.ui_widget_manager
+import ui.root
+import ui.roots.hf2p_main_menu_screen
+import ssl.lib.ui.ui_gfx_frame
+import ui.roots.hf2p_main_menu_screen
+
+class MenuManagerAs3 : UiGfxFrame
+
+var widgetName : string
+var widgetFile : string
+
+handle OnInit
+   widgetName := "hf2p_main_menu"
+   if ($root.activeWidget == "MAINMENU")
+      widgetFile := "hf2p_main_menu_screen"
+      widgetName := "hf2p_main_menu"
+   else if ($root.activeWidget == "INGAME")
+      widgetFile := "hf2p_in_game_menu"
+      widgetName := "hf2p_in_game_menu"
+   end
+   if (widgetName != "" and widgetFile != "")
+      $sslWidgetMgr.LoadWidget(widgetFile, widgetName, "menu_manager_as3")      
+   end   
+end
+
+handle OnTerm   
+   if (widgetName != "")
+      $sslWidgetMgr.UnloadWidget(widgetName)      
+      widgetName  := ""
+      widgetFile  := ""
+   end
+end                                             
+
+end
+
+var $menu_manager_as3 : UiGfxFrame

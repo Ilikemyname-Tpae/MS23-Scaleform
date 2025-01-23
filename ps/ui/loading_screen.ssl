@@ -1,0 +1,50 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_iface
+//import ssl.lib.systems.input_context
+import ssl.lib.ui.ui_widget_manager
+import ssl.lib.ui.ui_gfx_frame
+
+class LoadingScreen : UiIface
+
+handle OnInit
+   Log("ui~LoadingScreen", "LoadingScreen : OnInit()")
+   $sslWidgetMgr.LoadWidget("hf2p_loading_screen", "hf2p_loading_screen", "loading_screen", true)
+end
+
+handle OnTerm
+   Log("ui~LoadingScreen", "LoadingScreen : OnInit()")
+   $sslWidgetMgr.UnloadWidget("hf2p_loading_screen")
+end
+
+/*var interpolateDuration: float := 5
+var extrapolateDuration: float := 40
+var extrapolateValue: float := 0.1
+
+override OnInit
+   Log("->LoadingScreen.OnInit()")
+
+   asSetupProgress(interpolateDuration, extrapolateDuration, extrapolateValue)
+   var p: params
+   p.state := "preload"
+   ASCall("asSetState", p)   
+end
+
+func asSetupProgress(interpolateDuration:float, extrapolateDuration:float, extrapolateValue:float)
+   var p: params
+   p.interpolateDuration := interpolateDuration
+   p.extrapolateDuration := extrapolateDuration
+   p.extrapolateValue := extrapolateValue
+   ASCall("asSetupProgress", p)
+end
+
+
+override OnTerm
+   Log("->LoadingScreen.OnTerm()")
+   
+   var pp : params
+   pp.idx := 0
+   Fire("ReleasePauseController", pp)
+end
+
+*/
+end

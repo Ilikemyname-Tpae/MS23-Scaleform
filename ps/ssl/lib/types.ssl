@@ -1,0 +1,17 @@
+// functional conversions
+native func PS2Params       (ps: psSECTION)  : params
+native func PS2Vector       (ps: psARRAY)    : vector
+native func PS2String       (ps: psSECTION)  : string
+native func Params2PS       (p: params)      : psSECTION
+native func Vector2PS       (v: vector)      : psARRAY
+native func String2PS       (str: string)    : psSECTION
+
+native func Params2Str      (p: params)      : string
+
+// type checking
+native func IsVoid          (val : *) : bool
+native func IsValid         (val : *) : bool
+native func IsType          (val : *, type : string) : bool
+
+native func CreateFuncPtr   (obj: *, func_name: string): refFUNC_PTR
+

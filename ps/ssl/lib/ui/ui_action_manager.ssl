@@ -1,0 +1,10 @@
+native class UiActionManager   
+   native func CreateFromParams(p:params): refUIAction
+   native func CreateByType(actionType: string, p:params = null): refUIAction
+   native func CreateList(elements: vector = null, _isParallel:bool = false): refUIAction
+   native func CreateSequence(elements: vector = null): refUIAction
+   native func CreateAnim(name:string): refUIAction
+   native func CreateAction(name:string, paramsOverride: params = null): refUIAction
+   native func CreateTween(propName: string, startVal: float, endVal: float, duration: float, fadeType: string, callbackFunc: string): refUIAction
+   native func CreateFunc(name:string, p:params = null): refUIAction   
+end

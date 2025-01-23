@@ -1,0 +1,15 @@
+native class UserProgress
+   event OnCreateCheckpointRec(userID: int, level_id: string, rec: params)
+   event OnLoadCheckpointRec  (userID: int, rec: params)
+   event OnSaveContinueRec    (userID: int, rec: params)
+   event OnLoadContinueRec    (userID: int, rec: params)
+   native func IsLoaded            (userIdx: int): bool
+   native func Get                 (userIdx: int): psSECTION
+   native func Enabled             (): bool
+   native func OpenCheckpoint      (userIdx: int, level: string, checkpoint: string, updateContPnt: bool)
+   native func IsCheckpointOpened  (userIdx: int, level: string, checkpoint: string): bool
+   native func LoadCheckpointRec   (userIdx: int, level: string, checkpoint: string)
+   native func SetCampaignMode     (userIdx: int, value: bool)
+   native func IsCampaignMode      (userIdx: int): bool
+   native func RemoveContinueRec   (userIdx: int): bool
+end

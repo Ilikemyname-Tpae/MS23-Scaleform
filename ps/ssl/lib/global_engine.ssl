@@ -1,0 +1,32 @@
+// transport related
+native func geomTransportPosDirUp      (actor : string, pos : m3dV, dir : m3dV, up : m3dV)
+native func geomTransportObjPosDirUp   (actor : string, objName : string, pos : m3dV, dir : m3dV, up : m3dV)
+// camera
+native func CameraGetPosDirUp          () : params
+native func CameraSetPosDirUp          (pos : m3dV, dir : m3dV, up : m3dV)
+native func IsNearCamera               (locator : string, distance : float) : bool
+native func GetDistance                (firstObject : string, secondObject : string) : float
+// render related
+native func vidSetAmbient              (camIdx : int, domainID : object, psParams : psSECTION, useInterpolation : bool)
+// streaming
+native func StrmPreloadTexturesTpl     (tplName : string)
+native func StrmEnableHardCutMode      ()
+native func StrmDisableHardCutMode     ()
+
+// player
+native func gsGetPlayerCount           () : int
+native func gsGetPlayer                (player_id : int) : object
+native func gsGetLocalPlayer           () : object
+native func IsCoop                     () : bool
+
+// misc
+native func CreateGameEvent            (sender : object, flags : StridFlags)
+native func TermArea                   (actor : string, object : string) : bool
+native func gsMovePath                 (actor : object, path : vector, speed : float)
+native func GetParentBrand             (brand : string) : string
+native func CreateObjectFromSslPs      (brand : string) : object
+native func GetLinkStatus              () : bool
+native func GetElapsedTime             () : float
+
+native func StartRecordCounters        (fileName : string) : bool
+native func StopRecordCounters         () : bool

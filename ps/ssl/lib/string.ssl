@@ -1,0 +1,1 @@
+native func HasSubstring(str : string, sub : string) : bool

@@ -1,0 +1,7 @@
+native class PipesMgr
+   native func FireEvent        (pipe: string, eventName: string, p: params)
+   native func RegisterReader   (pipe: string, obj: object, name: string): bool
+   native func UnregisterReader (pipe: string): bool
+   native func IsPipeEmpty      (pipe: string): bool
+   native func ClearPipe        (pipe: string)
+end
