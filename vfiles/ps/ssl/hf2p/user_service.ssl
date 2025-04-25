@@ -1,0 +1,61 @@
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_data
+
+native class SSL_USER_SERVICE
+   native func IsValidNickname            (nickname : wstring) : int
+
+   native func AsyncFindUsers             (nickname_prefix : wstring, search_area: int)
+
+   native func RequestData                (uid: *, data_type: int)
+   native func RequestApplyOffer          (offer : string)
+   native func RequestRealMoneyPurchase   (product : string)
+   native func RequestFollow              (uid: *)
+   native func RequestUnfollow            (uid: *)
+   native func RequestNicknameChange      (new_nickname : wstring)
+   native func RequestUITutorialComplete  ()
+
+   native func SetAccountLabel            (id : string)
+   native func SetEmblem                  (id : string)
+   native func SetRace                    (race: int)
+   native func SetLoadout                 (loadout_index : int, id : string)
+
+   native func SetGender                  (gender: int) // 0 - male, 1 - female
+
+   native func SetArmorLoadoutActive      (race : int, loadout_index : int)
+   native func SetArmorLoadoutItem        (race : int, loadout_index : int, armor : string)
+   native func SetArmorLoadoutColors      (race : int, loadout_index : int, color_primary : string, color_secondary : string, color_visor : string, color_lights : string, color_holograms : string)
+   native func SetWeaponLoadoutActive     (race : int, loadout_index : int)
+   native func SetWeaponLoadoutWeapon     (race : int, loadout_index : int, weapon : string)
+   native func SetWeaponLoadoutGrenade    (race : int, loadout_index : int, grenade : string)
+   native func SetWeaponLoadoutBooster    (race : int, loadout_index : int, booster : string)
+   native func SetWeaponLoadoutConsumable (race : int, loadout_index : int, slot_index : int, consumable : string)
+
+   native func SetCharacterActive         (character_index : int)
+   native func SwitchCharacterGender      ()
+   native func EquipCharacter             (id : string)
+   native func EquipCharacterWithSlot     (id : string, slot_index : int)
+   native func SetCharacterColor          (color_id : string)
+   
+// ssl-only
+   func RequestAllUiUserData       (uid: *)
+      if ($UserDataStorage.IsValidUID(uid))
+         var ud : UserData = (UserData)$UserDataStorage.users.Get(uid)
+         if (!(bool)ud.has_base.Get())
+            RequestData(uid, $uiEnums.USER_DATA_BASE)
+         end
+         if (!(bool)ud.has_stats.Get())
+            RequestData(uid, $uiEnums.USER_DATA_STATS)
+         end
+         //if (!(bool)ud.has_armor_loadouts.Get())
+            //RequestData(uid, $uiEnums.USER_DATA_ARMOR_LOADOUT)
+         //end
+         //if (!(bool)ud.has_weapon_loadouts.Get())
+            //RequestData(uid, $uiEnums.USER_DATA_WEAPON_LOADOUT)
+         //end
+         if (!(bool)ud.has_customizations.Get())
+            RequestData(uid, $uiEnums.USER_DATA_CUSTOMIZATIONS)
+         end
+      end
+   end
+end
+var $user_service : SSL_USER_SERVICE

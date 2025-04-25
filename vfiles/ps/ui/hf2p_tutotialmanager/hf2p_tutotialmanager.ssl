@@ -1,0 +1,383 @@
+import ssl.lib.events
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ui.root
+
+class UiTutorialManager : UiWidgetContainer
+
+
+var   rootWidget           : *
+var   currentStage         : string = ""
+var   previousHightLight   : string = ""
+//var   highLightInstance    : *
+//var   tooltipInstance      : *
+
+func GetRootWidget(): *
+   return rootWidget.Props
+end
+
+
+func GenericMessageBoxYesNo(_title: string, _text:string, _okFunc:string = "", _cancelFunc: string = "")
+   var pp                     :  params
+   var callbackParams         :  params
+   
+   pp.callbackEvent           := "MessageBoxHandler"
+   pp.callbackTarget          := Props
+   pp.mbType                  := $uiEnums.MB_TYPE_NO_YES
+   pp.titleTxt                := "msg_ui_" + _title
+   pp.messageTxt              := "msg_ui_" + _text
+
+   callbackParams.mbType      := pp.mbType
+   callbackParams.okFunc      := _okFunc
+   callbackParams.cancelFunc  := _cancelFunc
+   pp.callbackParams          := callbackParams
+   
+   GenerateEvent("MainMenuDialogRequest", pp)   
+end
+
+func GenericMessageBoxInfo(_title: string, _text:string, _endFunc:string = "")
+   var pp                  :  params
+   var callbackParams      :  params
+   
+   pp.callbackEvent        := "MessageBoxHandler"
+   pp.callbackTarget       := Props
+   pp.mbType               := "Info"
+   pp.titleTxt             := "msg_ui_" + _title
+   pp.messageTxt           := "msg_ui_" + _text
+
+   callbackParams.mbType   := pp.mbType
+   callbackParams.endFunc  := _endFunc
+   pp.callbackParams       := callbackParams
+   
+   GenerateEvent("MainMenuDialogRequest", pp)   
+end
+
+
+func MessageBoxHandler(p:params) : bool
+   var callingParams : params = p.callbackParams
+   var targetFunc    : string = ""
+   
+   
+   if (callingParams.mbType == $uiEnums.MB_TYPE_NO_YES)
+      var okFunc     : string = callingParams.okFunc
+      var cancelFunc : string = callingParams.cancelFunc
+      if (p.isOK)
+         targetFunc  := okFunc
+      else
+         targetFunc  := cancelFunc
+      end
+   else if (callingParams.mbType == "Info")
+      var endFunc    : string = callingParams.endFunc
+      targetFunc     := endFunc
+   end
+   
+   //GenericMessageBoxInfo("TUTUTUT", "Func = " + targetFunc, "")
+   
+   if (targetFunc != "")
+      var pp:params
+      GenerateEvent(targetFunc, pp)            
+   end
+   return false
+end
+
+
+func MessageBoxYesNo(_title: string, _text:string, _okFunc:string = "", _cancelFunc: string = "")
+   var pp                     :  params
+   var callbackParams         :  params
+   
+   pp.callbackEvent           := "MessageBoxHandler"
+   pp.callbackTarget          := Props
+   pp.mbType                  := $uiEnums.MB_TYPE_NO_YES
+   pp.titleTxt                := _title
+   pp.messageTxt              := _text
+
+   callbackParams.mbType      := pp.mbType
+   callbackParams.okFunc      := _okFunc
+   callbackParams.cancelFunc  := _cancelFunc
+   pp.callbackParams          := callbackParams
+   
+   GenerateEvent("TutorialDialogRequest", pp)   
+end
+
+func MessageBoxInfo(_title: string, _text:string, _endFunc:string = "")
+   var pp                  :  params
+   var callbackParams      :  params
+   
+   pp.callbackEvent        := "MessageBoxHandler"
+   pp.callbackTarget       := Props
+   pp.mbType               := "Info"
+   pp.titleTxt             := _title
+   pp.messageTxt           := _text
+
+   callbackParams.mbType   := pp.mbType
+   callbackParams.endFunc  := _endFunc
+   pp.callbackParams       := callbackParams
+   
+   GenerateEvent("TutorialDialogRequest", pp)   
+end
+
+
+/*func FindWidgetByTutorialName(_tutorialName: string, _widget: *): object
+   var ret: * = null
+   if (_widget != null)
+      if (_widget.Props.
+      var i: int = 0
+      ret := _widget.GetWidget(
+   end
+end
+
+func FindByTutorialName(_tutorialName: string): *
+   var ret: *
+   if (rootWidget != null)
+      
+   end
+end
+
+func HighlightElement("elementName")
+end
+*/
+
+func GetChildWidgetIdx(_elem: *, _childName: string): int
+   var   ret: int = -1
+   var   i  : int
+   for i := 0 to _elem.GetChildCount() - 1
+      if (_elem.GetChild(i).GetName() == _childName)
+         ret := i
+         break
+      end
+   end
+   return ret
+end
+
+func GetUIElement(_elementName: string): *
+   var ret: * = null
+   if (_elementName != "")
+      ret := FindAlias(_elementName)
+   end
+   return ret
+end
+
+func HighLightElement(_elemName: string, _header : string = "", _toolTip : string = "", _w:int = -1, _h: int = -1, _ox : int = 0, _oy: int = 0)
+   //UnHighLightElement(previousHightLight)
+   var elem: * = GetUIElement(_elemName)
+   if (elem != null)      
+      var highLightInstance : * = elem.GetWidget("_tutorialHighlight")
+      if (highLightInstance == null)
+         Widgets.highlightMarker.AttachInstanceToSSL(elem, "_tutorialHighlight", true)
+         highLightInstance := elem.GetWidget("_tutorialHighlight")
+      end
+      if (highLightInstance != null)         
+         var w: int = _w
+         var h: int = _h
+         if (w == -1)
+            w := (int)(elem.Props.width) - 5
+            //w := 10
+         end
+         if (h == -1)
+            h := (int)(elem.Props.height) - 10
+            //h := 20
+         end
+         
+         highLightInstance.Props.x := _ox
+         highLightInstance.Props.y := _oy
+         //highLightInstance.Widgets.highlightArea.x        := 0
+         //highLightInstance.Widgets.highlightArea.y        := 0
+         highLightInstance.Widgets.highlightArea.highlightSize._width   := w + 4
+         highLightInstance.Widgets.highlightArea.highlightSize._height  := h - 1
+         highLightInstance.Props.visible   := true
+         highLightInstance.Props.layer     := "topmost"
+         highLightInstance.GotoAndPlay("init")
+      end
+      
+      if (_toolTip != "")
+         var tooltipInstance :* = elem.GetWidget("_tutorialTooltip")
+         if (tooltipInstance == null)
+            Widgets.tooltip.AttachInstanceToSSL(elem, "_tutorialTooltip", true)
+            tooltipInstance := elem.GetWidget("_tutorialTooltip")
+         end
+         if (tooltipInstance != null)
+            tooltipInstance.Props.x           := elem.Props.width + 20
+            tooltipInstance.Props.y           := 0
+            tooltipInstance.Props.headerText  := _header
+            tooltipInstance.Props.text        := _toolTip
+
+            var textWidth     : int = (int)(tooltipInstance.Props.textWidth) 
+            var headerWidth   : int = (int)(tooltipInstance.Props.headerWidth)
+            var targetWidth   : int = textWidth
+            if (headerWidth + 32 > textWidth)
+               targetWidth := headerWidth + 32
+            end
+            if (targetWidth < 180)
+               targetWidth := 180
+            end
+            
+            var textHeight    : int = (int)(tooltipInstance.Props.textHeight) 
+            if (textHeight < 32)
+               textHeight := 32
+            end
+
+            tooltipInstance.Props.textWidthProp                       := targetWidth + 4
+            tooltipInstance.Props.textHeightProp                      := textHeight  + 4
+            tooltipInstance.Props.headerWidthProp                     := headerWidth + 4
+            tooltipInstance.Widgets.toolTipPanel.toolTipBody._width   := targetWidth + 16
+            tooltipInstance.Widgets.toolTipPanel.toolTipBody._height  := textHeight  + 48
+            tooltipInstance.Props.visible   := true
+            tooltipInstance.GotoAndPlay("fadeIn")
+         end
+      end
+      //Widgets.highlightMarker.GotoAndPlay("init")
+   end
+   previousHightLight := _elemName
+   UnHighLightElement(_elemName) : 1.8
+end
+
+func RemoveTooltip(_elemName: string)
+   var elem: * = GetUIElement(_elemName)
+   if (elem != null)
+      var tooltipInstance : * = elem.GetWidget("_tutorialTooltip")
+      if (tooltipInstance != null)
+         tooltipInstance.Props.visible := false
+         var idx: int = GetChildWidgetIdx(elem, tooltipInstance.GetName())
+         if (idx != -1)
+            elem.RemoveChild(idx)
+         end
+         tooltipInstance := null
+      end
+   end
+end
+
+func HideTooltip(_elemName: string)
+   var elem: * = GetUIElement(_elemName)
+   if (elem != null)
+      var tooltipInstance : * = elem.GetWidget("_tutorialTooltip")      
+      if (tooltipInstance != null)
+         tooltipInstance.GotoAndPlay("fadeOut")
+      end
+   end
+   RemoveTooltip(_elemName) : 1.5
+end
+
+func RemoveHighLight(_elemName: string)
+   var elem: * = GetUIElement(_elemName)
+   if (elem != null)
+      var highLightInstance : *  := elem.GetWidget("_tutorialHighlight")
+      if (highLightInstance != null)
+         highLightInstance.Props.visible := false
+         var idx: int = GetChildWidgetIdx(elem, highLightInstance.GetName())
+         if (idx != -1)
+            elem.RemoveChild(idx)
+         end
+         highLightInstance := null
+      end
+   end
+end
+
+func UnHighLightElement(_elemName: string)
+   HideTooltip(_elemName)
+   RemoveHighLight(_elemName)
+end
+
+/***************************************************
+* SCRIPTING PART
+*
+***************************************************/
+func ProcessTutorial(_rootWidget: *, _stage: string = ""): bool      
+   
+   rootWidget := _rootWidget
+   return ProcessTutorialStage(_stage)
+end
+
+func ShowLeftPanel(p: params) : bool
+   rootWidget.SetStateName("TutorialLeft") : 1
+   return false
+end
+
+func ShowUpPanel(p: params) : bool
+   rootWidget.SetStateName("TutorialUp") : 1
+   return false
+end
+
+func ShowDownPanel(p: params) : bool
+   rootWidget.SetStateName("TutorialDown") : 1
+   return false
+end
+
+func CloseTutorialAndSetState(_stateName: string = "MainMenuInitial"): bool
+   rootWidget.SetStateName(_stateName)
+   if ($root.GetTutorialState() == 0)
+      $root.SetTutorialState(1)
+   else
+      $root.SetTutorialState(2)
+   end
+   return false
+end
+
+func CloseTutorial(p: params) : bool
+   CloseTutorialAndSetState()
+   return false
+end
+
+func StartTutorial(p: params): bool
+   MessageBoxInfo("msg_tutorial_header", "msg_tutorial_look_left", "ShowLeftPanel") : 1
+   return false
+end
+
+func ProcessTutorialStage(_stage: string = "") : bool
+   currentStage := _stage
+   
+   if (false)
+      if (_stage == "TutorialEmpty")
+         MessageBoxYesNo("msg_tutorial_welcome_header", "msg_tutorial_welcome_text", "StartTutorial", "CloseTutorial") : 1
+         
+      else if (_stage == "TutorialLeft")
+         HighLightElement("Btn_SelectPlaylist", "msg_tutorial_select_playlist_hdr",  "msg_tutorial_select_playlist_txt") : 1
+         HighLightElement("Btn_JoinFriends",    "msg_tutorial_join_friends_hdr",     "msg_tutorial_join_friends_txt")    : 3
+         HighLightElement("Btn_ClanBattle",     "msg_tutorial_clan_battle_hdr",      "msg_tutorial_clan_battle_txt")     : 5
+         HighLightElement("Btn_HostCustomGame", "msg_tutorial_host_custom_hdr",      "msg_tutorial_host_custom_txt")     : 7
+         HighLightElement("Btn_JoinGame",       "msg_tutorial_join_custom_hdr",      "msg_tutorial_join_custom_txt")     : 9
+         HighLightElement("Btn_HostFireFight",  "msg_tutorial_host_firefight_hdr",   "msg_tutorial_host_firefight_txt")  : 11
+         HighLightElement("Btn_JoinFireFight",  "msg_tutorial_join_firefight_hdr",   "msg_tutorial_join_firefight_txt")  : 13
+         HighLightElement("")                   : 15
+         MessageBoxInfo("msg_tutorial_header", "msg_tutorial_look_top", "ShowUpPanel") : 16
+
+      else if (_stage == "TutorialUp")
+         MessageBoxInfo("msg_tutorial_header", "msg_tutorial_look_bottom", "ShowDownPanel") : 5
+         
+      else if (_stage == "TutorialDown")
+         //MessageBoxYesNo("TUTORIAL", "Tutorial Part 1 Finished! Would you like to play tutorial mission?", "CloseTutorial", "CloseTutorial") : 5
+         MessageBoxInfo("msg_tutorial_header", "msg_tutorial_part1_finished"/*"Have a nice day my precious puppet!"*/, "CloseTutorial") : 5
+
+      else
+         return false
+      end
+   else if ($root.GetTutorialState() == 1)
+      if (_stage == "TutorialPostgame")
+         GenerateEvent("LeaveLobby")      
+         MessageBoxInfo("msg_tutorial_header", "msg_tutorial_first_mission", "CloseTutorial")         
+      else
+         return false
+      end
+   else
+      return false
+   end
+
+   return true
+   
+   /*
+   if (currentStage < 10)
+      currentStage := currentStage + 1
+   
+      var uiElem: * = GetUIElement("LeftPanel")
+      if (uiElem != null)
+         uiElem.Props.x := currentStage * 100
+      end
+      
+      MessageBoxInfo("TUTORIAL", "CALL COUNT " + (string)(currentStage))
+   end
+   */
+end
+
+func TutorialUpdate()
+end
+
+end

@@ -1,0 +1,269 @@
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.items_mgr
+import ui.root
+import ssl.observables
+import ssl.hf2p.user_data
+import ssl.hf2p.ui_globals
+import ssl.hf2p.ui_ingame
+
+class UiKillerCont : UiWidgetContainer
+
+   func ShowKillerInfo(playerId: int = -1)
+      if (playerId == -1)
+         Props.visible := $UiIngame.respawn.killer_uid.IsValid()
+      elif (playerId == -2)
+         Props.visible := true
+      else
+         Props.visible := false
+      end   
+      GenerateEvent("#UpdateKillerPanel")
+   end
+   
+   handle OnEnterState("Initial") // (name : string)
+      Props.visible := false
+      GenerateEvent("#HideKillerPanel")
+   end
+   
+   handle OnEnterState("Visible") // (name : string)
+      Props.visible := true
+      GenerateEvent("#ShowKillerPanel")      
+      ShowKillerInfo()
+   end
+end
+
+class UiKillerLoadoutVM
+   var loadoutElements  : ObservableProperty = $OM.Calculated(this, "GetLoadoutElements")
+   var userData         : ObservableProperty = $OM.Calculated(this, "GetUserData")
+   var uid              : ObservableProperty = $OM.Property(0)
+   var isVisible        : ObservableProperty = $OM.Property(false)
+   var isValidData      : ObservableProperty = $OM.Calculated(this, "GetIsValidData")
+   
+   func SetUid(_uid : *)
+      uid.Set(_uid)
+      userData.Invalidate()
+      if $UserDataStorage.IsValidUID(_uid)
+         $hq.TextureRenderBipedLoadouts(_uid)
+      end
+   end
+   
+   func GetIsValidData() : bool
+      var ud   : UserData  = (UserData)userData.Get()
+      var ret  : bool      = false
+      if (ud != null)
+         ret   := (bool)ud.has_customizations.Get() and ud.GetHasActiveCharacter()
+      end
+      return ret
+   end
+   
+   func GetUserData() : UserData
+      var ret : UserData = null
+      if ($UserDataStorage.IsValidUID(uid.Get()))
+         $user_service.RequestAllUiUserData(uid.Get())
+         ret := (UserData)$UserDataStorage.users.Get(uid.Get())
+         isValidData.Invalidate()
+      end      
+      return ret
+   end
+   
+   func GetLoadoutElements() : vector
+      var ret     : vector
+      var ud      : UserData = (UserData)userData.Get()
+      if (ud != null)
+         var loadout : UD_WeaponLoadout = (UD_WeaponLoadout)ud.weapon_loadouts.spartan.loadouts.Get().Get((int)ud.weapon_loadouts.spartan.active_loadout_index.Get())
+         
+         ret.Push(loadout.primary_weapon.Get())
+         ret.Push(loadout.secondary_weapon.Get())
+         ret.Push(loadout.grenades.Get())
+         ret.Push(loadout.consumable_first.Get())
+         ret.Push(loadout.consumable_second.Get())
+         ret.Push(loadout.consumable_third.Get())
+         ret.Push(loadout.consumable_fourth.Get())
+         ret.Push(loadout.booster.Get())     
+      end
+      return ret
+   end
+   
+   func GetWeaponTint(weaponId :  string) : params
+      var   tint     : params = $uiEconomy.GetWeaponPrimaryArrtibuteColor("unknown")
+      if (weaponId != "")
+         var   weapon   :  GL_ComponentWeapon = (GL_ComponentWeapon)$UiGlobals.componentsWeapon.Get(weaponId)
+         if (weapon != null)
+            tint := $uiEconomy.GetWeaponPrimaryArrtibuteColor((string)weapon.primary_attribute_id.Get())
+         end
+      end
+      return tint
+   end
+   
+   func IsWeaponTintVisible(weaponId :  string) : bool
+      var ret : bool = false
+      if (weaponId != "")
+         var   weapon   :  GL_ComponentWeapon = (GL_ComponentWeapon)$UiGlobals.componentsWeapon.Get(weaponId)
+         if (weapon != null)
+            ret := (string)weapon.primary_attribute_id.Get() != "none" and (string)weapon.primary_attribute_id.Get() != ""
+         end
+      end
+      return ret
+   end
+   
+end
+
+class UiKillerContVM
+   var killerUserData      : ObservableProperty = $OM.Calculated(this, "GetKillerUserData")
+   var killingDamage       : ObservableProperty = $OM.Calculated(this, "GetKillingDamage")
+   var damageTypeTxt       : ObservableProperty = $OM.Calculated(this, "GetDamageTypeTxt")
+   var killerTeamFrame     : ObservableProperty = $OM.Calculated(this, "GetKillerTeamFrame")
+   var flagTint            : ObservableProperty = $OM.Calculated(this, "GetFlagTint")
+   var loadoutButtonTxt    : ObservableProperty = $OM.Calculated(this, "GetLoadoutButtonTxt")
+   var isValidData         : ObservableProperty = $OM.Calculated(this, "GetIsValidData")
+   var killerUid           : ObservableProperty = $OM.Calculated(this, "GetKilerUid")
+   var isVisible           : ObservableProperty = $OM.Property(false)
+   var loadoutVM           : UiKillerLoadoutVM  = new UiKillerLoadoutVM()
+   var flagTintParams      : params
+      
+   func GetKillerUserData() : UserData
+      var uid : GL_UID = $UiIngame.respawn.killer_uid
+      if ($UserDataStorage.IsValidUID(uid.value.Get()))
+         $user_service.RequestAllUiUserData(uid.GetVal())
+      end
+      var ret : UserData = (UserData)$UserDataStorage.users.Get($UiIngame.respawn.killer_uid.value.Get())
+      return ret
+   end
+   
+   func GetKilerUid() : *
+      var uid : GL_UID = $UiIngame.respawn.killer_uid
+      if $UserDataStorage.IsValidUID(uid.value.Get())
+         $hq.TextureRenderBipedLoadouts(uid.value.Get())
+      end
+      return uid.value.Get()
+   end
+   
+   func GetKillingDamage() : string
+      var ret : string = (string)$UiIngame.respawn.killer_damage_type.Get()
+      return ret
+   end
+      
+   func GetDamageTypeTxt() : string
+      var ret        : string
+      var damageType : string = GetKillingDamage()
+      
+      var uiComp : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(damageType)
+      ret := (string)uiComp.name.Get()
+      if (ret == "")
+         ret := damageType
+      end
+      return ret
+   end
+   
+   func GetPlayerEmblem() : string
+      var uid : GL_UID = $UiIngame.respawn.killer_uid
+      var ret : string = $UserDataStorage.GetPlayerEmblemIcon(uid.value.Get())
+      return ret
+   end
+   
+   func GetFlagAlpha() : float
+      return 100.0
+   end
+   
+   func GetFlagTint() : params            
+      flagTintParams.rShift   := 0.0
+      flagTintParams.gShift   := 0.0
+      flagTintParams.bShift   := 0.0
+      flagTintParams.aShift   := 0.0
+      
+      var teamModeVal   : bool   = $UiIngame.IsTeamMode()
+      var teamIdxVal    : int    = (int)$UiIngame.team_index.Get()
+      if (teamModeVal)
+         flagTintParams.rMult    := 100.0
+         flagTintParams.gMult    := 100.0
+         flagTintParams.bMult    := 100.0
+         flagTintParams.aMult    := GetFlagAlpha()
+      else
+         flagTintParams.rMult    := 0.0
+         flagTintParams.gMult    := 0.0
+         flagTintParams.bMult    := 0.0
+         flagTintParams.aMult    := 0.0
+         var ud : UserData = GetKillerUserData()
+         if (ud != null or !(bool)ud.has_armor_loadouts.Get())
+            var colors  : vector = ud.customizations.colors.Get()
+            if (colors.Count() > 0)
+               var clrName : string = (string)colors.Get(0).value.Get()
+               if (clrName != "")
+                  var colorComp : GL_ComponentColor = (GL_ComponentColor)$UiGlobals.componentsColor.Get(clrName)
+                  flagTintParams.rMult    := (float)(colorComp.r.Get()) / 255.0 * 100.0 * 0.75
+                  flagTintParams.gMult    := (float)(colorComp.g.Get()) / 255.0 * 100.0 * 0.75
+                  flagTintParams.bMult    := (float)(colorComp.b.Get()) / 255.0 * 100.0 * 0.75
+                  flagTintParams.aMult    := GetFlagAlpha()
+               end
+            end
+         end         
+      end
+      return flagTintParams
+   end      
+   
+   func GetKillerTeamFrame() : string
+      var ret : string = "neutral"
+      if ($UiIngame.IsTeamMode())
+         var teamIdxVal : int = (int)$UiIngame.team_index.Get()
+         if (teamIdxVal == 0)         
+            ret := "red"
+         else
+            ret := "blue"
+         end
+      end
+      return ret
+   end
+   
+   func ToggleKillerLoadout(p : params) : bool
+      loadoutVM.isVisible.Set(!(bool)loadoutVM.isVisible.Get())
+      return true
+   end
+   
+   func GetLoadoutButtonTxt() : string
+         var ret : string
+      if ((bool)loadoutVM.isVisible.Get())
+         ret := "ingame_hide_killer_loadout"
+      else
+         ret := "ingame_show_killer_loadout"
+      end
+      return ret
+   end
+   
+   func GetPlayerLabel() : string
+      var uid : GL_UID = $UiIngame.respawn.killer_uid
+      return $UserDataStorage.GetPlayerLabel(uid.value.Get())
+   end
+   
+   func GetIsValidData() : bool
+      $UiIngame.respawn.killer_uid.value.Get()
+      var ud   : UserData  = (UserData)killerUserData.Get()
+      var ret  : bool      = false
+      if (ud != null)
+         ret := (bool)ud.has_base.Get() and (bool)ud.has_stats.Get() and ud.CanRenderBiped()
+         if (ret and (bool)isVisible.Get())
+            var uid : * = $UiIngame.respawn.killer_uid.value.Get()
+            if ($UserDataStorage.IsValidUID(uid))
+               $hq.TextureRenderBipedKiller(uid)
+            end
+         end
+      end
+      return ret
+   end
+   
+   func UpdateKillerPanel(p : params) : bool      
+      loadoutVM.SetUid($UiIngame.respawn.killer_uid.value.Get())
+      loadoutVM.isVisible.Set(true)
+      killerUserData.Invalidate()
+      return true
+   end
+
+   func HideKillerPanel(p : params) : bool   
+      isVisible.Set(false)
+      return true
+   end
+
+   func ShowKillerPanel(p : params) : bool      
+      isVisible.Set(true)
+      return true
+   end
+end

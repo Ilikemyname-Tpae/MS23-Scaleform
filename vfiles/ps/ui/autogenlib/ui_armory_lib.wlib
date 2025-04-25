@@ -1,0 +1,396 @@
+classes = {
+	armoryUpdateCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "armoryUpdateCont" 
+		lib     = armory_lib 
+		propMapping {
+			tfModel1 = {
+				mapping = "tfModel1.text"
+			}
+			tfModel2 = {
+				mapping = "tfModel2.text"
+			}
+			tfModel3 = {
+				mapping = "tfModel3.text"
+			}
+			tfArmory1 = {
+				mapping = "tfArmory1.text"
+			}
+			tfArmory2 = {
+				mapping = "tfArmory2.text"
+			}
+			tfArmory3 = {
+				mapping = "tfArmory3.text"
+			}
+			tfArmory4 = {
+				mapping = "tfArmory4.text"
+			}
+			tfArmory5 = {
+				mapping = "tfArmory5.text"
+			}
+			tfArmoryBig1 = {
+				mapping = "tfArmoryBig1.text"
+			}
+			tfArmoryBig2 = {
+				mapping = "tfArmoryBig2.text"
+			}
+			tfArmoryBig3 = {
+				mapping = "tfArmoryBig3.text"
+			}
+			tfArmoryBig4 = {
+				mapping = "tfArmoryBig4.text"
+			}
+			tfArmoryBig5 = {
+				mapping = "tfArmoryBig5.text"
+			}
+		}
+
+		elements {
+			progress1 {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 339
+				y         = 244
+			} 
+			progress2 {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 339
+				y         = 288
+			} 
+			progress3 {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 339
+				y         = 332
+			} 
+			progress4 {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 339.5
+				y         = 375.5
+			} 
+			progress5 {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 339.5
+				y         = 419.5
+			} 
+			navArmoryAtt {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 339.5
+				y         = 167.5
+			} 
+			loadoutButton {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 339.5
+				y         = 115.5
+			} 
+			armoryIconAttach1 {
+				__type = "ui_armory_lib::attachIconLIR"
+				x         = 230.5
+				y         = 229.5
+			} 
+			armoryIconAttach2 {
+				__type = "ui_armory_lib::attachIconLIR"
+				x         = 230.5
+				y         = 276.5
+			} 
+			armoryIconAttach3 {
+				__type = "ui_armory_lib::attachIconLIR"
+				x         = 230.5
+				y         = 318.5
+			} 
+			armoryIconAttach4 {
+				__type = "ui_armory_lib::attachIconLIR"
+				x         = 230.5
+				y         = 365.5
+			} 
+			armoryIconAttach5 {
+				__type = "ui_armory_lib::attachIconLIR"
+				x         = 230.5
+				y         = 407.5
+			} 
+		}
+	}
+
+	attachIconLIR = {
+		__type = "ui_widget_container"
+
+		symbol  = "attachIconLIR" 
+		lib     = armory_lib 
+
+		elements {
+			attachHighlight {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+			attachBg {
+				__type = "ui_armory_lib::attachPointSp"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	attachPointSp = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachPointSp" 
+		lib     = armory_lib 
+	}
+
+	bigPaletteLir = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "bigPaletteLir" 
+		lib     = armory_lib 
+
+		elements {
+			bigPalette {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	colorBundle = {
+		__type = "ui_widget_container"
+
+		symbol  = "colorBundle" 
+		lib     = armory_lib 
+
+		elements {
+			color1 {
+				__type = "ui_widget_container"
+
+				x         = 32.1
+				y         = 0
+
+				elements {
+					cornerPallete {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+			color2 {
+				__type = "ui_widget_container"
+
+				x         = 30.85
+				y         = 0
+
+				elements {
+					rectPallete {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+			color3 {
+				__type = "ui_widget_container"
+
+				x         = 20.85
+				y         = 0
+
+				elements {
+					rectPallete {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+			color4 {
+				__type = "ui_widget_container"
+
+				x         = 10.85
+				y         = 0
+
+				elements {
+					rectPallete {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+			color5 {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+
+				elements {
+					rectPallete {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+		}
+	}
+
+	colorBundleCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "colorBundleCont" 
+		lib     = armory_lib 
+
+		elements {
+			colorPallete {
+				__type = "ui_armory_lib::colorBundle"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	colorsInBundle = {
+		__type = "ui_widget_container"
+
+		symbol  = "colorsInBundle" 
+		lib     = armory_lib 
+	}
+
+	hf2p_LoadoutSelect = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2p_LoadoutSelect" 
+		lib     = armory_lib 
+
+		elements {
+			tfSpartan {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 1
+				y         = 61.6
+
+				elements {
+					attachPointSp {
+						__type = "ui_armory_lib::attachPointSp"
+						x         = 47.5
+						y         = -41.1
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_PaletteBigBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2p_PaletteBigBtn" 
+		lib     = armory_lib 
+		propMapping {
+			textFieldUp = {
+				mapping = "textFieldUp.text"
+			}
+		}
+
+		elements {
+			notAvailableText {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 12.5
+				y         = 26
+				animated  = true
+			} 
+			colorPallete {
+				__type = "ui_widget_container"
+
+				x         = 15
+				y         = 19
+
+				elements {
+					cornerPalleteBig {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+		}
+	}
+
+	popUpLeft = {
+		__type = "ui_widget_container"
+
+		symbol  = "popUpLeft" 
+		lib     = armory_lib 
+		propMapping {
+			popUpTF = {
+				mapping = "popUpTF.text"
+			}
+		}
+	}
+
+	popUpRight = {
+		__type = "ui_widget_container"
+
+		symbol  = "popUpRight" 
+		lib     = armory_lib 
+		propMapping {
+			popUpTFright = {
+				mapping = "popUpTFright.text"
+			}
+			popUpTFheader = {
+				mapping = "popUpTFheader.text"
+			}
+		}
+	}
+
+	recievingBonusBtn = {
+		__type = "ui_widget_container"
+
+		symbol  = "recievingBonusBtn" 
+		lib     = armory_lib 
+	}
+
+	rotate = {
+		__type = "ui_widget_container"
+
+		symbol  = "rotate" 
+		lib     = armory_lib 
+	}
+
+	statHead_armory = {
+		__type = "ui_widget_container"
+
+		symbol  = "statHead_armory" 
+		lib     = armory_lib 
+		propMapping {
+			tF = {
+				mapping = "tF.text"
+			}
+		}
+	}
+
+	stripe_armory = {
+		__type = "ui_widget_container"
+
+		symbol  = "stripe_armory" 
+		lib     = armory_lib 
+	}
+}
+__type = "ui_widget_lib"

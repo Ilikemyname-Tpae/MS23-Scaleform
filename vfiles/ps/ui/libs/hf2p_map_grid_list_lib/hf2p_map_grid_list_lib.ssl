@@ -1,0 +1,20 @@
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_list_item
+
+class UiMapGridListLIR : UiWidgetListItem
+
+override SetData //(p:params)                        
+   Props.textField2 := p.text
+   if (! IsVoid(p.pic) and p.pic != "")
+      Widgets.imageAttach.pic     := p.pic
+      Widgets.imageAttach.scaleX  := p.scale
+      Widgets.imageAttach.scaleY  := p.scale               
+   else 
+      Widgets.imageAttach.pic := ""
+   end
+   if (! IsVoid(p.textColor))
+      Set("textClr", (int)(p.textColor))
+   end
+end
+end

@@ -1,0 +1,1995 @@
+classes = {
+	attachGlowWinChallenge = {
+		__type = "ui_widget_container"
+
+		symbol  = "attachGlowWinChallenge" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			attachGlowWinChallenge1 {
+				__type = "ui_challengesScreen_lib::attachPointIcon"
+				x         = 0
+				y         = 0
+			} 
+			attachGlowWinChallenge2 {
+				__type = "ui_challengesScreen_lib::attachPointIcon"
+				x         = -675.45
+				y         = 177.95
+			} 
+		}
+	}
+
+	attachMc = {
+		__type = "ui_widget_container"
+
+		symbol  = "attachMc" 
+		lib     = challengesScreen_lib 
+	}
+
+	attachPointIcon = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachPointIcon" 
+		lib     = challengesScreen_lib 
+	}
+
+	attachRewardContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "attachRewardContainer" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			attachChallengeReward3 {
+				__type = "ui_challengesScreen_lib::attachMc"
+				x         = 452.2
+				y         = -72
+				scaleX    = 0.8
+				scaleY    = 0.8
+				animated  = true
+			} 
+			attachChallengeReward2 {
+				__type = "ui_challengesScreen_lib::attachMc"
+				x         = 156.65
+				y         = -72
+				scaleX    = 0.8
+				scaleY    = 0.8
+				animated  = true
+			} 
+			attachChallengeReward1 {
+				__type = "ui_challengesScreen_lib::attachMc"
+				x         = -137.3
+				y         = -72
+				scaleX    = 0.8
+				scaleY    = 0.8
+				animated  = true
+			} 
+		}
+	}
+
+	bgwinChallengeCompleteBox = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgwinChallengeCompleteBox" 
+		lib     = challengesScreen_lib 
+	}
+
+	borderChallenges = {
+		__type = "ui_widget_container"
+
+		symbol  = "borderChallenges" 
+		lib     = challengesScreen_lib 
+	}
+
+	cardMaskBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "cardMaskBg" 
+		lib     = challengesScreen_lib 
+	}
+
+	challengeAttachPoint = {
+		__type = "ui_widget_image"
+
+		symbol  = "challengeAttachPoint" 
+		lib     = challengesScreen_lib 
+	}
+
+	challengeBoosterAngle = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengeBoosterAngle" 
+		lib     = challengesScreen_lib 
+	}
+
+	challengeCompleteAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengeCompleteAnim" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			challengeAcceptBtn {
+				__type = "ui_challengesScreen_lib::challengesOKbtn"
+				x         = 827.85
+				y         = 634.35
+				animated  = true
+			} 
+			contReward {
+				__type = "ui_challengesScreen_lib::attachRewardContainer"
+				x         = 533.35
+				y         = 571.4
+				animated  = true
+			} 
+			challengeRewardCont {
+				__type = "ui_challengesScreen_lib::tfChallengeCompleteRewardAnim"
+				x         = 888.85
+				y         = 486.5
+				animated  = true
+			} 
+			tfChallengeCompleteInfo {
+				__type = "ui_challengesScreen_lib::tfChallengeCompleteDesc"
+				x         = 582.35
+				y         = 337.45
+				animated  = true
+			} 
+			ChallengeCompleteHeader {
+				__type = "ui_challengesScreen_lib::tfChallengeCompleteAnim"
+				x         = 641.55
+				y         = 473.4
+				animated  = true
+			} 
+			bgwinChallengeComplete {
+				__type = "ui_challengesScreen_lib::bgwinChallengeCompleteBox"
+				x         = 481.75
+				y         = 210.95
+				animated  = true
+			} 
+			victoryAttach {
+				__type = "ui_challengesScreen_lib::attachMc"
+				x         = 0
+				y         = 62.15
+				animated  = true
+			} 
+			blackoutChallengeComplete {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	ChallengeCompletePopup = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengeCompletePopup" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			tpIcon {
+				__type = "ui_challengesScreen_lib::iconTechPoints"
+				x         = 326.7
+				y         = 50.7
+				scaleX    = 0.7
+				scaleY    = 0.7
+			} 
+			tfTechPointsReward {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 182.5
+				y         = 42.7
+			} 
+			tfRewardCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 238.05
+				y         = -8.25
+			} 
+			header {
+				__type = "ui_challengesScreen_lib::cheCompleteHeader"
+				x         = 4.05
+				y         = -15.5
+			} 
+			challengeName {
+				__type = "ui_challengesScreen_lib::cheCompleteName"
+				x         = 40.45
+				y         = 82.9
+			} 
+			innerLine {
+				__type = "ui_challengesScreen_lib::ChallengeProgressBarInnerLine"
+				x         = -20.5
+				y         = 20.5
+			} 
+			itemAttach {
+				__type = "ui_challengesScreen_lib::attachPointIcon"
+				x         = 27.8
+				y         = 67
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChallengeDesc = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengeDesc" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			textField2 = {
+				mapping = "textField2.text"
+			}
+			textField3 = {
+				mapping = "textField3.text"
+			}
+			textField1 = {
+				mapping = "textField1.text"
+			}
+		}
+
+		elements {
+			challengeIcn {
+				__type = "ui_challengesScreen_lib::challengeAttachPoint"
+				x         = -122.15
+				y         = -9.15
+			} 
+		}
+	}
+
+	ChallengePopupProgressBar = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengePopupProgressBar" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			progress {
+				__type = "ui_widget_container"
+
+				x         = 44.65
+				y         = 63.95
+				scaleX    = 0.8958
+				scaleY    = 1
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						x         = -365
+						y         = 0
+					} 
+				}
+			} 
+			starLeft {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = -1
+				y         = 48.5
+			} 
+			starRight {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = 372
+				y         = 53.45
+			} 
+			tpIcon {
+				__type = "ui_challengesScreen_lib::iconTechPoints"
+				x         = 332.45
+				y         = 33.2
+				scaleX    = 0.7
+				scaleY    = 0.7
+			} 
+			tfTechPointsReward {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 188.25
+				y         = 25.2
+			} 
+			tfGetItem {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 29
+				y         = 28
+			} 
+			tfNumberChallengeCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 43.75
+				y         = 25.2
+			} 
+			tfDscChallengeCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 46
+				y         = 78.6
+			} 
+			tfRewardCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 238.15
+				y         = -9.1
+			} 
+			tfChallengeCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 4.5
+				y         = -9.1
+			} 
+			innerLine {
+				__type = "ui_challengesScreen_lib::ChallengeProgressBarInnerLine"
+				x         = -18
+				y         = 20.5
+			} 
+		}
+	}
+
+	ChallengeProgressBar = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengeProgressBar" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			progress {
+				__type = "ui_widget_container"
+
+				x         = 59.15
+				y         = 64.95
+				scaleX    = 0.7803
+				scaleY    = 1
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						x         = -365
+						y         = 0
+					} 
+				}
+			} 
+			starRight {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = 354
+				y         = 48
+				scaleX    = 0.65
+				scaleY    = 0.65
+			} 
+			starLeft {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = 26.3
+				y         = 48.25
+				scaleX    = 0.65
+				scaleY    = 0.65
+			} 
+			icon {
+				__type = "ui_challengesScreen_lib::attachPointIcon"
+				x         = 33.85
+				y         = 70.45
+			} 
+			tpIcon {
+				__type = "ui_challengesScreen_lib::iconTechPoints"
+				x         = 370.15
+				y         = -15.1
+				scaleX    = 0.48
+				scaleY    = 0.48
+			} 
+			tfTechPointsReward {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 226
+				y         = -21.15
+			} 
+			tfGetItem {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 13.95
+				y         = 95.95
+			} 
+			getItemBg {
+				__type = "ui_challengesScreen_lib::getItemLirBgLine"
+				x         = 0
+				y         = 96.25
+				scaleX    = 0.946
+				scaleY    = 1
+			} 
+			tfNumberChallengeCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 55.75
+				y         = 75
+			} 
+			tfDscChallengeCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 56.75
+				y         = 1.6
+			} 
+			tfRewardCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 270.25
+				y         = -17.65
+			} 
+			tfChallengeCard {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 14
+				y         = -17.65
+			} 
+			innerLine {
+				__type = "ui_challengesScreen_lib::ChallengeProgressBarInnerLine"
+				x         = 0
+				y         = 1
+			} 
+		}
+	}
+
+	ChallengeProgressBarInnerLine = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengeProgressBarInnerLine" 
+		lib     = challengesScreen_lib 
+	}
+
+	challengeRewardCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengeRewardCont" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			rewardHeader = {
+				mapping = "rewardHeader.text"
+			}
+			rewardDesc = {
+				mapping = "rewardDesc.text"
+			}
+		}
+
+		elements {
+			rewardAttach {
+				__type = "ui_challengesScreen_lib::challengeAttachPoint"
+				x         = 61.05
+				y         = 76.95
+			} 
+		}
+	}
+
+	ChallengeScreenBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengeScreenBg" 
+		lib     = challengesScreen_lib 
+	}
+
+	challengeSideAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengeSideAnim" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			challengeSlideProgress {
+				__type = "ui_challengesScreen_lib::challengeSideLabel"
+				x         = 442.95
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	challengeSideLabel = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengeSideLabel" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			completeElem {
+				__type = "ui_challengesScreen_lib::ChallengeCompletePopup"
+				x         = 18.85
+				y         = 19.85
+			} 
+			progressElem {
+				__type = "ui_challengesScreen_lib::ChallengePopupProgressBar"
+				x         = 18.85
+				y         = 19.85
+			} 
+			attachChallengeSide {
+				__type = "ui_challengesScreen_lib::attachPointIcon"
+				x         = 36.35
+				y         = 91.4
+			} 
+		}
+	}
+
+	challengesLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "challengesLIR" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			selectIndicator {
+				__type = "ui_widget_container"
+
+				x         = -9.75
+				y         = 0
+
+				elements {
+					content {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			progressBar {
+				__type = "ui_challengesScreen_lib::progressChallenges"
+				x         = 116.75
+				y         = 48.3
+				scaleX    = 0.5045
+				scaleY    = 1
+			} 
+			greyOverInst {
+				__type = "ui_widget_container"
+
+				x         = 1
+				y         = 0
+			} 
+			textFieldUp {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textFieldUp = {
+						mapping = "textFieldUp.text"
+					}
+				}
+				x         = 56.5
+				y         = 21
+				animated  = true
+			} 
+			attachChallengeIcn {
+				__type = "ui_challengesScreen_lib::iconAttachChallenge"
+				x         = 11
+				y         = 9
+				animated  = true
+			} 
+		}
+	}
+
+	challengesOKbtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "challengesOKbtn" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			tfBtnOk = {
+				mapping = "tfBtnOk.text"
+			}
+		}
+	}
+
+	ChallengesTooltip = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltip" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			clientArea {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipClientArea"
+				x         = 746.15
+				y         = 76.05
+			} 
+			content {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipContent"
+				x         = 746.15
+				y         = 0
+			} 
+			bgMask {
+				__type = "ui_challengesScreen_lib::cardMaskBg"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChallengesTooltipBG = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipBG" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			bgBorder {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipBGBorder"
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 1
+			} 
+		}
+	}
+
+	ChallengesTooltipBGBorder = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipBGBorder" 
+		lib     = challengesScreen_lib 
+	}
+
+	ChallengesTooltipBGBorderGold = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipBGBorderGold" 
+		lib     = challengesScreen_lib 
+	}
+
+	ChallengesTooltipBGGold = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipBGGold" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			bgBorderGold {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipBGBorderGold"
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 1
+			} 
+		}
+	}
+
+	ChallengesTooltipClientArea = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipClientArea" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			content {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChallengesTooltipCloseButton = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChallengesTooltipCloseButton" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			tfCancelCardBig {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 106.55
+				y         = 12.5
+			} 
+		}
+	}
+
+	ChallengesTooltipContent = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipContent" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			content {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipContentInternal"
+				x         = 0
+				y         = 0
+			} 
+			bgGold {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipBGGold"
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 1
+			} 
+			bg {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipBG"
+				x         = 0
+				y         = 0
+				scaleX    = 1
+				scaleY    = 1
+			} 
+		}
+	}
+
+	ChallengesTooltipContentInternal = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipContentInternal" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			heading {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipHeading"
+				x         = 0
+				y         = 0
+			} 
+			ranks {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipRanks"
+				x         = 0
+				y         = 157
+			} 
+			progress {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipProgress"
+				x         = 0
+				y         = 385
+			} 
+			items {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipItems"
+				x         = 0
+				y         = 694.5
+			} 
+			closeButton {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipCloseButton"
+				x         = 2
+				y         = 876
+			} 
+		}
+	}
+
+	ChallengesTooltipHeading = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipHeading" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			iconReward {
+				__type = "ui_challengesScreen_lib::iconTechPoints"
+				x         = 386.95
+				y         = 64.8
+				scaleX    = 0.63
+				scaleY    = 0.63
+			} 
+			attachIconReward {
+				__type = "ui_challengesScreen_lib::challengeAttachPoint"
+				x         = 394.85
+				y         = 73
+			} 
+			attachIconMedal {
+				__type = "ui_challengesScreen_lib::challengeAttachPoint"
+				x         = 38.35
+				y         = 84.35
+			} 
+			tfChallengeName {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 17.5
+				y         = 6.5
+			} 
+			tfTooltipDsc {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 67.1
+				y         = 104.1
+			} 
+			tfNumberChallenge {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 66.25
+				y         = 57.25
+			} 
+			tfNumberReward {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 195.7
+				y         = 57.1
+			} 
+			tfSubHead {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 291.95
+				y         = 37.9
+			} 
+			progressTooltip {
+				__type = "ui_widget_container"
+
+				x         = 69.3
+				y         = 90.85
+				scaleX    = 0.9349
+				scaleY    = 1
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						x         = -365
+						y         = 0
+					} 
+				}
+			} 
+			completeGold {
+				__type = "ui_challengesScreen_lib::goldComplete"
+				x         = 14
+				y         = 39.5
+			} 
+		}
+	}
+
+	ChallengesTooltipItem = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipItem" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			iconArmor {
+				__type = "ui_challengesScreen_lib::iconAttachChallenge"
+				x         = 43.45
+				y         = 56.85
+				animated  = true
+			} 
+			tfNameEquipment {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 0
+				y         = 90
+				animated  = true
+			} 
+		}
+	}
+
+	ChallengesTooltipItems = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipItems" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			weapon {
+				__type = "ui_challengesScreen_lib::challengesTooltipItemWeapon"
+				x         = 171.5
+				y         = 46.8
+			} 
+			armorSlot0 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipItem"
+				x         = 2
+				y         = 46.3
+			} 
+			armorSlot1 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipItem"
+				x         = 87
+				y         = 46.3
+			} 
+			armorSlot2 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipItem"
+				x         = 172
+				y         = 46.3
+			} 
+			armorSlot4 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipItem"
+				x         = 341
+				y         = 46.25
+			} 
+			armorSlot3 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipItem"
+				x         = 256.95
+				y         = 46.25
+			} 
+			tfEquipped {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 18
+				y         = 0
+			} 
+		}
+	}
+
+	challengesTooltipItemWeapon = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengesTooltipItemWeapon" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			iconAttach {
+				__type = "ui_challengesScreen_lib::iconAttachChallenge"
+				x         = 43
+				y         = 41
+				scaleX    = 0.75
+				scaleY    = 0.75
+				animated  = true
+			} 
+			tfNameWeapon {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 0
+				y         = 90
+				animated  = true
+			} 
+		}
+	}
+
+	ChallengesTooltipProgress = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipProgress" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			progress0 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipProgressBar"
+				x         = 0
+				y         = 19.1
+			} 
+			progress1 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipProgressBar"
+				x         = 0
+				y         = 91.2
+			} 
+			progress2 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipProgressBar"
+				x         = 0
+				y         = 163.8
+			} 
+			progress3 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipProgressBar"
+				x         = 0
+				y         = 236.35
+			} 
+		}
+	}
+
+	ChallengesTooltipProgressBar = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipProgressBar" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			progressTooltip {
+				__type = "ui_widget_container"
+
+				x         = 68.9
+				y         = 8.1
+				scaleX    = 0.8
+				scaleY    = 1
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						x         = -365
+						y         = 0
+					} 
+				}
+			} 
+			tfProgress {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 14
+				y         = 1.6
+			} 
+			tfProgressChallenges {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 367.25
+				y         = 0.5
+			} 
+			tfDsc {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 66.5
+				y         = 19.5
+			} 
+			area {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0.2
+			} 
+		}
+	}
+
+	ChallengesTooltipRank = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipRank" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			tfDscChallengeReward {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 67
+				y         = 12
+			} 
+			challengeStar {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = 23.6
+				y         = 6.7
+				scaleX    = 0.8
+				scaleY    = 0.8
+			} 
+			tfChallengeRP {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 320.45
+				y         = 17.45
+			} 
+			progressIndicator {
+				__type = "ui_challengesScreen_lib::iconCheckmark"
+				x         = 398.45
+				y         = 18.5
+			} 
+			points {
+				__type = "ui_challengesScreen_lib::iconTechPoints"
+				x         = 372.6
+				y         = 21.5
+				scaleX    = 0.5
+				scaleY    = 0.5
+			} 
+			area {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChallengesTooltipRanks = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChallengesTooltipRanks" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			rank0 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipRank"
+				x         = 0
+				y         = 21
+			} 
+			rank1 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipRank"
+				x         = 0
+				y         = 89.95
+			} 
+			rank2 {
+				__type = "ui_challengesScreen_lib::ChallengesTooltipRank"
+				x         = -1
+				y         = 158.95
+			} 
+			tfTiersChallenge {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 17.5
+				y         = 0
+			} 
+		}
+	}
+
+	challenge_iconBronze = {
+		__type = "ui_widget_container"
+
+		symbol  = "challenge_iconBronze" 
+		lib     = challengesScreen_lib 
+	}
+
+	challenge_iconGold = {
+		__type = "ui_widget_container"
+
+		symbol  = "challenge_iconGold" 
+		lib     = challengesScreen_lib 
+	}
+
+	challenge_iconSilver = {
+		__type = "ui_widget_container"
+
+		symbol  = "challenge_iconSilver" 
+		lib     = challengesScreen_lib 
+	}
+
+	cheCompleteHeader = {
+		__type = "ui_widget_container"
+
+		symbol  = "cheCompleteHeader" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	cheCompleteName = {
+		__type = "ui_widget_container"
+
+		symbol  = "cheCompleteName" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	getItemLirBgLine = {
+		__type = "ui_widget_container"
+
+		symbol  = "getItemLirBgLine" 
+		lib     = challengesScreen_lib 
+	}
+
+	goldComplete = {
+		__type = "ui_widget_container"
+
+		symbol  = "goldComplete" 
+		lib     = challengesScreen_lib 
+	}
+
+	hf2p_challengeInfoList = {
+		__type = "ui_widget_list"
+
+		symbol  = "hf2p_challengeInfoList" 
+		lib     = challengesScreen_lib 
+	}
+
+	hf2p_challengesList = {
+		__type = "ui_widget_list"
+
+		symbol  = "hf2p_challengesList" 
+		lib     = challengesScreen_lib 
+	}
+
+	hf2p_challengesScreen = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_challengesScreen" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			screenCont {
+				__type = "ui_widget_container"
+
+				x         = 4
+				y         = 466.05
+
+				elements {
+					challengeType1 {
+						__type = "ui_challengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+						x         = 32.6
+						y         = 2.1
+					} 
+					challengeType2 {
+						__type = "ui_challengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+						x         = 268.8
+						y         = 2.1
+					} 
+					challengeType3 {
+						__type = "ui_challengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+						x         = 505.05
+						y         = 2.1
+					} 
+					challengeType4 {
+						__type = "ui_challengesScreen_lib::hf2p_challenges_PanelBookmarkMedBtn"
+						x         = 741.25
+						y         = 2.1
+					} 
+					challengesList {
+						__type = "ui_challengesScreen_lib::hf2p_challengesList"
+						x         = 30.6
+						y         = 83.3
+						scaleX    = 1.1775
+						scaleY    = 0.83
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2p_challenges_PanelBookmarkMedBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2p_challenges_PanelBookmarkMedBtn" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			markHeadTF = {
+				mapping = "markHeadTF.text"
+			}
+			PB1textField = {
+				mapping = "PB1textField.text"
+			}
+			PB2textField = {
+				mapping = "PB2textField.text"
+			}
+			textFieldDesc = {
+				mapping = "textFieldDesc.text"
+			}
+		}
+
+		elements {
+			progressBar {
+				__type = "ui_widget_container"
+
+				x         = -176.7
+				y         = 27.15
+				scaleX    = 0.7283
+				scaleY    = 1.0611
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+					subBar {
+						__type = "ui_widget_container"
+
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2p_challenges_Renderer = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "hf2p_challenges_Renderer" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			ChallengeTF = {
+				mapping = "ChallengeTF.text"
+			}
+			descTextField = {
+				mapping = "descTextField.text"
+			}
+			LirPB1textField = {
+				mapping = "LirPB1textField.text"
+			}
+			LirPB2textField = {
+				mapping = "LirPB2textField.text"
+			}
+			textFieldDesc = {
+				mapping = "textFieldDesc.text"
+			}
+		}
+
+		elements {
+			progressBar {
+				__type = "ui_widget_container"
+
+				x         = -566.55
+				y         = 61.15
+				scaleX    = 2.5796
+				scaleY    = 1.0611
+
+				elements {
+					bar {
+						__type = "ui_widget_container"
+
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+					subBar {
+						__type = "ui_widget_container"
+
+						x         = 261
+						y         = 12.4
+						scaleX    = 0.2654
+						scaleY    = 1.1972
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								x         = -3
+								y         = -2.05
+								scaleX    = 1.9269
+								scaleY    = 1.4612
+							} 
+						}
+					} 
+				}
+			} 
+			attachPoint {
+				__type = "ui_challengesScreen_lib::attachPointIcon"
+				x         = 8.7
+				y         = 8.35
+				scaleX    = 1.1688
+				scaleY    = 1.1688
+			} 
+		}
+	}
+
+	iconAttachChallenge = {
+		__type = "ui_widget_image"
+
+		symbol  = "iconAttachChallenge" 
+		lib     = challengesScreen_lib 
+	}
+
+	iconCheckmark = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconCheckmark" 
+		lib     = challengesScreen_lib 
+	}
+
+	iconCheckmarkClosed = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconCheckmarkClosed" 
+		lib     = challengesScreen_lib 
+	}
+
+	iconCheckmarkLock = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconCheckmarkLock" 
+		lib     = challengesScreen_lib 
+	}
+
+	iconCheckmarkOpen = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconCheckmarkOpen" 
+		lib     = challengesScreen_lib 
+	}
+
+	iconTechPoints = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconTechPoints" 
+		lib     = challengesScreen_lib 
+	}
+
+	ItemChallengeListCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ItemChallengeListCont" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			list {
+				__type = "ui_challengesScreen_lib::ItemChallengesList"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ItemChallengeScreen = {
+		__type = "ui_widget_container"
+
+		symbol  = "ItemChallengeScreen" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			challengesList {
+				__type = "ui_challengesScreen_lib::ItemChallengeListCont"
+				x         = 333.45
+				y         = 436.2
+			} 
+		}
+	}
+
+	ItemChallengeScreenInner = {
+		__type = "ui_widget_container"
+
+		symbol  = "ItemChallengeScreenInner" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			challengesList {
+				__type = "ui_challengesScreen_lib::ItemChallengeListCont"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ItemChallengesLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "ItemChallengesLIR" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			tfLockedChallengege {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 116.85
+				y         = 167.95
+			} 
+			lockIcon {
+				__type = "ui_challengesScreen_lib::wc_lock_iconBig"
+				x         = 177.25
+				y         = 83
+			} 
+			lockBG {
+				__type = "ui_widget_container"
+
+				x         = -2.5
+				y         = 0
+			} 
+			tfHeaderChallengeScreen {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = -2.75
+				y         = -0.5
+			} 
+			level1 {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = 13.9
+				y         = 64.55
+				scaleX    = 0.65
+				scaleY    = 0.65
+			} 
+			level2 {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = 41.65
+				y         = 64.55
+				scaleX    = 0.65
+				scaleY    = 0.65
+			} 
+			level3 {
+				__type = "ui_weaponConf_lib_slide::medalChallenge"
+				x         = 69.45
+				y         = 64.55
+				scaleX    = 0.65
+				scaleY    = 0.65
+			} 
+			activeChallenge {
+				__type = "ui_widget_container"
+
+				x         = 388.5
+				y         = 53
+			} 
+			challengeIcon {
+				__type = "ui_challengesScreen_lib::challengeAttachPoint"
+				x         = 199.25
+				y         = 65
+				scaleX    = 0.5
+				scaleY    = 0.5
+			} 
+			wpnStatIndicator {
+				__type = "ui_challengesScreen_lib::statLineColor"
+				x         = -1.5
+				y         = 98.75
+			} 
+			border {
+				__type = "ui_challengesScreen_lib::borderChallenges"
+				x         = -2.5
+				y         = 0
+			} 
+			bg {
+				__type = "ui_challengesScreen_lib::ChallengeScreenBg"
+				x         = -2.5
+				y         = 0
+			} 
+			boostStrip {
+				__type = "ui_challengesScreen_lib::challengeBoosterAngle"
+				x         = -1.5
+				y         = 0.25
+			} 
+			challengeProgress {
+				__type = "ui_challengesScreen_lib::ChallengeProgressBar"
+				x         = -1.5
+				y         = 121
+			} 
+		}
+	}
+
+	ItemChallengesList = {
+		__type = "ui_widget_list"
+
+		symbol  = "ItemChallengesList" 
+		lib     = challengesScreen_lib 
+	}
+
+	medalDaily = {
+		__type = "ui_widget_container"
+
+		symbol  = "medalDaily" 
+		lib     = challengesScreen_lib 
+	}
+
+	medalMonthly = {
+		__type = "ui_widget_container"
+
+		symbol  = "medalMonthly" 
+		lib     = challengesScreen_lib 
+	}
+
+	medalWeekly = {
+		__type = "ui_widget_container"
+
+		symbol  = "medalWeekly" 
+		lib     = challengesScreen_lib 
+	}
+
+	movingShapeComplete = {
+		__type = "ui_widget_container"
+
+		symbol  = "movingShapeComplete" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			shapeTopComplete {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = -172
+				animated  = true
+			} 
+			shapeLowerComplete {
+				__type = "ui_widget_container"
+
+				x         = -30
+				y         = 493
+				animated  = true
+			} 
+		}
+	}
+
+	progressChallenges = {
+		__type = "ui_widget_container"
+
+		symbol  = "progressChallenges" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			bar {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ProgressCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ProgressCont" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			header = {
+				mapping = "header.text"
+			}
+		}
+
+		elements {
+			challengeProgressList {
+				__type = "ui_challengesScreen_lib::hf2p_challengeInfoList"
+				x         = 1.85
+				y         = 94
+			} 
+		}
+	}
+
+	progressLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "progressLIR" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			curValue = {
+				mapping = "curValue.text"
+			}
+			maxValue = {
+				mapping = "maxValue.text"
+			}
+			desc = {
+				mapping = "desc.text"
+			}
+		}
+
+		elements {
+			progressbar {
+				__type = "ui_challengesScreen_lib::progressChallenges"
+				x         = 87.75
+				y         = 5.65
+			} 
+		}
+	}
+
+	screenChallenge = {
+		__type = "ui_widget_container"
+
+		symbol  = "screenChallenge" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			challengeAvailableTxt = {
+				mapping = "challengeAvailableTxt.text"
+			}
+			challengeAvailableTimeTxt = {
+				mapping = "challengeAvailableTimeTxt.text"
+			}
+		}
+
+		elements {
+			rewardCont {
+				__type = "ui_challengesScreen_lib::challengeRewardCont"
+				x         = 1323.3
+				y         = 499.15
+			} 
+			challengeDesc {
+				__type = "ui_challengesScreen_lib::ChallengeDesc"
+				x         = 839.2
+				y         = 510.15
+			} 
+			challengeInfo {
+				__type = "ui_challengesScreen_lib::ProgressCont"
+				x         = 694.2
+				y         = 608.45
+			} 
+			challengeListCont {
+				__type = "ui_challengesScreen_lib::selectChallengeCont"
+				x         = 318.05
+				y         = 444.65
+			} 
+		}
+	}
+
+	selectChallengeCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "selectChallengeCont" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			header = {
+				mapping = "header.text"
+			}
+		}
+
+		elements {
+			challengeList {
+				__type = "ui_challengesScreen_lib::hf2p_challengesList"
+				x         = 0
+				y         = 35.5
+			} 
+		}
+	}
+
+	statLineColor = {
+		__type = "ui_widget_container"
+
+		symbol  = "statLineColor" 
+		lib     = challengesScreen_lib 
+	}
+
+	tfChallengeCompleteAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "tfChallengeCompleteAnim" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			tfChallengeComplete = {
+				mapping = "tfChallengeComplete.text"
+			}
+		}
+	}
+
+	tfChallengeCompleteDesc = {
+		__type = "ui_widget_container"
+
+		symbol  = "tfChallengeCompleteDesc" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			tfDescChallengeComplete = {
+				mapping = "tfDescChallengeComplete.text"
+			}
+			tfChallengeName = {
+				mapping = "tfChallengeName.text"
+			}
+		}
+
+		elements {
+			attachChallengeComplete {
+				__type = "ui_challengesScreen_lib::attachPointIcon"
+				x         = 379.85
+				y         = -14
+			} 
+		}
+	}
+
+	tfChallengeCompleteRewardAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "tfChallengeCompleteRewardAnim" 
+		lib     = challengesScreen_lib 
+		propMapping {
+			tfRewardComplete = {
+				mapping = "tfRewardComplete.text"
+			}
+		}
+	}
+
+	upcomingChallenges = {
+		__type = "ui_widget_container"
+
+		symbol  = "upcomingChallenges" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			challenge0 {
+				__type = "ui_challengesScreen_lib::challengeSideAnim"
+				x         = 442.95
+				y         = 300
+				animated  = true
+			} 
+			challenge1 {
+				__type = "ui_challengesScreen_lib::challengeSideAnim"
+				x         = 442.95
+				y         = 150
+				animated  = true
+			} 
+			challenge2 {
+				__type = "ui_challengesScreen_lib::challengeSideAnim"
+				x         = 442.95
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	upcomingChallengesTF = {
+		__type = "ui_widget_container"
+
+		symbol  = "upcomingChallengesTF" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			innerTf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					Booster {
+						__type = "ui_widget_container"
+
+						x         = 47.5
+						y         = -11.65
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	wc_lock_iconBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "wc_lock_iconBig" 
+		lib     = challengesScreen_lib 
+	}
+
+	winChallengeCompleteCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "winChallengeCompleteCont" 
+		lib     = challengesScreen_lib 
+
+		elements {
+			bgwinChallengeComplete {
+				__type = "ui_challengesScreen_lib::bgwinChallengeCompleteBox"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

@@ -1,0 +1,187 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+
+
+class UiPromoAdvert : UiWidgetContainer
+   
+end
+
+class UiPromoPageVM
+   var itemIcon      : ObservableProperty = $OM.Calculated(this, "GetItemIcon")
+   var bgIcon        : ObservableProperty = $OM.Calculated(this, "GetBgIcon")
+   var itemNameTxt   : ObservableProperty = $OM.Calculated(this, "GetItemNameTxt")
+   var adIdx         : ObservableProperty = $OM.Property(0)
+   
+   func SetIdx(_idx : int)
+      adIdx.Set(_idx)
+   end
+   
+   func GetItemNameTxt() : string
+      var ret : string = ""
+      var idx : int = (int)adIdx.Get()
+      if (idx >= 0 and idx < GetAds().Count())
+         var ad      : GL_Ad           = GetAds().Get(idx)
+         var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(ad.id.Get())
+         ret := (string)uiComp.name.Get()
+      end
+      ret := ""
+      return ret
+   end
+   
+   func GetItemIcon() : string
+      return ""
+   end
+   
+   func GetAds() : vector
+      var ret :  vector
+      ret := $UiGlobals.advertisements.Get()
+      return ret      
+   end
+   
+   func GetBgIcon() : string
+      var ret : string = ""
+      var idx : int = (int)adIdx.Get()
+      if (idx >= 0 and idx < GetAds().Count())
+         var ad : GL_Ad = GetAds().Get(idx)
+         var uiComp  :  GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)ad.id.Get())
+         ret := (string)uiComp.icon.Get()
+      end
+      return ret
+   end
+end
+
+class UiPromoAdvertVM
+   var ads              : ObservableProperty = $OM.Calculated(this, "GetAds")
+   var adsCount         : ObservableProperty = $OM.Calculated(this, "GetAdsCount")
+   var currentAdIdx     : ObservableProperty = $OM.Property(-1)
+   var promoPages       : ObservableProperty = $OM.Calculated(this, "GetPromoPages")
+   var curPage          : int                = -1
+   var curContainer     : int                = 0
+   var promoPagesVec    : vector
+   var promoContainers  : vector    
+   var wgt              : UiWidget           = null
+
+   func Init(p : params)
+      wgt := p.widget
+      InitPromo()
+   end
+   
+   func Term()
+      delay kill, this, AUTOSWITCH_LOOP
+   end   
+
+   func clickedPromo(p:params):bool
+      var idx : int = curPage
+      if (idx >= 0 and idx < GetAds().Count())
+         var ad : GL_Ad = GetAds().Get(idx)
+         var url := (string)ad.url.Get()
+         if (url != "")
+            var urlComp : vector = $UiGlobals.GetUrlComponents(url)
+            if (urlComp.Get(0) == "url")
+               $hq.OpenURL(url)
+            elif (urlComp.Get(0) == "news")
+               var pp : params
+               pp.newsId := urlComp.Get(1)
+               $sslWidgetMgr.GenerateEvent("ShowNews", pp)
+            else
+               var pp : params
+               pp.urlComp := urlComp            
+               $sslWidgetMgr.GenerateEvent("ShowShopItem", pp)
+            end
+         end
+      end
+      return true
+   end
+   
+   func GetPromoPages() : vector
+      if (promoPagesVec.Count() == 0)
+         promoPagesVec.Push(new UiPromoPageVM())
+         promoPagesVec.Push(new UiPromoPageVM())
+      end
+      return promoPagesVec
+   end
+
+   func GetCurrentTimeScreen() : float
+      var time : float = 7
+      if (curPage >= 0 and curPage < GetAds().Count())
+         var ad : GL_Ad = GetAds().Get(curPage)
+         time := (float)ad.time_on_screen_sec.Get()
+         if (time <= 0)
+            time := 7
+         end      
+      end
+      return time
+   end
+
+   func SwitchPromo(newPage: int, autoRepeat:bool = false)
+      if (wgt == null)
+         return
+      end
+      
+      if (newPage >= 0 and newPage < GetAds().Count())
+         adsCount.Invalidate()
+         
+         var bgContainer: int = 1 - curContainer
+         var promoPage : UiPromoPageVM = GetPromoPages().Get(bgContainer)
+         promoPage.SetIdx(newPage)      
+         wgt.Widgets.Get(promoContainers.Get(bgContainer)).GotoAndPlay("fadeIn")
+         wgt.Widgets.Get(promoContainers.Get(curContainer)).GotoAndPlay("fadeOut")      
+         curContainer := bgContainer
+         curPage := newPage
+         currentAdIdx.Set(curPage)      
+      end
+      
+      if (autoRepeat)
+         var time : float = GetCurrentTimeScreen()
+         AutoswitchPromo(): time, AUTOSWITCH_LOOP
+      end
+   end
+
+   func SwitchToNextPromo()
+      var nextPage: int = curPage - 1
+      if (nextPage > GetAds().Last())
+         nextPage := 0
+      end
+      if (nextPage < 0)
+         nextPage := GetAds().Last()
+      end
+      
+      SwitchPromo(nextPage)
+   end
+
+   func AutoswitchPromo()   
+      SwitchToNextPromo()
+      var time : float = GetCurrentTimeScreen()
+      AutoswitchPromo(): time, AUTOSWITCH_LOOP
+   end
+
+   func InitPromo()
+      curPage := 0            
+      promoContainers.Push("adPic1")
+      promoContainers.Push("adPic2")            
+      curContainer := 1
+      AutoswitchPromo()		 
+   end 
+
+   func clickedPromoBtn(p:params):bool
+      delay kill, this, AUTOSWITCH_LOOP
+      SwitchPromo(p.widget.idx, true)
+      return true
+   end         
+
+   func GetAds() : vector
+      var ret :  vector
+      ret := $UiGlobals.advertisements.Get()
+      return ret      
+   end
+   
+   func GetAdsCount() : int
+      var ret :  int
+      ret := GetAds().Count()
+      return ret      
+   end
+end

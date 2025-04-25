@@ -1,0 +1,830 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.hf2p.hq
+import ui.root
+import ui.ui_economy
+import ui.ui_player_info
+import ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf
+import ui.hf2p_SlidingScreens.hf2p_Spartan.hf2p_Spartan
+
+class UiArmorStatsHelper
+   
+   func GetPartModifiersText(part_id : string) : wstring
+      var ret : wstring = $UiGlobals.String2WString("")
+      if part_id != ""
+         var t : params
+         t.mod_span_begin := $UiGlobals.String2WString("<br><span class=\"mod\">")
+         t.mod_span_end := $UiGlobals.String2WString("</span>")
+         var compArmor : GL_ComponentArmor = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get(part_id)
+         var i : int
+         for i := 0 to compArmor.gameplay_modifiers.Get().Count() - 1
+            var modif   : GL_ComponentArmorGameplayModifier = compArmor.gameplay_modifiers.Get().Get(i)
+            var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)modif.gameplay_modifier_id.Get())
+            t.id     := $UiGlobals.TranslateText((string)compUI.name.Get())
+            t.space  := $UiGlobals.String2WString(" ")
+            t.value  := $root.FormatArmorModifTempHack((string)modif.gameplay_modifier_id.Get(), (float)modif.gameplay_modifier_value.Get())
+            ret := ret + t.mod_span_begin + t.id + t.space + t.value + t.mod_span_end
+         end
+      end
+      return ret
+   end
+
+   func GetItemSuitId(_itemId : string) : string
+      var ret        : string
+      var compArmor  : GL_ComponentArmor = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get(_itemId)
+      ret := (string)compArmor.suitId.Get()
+      return ret
+   end
+   
+   func AddWStrings(s1 : *, s2 : *, s3 : *) : wstring
+      var ret : params
+      ret.s1   := s1
+      ret.s2   := s2
+      ret.s3   := s3
+      ret.ret  := s1
+      ret.ret  := ret.ret + s2
+      ret.ret  := ret.ret + s3
+      return ret.ret
+   end
+
+   func GetArmorModifiers(loadout : UD_ArmorLoadout, writeCompletenessStatus : bool = false) : params
+      var loadoutParams : params
+      loadoutParams.armor     := loadout.armor.Get()
+      return GetArmorModifiersFromParams(loadoutParams, writeCompletenessStatus)
+   end
+   
+   func GetArmorModifiersFromParams(loadout : params, writeCompletenessStatus : bool = false) : params
+      var ret  : params
+      var t    : params
+      var text : wstring
+      t.part_span_begin_first := $UiGlobals.String2WString("<span class=\"part\">")
+      t.part_span_begin       := $UiGlobals.String2WString("<br><span class=\"part\">")
+      t.part_span_end         := $UiGlobals.String2WString("</span>")
+      t.mod_span_begin        := $UiGlobals.String2WString("<br><span class=\"mod\">")
+      t.mod_span_end          := $UiGlobals.String2WString("</span>")
+      t.complete_span_begin   := $UiGlobals.String2WString("<span class=\"completeSet\">")
+      t.incomplete_span_begin := $UiGlobals.String2WString("<span class=\"incompleteSet\">")
+      t.span_end              := $UiGlobals.String2WString("</span>")
+      t.br                    := $UiGlobals.String2WString("<br>")
+      
+      t.armor := loadout.armor
+      
+      t.armor_txt := (string)$UiGlobals.componentsUI.Get(t.armor).name.Get()
+      t.armor_mod := GetPartModifiersText(t.armor)
+
+      text := t.armor_txt + " " + t.armor_mod
+      
+      ret.text := text
+      
+      return ret
+   end   
+end
+
+class UiArmoryScreen : UiSlidingScreenPageMainMenu
+
+var   isSlidingElement  : bool   = false
+var   isHidden          : bool   = true
+
+handle OnChangeState("Hidden")
+   RestoreArmor()
+end
+
+func RestoreArmor()
+   Log("ui~content", "Armory RestoreArmor")
+   $root.RestoreModelPermutations()
+end
+
+func Init()
+   Log("ui~content", "Armory_Init")
+   LayoutInit()            
+
+   UpdateArmorInfo()
+end
+
+global event SpartanSetDropDownSelection(p:params)
+   Widgets.dropDownTest.dropDownMenu.SetSelectionIdx(p.index)
+   GenerateEvent("#dropDownIndexChange", p)
+end
+
+func LayoutInit()
+   Widgets.armoryCamera.alpha := 0
+   Widgets.spartanLoadoutPanel.spartanLoadoutSelect1.selected := true
+   Widgets.spartanLoadoutPanel.spartanLoadoutSelect2.enabled := false
+   Widgets.spartanLoadoutPanel.spartanLoadoutSelect3.enabled := false
+   Widgets.spartanLoadoutPanel.spartanLoadoutSelect4.enabled := false
+   Widgets.spartanLoadoutPanel.spartanLoadoutSelect5.enabled := false
+end
+
+func UpdateArmorInfo()
+   //Desc
+   //Widgets.armorDesc.armorClassIcon.pic := "armorSuit3"
+   //Widgets.armorDesc.armorClassPoints := 0
+   //Widgets.armorDesc.headerTf := "test"
+   //Widgets.armorDesc.SubHeaderTf := "test"
+   //Widgets.armorDesc.descTf := "test"   
+end
+
+func SelectArmor(_armorID:string)
+end
+
+func equipMsgBox(p : params)
+   Log("ui~armory", "equipMsgBox")
+   var itemName      : string = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(p.armorId)).name.Get()
+   var   pp          : params
+   pp.txtTrans       := false
+   pp.isSkip         := true
+   pp.itemID         := p.armorId   
+   pp.messageTxt     := itemName
+   pp.callbackEvent  := "onEquipMsgBoxClosed"
+   pp.mbType         := "AssignInfo"
+   pp.titleTxt       := "msg_ui_assigned"
+   pp.closeTimeout   := 2 
+   GenerateEvent("MainMenuDialogRequest", pp)
+end
+
+func onEquipMsgBoxClosed() : bool
+   Log("ui~armory", "onEquipMsgBoxClosed")
+   return false 
+end
+
+func equipItem(p : params)
+   var armorId   : string = p.armorId
+   var armorType : string = p.armorType
+   var shopComp : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(armorId)
+   
+   $uiPlayerInfo.AssignItem2Loadout($UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get()).armor_loadouts.spartan.active_loadout_index.Get(), armorId)   
+end
+
+func onEquipArmorItem(p : params) : bool
+   //$hq.ShowroomEnd()
+   equipItem(p)
+   //$hq.ShowroomBegin()
+   //equipMsgBox(p) //: 0.1
+   return false
+end
+
+func OnOpenArmoryLoadoutBtnClicked(p:params):bool
+   Log("ui~content", "OnOpenArmoryLoadoutBtnClicked")
+   GenerateEvent("SeeArmoryLoadouts", p)
+   return false
+end
+
+func OnArmoryAssignMsgBoxClosed(p: params): bool
+   Log("ui~content", "OnArmoryAssignMsgBoxClosed")
+   return false         
+end
+
+func ArmoryAssignMsgBox()
+   Log("ui~content", "ArmoryAssignMsgBox")
+   var   pp          : params
+   pp.isSkip         := true
+   pp.itemID         := ""
+   pp.messageTxt     := "msg_ui_armor"
+   pp.callbackEvent  := "OnArmoryAssignMsgBoxClosed"
+   pp.mbType         := "AssignInfo"
+   pp.titleTxt       := "msg_ui_assign_armor"
+   pp.closeTimeout   := 3
+   GenerateEvent("MainMenuDialogRequest", pp)   
+end
+
+override SwitchToScreen // ()
+   $hq.ShowroomBegin()
+   $hq.isInShowroom := true
+   Widgets.armorsList.SetFocus()
+end
+
+handle OnEnterState("Hidden")
+   Set("visible", false)
+   GenerateEvent("#ClosedArmory")
+   $hq.ShowroomEnd()
+   $hq.isInShowroom := false
+   $root.RestoreModelPermutations()
+end          
+
+handle OnEnteringState("Visible")
+   Init()         
+   Set("visible", true)
+   $hq.ShowroomBegin()
+   $hq.isInShowroom := true
+   //GenerateEvent("#OpenedArmory")
+end  
+
+handle OnEnterState("Initial")
+   GenerateEvent("#CloseShop")
+end          
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   $hq.ShowroomBegin()
+   $hq.isInShowroom := true
+   EnableFakeBg()
+   $root.isSpartanShop := false
+   if (isHidden)
+      isHidden := false
+      Widgets.armorsList.StartDefaultBlinking(0.6)
+      Widgets.armorTypeBtn1.StartDefaultBlinking(0.4)
+      Widgets.armorTypeBtn2.StartDefaultBlinking(0.45)
+      Widgets.armorTypeBtn3.StartDefaultBlinking(0.5)
+      //Widgets.dropDownTest.StartDefaultBlinking(0.55)
+      Widgets.offersModuleCont.StartDefaultBlinking(0.65)
+      Widgets.spartanLoadoutPanel.StartDefaultBlinking(0.6)
+      Widgets.gotoInventoryBtn.StartDefaultBlinking(0.5)
+   end
+   GenerateEvent("#OpenedArmory")
+end
+
+override PrepareHideSlide // ()
+   isHidden := true
+   GenerateEvent("#HideShop")
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Hidden")
+      Log("ui~content", "Armory DisableSlide")
+      $hq.ShowroomEnd()
+      $hq.isInShowroom := false
+      SetStateName("Hidden")
+   end
+   isHidden := true
+end
+
+func EnableFakeBg()
+   var p: params
+   p.state := "armory"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+func OnItemPurchased(p : params) : bool
+   if (p.isOK)
+      if (GetStateName() == "Visible")
+         GenerateEvent("#OnArmorPurchased", p)
+      end
+   end
+   return true
+end
+
+func SetListSelection(p : params) : bool
+   Widgets.armorsList.SetSelectionIdx(p.idx)
+   return false
+end
+
+func SetDropDownSelection(p : params) : bool
+   Widgets.dropDownTest.dropDownMenu.SetSelectionIdx(p.idx)
+   return false
+end
+
+
+func OnBlinkItemList(p : params) : bool
+   Widgets.armorsList.SetSelectionIdx(0)
+   Widgets.armorsList.StartDefaultBlinking(0.0)
+   $root.playSound("screen_rollout")
+   return false
+end
+
+override SaveState //() : params
+   var ret : params = GetDC().SaveState()
+   return ret
+end
+
+override LoadState // (p : params) : bool
+   var ret : bool = GetDC().LoadState(p)
+   return true
+end
+
+end
+
+class ArmoryVM : ItemShopBaseVM
+   var armorBonuses           :  ObservableProperty = $OM.Calculated(this, "GetArmorBonuses")
+   
+   var showClsPoints          :  ObservableProperty = $OM.Calculated(this, "GetShowArmorClsValue")
+   var clsPoints              :  ObservableProperty = $OM.Calculated(this, "GetArmorClsPointsStr")
+   
+   var armorClsBonus          :  ObservableProperty = $OM.Calculated(this, "GetPercentArmorBonuses")
+   var armorCats              :  ObservableProperty = $OM.Calculated(this, "GetArmorCategories")
+   var dropDownSelection      :  ObservableProperty = $OM.Property("standart")
+   var itemStats              :  UiItemStatsVM      = new UiItemStatsVM()
+
+   func ArmoryVM()
+      shopType := $uiEnums.SHOP_TYPE_ARMOR
+   end
+   
+   override TermOverride //(p : params)
+      BaseTerm()
+   end
+   
+   override GetBiShopName//() : string
+      return $uiEnums.UI_BI_SHOP_ARMOR
+   end
+   
+   override GetLoadoutsObservable //() : ObservableProperty
+      var udLocal : UserDataLocal = $UserDataStorage.local_user
+      return udLocal.armor_loadouts_unlocked
+   end
+   
+   func OnSpartanShopBackClick(p : params) : bool
+      Fire("OnSpartanStoreClose")
+      return true
+   end
+   
+   func GetArmorClassFrame() : int
+      var ret : int = (int)(GetPercentArmorClsValue() * 250) + 1
+      return ret
+   end
+   
+   func GetArmorBonuses() : *
+      var armor   : GL_ComponentArmor  = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get(mouseOverItemId.Get())
+      var loadout : UD_ArmorLoadout    = (UD_ArmorLoadout)$UiGlobals.showroom.armor_loadouts.spartan.loadouts.Get().Get(0)
+      var retIdx  : int = -1
+      return null
+   end
+   
+   func GetPercentArmorBonuses() : string
+      var ret : string = ""
+      var armor : GL_ComponentArmor = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get(mouseOverItemId.Get())
+      return ret 
+   end
+   
+   func GetShowArmorClsLevel() : int
+      var ret : int = -1
+      var armor : GL_ComponentArmor = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get(mouseOverItemId.Get())
+      var loadout : UD_ArmorLoadout = (UD_ArmorLoadout)$UiGlobals.showroom.armor_loadouts.spartan.loadouts.Get().Get(0)
+      return ret
+   end
+   
+   func GetShowArmorClsValue() : int
+      var ret : int = 0
+      var armor : GL_ComponentArmor = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get(mouseOverItemId.Get())
+      var loadout : UD_ArmorLoadout = (UD_ArmorLoadout)$UiGlobals.showroom.armor_loadouts.spartan.loadouts.Get().Get(0)
+      return ret
+   end
+   
+   func GetArmorClsPointsStr() : string
+      var ret : string
+      return ret
+   end
+   
+   func OnArmorSelected(p : params) : bool
+      if (! IsVoid(p.itemID))
+         selectedItem.Set(p.itemID)
+      end
+      //$UiGlobals.componentsUI[selectedItem].name
+      //$UiGlobals.componentsUI[$UiGlobals.componentsArmor[selectedItem].armor_class_id].name
+      //$UiGlobals.componentsUI[$UiGlobals.componentsArmor[selectedItem].armor_class_id].icon
+      //$UiGlobals.componentsArmor[selectedItem].percent_class_points
+      return false
+   end
+
+   func GetPercentArmorClsValue() : float
+      var ret : float
+      ret := ((float)showClsPoints.Get()) / 25.0
+      return ret
+   end 
+   
+   func onArmorTypeMarkClick(p : params) : bool
+      if (! IsVoid(p.widget.armorCls) and ! p.widget.selected)     
+         var armorCls :  string = p.widget.armorCls
+         p.selectionIdx := 0
+         if (armorCls == "common")
+            //itemCat.Set(0)
+            itemQuality.Set(0)
+            p.selectionIdx := 0
+         elif (armorCls == "premium")
+            //itemCat.Set(1)
+            itemQuality.Set(1)
+            p.selectionIdx := 1
+         elif (armorCls == "platinum")
+            //itemCat.Set(0)
+            itemQuality.Set(2)
+            p.selectionIdx := 2
+         end
+         $sslWidgetMgr.GenerateEvent("dropDownSwitchBg", p)
+         DoBlink()
+         BiLogShopState()
+      end
+      return false
+   end
+   
+   override OnPanelButtonClicked
+      Log("ui~content", "wc_OnPanelButtonClicked: " + Params2Str(p))
+      if (! IsVoid(p.widget.armorCls) and ! p.widget.selected)
+         var armorCls :  string = p.widget.armorCls
+         if (armorCls == "common")
+            //itemCat.Set(0)
+            itemQuality.Set(0)
+         elif (armorCls == "premium")
+            //itemCat.Set(1)
+            itemQuality.Set(1)
+         elif (armorCls == "platinum")
+            //itemCat.Set(0)
+            itemQuality.Set(2)
+         end
+      end
+      DoBlink()
+      BiLogShopState()
+      //UpdateSelectedItem()
+      return false
+   end
+   
+   func GetArmorCategories() : vector
+      var itemCatList   : vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         if (shop.armors.Get().Count() > 0)
+            var subshop : GL_ShopSection = (GL_ShopSection)shop.armors.Get().Get(0)
+            var listElem   : params
+            listElem.label := (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(subshop.section_id.Get())).name.Get()
+            listElem.id    := (string)subshop.section_id.Get()
+            if (listElem.label == "")
+               listElem.label    := (string)subshop.section_id.Get()
+               listElem.is_new   := subshop.HasNewItems()
+            end
+            itemCatList.Push(listElem)
+         end
+      end
+      return itemCatList      
+   end
+
+   override GetSections
+      var sections   : vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop       : GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         if (! IsVoid(shop.armors.Get()) and shop.armors.Get().Count() > (int)itemCat.Get())
+            var subshop    : GL_ShopSection = (GL_ShopSection)shop.armors.Get().Get((int)itemCat.Get())
+            var i          : int
+                        
+            for i := 0 to subshop.shelves.Get().Count() - 1
+               var shelf      : GL_ShopShelf    = (GL_ShopShelf)subshop.shelves.Get().Get(i) 
+               if (shelf.items.Get().Count() > 0)
+                  var uiID    : string = (string)shelf.shelf_id.Get()
+                  var name    : string = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(uiID)).name.Get()
+                  if (name == "")
+                     name := uiID
+                  end
+                  var sectionDesc : params
+                  sectionDesc.label    := name
+                  sectionDesc.is_hot   := i == 0
+                  sectionDesc.has_new  := shelf.HasNewItems()
+                  sections.Push(sectionDesc.Clone())
+               end
+            end
+         end
+      end
+      return sections
+   end
+   
+   override GetItemList
+      var ret : vector = new vector
+      if isActive.Get() == true
+         if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+            var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+            if (! IsVoid(shop.armors.Get()) and shop.armors.Get().Count() > (int)itemCat.Get())
+               var subshop    :  GL_ShopSection = (GL_ShopSection)shop.armors.Get().Get((int)(itemCat.Get()))
+               if (! IsVoid(subshop.shelves.Get()) and subshop.shelves.Get().Count() > (int)itemQuality.Get())
+                  var shelf      :  GL_ShopShelf   = (GL_ShopShelf)subshop.shelves.Get().Get((int)(itemQuality.Get()))
+                  if (! IsVoid(shelf.items.Get()))
+                     ret := SortShopItems(shelf.items.Get())
+                  end
+               end
+            end
+         end
+      end
+      return ret
+   end      
+
+   func dropDownUpdate(_idx : int, _selection : int) : bool
+      if (((int)itemCat.Get()) != _idx)
+         itemCat.Set(_idx)
+         if ((int)itemQuality.Get() >= GetSections().Count())
+            itemQuality.Set(0)
+            var p : params
+            p.index        := _idx            
+            p.selectionIdx := 0
+            $sslWidgetMgr.GenerateEvent("dropDownSwitchBg", p)
+            DoBlink()
+         end
+         BiLogShopState()
+      end
+      return false      
+   end
+   
+   override GetCurrentSubSectionId//() : string
+      var ret           : string = "undefined"
+      var categoriesIdx : int    = (int)itemCat.Get()
+      var categoriesVec : vector = armorCats.Get()      
+      if (categoriesIdx >= 0 and categoriesIdx < categoriesVec.Count())
+         var rec : params = categoriesVec.Get(categoriesIdx)
+         ret := rec.id
+      end
+      return ret
+   end
+   
+   func dropDownIndexChange(p : params) : bool
+      return dropDownUpdate((int)p.index, 0)
+   end
+   
+   func SetDropDownSelection(_idx : int)
+      if (wgt != null)
+         var p : params
+         p.idx := _idx
+         wgt.GenerateEvent("SetDropDownSelection", p)
+      end
+   end
+
+   func OpenedArmory(p : params) : bool
+      sections.Invalidate()
+      itemCategories.Invalidate()
+      armorCats.Invalidate()
+      itemList.Invalidate()
+      offersModuleVM.isWide.Set(true)
+      isActive.Set(true)
+      if ($UiGlobals.shop.openParams.isValid)         
+         $UiGlobals.shop.openParams.isValid := false
+         itemCat.Set($UiGlobals.shop.openParams.sectionIdx)
+         SetDropDownSelection($UiGlobals.shop.openParams.sectionIdx)
+
+         itemQuality.Set($UiGlobals.shop.openParams.shelfIdx)
+         onDropDownSwitchBgInt($UiGlobals.shop.openParams.shelfIdx)
+         
+         selectedIdx.Set($UiGlobals.shop.openParams.itemIdx)
+         SetListSelection($UiGlobals.shop.openParams.itemIdx)
+      else
+         itemCat.Set(0)
+         itemQuality.Set(0)
+         dropDownSelection.Set("standart")
+         SetDropDownSelection(0)
+      end
+      BiLogShopState()
+      return true
+   end 
+   
+   override SaveState
+      var ret : params
+      ret.itemQuality   := (int)itemQuality.Get()
+      ret.itemCat       := (int)itemCat.Get()
+      ret.selectedIdx   := (int)selectedIdx.Get()
+      ret.dropDownSelection := (string)dropDownSelection.Get()
+      return ret
+   end
+   
+   override LoadState
+      if (!IsVoid(p.itemQuality))
+         itemQuality.Set(p.itemQuality)
+      end
+      if (!IsVoid(p.itemCat))
+         itemCat.Set(p.itemCat)
+         SetDropDownSelection(p.itemCat)
+      end
+      if (!IsVoid(p.selectedIdx))
+         selectedIdx.Set(p.selectedIdx)
+      end
+      if (!IsVoid(p.dropDownSelection))
+         dropDownSelection.Set(p.dropDownSelection)
+      end
+      return true
+   end
+   
+   func ClosedArmory(p : params) : bool
+      isActive.Set(false)
+      return true
+   end 
+   
+   func UpdateCam(_itemId: string = "")
+      if (_itemId != "" and ((bool)isActive.Get()))
+         var shopComp : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemId)
+         
+         $hq.ShowroomBegin()
+         $hq.isInShowroom := true
+         $hq.ShowroomTryOn(_itemId)         
+      end
+   end
+   
+   override UpdateSelectedItem
+      descpanelVM.itemId.Set(mouseOverItemId.Get())
+      offersModuleVM.UpdateItemId((string)mouseOverItemId.Get())
+      UpdateCam((string)mouseOverItemId.Get())
+      itemStats.itemId.Set(mouseOverItemId.Get())
+      itemStats.compareItemId.Set($uiPlayerInfo.GetDefaultComparisonItem((string)mouseOverItemId.Get()))
+   end   
+      
+   func OnArmorPurchased(p : params) : bool
+      offersModuleVM.Go2LoadoutAfterPurchase(p.itemID)
+      return true
+   end
+      
+   func onDropDownSwitchBgInt(_idx : int)
+      var   frameName   : string = "standart"
+      if (_idx == 0)
+         frameName := "standart"
+      elif (_idx == 1)
+         frameName := "premium"
+      elif (_idx == 2)
+         frameName := "platinum"      
+      end
+      dropDownSelection.Set(frameName)
+   end
+   
+   func onDropDownSwitchBg(p : params) :  bool
+      var   idx         : int    = p.selectionIdx
+      onDropDownSwitchBgInt(idx)
+      return false
+   end
+   
+   override GetLoadoutsFilterId //() : string
+      return $uiEnums.INV_TYPE_WEAPON
+   end
+   
+   override GetLoadoutsHighlightedItem // () : string
+      return $uiEnums.EMPTY_STRING
+   end   
+   
+   func OnGotoInventoryBtnClicked(p : params) : bool
+      var itemId     : string = GetMouseOverItemId()
+      var itemType   : int    = $uiEnums.ITEM_TYPE_ARMOR
+      if (itemId != "")
+         itemType := $uiEconomy.GetItemType(itemId)
+      end
+      $root.GotoInventoryItem(GetMouseOverItemId(), itemType)
+      return true
+   end
+end
+
+class ArmorModifVM
+   var wgt : UiWidget = null
+   var armorId                : ObservableProperty = $OM.Property("")
+   var showAllBonuses         : ObservableProperty = $OM.Property(false)
+   var recievingBonusesText   : ObservableProperty = $OM.Property("")
+   var modifTextHeight        : ObservableProperty = $OM.Property(1.0)
+   var modifTextWidth         : ObservableProperty = $OM.Property(180.0)
+   var armorSetStateTxt       : ObservableProperty = $OM.Property("")
+   var armorSetStateFrame     : ObservableProperty = $OM.Property("red")
+   var statsHelper            : UiArmorStatsHelper = new UiArmorStatsHelper()
+   
+   
+   func Init(p : params)
+      wgt := p.widget
+      if (! IsVoid(p.armorItem))
+         armorId.Set(p.armorItem)
+      end
+   end
+   
+   func GetItemClass() : string
+      return (string)$UiGlobals.componentsUI.Get($UiGlobals.componentsItem.Get((string)armorId.Get()).career_tree.Get()).name.Get()
+   end
+   
+   func GetArmorPart() : string
+      var ret : string
+      var pp : params
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop :  GL_ShopRace = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         if (! IsVoid (shop.armors.Get()) and shop.armors.Get().Count() > 0)
+            var shopLocation : params = $uiEconomy.FindSubShopItem(shop.armors.Get(), (string)armorId.Get(), pp)
+            if (! IsVoid(shopLocation.sectionIdx))
+               var subshop : GL_ShopSection = (GL_ShopSection)shop.armors.Get().Get(shopLocation.sectionIdx)
+               if (! IsVoid (subshop))
+                  ret := (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(subshop.section_id.Get())).name.Get()
+               end
+            end
+         end
+      end
+      return ret 
+   end
+   
+   func GetArmorComp() : GL_ComponentArmor
+      var armor : GL_ComponentArmor = (GL_ComponentArmor)$UiGlobals.componentsArmor.Get((string)armorId.Get())
+      return armor
+   end 
+   
+   func GetModifId(idx : int) : string
+      var ret : string
+      var armorId : string = (string)armorId.Get()
+      if $UiGlobals.componentsArmorSuit.Exist(armorId)
+         var part_strings : vector = ((GL_ComponentArmorSuit)$UiGlobals.componentsArmorSuit.Get(armorId)).parts.Get()
+         var parts : vector
+         var i : int
+         for i := 0 to part_strings.Count() - 1
+            parts.Push(part_strings.Get(i).value.Get())
+         end
+         var modifiers : vector = $UiGlobals.GetPartsModifiersVec(parts)
+         if modifiers.Count() > idx
+            ret := modifiers.Get(idx).uiId
+         end
+      else
+         var modifVec : vector = GetArmorComp().gameplay_modifiers.Get()
+         if (modifVec.Count() - 1 >= idx)
+            var modifComp : GL_ComponentArmorGameplayModifier = (GL_ComponentArmorGameplayModifier)modifVec.Get(idx)
+            if (modifComp != null)
+               var modifId : string = (string)modifComp.gameplay_modifier_id.Get() 
+               var compUI  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(modifId)
+               ret := (string)compUI.name.Get()
+            end
+         end
+      end
+      return ret
+   end
+   
+   func GetModifValue(idx : int) : wstring
+      var ret : wstring
+      var armorId : string = (string)armorId.Get()
+      if $UiGlobals.componentsArmorSuit.Exist(armorId)
+         var part_strings : vector = ((GL_ComponentArmorSuit)$UiGlobals.componentsArmorSuit.Get(armorId)).parts.Get()
+         var parts : vector
+         var i : int
+         for i := 0 to part_strings.Count() - 1
+            parts.Push(part_strings.Get(i).value.Get())
+         end
+         var modifiers : vector = $UiGlobals.GetPartsModifiersVec(parts)
+         if modifiers.Count() > idx
+            ret := $root.FormatArmorModifTempHack((string)modifiers.Get(idx).id, (float)modifiers.Get(idx).value)
+         end
+      else
+         var modifVec : vector = GetArmorComp().gameplay_modifiers.Get()
+         if (modifVec.Count() - 1 >= idx)
+            var modifComp : GL_ComponentArmorGameplayModifier = (GL_ComponentArmorGameplayModifier)modifVec.Get(idx)
+            if (modifComp != null)
+               ret := $root.FormatArmorModifTempHack((string)modifComp.gameplay_modifier_id.Get(), (float)modifComp.gameplay_modifier_value.Get())
+            end
+         end
+      end
+      return ret 
+   end
+   
+   func ShowModif(idx : int) : bool
+      var ret : bool = true
+      return ret
+   end
+   
+   func OnRecievingBonusesRollOver(p : params) : bool
+      wgt.GetParentWidget().GetDC().UpdateSelectedItem()
+      
+      var currentLoadout = $UserDataStorage.local_user.GetCurrentLoadout()
+      var showroomLoadout  : UD_ArmorLoadout = (UD_ArmorLoadout)$UiGlobals.showroom.armor_loadouts.spartan.loadouts.Get().Get((int)$UiGlobals.showroom.armor_loadouts.spartan.active_loadout_index.Get())
+      var armorStats       : params          = statsHelper.GetArmorModifiers(showroomLoadout)
+      
+      if (armorStats.isCompleteSet)
+         armorSetStateTxt.Set("carousel_armor_set_complete")
+         armorSetStateFrame.Set("green")
+      else
+         armorSetStateTxt.Set("carousel_armor_set_incomplete")
+         armorSetStateFrame.Set("red")
+      end
+      
+      var text : wstring = armorStats.text      
+      recievingBonusesText.Set(text)
+      var height : float = p.widget.GetParentWidget().Widgets.popup.modifiers.textField.textHeightEx + 3
+      var width : float = p.widget.GetParentWidget().Widgets.popup.modifiers.textField.textWidthEx + 3
+      modifTextHeight.Set(height)
+      modifTextWidth.Set(width)
+      
+      showAllBonuses.Set(true)
+      return true
+   end
+   
+   func OnRecievingBonusesRollOut(p : params) : bool
+      showAllBonuses.Set(false)
+      return true
+   end
+   
+end
+
+class ArmorInfoProgressBar : UiWidgetContainer
+   var blinkStartScale  : float = 0
+   var maxTime          : float = 0.4
+   
+      
+   func BlinkOverride(_phase : int, _dt : float) : bool
+      var ret :  bool = false
+      if (_dt > maxTime)
+         ret := true
+      end
+      
+      if (_phase == 0)
+         blinkStartScale := Props.scaleX
+      elif (_phase == 1)
+         var tmpScale : float = _dt / maxTime
+         if (_dt >= 0)
+            tmpScale := $root.sqrt(tmpScale)
+         else 
+            tmpScale := 0
+         end
+         
+         if (tmpScale > 1)
+            tmpScale := 1.0
+         end
+         if (tmpScale < 0)
+            tmpScale := 0.0
+         end
+         //tmpScale := tmpScale * tmpScale
+         tmpScale       := blinkStartScale * tmpScale         
+         Props.scaleX := tmpScale
+      elif (_phase == 2)
+         Props.scaleX := blinkStartScale
+      end
+      
+      return ret
+   end   
+end

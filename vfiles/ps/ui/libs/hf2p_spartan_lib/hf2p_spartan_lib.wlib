@@ -1,0 +1,412 @@
+classes   =   {
+   colorLir   =   {
+      sslClass   =   "UiColorLir"
+      sslModule   =   "ui.libs.hf2p_Spartan_lib.hf2p_Spartan_lib"
+      __type   =   "ui_armory_lib::bigPaletteLir"
+   }
+   listCloud   =   {
+      __type   =   "ui_weaponConf_lib_slide::maskCloud"
+   }
+   paletteAssignBtn   =   {
+      sslClass   =   "UiPaletteAssignBtn"
+      sslModule   =   "ui.libs.hf2p_Spartan_lib.hf2p_Spartan_lib"
+      elements   =   {
+         assignPalette   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "onAssignPaletteBtnClicked"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::offersAssignBtn"
+         }
+         btnHeader   =   {
+            y   =   -45
+            propMapping   =   {
+               text   =   {
+                  mapping   =   "offersHeader.text"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_spartan"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::offersHeaderElement"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            this   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "tab_select"
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::hf2pWCContainer"
+   }
+   paletteBtn   =   {
+      sslClass   =   "UiPaletteBtn"
+      sslModule   =   "ui.libs.hf2p_Spartan_lib.hf2p_Spartan_lib"
+      propMapping   =   {
+         text   =   {
+            mapping   =   "textFieldUp.text"
+         }
+      }
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "onPaletteBtnClicked"
+         }
+      }
+      elements   =   {
+         notAvailableText   =   {
+            bindings   =   {
+               textField   =   {
+                  binding   =   "{'carousel_paint_not_available'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            this   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "tab_select"
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_armory_lib::hf2p_PaletteBigBtn"
+   }
+   paletteList   =   {
+      sslClass   =   "UiPaletteList"
+      sslModule   =   "ui.libs.hf2p_Spartan_lib.hf2p_Spartan_lib"
+      events   =   {
+         itemClick   =   {
+            eventRemap   =   "paletteListItemClick"
+         }
+         itemRollOut   =   {
+            eventRemap   =   "paletteListItemRollOut"
+         }
+         itemRollOver   =   {
+            eventRemap   =   "paletteListItemRollOver"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "minThumbSize"
+            propVal   =   {
+               val   =   48
+               __type   =   "ui_widget_desc_prop_float"
+            }
+         },
+         {
+            propName   =   "wrapping"
+            propVal   =   {
+               val   =   "stick"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      lir   =   {
+         __type   =   "hf2p_Spartan_lib::colorLir"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_Spartan_lib::paletteScrollBar"
+      }
+      __type   =   "ui_activity_lib::hf2pRosterListInt"
+   }
+   paletteScrollBar   =   {
+      __type   =   "ui_weaponConf_lib_slide::hf2p_wcWeaponListScrollbar_S"
+   }
+   rotateClip   =   {
+      propMapping   =   {
+         text   =   {
+            mapping   =   "tF.text"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "text"
+            propVal   =   {
+               val   =   "carousel_click_and_drag"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_armory_lib::rotate"
+   }
+   stripe   =   {
+      __type   =   "ui_armory_lib::stripe_armory"
+   }
+   subHead   =   {
+      propMapping   =   {
+         text   =   {
+            mapping   =   "tF.text"
+         }
+      }
+      __type   =   "ui_armory_lib::statHead_armory"
+   }
+   armorClassBonusItem   =   {
+      propMapping   =   {
+         modifierTf   =   {
+            isNoTranslate   =   True
+         }
+         numberTf   =   {
+            isNoTranslate   =   True
+         }
+      }
+      events   =   {
+         mouseOver   =   {
+            eventRemap   =   "#OnMouseOver"
+         }
+         mouseOut   =   {
+            eventRemap   =   "#OnMouseOut"
+         }
+      }
+      elements   =   {
+         statBarCont   =   {
+            elements   =   {
+               progressBar   =   {
+                  elements   =   {
+                     upperMask   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{min: a = Percent, b = NewPercent}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     progress   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{{min: a = Percent, b = NewPercent} != 251}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     progressYellow   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{{min: a = Percent, b = NewPercent} == 251}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     lowerMask   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{max: a = Percent, b = NewPercent}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     progressRed   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{NewPercent < Percent}"
+                           }
+                        }
+                        layer   =   "red"
+                        __type   =   "ui_widget_container"
+                     }
+                     progressGreen   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{NewPercent > Percent}"
+                           }
+                        }
+                        layer   =   "green"
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  layers   =   {
+                     white   =   {
+                        offset   =   3
+                     }
+                     red   =   {
+                        offset   =   2
+                     }
+                     green   =   {
+                        offset   =   1
+                     }
+                  }
+                  __type   =   "ui_common_lib::progressDiffBar"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         armorClassIcon   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{IconName}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::attachPoint"
+         }
+         lvl4   =   {
+            elements   =   {
+               tf   =   {
+                  propMapping   =   {
+                     textField   =   {
+                        isNoTranslate   =   True
+                     }
+                  }
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'LVL4'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{if: NewBonusLevelIndex >= 4, then = 'active', else = 'inactive'}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+         }
+         lvl3   =   {
+            elements   =   {
+               tf   =   {
+                  propMapping   =   {
+                     textField   =   {
+                        isNoTranslate   =   True
+                     }
+                  }
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'LVL3'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{if: NewBonusLevelIndex >= 3, then = 'active', else = 'inactive'}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+         }
+         lvl2   =   {
+            elements   =   {
+               tf   =   {
+                  propMapping   =   {
+                     textField   =   {
+                        isNoTranslate   =   True
+                     }
+                  }
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'LVL2'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{if: NewBonusLevelIndex >=  2, then = 'active', else = 'inactive'}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+         }
+         lvl1   =   {
+            elements   =   {
+               tf   =   {
+                  propMapping   =   {
+                     textField   =   {
+                        isNoTranslate   =   True
+                     }
+                  }
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'LVL1'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{if: NewBonusLevelIndex >= 1, then = 'active', else = 'inactive'}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::armor_class_lvl_bonus_cont"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{ArmorClassBonusRemapped[(#self:index)]}"
+         }
+         armorClassName   =   {
+            binding   =   "{Name}"
+         }
+         visible   =   {
+            binding   =   "{if: Name, then = true, else = false}"
+         }
+         numberTf   =   {
+            binding   =   "{'+' + NewPoints}"
+         }
+         lvl1   =   {
+            binding   =   "{'LVL1'}"
+         }
+         lvl2   =   {
+            binding   =   "{'LVL2'}"
+         }
+         lvl3   =   {
+            binding   =   "{'LVL3'}"
+         }
+         lvl4   =   {
+            binding   =   "{'LVL4'}"
+         }
+         modifierTf   =   {
+            binding   =   "{if: NewBonusLevelIndex > 0, then = BonusLevels[NewBonusLevelIndex].Text, else = ''}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::ArmoryStatsBar"
+   }
+   bonusLevelItem   =   {
+      elements   =   {
+         bonus   =   {
+            isNoTranslate   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{BonusLevels[(#self:index)].Text}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         lvl   =   {
+            isNoTranslate   =   True
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{'LVL' + (#self:index)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{SelectedArmorClassBonus}"
+         }
+         anim   =   {
+            binding   =   "{if: NewBonusLevelIndex >= (#self:index), then = 'active', else = 'inactive'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::bonusLevelItem"
+   }
+}
+__type   =   "ui_widget_lib"

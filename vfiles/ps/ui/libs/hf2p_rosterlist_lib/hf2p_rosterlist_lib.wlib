@@ -1,0 +1,1173 @@
+classes   =   {
+   lobby_VotingGroup   =   {
+      sslClass   =   "UiLobbyVotingGroup"
+      sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+      elements   =   {
+         mapElem1   =   {
+            elements   =   {
+               mapBtnCont   =   {
+                  elements   =   {
+                     mapBtn   =   {
+                        customProps   =   [
+                           {
+                              propName   =   "voteIdx"
+                              propVal   =   {
+                                 val   =   1
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           },
+                           {
+                              propName   =   "voteIdx2"
+                              propVal   =   {
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           }
+                        ]
+                        __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElem"
+                     }
+                  }
+                  __type   =   "ui_lobby_lib::lobby_mapBtnCont"
+               }
+            }
+            layer   =   "layer1"
+            __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElemGlow"
+         }
+         mapElem2   =   {
+            elements   =   {
+               mapBtnCont   =   {
+                  elements   =   {
+                     mapBtn   =   {
+                        customProps   =   [
+                           {
+                              propName   =   "voteIdx"
+                              propVal   =   {
+                                 val   =   2
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           },
+                           {
+                              propName   =   "voteIdx2"
+                              propVal   =   {
+                                 val   =   1
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           }
+                        ]
+                        __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElem"
+                     }
+                  }
+                  __type   =   "ui_lobby_lib::lobby_mapBtnCont"
+               }
+            }
+            layer   =   "layer2"
+            __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElemGlow"
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{isVotingPhase}"
+         }
+      }
+      layers   =   {
+         layer1   =   {
+            offset   =   1
+         }
+         layer2   =   {
+            offset   =   2
+         }
+         layer3   =   {
+            offset   =   3
+         }
+      }
+      __type   =   "ui_lobby_lib::lobby_VotingGroup"
+   }
+   lobby_VotingGroupElemGlow   =   {
+      sslClass   =   "VotingGroupElemGlow"
+      sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+      mouseEnabled   =   False
+      elements   =   {
+         mapBtnCont   =   {
+            mouseEnabled   =   False
+            elements   =   {
+               mapBtn   =   {
+                  events   =   {
+                     mouseDown   =   {
+                        eventRemap   =   "onVotingMouseDown"
+                     }
+                     mouseOver   =   {
+                        eventRemap   =   "onVotingMouseOver"
+                     }
+                     mouseOut   =   {
+                        eventRemap   =   "onVotingMouseOut"
+                     }
+                  }
+                  __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElem"
+               }
+            }
+            __type   =   "ui_lobby_lib::lobby_mapBtnCont"
+         }
+      }
+      __type   =   "ui_lobby_lib::votingAnim"
+   }
+   lobby_VotingGroupElemGlowPassive   =   {
+      sslClass   =   "VotingGroupElemGlow"
+      sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+      fixed   =   False
+      mouseEnabled   =   False
+      mouseChildren   =   False
+      elements   =   {
+         mapBtnCont   =   {
+            mouseEnabled   =   False
+            mouseChildren   =   False
+            elements   =   {
+               mapBtn   =   {
+                  events   =   {
+                     mouseDown   =   {
+                        eventRemap   =   "onVotingMouseDown"
+                     }
+                     mouseOver   =   {
+                        eventRemap   =   "onVotingMouseOver"
+                     }
+                     mouseOut   =   {
+                        eventRemap   =   "onVotingMouseOut"
+                     }
+                  }
+                  __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElemVotingPassive"
+               }
+            }
+            __type   =   "ui_lobby_lib::lobby_mapBtnCont"
+         }
+      }
+      __type   =   "ui_lobby_lib::votingAnim"
+   }
+   lobby_VotingGroupElem   =   {
+      sslClass   =   "UiLobbyVotingGroupElem"
+      sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+      isBlinkable   =   True
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#votingMapClick"
+         }
+      }
+      elements   =   {
+         attach   =   {
+            visible   =   False
+            fixed   =   False
+            __type   =   "ui_widget_image"
+         }
+         bg   =   {
+            elements   =   {
+               modeIcon   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{$UiGlobals.componentsUI[game_mode_id].icon}"
+                     }
+                  }
+                  layer   =   "upLayer"
+                  __type   =   "ui_widget_image"
+               }
+               mapIcon   =   {
+                  y   =   0
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{$UiGlobals.componentsUI[map_id].icon}"
+                     }
+                  }
+                  layer   =   "downLayer"
+                  __type   =   "ui_widget_image"
+               }
+               mapNameTxt   =   {
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{$UiGlobals.componentsUI[map_id].name}"
+                     }
+                  }
+                  layer   =   "upLayer"
+                  customProps   =   [
+                     {
+                        propName   =   "text"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+               votesLabelTxt   =   {
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{votes_count_txt}"
+                     }
+                  }
+                  layer   =   "upLayer"
+                  __type   =   "ui_widget_container"
+               }
+               votesTxt   =   {
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{''}"
+                     }
+                  }
+                  layer   =   "upLayer"
+                  customProps   =   [
+                     {
+                        propName   =   "text"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               modeNameTxt   =   {
+                  binding   =   "{$UiGlobals.componentsUI[game_mode_id].name}"
+               }
+            }
+            layers   =   {
+               downLayer   =   {
+                  offset   =   -1
+               }
+               upLayer   =   {
+                  offset   =   1
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         textField   =   {
+            isNoTranslate   =   True
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{$UiGlobals.lobby.vote_set_op[(#self:voteIdx2)]}"
+         }
+         visible   =   {
+            binding   =   "{$UiGlobals.lobby.vote_set_length > (#self:voteIdx2)}"
+         }
+         selected   =   {
+            binding   =   "{$UiGlobals.lobby.vote_selection_index == (#self:voteIdx)}"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            this   =   {
+               mapping   =   {
+                  mouseOver   =   {
+                     uiSoundEvent   =   "item_highlight"
+                  }
+                  CLIK_focusIn   =   {
+                     uiSoundEvent   =   "item_highlight"
+                  }
+                  buttonClick   =   {
+                     uiSoundEvent   =   "tab_select"
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_lobby_lib::lobby_mapBtn"
+   }
+   lobby_VotingGroupElemVotingPassive   =   {
+      sslClass   =   "UiLobbyVotingGroupElem"
+      sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+      isBlinkable   =   True
+      elements   =   {
+         attach   =   {
+            visible   =   False
+            __type   =   "ui_widget_image"
+         }
+         checkupElem   =   {
+            visible   =   False
+            fixed   =   False
+            __type   =   "ui_widget_container"
+         }
+         bg   =   {
+            elements   =   {
+               modeIcon   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{GetModeIcon()}"
+                     }
+                  }
+                  layer   =   "upLayer"
+                  __type   =   "ui_widget_image"
+               }
+               mapIcon   =   {
+                  y   =   0
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{GetMapIcon()}"
+                     }
+                  }
+                  layer   =   "downLayer"
+                  __type   =   "ui_widget_image"
+               }
+               mapNameTxt   =   {
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{GetMapName()}"
+                     }
+                  }
+                  layer   =   "upLayer"
+                  customProps   =   [
+                     {
+                        propName   =   "text"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+               votesLabelTxt   =   {
+                  layer   =   "upLayer"
+                  customProps   =   [
+                     {
+                        propName   =   "text"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+               votesTxt   =   {
+                  layer   =   "upLayer"
+                  customProps   =   [
+                     {
+                        propName   =   "text"
+                        propVal   =   {
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               modeNameTxt   =   {
+                  binding   =   "{GetModeName()}"
+               }
+            }
+            layers   =   {
+               downLayer   =   {
+                  offset   =   -1
+               }
+               upLayer   =   {
+                  offset   =   1
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         textField   =   {
+            isNoTranslate   =   True
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{mapMode}"
+         }
+      }
+      __type   =   "ui_lobby_lib::lobby_mapBtn"
+   }
+   lobby_mapModeStepper   =   {
+      isBlinkable   =   True
+      events   =   {
+         indexChange   =   {
+            eventRemap   =   "OnMapModeStepperIndexChange"
+         }
+      }
+      __type   =   "ui_lobby_lib::lobby_OptionStepper"
+   }
+   lobby_mapModeStepperContainer   =   {
+      isBlinkable   =   True
+      fixed   =   False
+      propMapping   =   {
+         label   =   {
+            mapping   =   "textField.text"
+         }
+      }
+      elements   =   {
+         stepper   =   {
+            __type   =   "hf2p_rosterList_lib::lobby_mapModeStepper"
+         }
+      }
+      __type   =   "ui_widget_container"
+   }
+   lobby_rosterListLeft   =   {
+      y   =   370.05
+      events   =   {
+         itemClick   =   {
+            eventRemap   =   "#lobbyLIR_itemClick1"
+         }
+         itemRollOut   =   {
+            eventRemap   =   "#lobbyLIR_itemRollOut1"
+         }
+         itemRollOver   =   {
+            eventRemap   =   "#lobbyLIR_itemRollOver1"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "IsLeft"
+            propVal   =   {
+               val   =   True
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         }
+      ]
+      lir   =   {
+         __type   =   "hf2p_nameplate::LobbyNameplate"
+      }
+      __type   =   "ui_lobby_lib::lobby_listPlaceholder"
+   }
+   lobby_rosterListRight   =   {
+      y   =   370.05
+      events   =   {
+         itemClick   =   {
+            eventRemap   =   "#lobbyLIR_itemClick2"
+         }
+         itemRollOut   =   {
+            eventRemap   =   "#lobbyLIR_itemRollOut2"
+         }
+         itemRollOver   =   {
+            eventRemap   =   "#lobbyLIR_itemRollOver2"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "IsLeft"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         }
+      ]
+      lir   =   {
+         __type   =   "hf2p_nameplate::LobbyNameplate"
+      }
+      __type   =   "ui_lobby_lib::lobby_listPlaceholder"
+   }
+   lobby_superContainer   =   {
+      sslClass   =   "UiLobbySuperContainer"
+      sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+      handlers   =   {
+         onHostMapModeChangedUpd   =   {
+            handlerName   =   "onHostMapModeChangedUpd"
+         }
+      }
+      elements   =   {
+         rightBtn   =   {
+            isBlinkable   =   True
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#onRightBtnClicked"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "label"
+                  propVal   =   {
+                     val   =   "lobby_btn_start_game"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            label   =   "lobby_btn_start_game"
+            __type   =   "hf2p_WeaponConf_lib::wc_RightBtn_s"
+         }
+         playlistDesc   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+               textField   =   {
+                  binding   =   "{'lobby_playlist_desc,' + (:plComp).player_count_min + ',' + (:plComp).player_count_max + ',' + (:plComp).party_size_max}"
+               }
+               plComp   =   {
+                  binding   =   "{$UiGlobals.componentsPlaylist[$UiGlobals.matchmaking.playlists_selection]}"
+               }
+            }
+            layer   =   "layer4"
+            __type   =   "ui_lobby_lib::playlistDescTF"
+         }
+         redTeam   =   {
+            fixed   =   False
+            bindings   =   {
+               items   =   {
+                  binding   =   "{playersList1}"
+               }
+            }
+            __type   =   "hf2p_rosterList_lib::lobby_rosterListLeft"
+         }
+         blueTeam   =   {
+            fixed   =   False
+            bindings   =   {
+               items   =   {
+                  binding   =   "{playersList2}"
+               }
+            }
+            __type   =   "hf2p_rosterList_lib::lobby_rosterListRight"
+         }
+         mapStepper   =   {
+            sslClass   =   "UiMapStepper"
+            sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isMapSelectorVisible}"
+               }
+            }
+            layer   =   "layer3"
+            customProps   =   [
+               {
+                  propName   =   "label"
+                  propVal   =   {
+                     val   =   "lobby_txt_map_name"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            label   =   "lobby_txt_map_name"
+            __type   =   "hf2p_rosterList_lib::lobby_mapModeStepperContainer"
+         }
+         gameType   =   {
+            sslClass   =   "UiGameType"
+            sslModule   =   "ui.libs.hf2p_rosterList_lib.hf2p_rosterList_lib"
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isModeSelectorVisible}"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "label"
+                  propVal   =   {
+                     val   =   "lobby_txt_mode_name"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            label   =   "lobby_txt_mode_name"
+            __type   =   "hf2p_rosterList_lib::lobby_mapModeStepperContainer"
+         }
+         mapContainerElem   =   {
+            elements   =   {
+               mapBtnCont   =   {
+                  elements   =   {
+                     mapBtn   =   {
+                        elements   =   {
+                           attach   =   {
+                              fixed   =   False
+                              __type   =   "ui_widget_image"
+                           }
+                        }
+                        __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElemVotingPassive"
+                     }
+                  }
+                  __type   =   "ui_lobby_lib::lobby_mapBtnCont"
+               }
+            }
+            layer   =   "layer3"
+            __type   =   "hf2p_rosterList_lib::lobby_VotingGroupElemGlowPassive"
+         }
+         playListDropDownHeader   =   {
+            y   =   556
+            isBlinkable   =   True
+            fixed   =   False
+            mouseEnabled   =   False
+            elements   =   {
+               tf   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "textField"
+                        propVal   =   {
+                           val   =   "lobby_playlist"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isPlaylistVisible}"
+               }
+            }
+            layer   =   "layer1"
+            customProps   =   [
+               {
+                  propName   =   "selected"
+                  propVal   =   {
+                     val   =   True
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::hf2pTopdownBookmark1"
+         }
+         playlistDropdown   =   {
+            y   =   606
+            isBlinkable   =   True
+            fixed   =   False
+            elements   =   {
+               dropDownMenu   =   {
+                  events   =   {
+                     itemClick   =   {
+                        eventRemap   =   "#playlistDropDownIndexChange"
+                     }
+                  }
+                  bindings   =   {
+                     items   =   {
+                        binding   =   "{playlistsList}"
+                     }
+                     selection   =   {
+                        binding   =   "{selectedPlaylistIdx}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib_slide::Lobby_DropdownMenuSkinned"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isPlaylistVisible and $UserDataStorage.local_user.IsPartyLeader()}"
+               }
+            }
+            layer   =   "layer2"
+            __type   =   "ui_weaponConf_lib_slide::LobbyDropDown"
+         }
+         gameModeDropDownHeader   =   {
+            y   =   606
+            isBlinkable   =   True
+            fixed   =   False
+            mouseEnabled   =   False
+            elements   =   {
+               tf   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "textField"
+                        propVal   =   {
+                           val   =   "lobbby_txt_select_mode"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isGameModeVisible and false}"
+               }
+            }
+            layer   =   "layer1"
+            customProps   =   [
+               {
+                  propName   =   "selected"
+                  propVal   =   {
+                     val   =   True
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::hf2pTopdownBookmark1"
+         }
+         gameModeDropdown   =   {
+            y   =   606
+            isBlinkable   =   True
+            fixed   =   False
+            elements   =   {
+               dropDownMenu   =   {
+                  events   =   {
+                     itemClick   =   {
+                        eventRemap   =   "#gameModeIndexChange"
+                     }
+                  }
+                  bindings   =   {
+                     items   =   {
+                        binding   =   "{gameModesList}"
+                     }
+                     selection   =   {
+                        binding   =   "{GetSelectedModeIdx()}"
+                     }
+                  }
+                  __type   =   "ui_activity_lib::GameMapModeDropdownMenu"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isGameModeVisible}"
+               }
+            }
+            layer   =   "layer2"
+            __type   =   "ui_activity_lib::GameMapModeDropDown"
+         }
+         gameMapDropDownHeader   =   {
+            y   =   606
+            isBlinkable   =   True
+            fixed   =   False
+            mouseEnabled   =   False
+            elements   =   {
+               tf   =   {
+                  customProps   =   [
+                     {
+                        propName   =   "textField"
+                        propVal   =   {
+                           val   =   "lobbby_txt_select_map"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isGameMapVisible and false}"
+               }
+            }
+            layer   =   "layer1"
+            customProps   =   [
+               {
+                  propName   =   "selected"
+                  propVal   =   {
+                     val   =   True
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::hf2pTopdownBookmark1"
+         }
+         gameMapDropdown   =   {
+            y   =   606
+            isBlinkable   =   True
+            fixed   =   False
+            elements   =   {
+               dropDownMenu   =   {
+                  events   =   {
+                     itemClick   =   {
+                        eventRemap   =   "#gameMapIndexChange"
+                     }
+                  }
+                  bindings   =   {
+                     items   =   {
+                        binding   =   "{gameMapsList}"
+                     }
+                     selection   =   {
+                        binding   =   "{GetSelectedMapIdx()}"
+                     }
+                  }
+                  __type   =   "ui_activity_lib::GameMapModeDropdownMenu"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isGameMapVisible}"
+               }
+            }
+            layer   =   "layer2"
+            __type   =   "ui_activity_lib::GameMapModeDropDown"
+         }
+         headerBlueTeam   =   {
+            y   =   323
+            isBlinkable   =   True
+            fixed   =   False
+            __type   =   "ui_widget_container"
+         }
+         headerNoTeam   =   {
+            y   =   323
+            isBlinkable   =   True
+            fixed   =   False
+            __type   =   "ui_widget_container"
+         }
+         headerRedTeam   =   {
+            y   =   323
+            isBlinkable   =   True
+            fixed   =   False
+            __type   =   "ui_widget_container"
+         }
+         votingGroup   =   {
+            fixed   =   False
+            layer   =   "layer3"
+            __type   =   "hf2p_rosterList_lib::lobby_VotingGroup"
+         }
+         waitingTf   =   {
+            y   =   323
+            isBlinkable   =   True
+            fixed   =   False
+            __type   =   "ui_widget_container"
+         }
+         lobbyHelperText   =   {
+            x   =   602
+            y   =   265
+            isBlinkable   =   True
+            fixed   =   False
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isPlaylistVisible}"
+               }
+               textField   =   {
+                  binding   =   "{GetLobbyPartyHelperText()}"
+               }
+            }
+            __type   =   "ui_lobby_lib::lobbyHelperText"
+         }
+         lobbyHeaderText   =   {
+            x   =   563
+            y   =   210
+            isBlinkable   =   True
+            fixed   =   False
+            bindings   =   {
+               textField   =   {
+                  binding   =   "{GetLobbyHeaderText()}"
+               }
+               visible   =   {
+                  binding   =   "{isPlaylistVisible}"
+               }
+            }
+            __type   =   "ui_lobby_lib::lobby_header"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            MapModeSelection   =   {
+            }
+            OneTeam   =   {
+            }
+            OneTeam16   =   {
+            }
+            TwoTeams   =   {
+            }
+            Voting   =   {
+            }
+         }
+      }
+      bindings   =   {
+         waitingTf   =   {
+            binding   =   "{lobbyStateTxt}"
+         }
+      }
+      layers   =   {
+         layer1   =   {
+            offset   =   1
+         }
+         layer2   =   {
+            offset   =   2
+         }
+         layer3   =   {
+            offset   =   3
+         }
+         layer4   =   {
+            offset   =   4
+         }
+      }
+      defLayer   =   "layer1"
+      __type   =   "ui_lobby_lib::lobby_superContainer"
+   }
+   rosterCard   =   {
+      propMapping   =   {
+         tfLvl   =   {
+            isNoTranslate   =   True
+         }
+         tfMain   =   {
+            isNoTranslate   =   True
+         }
+         header   =   {
+            mapping   =   "tfMain.text"
+            isNoTranslate   =   True
+         }
+         level   =   {
+            mapping   =   "cardInfo.tfLvl.text"
+         }
+         stat   =   {
+            mapping   =   "statPlayer.text"
+         }
+      }
+      elements   =   {
+         defaultAnim   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!canRender}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         cardInfo   =   {
+            elements   =   {
+               bg   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               descTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  customProps   =   [
+                     {
+                        propName   =   "text"
+                        propVal   =   {
+                           val   =   "lobby_roster_card_desc"
+                           __type   =   "ui_widget_desc_prop_string"
+                        }
+                     }
+                  ]
+                  __type   =   "ui_widget_container"
+               }
+               killTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{concat: a0 = userData.stats.kills}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               tfMain   =   {
+                  isNoTranslate   =   True
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{nickName}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               levelTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{concat: a0 = userData.base.level}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               rankTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{concat: a0 = rank}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               scoreTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{concat: a0 = userData.stats.scorePerGameStr}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               timeTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{concat: a0 = userData.stats.onlineTimeStr}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               totalLabel   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'lobby_roster_card_total_score'}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               totalTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{concat: a0 = userData.stats.wp}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               winTf   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{concat: a0 = userData.stats.games_won}"
+                     }
+                     visible   =   {
+                        binding   =   "{!isWaitingStats}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         spartanRender   =   {
+            x   =   1
+            y   =   1
+            scaleX   =   1
+            scaleY   =   1
+            isBlinkable   =   True
+            fixed   =   False
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{canRender}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         emblem   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{canRender and !isWaitingStats}"
+               }
+               pic   =   {
+                  binding   =   "{GetEmblemIcon()}"
+               }
+            }
+            __type   =   "ui_activity_lib::ActivityPlayerCardEmblemAttach"
+         }
+         teamStripe   =   {
+            isBlinkable   =   True
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{teamStripeFrame}"
+               }
+               fullTint   =   {
+                  binding   =   "{flagTint}"
+               }
+               visible   =   {
+                  binding   =   "{canRender and !isWaitingStats}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         attachBgIcon   =   {
+            elements   =   {
+               lobby_attachPoint   =   {
+                  elements   =   {
+                     placeHolder   =   {
+                        visible   =   False
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{GetRosterCardLabel()}"
+                     }
+                  }
+                  __type   =   "ui_lobby_lib::lobby_attachPoint"
+               }
+            }
+            __type   =   "ui_activity_lib::attachPoint_min"
+         }
+         cardBgInst   =   {
+            isBlinkable   =   True
+            __type   =   "ui_widget_container"
+         }
+         waitingInfo   =   {
+            x   =   84
+            y   =   316
+            isBlinkable   =   True
+            fixed   =   False
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!canRender}"
+               }
+            }
+            __type   =   "ui_activity_lib::rotatingWaitingCombined"
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{isVisible}"
+         }
+         alpha   =   {
+            binding   =   "{if: isVisible, then = 100.0, else = 0.0}"
+         }
+      }
+      __type   =   "ui_activity_lib::rosterCardLeft"
+   }
+   rosterCardLeft   =   {
+      elements   =   {
+         spartanRender   =   {
+            elements   =   {
+               biped_render   =   {
+                  __type   =   "ui_rtts_container::rtts_user_card_biped_0"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      __type   =   "hf2p_rosterList_lib::rosterCard"
+   }
+   rosterCardRight   =   {
+      symbol   =   "rosterCardRight"
+      elements   =   {
+         spartanRender   =   {
+            elements   =   {
+               biped_render   =   {
+                  __type   =   "ui_rtts_container::rtts_user_card_biped_1"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      __type   =   "hf2p_rosterList_lib::rosterCard"
+   }
+}
+__type   =   "ui_widget_lib"

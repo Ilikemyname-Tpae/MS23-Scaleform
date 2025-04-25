@@ -1,9 +1,0 @@
-import ssl.lib.ui.ui_widget_container
-
-class menuGridRight_UiMain : UiWidgetContainer
-
-func OnShowGrid()
-   //Widgets().StoreMenu.enabled   := Props().wasMatchPlayed
-   //Widgets().Social.enabled      := false
-end
-end

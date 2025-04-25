@@ -1,0 +1,96 @@
+classes = {
+	attachPoint = {
+		__type = "ui_widget_container"
+
+		symbol  = "attachPoint" 
+		lib     = prematch_lib 
+	}
+
+	hf2p_TeamBoard = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_TeamBoard" 
+		lib     = prematch_lib 
+
+		elements {
+			container {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textDesc = {
+						mapping = "textDesc.text"
+					}
+					textHeader = {
+						mapping = "textHeader.text"
+					}
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					gameModeAttach {
+						__type = "ui_prematch_lib::attachPoint"
+						x         = 21
+						y         = 46.5
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_TeamNotification = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_TeamNotification" 
+		lib     = prematch_lib 
+
+		elements {
+			bckg {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = -160.95
+				y         = -57.15
+				scaleX    = 1.4613
+				scaleY    = 1.4613
+
+				elements {
+					bg {
+						__type = "ui_widget_container"
+
+						x         = 13
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_Timer = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_Timer" 
+		lib     = prematch_lib 
+
+		elements {
+			textContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

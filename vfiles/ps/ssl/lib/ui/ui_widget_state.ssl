@@ -1,0 +1,8 @@
+native class UiWidgetState
+   event OnEnter()
+   event OnExit()
+   event OnEntering()
+   event OnLeaving()
+   native func GetWidgetSSL(): object
+   native func ChangeTo(dstState:string): bool
+end

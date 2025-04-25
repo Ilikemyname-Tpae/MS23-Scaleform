@@ -1,0 +1,593 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.ui_party_monitor
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreens
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreens
+import ui.hf2p_SlidingScreens.hf2p_profile_screen.hf2p_profile_screen
+import ui.hf2p_SlidingScreens.hf2p_Inventory.hf2p_Inventory
+
+
+class UiSlidingScreensMainMenu : UiSlidingScreens
+   var isLeaveLobbyBtnVisible : ObservableProperty = $OM.Property(false)
+
+   override Init
+      var flowButtonParm   : params
+      
+      isLooping := true
+      flowElements.Clear()
+      
+      Widgets.background.visible     := true
+      isLeaveLobbyBtnVisible.Set(false)
+      
+      needsSpecialCamera := false
+      
+      totalElems := 17
+      
+      if (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL and $uiPartyMonitor.GetLobbyMode() != "")
+         viewMode := $uiEnums.SLIDING_SCREENS_MODE_SHOP
+      end
+      
+      if (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_SHOP or GetViewMode() == "")  
+         isLeaveLobbyBtnVisible.Set(true)
+         
+         if ($uiMatchmaking.GetIsRematch())
+            flowButtonParm.label             := "main_postmatch"
+            flowButtonParm.idx               := 10
+            flowButtonParm.name              := $uiEnums.SLIDING_PAGE_POSTMATCH
+            flowButtonParm.showFrame         := false
+            flowButtonParm.showBg            := false
+            flowButtonParm.showStarBg        := true
+            flowButtonParm.aliasname         := "SlidingButton_Postmatch"
+            flowButtonParm.showLoadoutPanel  := false
+            flowButtonParm.showPlayerCard    := false
+            flowElements.Push(flowButtonParm.Clone())
+         end
+         /*
+         flowButtonParm.label             := "carousel_restock"
+         flowButtonParm.idx               := 11
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_RESTOCK
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         */
+         flowButtonParm.label             := "main_weapons"
+         flowButtonParm.idx               := 0
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_WEAPONS
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Weapons"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+
+         flowButtonParm.label             := "main_tactical_packages"
+         flowButtonParm.idx               := 1
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_TACTICAL
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_TacticalPackages"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+
+         flowButtonParm.label             := "main_armory"
+         flowButtonParm.idx               := 2
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_ARMORY
+         flowButtonParm.showBg            := false
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Armory"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         if ($uiPartyMonitor.GetLobbyMode() == $uiPartyMonitor.STATE_MATCHMAKING)
+            needsSpecialCamera := true
+         end
+         
+         flowButtonParm.label             := "main_inventory"
+         flowButtonParm.idx               := 16
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_INVENTORY
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Inventory"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         if ($uiPartyMonitor.GetLobbyMode() == "")
+            flowButtonParm.label             := "carousel_spartan"
+            flowButtonParm.idx               := 9
+            flowButtonParm.name              := $uiEnums.SLIDING_PAGE_SPARTAN
+            flowButtonParm.showBg            := false
+            flowButtonParm.showFrame         := false
+            flowButtonParm.showStarBg        := false
+            flowButtonParm.aliasname         := "SlidingButton_Spartan"
+            flowButtonParm.showLoadoutPanel  := false
+            flowButtonParm.showPlayerCard    := true
+            flowElements.Push(flowButtonParm.Clone())      
+         
+            //flowButtonParm.label           := "carousel_bundles"
+            //flowButtonParm.idx             := 3
+            //flowButtonParm.name            := "Bundles"
+            //flowButtonParm.showFrame       := true
+            //flowButtonParm.showBg          := true
+            //flowButtonParm.showStarBg      := false
+            //flowButtonParm.showLoadoutPanel  := false
+            //flowButtonParm.showPlayerCard    := false
+            //flowElements.Push(flowButtonParm.Clone())
+         end
+         
+         if ($uiPartyMonitor.GetLobbyMode() != "")
+            flowButtonParm.label             := "lobby_lobby"
+            flowButtonParm.idx               := 4
+            flowButtonParm.name              := $uiEnums.SLIDING_PAGE_LOBBY
+            flowButtonParm.showFrame         := false
+            flowButtonParm.showBg            := true
+            flowButtonParm.showStarBg        := false
+            flowButtonParm.aliasname         := "SlidingButton_Lobby"
+            flowButtonParm.showLoadoutPanel  := false
+            flowButtonParm.showPlayerCard    := false
+            flowElements.Push(flowButtonParm.Clone())
+            isLooping                        := false
+         end
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_PROFILE)
+         flowButtonParm.label             := "main_profile"
+         flowButtonParm.idx               := 5
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_PROFILE
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true //false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Profile"
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := true
+         flowElements.Push(flowButtonParm.Clone())
+         
+         flowButtonParm.label             := "main_profile_emblem"
+         flowButtonParm.idx               := 15
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_PROFILE_EMBELM
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true //false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_ProfileEmblem"
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := true
+         flowElements.Push(flowButtonParm.Clone())
+         
+         //if ($UserDataStorage.IsLocalUID($UiGlobals.profileScreenUID.Get()))
+         flowButtonParm.label             := "main_profile_present"
+         flowButtonParm.idx               := 14 
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_PROFILE_PRESENT
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_ProfilePresentation"
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := true
+         flowElements.Push(flowButtonParm.Clone())
+         //end
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_PLAYER_PROFILE)
+         
+         flowButtonParm.label             := "main_profile"
+         flowButtonParm.idx               := 5
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_PROFILE
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true //false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Profile"
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := true
+         flowElements.Push(flowButtonParm.Clone())
+         
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_CHALLENGES)
+         flowButtonParm.label             := "carousel_btn_item_challenges"
+         flowButtonParm.idx               := 13
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_ITEM_CHALLENGES
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Challenges"
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         /*
+         flowButtonParm.label             := "carousel_btn_challenges"
+         flowButtonParm.idx               := 6
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_CHALLENGES
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         /*
+         flowButtonParm.label             := "carousel_clans"
+         flowButtonParm.idx               := 7
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_CLANS
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+
+         flowButtonParm.label             := "carousel_leaderboards"
+         flowButtonParm.idx               := 8
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_LEADERBOARDS
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         */
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL)
+         isLeaveLobbyBtnVisible.Set(true)
+         /*
+         flowButtonParm.label             := "main_postmatch"
+         flowButtonParm.idx               := 10
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_POSTMATCH
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showBg            := false
+         flowButtonParm.showStarBg        := true
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         flowButtonParm.label             := "carousel_restock"
+         flowButtonParm.idx               := 11
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_RESTOCK
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         flowButtonParm.label             := "carousel_bundles"
+         flowButtonParm.idx               := 3
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_BUNDLES
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         */
+         flowButtonParm.label             := "main_weapons"
+         flowButtonParm.idx               := 0
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_WEAPONS
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Weapons"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+
+         flowButtonParm.label             :=  "main_tactical_packages"
+         flowButtonParm.idx               := 1
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_TACTICAL
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showBg            := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_TacticalPackages"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         needsSpecialCamera := true
+         
+         flowButtonParm.label             := "main_armory"
+         flowButtonParm.idx               := 2
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_ARMORY
+         flowButtonParm.showBg            := false
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Armory"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         flowButtonParm.label             := "main_inventory"
+         flowButtonParm.idx               := 16
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_INVENTORY
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Inventory"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         isLooping                  := true
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_SPARTAN)
+         flowButtonParm.label             := "carousel_spartan"
+         flowButtonParm.idx               := 9
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_SPARTAN
+         flowButtonParm.showBg            := false
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Spartan"
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := true
+         flowElements.Push(flowButtonParm.Clone())      
+         
+         needsSpecialCamera := true
+         
+         isLooping               := false
+      /*
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_LOOT)
+         flowButtonParm.label             := "carousel_lootBox"
+         flowButtonParm.idx               := 12
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_LOOTBOX
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := true
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())      
+         
+         isLooping               := false
+      
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_INVENTORY)
+         
+         flowButtonParm.label             := "main_inventory"
+         flowButtonParm.idx               := 16
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_INVENTORY
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Inventory"
+         flowButtonParm.showLoadoutPanel  := true
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         isLooping               := false
+      */   
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_TECH_TREE)
+         
+         flowButtonParm.label             := "carousel_tech_tree"
+         flowButtonParm.idx               := 12
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_TECHTREE
+         flowButtonParm.showBg            := true
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showStarBg        := false
+         flowButtonParm.aliasname         := "SlidingButton_Tech"
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())      
+         
+         isLooping               := false
+         
+      elif (GetViewMode() == $uiEnums.SLIDING_SCREENS_MODE_PMREPLAY)
+         
+         flowButtonParm.label             := "carousel_pm_replay"
+         flowButtonParm.idx               := 10
+         flowButtonParm.name              := $uiEnums.SLIDING_PAGE_POSTMATCH
+         flowButtonParm.showFrame         := false
+         flowButtonParm.showBg            := false
+         flowButtonParm.showStarBg        := true
+         flowButtonParm.showLoadoutPanel  := false
+         flowButtonParm.showPlayerCard    := false
+         flowElements.Push(flowButtonParm.Clone())
+         
+         isLooping               := false
+         
+      end   
+      
+      var startingIndex : int = GetScreenIndexByName(startingScreen)
+      if (startingIndex < 0)
+         startingIndex := 0
+      end
+      GetDC().UpdateCloseBtnVisible()
+      Widgets.flowButtons.SetMaxWidth(720)
+      Widgets.flowButtons.InitElements(flowElements, startingIndex)
+   end
+
+   override HasLobbyMode // () : bool
+      return (bool)isLeaveLobbyBtnVisible.Get()
+   end
+
+   func GetLoadoutPanel() : UiWidget
+      return (UiWidget)GetWidget("slidingElementLoadoutPanel")
+   end
+
+   func GetPlayerCardPanel() : UiWidget
+      return (UiWidget)GetWidget("slidingElementPlayerCard")
+   end
+
+   var isLoadOutPanelVisible  : bool = false
+   var isPlayerCardVisible    : bool = false
+
+   override StartScrollingOverride // ()
+      var showLoadoutPanel : bool   = flowElements.Get(scrollToIdx).showLoadoutPanel   
+      var showPlayerCard   : bool   = flowElements.Get(scrollToIdx).showPlayerCard
+      var wasLoadoutPanel  : bool   = flowElements.Get(scrollFromIdx).showLoadoutPanel   
+      var wasPlayerCard    : bool   = flowElements.Get(scrollFromIdx).showPlayerCard
+      
+      GetLoadoutPanel().Widgets.animatedContent.contentBackGround.visible        := false
+      GetLoadoutPanel().Widgets.animatedContent.btnContainer.visible             := false
+      
+      if (needsSpecialCamera)
+         $hf2pEngine.SetJaysSpecialCamera(GetCurrentPage().GetSpartanCameraFlag())
+      end
+      
+      if (showLoadoutPanel)
+         if (firstSlide)
+            GetLoadoutPanel().GotoAndPlay("topDownFadeIn")         
+            isLoadOutPanelVisible := true
+         else
+            if (!isLoadOutPanelVisible)
+               if (wasPlayerCard)
+                  GetLoadoutPanel().GotoAndPlay("Middle_L")
+               elif (scrollDir > 0)
+                  GetLoadoutPanel().GotoAndPlay("Middle_R")
+               else if (scrollDir < 0)
+                  GetLoadoutPanel().GotoAndPlay("Middle_L")                       
+               end
+               isLoadOutPanelVisible := true
+            end
+         end
+         $hq.RenderLocalLoadouts()
+      else      
+         if (isLoadOutPanelVisible)
+            if (showPlayerCard)
+               GetLoadoutPanel().GotoAndPlay("PopLeft_R")
+            elif (scrollDir > 0)
+               GetLoadoutPanel().GotoAndPlay("PopLeft_R")
+            else if (scrollDir < 0)
+               GetLoadoutPanel().GotoAndPlay("PopRight_L")
+            end
+            isLoadOutPanelVisible := false
+         end
+      end
+
+      GetPlayerCardPanel().Widgets.animatedContent.contentBackGround.visible        := false
+      GetPlayerCardPanel().Widgets.animatedContent.btnContainer.visible             := false
+            
+      if (showPlayerCard)
+         if (firstSlide)
+            GetPlayerCardPanel().GotoAndPlay("topDownFadeIn")         
+            isPlayerCardVisible := true
+         else
+            if (!isPlayerCardVisible)
+               if (wasLoadoutPanel)
+                  GetPlayerCardPanel().GotoAndPlay("Middle_L")
+               elif (scrollDir > 0)
+                  GetPlayerCardPanel().GotoAndPlay("Middle_R")                       
+               else if (scrollDir < 0)
+                  GetPlayerCardPanel().GotoAndPlay("Middle_L")                       
+               end
+               isPlayerCardVisible := true
+            end
+         end
+      else      
+         if (isPlayerCardVisible)         
+            if (isLoadOutPanelVisible)
+               GetPlayerCardPanel().GotoAndPlay("PopLeft_R")
+            elif (scrollDir > 0)
+               GetPlayerCardPanel().GotoAndPlay("PopLeft_R")
+            else if (scrollDir < 0)
+               GetPlayerCardPanel().GotoAndPlay("PopRight_L")
+            end
+            isPlayerCardVisible := false
+         end
+      end
+   end
+
+   override HideSlidesOverride//()
+      if (isLoadOutPanelVisible)         
+         GetLoadoutPanel().GotoAndPlay("topDownFadeOut")
+         isLoadOutPanelVisible := false   
+      end
+      
+      if (isPlayerCardVisible)         
+         GetPlayerCardPanel().GotoAndPlay("topDownFadeOut")
+         isPlayerCardVisible := false   
+      end
+      
+      $hf2pEngine.SetJaysSpecialCamera(false)
+   end
+   
+   func GetCurrentPage() : UiSlidingScreenPageMainMenu
+      return (UiSlidingScreenPageMainMenu)GetCurrentSlidingElementContent()
+   end
+
+   func GetLoadoutsHighlightedItem() : string
+      var ret  : string
+      if (GetTotalElems() > 0)
+         var page : UiSlidingScreenPageMainMenu = GetCurrentPage()
+         ret := page.GetPageDC().GetLoadoutsHighlightedItem()
+      end
+      return ret
+   end
+
+   func GetLoadoutsFilterId() : string
+      var ret  : string
+      if (GetTotalElems() > 0)
+         var page : UiSlidingScreenPageMainMenu = GetCurrentPage()
+         ret  := page.GetPageDC().GetLoadoutsFilterId()
+      end
+      return ret
+   end
+
+   func LoadoutPanelSlotClicked(p : params) : bool
+      if (GetTotalElems() > 0)
+         var page : UiSlidingScreenPageMainMenu = GetCurrentPage()
+         page.GetPageDC().LoadoutPanelSlotClicked(p)
+      end
+      return false
+   end
+end
+
+class SlidingScreensMainMenuVM : SlidingScreensVM
+   var isLoadoutPanelPresent     : ObservableProperty = $OM.Property(true)
+   var isPlayerCardPresent       : ObservableProperty = $OM.Property(false)
+   var loadoutsPanelVM           : LoadoutsPanelVM    = new LoadoutsPanelVM()
+   
+   var loadoutSelectedSlotIndex  : ObservableProperty = $OM.Property(-1)
+   var loadoutsHighlightedItem   : ObservableProperty = $OM.Calculated(this, "GetLoadoutsHighlightedItem")
+   var loadoutsFilterId          : ObservableProperty = $OM.Calculated(this, "GetLoadoutsFilterId")
+   var rosterCardVM              : PlayerCardVM       = new PlayerCardVM()
+   var playerUID                 : GL_UID             = $UserDataStorage.NewEmptyUID()
+   
+   override InitOverride // ()
+      loadoutsPanelVM.SetWidget(wgt.Widgets.slidingElementLoadoutPanel.animatedContent.contentContainer.GetWidget("content"))
+      loadoutsPanelVM.Init(loadoutsHighlightedItem, loadoutsFilterId, loadoutSelectedSlotIndex) 
+      
+      rosterCardVM.isActive.Set(true)
+      rosterCardVM.isLeft.Set(false)
+      rosterCardVM.SetTeam(false, 0)
+      playerUID.value.Set($UserDataStorage.local_user.uid.Get())
+      rosterCardVM.SetUID(playerUID)
+      rosterCardVM.isVisible.Set(true)
+   end   
+   
+   override TermOverride // ()
+      loadoutsPanelVM.Term() 
+   end        
+   
+   func GetPlayerCardVM() : PlayerCardVM
+      if ($root.IsLoggedIn())
+         playerUID.value.Set($UserDataStorage.local_user.uid.Get())
+         rosterCardVM.SetUID(playerUID)
+         rosterCardVM.isVisible.Set(true)
+      end
+      return rosterCardVM
+   end
+   
+   func GetLoadoutsHighlightedItem() : string
+      var ret : string
+      if (wgt != null)
+         return ((UiSlidingScreensMainMenu)wgt).GetLoadoutsHighlightedItem()
+      end
+      return ret
+   end
+   
+   func GetLoadoutsFilterId() : string
+      var ret : string
+      if (wgt != null)
+         return ((UiSlidingScreensMainMenu)wgt).GetLoadoutsFilterId()
+      end
+      return ret
+   end
+   
+   func LoadoutPanelSlotClicked(p : params) : bool
+      loadoutSelectedSlotIndex.Set(p.slotIndex)
+      if (wgt != null)
+         return ((UiSlidingScreensMainMenu)wgt).LoadoutPanelSlotClicked(p)
+      end
+      return false
+   end
+end

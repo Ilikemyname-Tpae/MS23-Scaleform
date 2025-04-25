@@ -1,0 +1,7 @@
+import ssl.lib.ui.ui_widget
+
+native class UiWidgetTextArea : UiWidget
+   native func SetText(_txt:string)
+   native func SetHtmlText(_txt:string)
+   native func AppendHtmlText(_txt : wstring)
+end

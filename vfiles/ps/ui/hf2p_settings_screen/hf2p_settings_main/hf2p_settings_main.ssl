@@ -1,0 +1,18 @@
+import ssl.lib.ui.ui_widget_container
+
+class UiMainMenu : UiWidgetContainer
+
+handle OnEnteringState("Initial")
+   AddTween("alpha", 0.0, Props.adelay, "linear")
+end          
+
+handle OnEnterState("Initial")
+   Set("visible", false)
+end  
+        
+handle OnEnteringState("Visible")
+   Set("visible", true)
+   Widgets.gameplayBtn.SetFocus()
+   AddTween("alpha", 1.0, Props.adelay, "linear")
+end  
+end

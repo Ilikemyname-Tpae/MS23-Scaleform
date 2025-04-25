@@ -1,0 +1,46 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.root
+
+class UiProfileContainer : UiWidgetContainer
+
+
+func fillLeftTab(p:params)
+   Log("ui~profileContainer", "fillLeftTab")
+   Props.primaryKills := (string)(p.primaryKills)
+   Props.primaryAccuracy := (string)(p.primaryAccuracy)
+   Props.secKills := (string)(p.secKills)
+   Props.secAccuracy := (string)(p.secAccuracy)
+   Props.grenadeKills := (string)(p.grenadeKills)
+   Props.grenadeAccuracy := (string)(p.grenadeAccuracy)
+end
+
+func fillRightTab(p:params)
+   Log("ui~profileContainer", "fillRightTab")
+   Props.rank := (string)(p.rank)
+   Props.lvl := (string)(p.lvl)
+   Props.time := (string)(p.time)
+   Props.kd := (string)(p.kd)
+   Props.wl := (string)(p.wl)
+   Props.score := (string)(p.score)
+   Props.achievCount := (string)(p.achievCount)
+   Props.matchVount := (string)(p.matchVount)
+   Props.killsCount := (string)(p.killsCount)
+   Props.timeCount := (string)(p.timeCount)
+end
+
+func SetIcon()
+   Log("ui~profileContainer", "SetIcon")
+   Widgets.attachGun1.pic := "weapon_primary_assault_rifle" //$root.GetItemIcon("assault_rifle")
+   Widgets.attachGun2.pic := "weapon_secondary_magnum" //$root.GetItemIcon("magnum_v1")
+   Widgets.attachGun3.pic := "grenade_frag_grenade" //$root.GetItemIcon("frag_grenade")
+   Widgets.attachEmblem.scaleX := 1.3
+   Widgets.attachEmblem.scaleY := 1.3
+   var i:int
+   for i := 1 to 3
+      Widgets.Get("attachGun" + i).scaleX := 0.7
+      Widgets.Get("attachGun" + i).scaleY := 0.7
+   end
+end
+
+end

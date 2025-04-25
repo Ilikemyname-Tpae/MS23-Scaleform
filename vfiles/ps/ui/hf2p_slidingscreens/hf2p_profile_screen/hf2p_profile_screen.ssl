@@ -1,0 +1,352 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_service
+import ui.root
+
+
+class ProfileScreen : UiSlidingScreenPageMainMenu
+
+
+func fillDataProfile()
+   var wpnStat: params
+   wpnStat.primaryKills := "N/A"
+   wpnStat.primaryAccuracy := "N/A"
+   wpnStat.secKills := "N/A"
+   wpnStat.secAccuracy := "N/A"
+   wpnStat.grenadeKills := "N/A"
+   wpnStat.grenadeAccuracy := "N/A"
+   Widgets.profileCont.fillLeftTab(wpnStat)
+   Widgets.profileCont.playerCont.plrCamera.scaleX := 1.0
+   Widgets.profileCont.playerCont.plrCamera.scaleY := 1.0
+   /*
+   var myLvl: int = 0 //$sslUserStates.GetLevel()  
+   var plrStat: params
+   plrStat.rank := "Maximka" //$sslUserStates.GetLevelName(myLvl)
+   plrStat.lvl := myLvl
+   plrStat.time := 540
+   plrStat.kd := 23
+   plrStat.wl := 14
+   plrStat.score := 21
+   plrStat.achievCount := 48
+   plrStat.matchVount := 367
+   plrStat.killsCount := 368
+   plrStat.timeCount := 78
+   Widgets.profileCont.fillRightTab(plrStat)
+   */
+   Widgets.profileCont.SetIcon()
+end	
+
+
+
+handle OnEnteringState("Initial")
+end   
+
+handle OnEnterState("Initial")
+   $UiGlobals.profileScreenUID.Set($UserDataStorage.local_user.uid.Get())
+   Set("visible", false)            
+end   
+
+handle OnEnteringState("Visible")
+   fillDataProfile()
+   GenerateEvent("#RequestDataProfile")
+   Set("visible", true)       
+end   
+
+handle OnEnterState("Visible")
+   Log("ui~content", "OnEnterState")         
+end   
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   GetDC().SetScreenActive(true)
+   EnableFakeBg()
+end
+
+override PrepareHideSlide // ()
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+   end
+   GetDC().SetScreenActive(false)
+end
+
+override SwitchToScreen // ()
+end
+
+func EnableFakeBg()
+   var p: params
+   p.state := "profile"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+func inputEvent(p : params) : bool
+   var isTerminated  : bool   = false
+   var keyCode       : int    = p.keyCode
+   if (keyCode == $uiKeys.VK_LEFT or keyCode == $uiKeys.VK_RIGHT)
+      isTerminated := true
+   end
+   if (isTerminated)
+      p.eventState.SetIsTerminated(isTerminated)
+   end
+   return false
+end
+
+end // ProfileScreen
+
+class ProfileVM : UiSlidingScreenMainMenuPageVM
+   var stats               : ObservableProperty = $OM.Calculated(this, "GetStats")
+   var plrBase             : ObservableProperty = $OM.Calculated(this, "GetPlrBase")
+   var rank                : ObservableProperty = $OM.Calculated(this, "GetRank")
+   var onlineTime          : ObservableProperty = $OM.Calculated(this, "GetOnlineTime")
+   var matchTime           : ObservableProperty = $OM.Calculated(this, "GetMatchTime")
+   var isRenameEnabled     : ObservableProperty = $OM.Calculated(this, "GetIsRenameEnabled")
+   var isSexChangeEnabled  : ObservableProperty = $OM.Calculated(this, "IsSexChangeEnabled")
+   var renamesCount        : ObservableProperty = $OM.Calculated(this, "GetRenamesCount")
+   var renamePrice         : ObservableProperty = $OM.Calculated(this, "GetRenamePrice")
+   var isScreenActive      : ObservableProperty = $OM.Property(false)
+   
+   var canRenderBiped   : ObservableProperty = $OM.Calculated(this, "GetCanRenderBiped")
+   
+   override InitOverride //(p : params)
+      $UiGlobals.profileScreenUID.Subscribe(this, "ProfileScreenUIDChanged")
+   end
+   
+   override TermOverride //()
+      $UiGlobals.profileScreenUID.Unsubscribe(this, "ProfileScreenUIDChanged")
+   end
+   
+   func ProfileScreenUIDChanged(val : *)
+      RequestDataProfile(new params)
+   end
+   
+   func SetScreenActive(isActive : bool)
+      isScreenActive.Set(isActive)
+   end
+      
+   func GetUID() : *
+      return $UiGlobals.profileScreenUID.Get()
+   end
+   
+   func RequestDataProfile(p : params) : bool
+      var plrId : * = GetUID()
+      if IsLocalUser()
+         $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_PROFILE_SCREEN)
+      else
+         $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_PROFILE_PLAYER_SCREEN)
+      end
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_BASE)
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_STATS)            
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_CHARACTER_SLOT_0)            
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_CHARACTER_SLOT_1)
+      $user_service.RequestData(plrId, $uiEnums.USER_DATA_CHARACTER_SLOT_2)
+      stats.Invalidate()
+      plrBase.Invalidate()
+      renamePrice.Invalidate()
+      canRenderBiped.Invalidate()
+      return true
+   end
+   
+   func GetCanRenderBiped() : bool
+      var plrId : * = GetUID()
+      var ud = (UserData)$UserDataStorage.users.Get(plrId)
+      if (ud.CanRenderBiped())
+         $hq.TextureRenderBipedProfile(plrId)
+         return true
+      end
+      return false
+   end
+   
+   func IsLocalUser() : bool
+      return $UserDataStorage.IsLocalUID(GetUID())
+   end
+   
+   func GetEmblemIcon() : string
+      return $UserDataStorage.GetPlayerEmblemIcon(GetUID())
+   end
+   
+   func GetRenamesCount() : int
+      var renamesCountVal : int = (int)$UserDataStorage.local_user.token_renames.Get()
+      return renamesCountVal
+   end
+   
+   func GetRenamesLabel() : string
+      var ret : string = ""
+      if (GetIsRenameEnabled())
+         ret := "profile_ui_renames_avail"
+      end
+      return ret
+   end
+   
+   func GetRenameBtnLabel() : string
+      var ret : string = ""
+      if ((int)renamesCount.Get() > 0)
+         ret := "profile_ui_rename_player"
+      else
+         ret := "profile_ui_rename_buy"
+      end   
+      return ret
+   end
+   
+   func GetUserName() : wstring
+      var ud   : UserData  = GetUserData()
+      var ret  : wstring    = ud.base.full_nickname.Get()
+      ret := $root.MakeColorCodedWText(ret, $UserDataStorage.GetPlayerStatusColorCode(GetUID()))
+      return ret
+   end
+   
+   func GetRenamesCountTxt() : string
+      var ret : string = ""
+      if (GetIsRenameEnabled())
+         ret := (string)GetRenamesCount()
+      end
+      return ret
+   end
+   
+   func GetIsRenameEnabled() : bool
+      var ret : bool = false
+      if (IsLocalUser())
+         var renamesCountVal  : int    = (int)$UserDataStorage.local_user.token_renames.Get()
+         ret := renamesCountVal > 0 and ! $UiGlobals.backend_requests.change_nickname.progress.IsInProgress()
+      end
+      return true //ret
+   end
+   
+   func OfferLineVisible() : bool
+      var ret : bool = true
+      var renamesCountVal  : int    = (int)$UserDataStorage.local_user.token_renames.Get()
+      if (renamesCountVal > 0)
+         ret := false
+      end
+      return ret
+   end
+   
+   func GetRenamePrice() : string
+      var ret : string = ""
+      var renameToken   : string = GetRenameItem()
+      var shopComp      : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(renameToken)
+      if (shopComp.offers.Get().Count() > 0)
+         var renameOffer   : GL_ComponentShopOffer = (GL_ComponentShopOffer)shopComp.offers.Get().Get(0)
+         var offerGl       : int = renameOffer.GetGlCost()
+         ret := (string)offerGl
+      end
+      return ret
+   end
+   
+   func GetIsRenameVisible() : bool
+      return IsLocalUser()
+   end
+   
+   func GetRenameItem() : string
+      var ret : string = ""
+      //var vec : vector    
+      if (!IsVoid($UiGlobals.shop.race_shops))
+         var shop = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get($UserDataStorage.local_user.race.Get())
+         if (!IsVoid(shop.FindInternalSection("section_special_items")))
+            var section = shop.FindInternalSection("section_special_items")
+            if (section != null and ! IsVoid(section.FindShelf("shelf_special_items")))
+               var shelf = section.FindShelf("shelf_special_items")
+               if (shelf != null and ! IsVoid(shelf.items.Get()))
+                  ret := (string)shelf.items.Get().Get(0).value.Get()
+                  //vec := shelf.items.Get()
+               end
+            end
+         end
+      end   
+      return ret
+   end
+   
+   func GetUserData() : UserData
+      var ret : UserData = (UserData) $UserDataStorage.users.Get(GetUID())
+      return ret
+   end
+      
+   func GetStats() : UD_Stats
+      var ud : UserData = GetUserData()
+      return ud.stats
+   end
+   
+   func GetPlrBase() : UD_Base
+      var ud : UserData = GetUserData()
+      return ud.base
+   end
+   
+   
+   func GetRank() : *
+      var ud      : UserData        = GetUserData()
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)ud.base.level_id.Get())
+      var levelName     : string          = (string)uiComp.name.Get()
+      return levelName
+   end
+   
+   func GetOnlineTime() : string
+      var ret  : string
+      if ((bool)isScreenActive.Get())
+         var ud   : UserData  = GetUserData()
+         var time : int       = (int)ud.stats.online_time_sec.Get()
+         if (IsLocalUser())
+            time := time + (int)$UiGlobals.timer.Get() - (int)ud.stats.online_time_last_change_sec.Get()
+         end
+         ret := $root.MakeUiTimerString(time)
+      end
+      return ret
+   end
+   
+   func GetMatchTime() : string
+      var ret : string
+      var ud : UserData = GetUserData()
+      var time  : int  = (int)ud.stats.game_time_played_sec.Get()
+      ret := $root.MakeUiTimerString(time)
+      return ret
+   end
+   
+   func OnRenamePlayerClicked(p : params) : bool
+      var par: params
+      if ((int)renamesCount.Get() > 0)
+         par.mbType     := $uiEnums.MB_TYPE_RENAME
+         par.titleTxt   := "msg_ui_rename_header"
+         par.messageTxt := ""
+         par.subTxt     := "msg_ui_rename_message"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)         
+      else
+         var renameToken   : string = GetRenameItem()
+         var shopComp      : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(renameToken)
+         var renameOffer   : GL_ComponentShopOffer = (GL_ComponentShopOffer)shopComp.offers.Get().Get(0)
+         var offerId      : string  = renameOffer.GetGlOffer()
+         var offerGl      : int     = renameOffer.GetGlCost()
+         par.mbType        := "ConfirmBuy"
+         par.itemID        := renameToken
+         par.isGold        := true
+         par.offer         := offerId
+         par.priceAmount   := offerGl
+         par.priceUnit     := $uiEnums.TOKEN_GOLD
+         par.callbackEvent := "OnRenameTokenPurchased"
+         par.titleTxt      := "msg_ui_rename_buy"
+         par.messageTxt    := ""
+         par.subTxt        := "msg_ui_rename_buy_message"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+      end
+      return true
+   end
+   
+   func OnRenameTokenPurchased(p : params) : bool
+      renamesCount.Invalidate()
+      return true
+   end
+   
+   func OnSexChangeClicked(p : params) : bool
+      $user_service.SwitchCharacterGender()
+      $hq.TextureRenderBipedUserCard2(GetUID())
+      $hq.TextureRenderBipedProfile(GetUID())
+      return true
+   end
+   
+   func IsSexChangeEnabled() : bool
+      return true
+   end   
+end

@@ -1,0 +1,295 @@
+classes = {
+	hf2p_gameStats = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_gameStats" 
+		lib     = gameStatScreen_lib 
+
+		elements {
+			screenCont {
+				__type = "ui_widget_container"
+
+				propMapping {
+					topWeaponsHeader = {
+						mapping = "topWeaponsHeader.text"
+					}
+					currentRankText = {
+						mapping = "currentRankText.text"
+					}
+					prevXP = {
+						mapping = "prevXP.text"
+					}
+					nextXP = {
+						mapping = "nextXP.text"
+					}
+					nextRankText = {
+						mapping = "nextRankText.text"
+					}
+					currentXP = {
+						mapping = "currentXP.text"
+					}
+					headerText = {
+						mapping = "headerText.text"
+					}
+					playTimeHeader = {
+						mapping = "playTimeHeader.text"
+					}
+					playTimeText = {
+						mapping = "playTimeText.text"
+					}
+					matchCountHeader = {
+						mapping = "matchCountHeader.text"
+					}
+					matchCountText = {
+						mapping = "matchCountText.text"
+					}
+					killsHeader = {
+						mapping = "killsHeader.text"
+					}
+					killsText = {
+						mapping = "killsText.text"
+					}
+				}
+				x         = 4
+				y         = 466.05
+
+				elements {
+					topWpn1 {
+						__type = "ui_gameStatScreen_lib::hf2p_gameStat_wpnLIR"
+						x         = 696
+						y         = -57.7
+					} 
+					topWpn2 {
+						__type = "ui_gameStatScreen_lib::hf2p_gameStat_wpnLIR"
+						x         = 696
+						y         = 57.3
+					} 
+					topWpn3 {
+						__type = "ui_gameStatScreen_lib::hf2p_gameStat_wpnLIR"
+						x         = 696
+						y         = 172.35
+					} 
+					rankIcon {
+						__type = "ui_widget_container"
+
+						x         = 178.75
+						y         = -380.45
+					} 
+					progressBar {
+						__type = "ui_widget_container"
+
+						x         = -209.75
+						y         = -129.75
+						scaleX    = 1.1738
+						scaleY    = 1.0611
+
+						elements {
+							bar {
+								__type = "ui_widget_container"
+
+								x         = 261
+								y         = 12.4
+								scaleX    = 0.2654
+								scaleY    = 1.1972
+
+								elements {
+									bar {
+										__type = "ui_widget_container"
+
+										x         = -3
+										y         = -2.05
+										scaleX    = 1.9269
+										scaleY    = 1.4612
+									} 
+								}
+							} 
+							subBar {
+								__type = "ui_widget_container"
+
+								x         = 261
+								y         = 12.4
+								scaleX    = 0.2654
+								scaleY    = 1.1972
+
+								elements {
+									bar {
+										__type = "ui_widget_container"
+
+										x         = -3
+										y         = -2.05
+										scaleX    = 1.9269
+										scaleY    = 1.4612
+									} 
+								}
+							} 
+						}
+					} 
+					statsCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							personalStatHeader = {
+								mapping = "personalStatHeader.text"
+							}
+							killsLabel = {
+								mapping = "killsLabel.text"
+							}
+							deathLabel = {
+								mapping = "deathLabel.text"
+							}
+							kdLabel = {
+								mapping = "kdLabel.text"
+							}
+							kpmLabel = {
+								mapping = "kpmLabel.text"
+							}
+							assistsLabel = {
+								mapping = "assistsLabel.text"
+							}
+							headShotsLabel = {
+								mapping = "headShotsLabel.text"
+							}
+							accuracyLabel = {
+								mapping = "accuracyLabel.text"
+							}
+							meleeLabel = {
+								mapping = "meleeLabel.text"
+							}
+							assasinationsLabel = {
+								mapping = "assasinationsLabel.text"
+							}
+							killsValue = {
+								mapping = "killsValue.text"
+							}
+							deathValue = {
+								mapping = "deathValue.text"
+							}
+							kdValue = {
+								mapping = "kdValue.text"
+							}
+							kpmValue = {
+								mapping = "kpmValue.text"
+							}
+							assistsValue = {
+								mapping = "assistsValue.text"
+							}
+							headShotsValue = {
+								mapping = "headShotsValue.text"
+							}
+							accuracyValue = {
+								mapping = "accuracyValue.text"
+							}
+							meleeValue = {
+								mapping = "meleeValue.text"
+							}
+							assasinationsValue = {
+								mapping = "assasinationsValue.text"
+							}
+							vehiclesStatsHeader = {
+								mapping = "vehiclesStatsHeader.text"
+							}
+							vkillsLabel = {
+								mapping = "vkillsLabel.text"
+							}
+							splatterKillLabel = {
+								mapping = "splatterKillLabel.text"
+							}
+							vecDestroyLabel = {
+								mapping = "vecDestroyLabel.text"
+							}
+							hijackLabel = {
+								mapping = "hijackLabel.text"
+							}
+							vkillsValue = {
+								mapping = "vkillsValue.text"
+							}
+							splatterKillValue = {
+								mapping = "splatterKillValue.text"
+							}
+							vecDestroyValue = {
+								mapping = "vecDestroyValue.text"
+							}
+							hijackValue = {
+								mapping = "hijackValue.text"
+							}
+							matchStatsHeader = {
+								mapping = "matchStatsHeader.text"
+							}
+							winsLabel = {
+								mapping = "winsLabel.text"
+							}
+							lossesLabel = {
+								mapping = "lossesLabel.text"
+							}
+							wlLabel = {
+								mapping = "wlLabel.text"
+							}
+							winsValue = {
+								mapping = "winsValue.text"
+							}
+							lossesValue = {
+								mapping = "lossesValue.text"
+							}
+							wlValue = {
+								mapping = "wlValue.text"
+							}
+						}
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2p_gameStat_wpnLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "hf2p_gameStat_wpnLIR" 
+		lib     = gameStatScreen_lib 
+		propMapping {
+			wpnIdx = {
+				mapping = "wpnIdx.text"
+			}
+			wpnName = {
+				mapping = "wpnName.text"
+			}
+			killsText = {
+				mapping = "killsText.text"
+			}
+			accuracyText = {
+				mapping = "accuracyText.text"
+			}
+			killsValue = {
+				mapping = "killsValue.text"
+			}
+			accuracyValue = {
+				mapping = "accuracyValue.text"
+			}
+		}
+
+		elements {
+			propertyItem {
+				__type = "ui_widget_container"
+
+				x         = 315
+				y         = 5
+			} 
+			itemCont {
+				__type = "ui_widget_container"
+
+				x         = 42.5
+				y         = 9.5
+			} 
+			tileOverGlow {
+				__type = "ui_widget_container"
+
+				x         = -25.45
+				y         = -2.75
+				scaleX    = 3.4726
+				scaleY    = 0.5063
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

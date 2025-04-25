@@ -1,0 +1,498 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_manager
+import ssl.hf2p.engine_ctrl
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ui.ui_economy
+import ssl.hf2p.user_data
+import ui.root
+import ui.libs.hf2p_SlidingScreens.hf2p_sliding_screens_lib
+import ui.libs.hf2p_WeaponConf_lib.hf2p_WeaponConf_lib
+import ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib
+import ui.libs.hf2p_ChallengesPopup_lib.hf2p_ChallengesPopup_lib
+
+/*************************************************************
+* UiItemChallengesScreen
+* 
+*************************************************************/
+class UiItemChallengesScreen : UiSlidingScreenPageMainMenu
+   func BlinkFull()
+      StartDefaultBlinking()
+   end
+   
+   func BlinkFast()
+      Widgets.challengesList.StartDefaultBlinking(0, 1.5)      
+   end
+   
+   func ResetList()
+      Widgets.challengesList.list.scrollPosition := 0
+   end
+   
+   override PrepareHideSlide
+      Widgets.challengePopup.HidePopup()
+   end
+   
+   handle OnEnterState("Initial")
+      Set("visible", false)            
+   end   
+
+   handle OnEnteringState("Visible")
+      Set("visible", true)
+   end   
+end
+
+/*************************************************************
+* UiItemChallengesTabsVM
+* 
+*************************************************************/
+class UiItemChallengesTabsVM : UiGenericShopTabsVM
+   
+   func UiItemChallengesTabsVM()
+     // tabLabels.Invalidate()
+   end
+   
+   override GetTabLabels//() : vector
+      //hack
+      var ret : vector
+      if ((bool)isActive.Get())
+         if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+            var shop    :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+            if (! IsVoid(shop.career))
+               var i : int
+               for i := 0 to shop.career.Get().Count() - 1
+                  var subshop : GL_ShopSection = (GL_ShopSection)shop.career.Get().Get(i)
+                  var uiID    : string = (string)subshop.section_id.Get()
+                  var name    : string  = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(uiID)).name.Get()
+                  var icon    : string  = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(uiID)).icon_med.Get()
+                  if (name == "")
+                     name := uiID
+                  end
+                  if (name != "") 
+                     var p : params
+                     p.label := name
+                     p.icon  := icon
+                     ret.Push(p)
+                  end
+               end
+            end
+         end
+      end
+      return ret
+   end
+   
+   /*
+   override GetTabLabels//() : vector
+      var ret : vector
+      var i : int
+      for i := 0 to 4
+         var p : params
+         p.label := "TAB_" + (string)(i+1) + "~"
+         ret.Push(p)
+      end
+      return ret
+   end
+   */
+end
+
+/*************************************************************
+* UiItemChallengesLIRVM
+* 
+*************************************************************/
+class UiItemChallengesLIRVM
+   var challengeItemId  : ObservableProperty    = $OM.Property($uiEnums.TECH_EMPTY)
+   var progress         : ChallengeProgressVM   = new ChallengeProgressVM()
+   var tmpVar           : int                   = 0
+   var tmpVar2          : ObservableProperty    = $OM.Property(0)
+   var isLocked         : ObservableProperty    = $OM.Calculated(this, "GetIsLocked") 
+   var wgt              : UiWidget              = null
+   
+   func Init(p : params)
+      wgt := p.widget
+      if (! IsVoid(p.challengeItemId))
+         challengeItemId.Set(p.challengeItemId)
+         progress.InitVM(p.challengeItemId, GetNextChallenge(), GetNextRank(), 0, IsComplete())
+      end
+   end
+   
+   func OnItemChallengeLirClicked(p : params) : bool
+      var pp : params
+      pp.tech := (string)challengeItemId.Get()
+      wgt.GenerateEvent("#OpenTechCard", pp)
+      return false
+   end
+   
+   func GetItemComponent() : GL_ComponentItem
+      var ret : GL_ComponentItem = (GL_ComponentItem)$UiGlobals.componentsItem.Get(challengeItemId.Get())
+      return ret
+   end
+   
+   func GetNextChallenge() : string
+      var ret : string = GetItemComponent().GetNextChallengeId()
+      return ret
+   end
+      
+   func GetIsLocked() : bool
+      var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+      var inventComp : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(challengeItemId.Get())
+      var ret        : bool                  = shopComp.IsLocked() or (int)inventComp.ownership_type.Get() != $uiEnums.ITEM_OWN_TYPE_PURCHASED
+      return ret
+   end
+   
+   func IsComplete() : bool
+      var ret : bool = GetItemComponent().IsComplete()
+      return ret      
+   end
+   
+   func IsInProgress() : bool
+      var ret : bool = !GetIsLocked() and !IsComplete()
+      return ret
+   end      
+   
+   func GetMedalFrame(rank : int) : string
+      var ret  : string = ""
+      if (rank == -1)
+         ret := "gray"
+      elif (rank == 0)
+         ret := "bronze"
+      elif (rank == 1)
+         ret := "silver"
+      elif (rank == 2)
+         ret := "gold"
+      else
+         ret := "gray"
+      end
+      return ret
+   end   
+   
+   func BoostStripVisible() : bool
+      return $uiEconomy.HasChallengeBooster()
+   end 
+   
+   func IsItemEquippedForChallenge() : bool
+      var compShop   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+      var item       : string             = compShop.GetUnlockItem()
+      var equipState : int                = $uiPlayerInfo.GetItemEquipState(item)      
+      var ret        : bool               = equipState == $uiEnums.CHALLENGE_ITEM_STATE_EQUIPPED
+      return ret
+   end
+   
+   func GetChallengeStateFrame() : string
+      var ret  : string
+      var rank : int = GetCurrentRank()
+      if (rank == GetMaxRank())
+         ret := "state3"
+      elif (IsItemEquippedForChallenge())
+         ret := "state2"
+      else
+         ret := "state1"
+      end         
+      return ret
+   end
+   
+   func GetMaxRank() : int
+      return GetItemComponent().GetChallengesCount() - 1
+   end
+   
+   func GetCurrentRank() : int
+      return GetItemComponent().GetCurrentChallengeRank()
+   end
+   
+   func GetNextRank() : int
+      var ret : int = GetItemComponent().GetNextChallengeRank()
+      return ret
+   end
+   
+   func GetId() : string
+      return (string)challengeItemId.Get()
+   end
+   
+   func GetTechLabel() : string
+      var ret     : string
+      var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(GetId())
+      ret := (string)compUI.name.Get() 
+      return ret
+   end
+   
+   func GetTechIcon() : string
+      var ret     : string
+      var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(GetId())
+      ret := (string)compUI.icon_med.Get() 
+      return ret
+   end
+   
+   func GetBorderFrame() : string
+      var ret         : string = ""
+      var compShop    : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+      var item        : string             = compShop.GetUnlockItem()
+      var equipState  : int = $uiPlayerInfo.GetItemEquipState(item)
+      var compItem    : GL_ComponentItem = (GL_ComponentItem)$UiGlobals.componentsItem.Get(item)
+      var career      : string = (string)compItem.career_tree.Get()
+      var iconMed     : string  = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(career)).icon_med.Get()
+      ret := iconMed
+      if (equipState == $uiEnums.CHALLENGE_ITEM_STATE_NOT_EQUIPPED or equipState == $uiEnums.CHALLENGE_ITEM_STATE_PARTIALLY_EQUIPPED) //IsItemEquippedForChallenge()
+         ret := "equip"
+      elif IsComplete()
+         ret := "none"
+      end
+      return ret
+   end
+   
+   func StatLineVisible() : bool
+      var ret         : bool = false
+      var compShop    : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+      var item        : string             = compShop.GetUnlockItem()
+      var itemSubType : int = $uiEconomy.GetItemSubType(item)
+      if (!(bool)isLocked.Get())   
+         if (itemSubType == $uiEnums.ITEM_SUB_TYPE_WPN_PRIMARY or itemSubType == $uiEnums.ITEM_SUB_TYPE_WPN_SECONDARY)
+            ret := true
+         end
+      end
+      return ret
+   end
+   
+   func GetStatLineTint() : params
+      var ret : params = $uiEconomy.GetWeaponPrimaryArrtibuteColor("unknown")
+      var compShop   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItemId.Get())
+      var item       : string             = compShop.GetUnlockItem()
+      if (item != "")
+         var weaponComp   :  GL_ComponentWeapon = (GL_ComponentWeapon)$UiGlobals.componentsWeapon.Get(item)
+         if (weaponComp != null)
+            ret := $uiEconomy.GetWeaponPrimaryArrtibuteColor((string)weaponComp.primary_attribute_id.Get())
+         end
+      end   
+      return ret
+   end
+   
+end
+
+/*************************************************************
+* UiItemChallengesScreenVM
+* 
+*************************************************************/
+class UiItemChallengesScreenVM : UiSlidingScreenMainMenuPageVM
+   var tabs                      : UiItemChallengesTabsVM   = new UiItemChallengesTabsVM()
+   var itemChallenges            : ObservableProperty       = $OM.Calculated(this, "GetItemChallenges")
+   var itemChallengesUnsorted    : ObservableProperty       = $OM.Calculated(this, "GetItemChallengesUnsorted")
+   var challengePopupVM          : UiChallengesPopupVM      = new UiChallengesPopupVM()
+   var wgt                       : UiItemChallengesScreen   = null 
+      
+   override InitOverride //(p : params)
+      wgt := p.widget
+      tabs.selectedTabIdx.Subscribe(this, "OnTabChange")
+   end
+      
+   override TermOverride //()
+      tabs.selectedTabIdx.Unsubscribe(this, "OnTabChange")
+   end
+
+   func ResetList()
+      if (wgt != null)
+         wgt.ResetList()   
+      end      
+   end
+
+   func OnTabChange(_val : *)
+      ResetList()
+      StartBlink(false)
+   end
+   
+   func StartBlink(_isFull : bool)
+      if (wgt != null)
+         if (_isFull)
+            wgt.BlinkFull()
+         else
+            wgt.BlinkFast()
+         end
+      end      
+   end
+   
+   override OnOpen // ()
+      StartBlink(true)      
+   end
+   
+   override PrepareSlide // ()
+      StartBlink(true)
+   end
+   
+   override OnClose // ()
+      if ((bool)challengePopupVM.isVisible.Get())
+         wgt.Widgets.challengePopup.HidePopup()
+      end   
+   end
+   
+   func GetSelectedTabIdx() : int
+      return (int)tabs.selectedTabIdx.Get()
+   end
+         
+         var cnt : int   = 0
+    
+   func GetItemChallengesUnsorted() : vector
+      var ret           : vector
+      var isActiveVal   : bool = (bool)isActive.Get()
+      if (isActiveVal) 
+         cnt := cnt + 1
+         if (! IsVoid($UiGlobals.shop.race_shops.Get()) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+            var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+            if (!IsVoid(shop) and shop!=null and ! IsVoid(shop.career.Get()) and shop.career.Get().Count() > GetSelectedTabIdx())
+               var subshop : GL_ShopSection = (GL_ShopSection)shop.career.Get().Get(GetSelectedTabIdx())
+               if (! IsVoid(subshop.shelves))
+                  var i : int
+                  for i := 0 to subshop.shelves.Get().Count() - 1
+                     var shelf      :  GL_ShopShelf   = (GL_ShopShelf)subshop.shelves.Get().Get(i)
+                     if (! IsVoid(shelf.items.Get()))
+                        var j : int
+                        for j := 0 to shelf.items.Get().Count() - 1
+                           var techId : string = (string)shelf.items.Get().Get(j).value.Get()
+                           if (techId != $uiEnums.TECH_EMPTY and techId != $uiEnums.TECH_COMING)
+                              var p : params
+                              p.challengeItemId := techId
+                              ret.Push(p)
+                           end
+                        end   
+                     end
+                  end   
+               end
+            end
+         end
+      end
+      return ret      
+   end
+      
+   func GetItemChallenges() : vector
+      var isActiveVal   : bool   = (bool)isActive.Get()
+      var ret           : vector = itemChallengesUnsorted.Get()
+      tabs.isActive.Set(isActiveVal)
+      ret.Sort(this, "SortChallengesItems")
+      return ret      
+   end
+   
+   func SortChallengesItems(itemIdA : params, itemIdB : params) : int
+      var ret : int = 0
+      var a   : int = 0
+      var b   : int = 0
+      
+      if (GetIsLocked(itemIdA.challengeItemId))
+         a := 4
+      elif (IsComplete(itemIdA.challengeItemId))
+         a := 3
+      else 
+         if (!IsItemEquippedForChallenge(itemIdA.challengeItemId))
+            a := 2
+         else //(!IsNotEquipped(itemIdA.challengeItemId))
+            a := 1
+         end
+      end
+      
+      if (GetIsLocked(itemIdB.challengeItemId))
+         b := 4
+      elif (IsComplete(itemIdB.challengeItemId))
+         b := 3
+      else 
+         if (!IsItemEquippedForChallenge(itemIdB.challengeItemId))
+            b := 2
+         else //(!IsNotEquipped(itemIdB.challengeItemId))
+            b := 1
+         end
+      end
+      
+      if (a < b)
+         ret := -1
+      end
+      if (b < a)
+         ret := 1
+      end
+      if (a == b and a < 3)
+         var progressA : float = (float)GetChallengeComponent(GetItemComponent(itemIdA.challengeItemId).GetNextChallengeId()).progress.Get()
+         var progressB : float = (float)GetChallengeComponent(GetItemComponent(itemIdB.challengeItemId).GetNextChallengeId()).progress.Get()
+         if (progressA < progressB)
+            ret := 1
+         end
+         if (progressB < progressA)
+            ret := -1
+         end
+      end
+      return ret
+   end
+   
+   func GetItemComponent(challengeItem : string) : GL_ComponentItem
+      var ret : GL_ComponentItem = (GL_ComponentItem)$UiGlobals.componentsItem.Get(challengeItem)
+      return ret
+   end
+   
+   func GetChallengeComponent(challengeItem : string) : GL_ComponentChallenge
+      var ret : GL_ComponentChallenge = (GL_ComponentChallenge)$UiGlobals.componentsChallenge.Get(challengeItem)
+      return ret
+   end
+   
+   func GetItemEquipState(challengeItem : string) : int
+      var ret : int = $uiEnums.CHALLENGE_ITEM_STATE_EQUIPPED
+      var compShop   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItem)
+      var item       : string             = compShop.GetUnlockItem()
+      ret := $uiPlayerInfo.GetItemEquipState(item)         
+      return ret
+   end
+
+   func IsNotEquipped(challengeItem : string) : bool
+      var ret : bool = false
+      if (GetItemEquipState(challengeItem) == $uiEnums.CHALLENGE_ITEM_STATE_NOT_EQUIPPED)
+         ret := true
+      end
+      if (GetItemEquipState(challengeItem) == $uiEnums.CHALLENGE_ITEM_STATE_PARTIALLY_EQUIPPED)
+         ret := true
+      end
+      return ret 
+   end
+   
+   func IsComplete(challengeItem : string) : bool
+      var ret : bool = GetItemComponent(challengeItem).IsComplete()
+      return ret      
+   end
+   
+   func IsInProgress(challengeItem : string) : bool
+      var ret : bool = !GetIsLocked(challengeItem) and !IsComplete(challengeItem)
+      return ret
+   end
+   
+   func GetIsLocked(challengeItem : string) : bool
+      var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItem)
+      var inventComp : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(challengeItem)
+      var ret        : bool                  = shopComp.IsLocked() or (int)inventComp.ownership_type.Get() != $uiEnums.ITEM_OWN_TYPE_PURCHASED
+      return ret
+   end
+   
+   func IsItemEquippedForChallenge(challengeItem : string) : bool
+      var compShop   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challengeItem)
+      var item       : string             = compShop.GetUnlockItem()
+      var equipState : int                = $uiPlayerInfo.GetItemEquipState(item)      
+      var ret        : bool               = equipState == $uiEnums.CHALLENGE_ITEM_STATE_EQUIPPED
+      return ret
+   end
+   
+   func GetItemChallengesVec() : vector
+      return itemChallenges.Get()
+   end
+   
+   func ItemChallengeItemClicked(p : params) : bool
+      var popupParams   : params
+      var idx           : int    = p.index
+      var challenges    : vector = GetItemChallengesVec()
+      var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(challenges.Get(idx).challengeItemId)
+      var inventComp : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(challenges.Get(idx).challengeItemId)
+      var isLocked        : bool                  = shopComp.IsLocked() or (int)inventComp.ownership_type.Get() != $uiEnums.ITEM_OWN_TYPE_PURCHASED
+      if (!isLocked)   
+         if (idx >= 0 and idx < challenges.Count())
+            popupParams.widget            := wgt.GetWidget("challengePopup")
+            popupParams.challengeItemId   := challenges.Get(idx).challengeItemId
+            challengePopupVM.Init(popupParams)
+            wgt.Widgets.challengePopup.ShowPopup()
+         end
+      end   
+      return true
+   end
+   
+   func OnCloseItemChallengesPopup(p : params) : bool
+      wgt.Widgets.challengePopup.HidePopup()
+      return true
+   end   
+end

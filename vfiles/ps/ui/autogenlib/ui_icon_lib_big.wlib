@@ -1,0 +1,800 @@
+classes = {
+	battlerifleBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "battlerifleBig" 
+		lib     = icon_lib_big 
+	}
+
+	battlerifle_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "battlerifle_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	battlerifle_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "battlerifle_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	battlerifle_m4Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "battlerifle_m4Big" 
+		lib     = icon_lib_big 
+	}
+
+	battlerifle_m5Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "battlerifle_m5Big" 
+		lib     = icon_lib_big 
+	}
+
+	battlerifle_m6Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "battlerifle_m6Big" 
+		lib     = icon_lib_big 
+	}
+
+	beam_rifleBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "beam_rifleBig" 
+		lib     = icon_lib_big 
+	}
+
+	bgBuyGold = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgBuyGold" 
+		lib     = icon_lib_big 
+	}
+
+	bigBetaBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "bigBetaBg" 
+		lib     = icon_lib_big 
+	}
+
+	bigBetaProfile = {
+		__type = "ui_widget_container"
+
+		symbol  = "bigBetaProfile" 
+		lib     = icon_lib_big 
+	}
+
+	bigPreorderBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "bigPreorderBg" 
+		lib     = icon_lib_big 
+	}
+
+	bigPreorderProfile = {
+		__type = "ui_widget_container"
+
+		symbol  = "bigPreorderProfile" 
+		lib     = icon_lib_big 
+	}
+
+	bigSaberBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "bigSaberBg" 
+		lib     = icon_lib_big 
+	}
+
+	bigSaberProfile = {
+		__type = "ui_widget_container"
+
+		symbol  = "bigSaberProfile" 
+		lib     = icon_lib_big 
+	}
+
+	boostersChallengesImag = {
+		__type = "ui_widget_container"
+
+		symbol  = "boostersChallengesImag" 
+		lib     = icon_lib_big 
+	}
+
+	boostersCrImag = {
+		__type = "ui_widget_container"
+
+		symbol  = "boostersCrImag" 
+		lib     = icon_lib_big 
+	}
+
+	boostersXpImag = {
+		__type = "ui_widget_container"
+
+		symbol  = "boostersXpImag" 
+		lib     = icon_lib_big 
+	}
+
+	brute_shotBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "brute_shotBig" 
+		lib     = icon_lib_big 
+	}
+
+	buyGoldIcon1 = {
+		__type = "ui_widget_container"
+
+		symbol  = "buyGoldIcon1" 
+		lib     = icon_lib_big 
+	}
+
+	buyGoldIcon2 = {
+		__type = "ui_widget_container"
+
+		symbol  = "buyGoldIcon2" 
+		lib     = icon_lib_big 
+	}
+
+	buyGoldIcon3 = {
+		__type = "ui_widget_container"
+
+		symbol  = "buyGoldIcon3" 
+		lib     = icon_lib_big 
+	}
+
+	buyGoldIcon4 = {
+		__type = "ui_widget_container"
+
+		symbol  = "buyGoldIcon4" 
+		lib     = icon_lib_big 
+	}
+
+	buyGoldIcon5 = {
+		__type = "ui_widget_container"
+
+		symbol  = "buyGoldIcon5" 
+		lib     = icon_lib_big 
+	}
+
+	carbineBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "carbineBig" 
+		lib     = icon_lib_big 
+	}
+
+	carbine_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "carbine_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	carbine_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "carbine_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	carbine_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "carbine_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	carbine_m4Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "carbine_m4Big" 
+		lib     = icon_lib_big 
+	}
+
+	carbine_m5Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "carbine_m5Big" 
+		lib     = icon_lib_big 
+	}
+
+	carbine_m6Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "carbine_m6Big" 
+		lib     = icon_lib_big 
+	}
+
+	career_experience_IconBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "career_experience_IconBig" 
+		lib     = icon_lib_big 
+	}
+
+	career_prototype_IconBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "career_prototype_IconBig" 
+		lib     = icon_lib_big 
+	}
+
+	career_ranger_IconBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "career_ranger_IconBig" 
+		lib     = icon_lib_big 
+	}
+
+	career_sniper_IconBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "career_sniper_IconBig" 
+		lib     = icon_lib_big 
+	}
+
+	career_tactician_IconBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "career_tactician_IconBig" 
+		lib     = icon_lib_big 
+	}
+
+	dmrBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "dmrBig" 
+		lib     = icon_lib_big 
+	}
+
+	dmr_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "dmr_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	dmr_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "dmr_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	dmr_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "dmr_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	dmr_m4Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "dmr_m4Big" 
+		lib     = icon_lib_big 
+	}
+
+	dmr_m5Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "dmr_m5Big" 
+		lib     = icon_lib_big 
+	}
+
+	dmr_m6Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "dmr_m6Big" 
+		lib     = icon_lib_big 
+	}
+
+	emblemBig1 = {
+		__type = "ui_widget_container"
+
+		symbol  = "emblemBig1" 
+		lib     = icon_lib_big 
+	}
+
+	emblemShopBG = {
+		__type = "ui_widget_container"
+
+		symbol  = "emblemShopBG" 
+		lib     = icon_lib_big 
+	}
+
+	energy_bladeBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "energy_bladeBig" 
+		lib     = icon_lib_big 
+	}
+
+	fire_grenadeBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "fire_grenadeBig" 
+		lib     = icon_lib_big 
+	}
+
+	flak_cannonBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "flak_cannonBig" 
+		lib     = icon_lib_big 
+	}
+
+	flamethrowerBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "flamethrowerBig" 
+		lib     = icon_lib_big 
+	}
+
+	frag_grenadeBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "frag_grenadeBig" 
+		lib     = icon_lib_big 
+	}
+
+	gravity_hammerBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "gravity_hammerBig" 
+		lib     = icon_lib_big 
+	}
+
+	iconClass = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconClass" 
+		lib     = icon_lib_big 
+	}
+
+	iconSPRespawnBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconSPRespawnBig" 
+		lib     = icon_lib_big 
+	}
+
+	iconSPRevengeShieldBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconSPRevengeShieldBig" 
+		lib     = icon_lib_big 
+	}
+
+	machine_gunBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "machine_gunBig" 
+		lib     = icon_lib_big 
+	}
+
+	machine_gun_turretBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "machine_gun_turretBig" 
+		lib     = icon_lib_big 
+	}
+
+	magnumBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "magnumBig" 
+		lib     = icon_lib_big 
+	}
+
+	magnum_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "magnum_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	magnum_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "magnum_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	magnum_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "magnum_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	maulerBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "maulerBig" 
+		lib     = icon_lib_big 
+	}
+
+	mauler_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "mauler_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	mauler_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "mauler_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	mauler_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "mauler_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	missleLauncherBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "missleLauncherBig" 
+		lib     = icon_lib_big 
+	}
+
+	needlerBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "needlerBig" 
+		lib     = icon_lib_big 
+	}
+
+	plasmapistolBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmapistolBig" 
+		lib     = icon_lib_big 
+	}
+
+	plasmapistol_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmapistol_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmapistol_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmapistol_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmapistol_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmapistol_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmarifleBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmarifleBig" 
+		lib     = icon_lib_big 
+	}
+
+	plasmarifle_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmarifle_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmarifle_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmarifle_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmarifle_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmarifle_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmarifle_m4Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmarifle_m4Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmarifle_m5Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmarifle_m5Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasmarifle_m6Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasmarifle_m6Big" 
+		lib     = icon_lib_big 
+	}
+
+	plasma_grenadeBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "plasma_grenadeBig" 
+		lib     = icon_lib_big 
+	}
+
+	rocket_launcherBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "rocket_launcherBig" 
+		lib     = icon_lib_big 
+	}
+
+	shotgunBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "shotgunBig" 
+		lib     = icon_lib_big 
+	}
+
+	smgBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "smgBig" 
+		lib     = icon_lib_big 
+	}
+
+	smg_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "smg_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	smg_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "smg_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	smg_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "smg_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	smg_m4Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "smg_m4Big" 
+		lib     = icon_lib_big 
+	}
+
+	smg_m5Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "smg_m5Big" 
+		lib     = icon_lib_big 
+	}
+
+	smg_m6Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "smg_m6Big" 
+		lib     = icon_lib_big 
+	}
+
+	sniper_rifleBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "sniper_rifleBig" 
+		lib     = icon_lib_big 
+	}
+
+	spartan_laserBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "spartan_laserBig" 
+		lib     = icon_lib_big 
+	}
+
+	spike_grenadeBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "spike_grenadeBig" 
+		lib     = icon_lib_big 
+	}
+
+	spike_rifleBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "spike_rifleBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpActivecamoBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpActivecamoBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpAdrenalineBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpAdrenalineBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpBombrunBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpBombrunBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpBubbleshieldBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpBubbleshieldBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpChargerBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpChargerBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpEjectorBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpEjectorBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpExtraBatteryBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpExtraBatteryBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpHeadshotHealBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpHeadshotHealBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpHologramBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpHologramBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpLocatorBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpLocatorBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpMaxGrenadesBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpMaxGrenadesBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpPowerPlantBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpPowerPlantBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpReflexBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpReflexBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpRunnerBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpRunnerBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpVehicleShieldBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpVehicleShieldBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpVisionBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpVisionBig" 
+		lib     = icon_lib_big 
+	}
+
+	tpVisorBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "tpVisorBig" 
+		lib     = icon_lib_big 
+	}
+
+	unscma5bBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "unscma5bBig" 
+		lib     = icon_lib_big 
+	}
+
+	unscma5b_m1Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "unscma5b_m1Big" 
+		lib     = icon_lib_big 
+	}
+
+	unscma5b_m2Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "unscma5b_m2Big" 
+		lib     = icon_lib_big 
+	}
+
+	unscma5b_m3Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "unscma5b_m3Big" 
+		lib     = icon_lib_big 
+	}
+
+	unscma5b_m4Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "unscma5b_m4Big" 
+		lib     = icon_lib_big 
+	}
+
+	unscma5b_m5Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "unscma5b_m5Big" 
+		lib     = icon_lib_big 
+	}
+
+	unscma5b_m6Big = {
+		__type = "ui_widget_container"
+
+		symbol  = "unscma5b_m6Big" 
+		lib     = icon_lib_big 
+	}
+}
+__type = "ui_widget_lib"

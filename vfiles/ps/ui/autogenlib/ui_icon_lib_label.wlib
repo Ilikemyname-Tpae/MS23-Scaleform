@@ -1,0 +1,51 @@
+classes = {
+	accLabel_1 = {
+		__type = "ui_widget_container"
+
+		symbol  = "accLabel_1" 
+		lib     = icon_lib_label 
+	}
+
+	accLabel_2 = {
+		__type = "ui_widget_container"
+
+		symbol  = "accLabel_2" 
+		lib     = icon_lib_label 
+	}
+
+	accLabel_3 = {
+		__type = "ui_widget_container"
+
+		symbol  = "accLabel_3" 
+		lib     = icon_lib_label 
+	}
+
+	accLabel_4 = {
+		__type = "ui_widget_container"
+
+		symbol  = "accLabel_4" 
+		lib     = icon_lib_label 
+	}
+
+	accLabel_5 = {
+		__type = "ui_widget_container"
+
+		symbol  = "accLabel_5" 
+		lib     = icon_lib_label 
+	}
+
+	accLabel_6 = {
+		__type = "ui_widget_container"
+
+		symbol  = "accLabel_6" 
+		lib     = icon_lib_label 
+	}
+
+	accLabel_default = {
+		__type = "ui_widget_container"
+
+		symbol  = "accLabel_default" 
+		lib     = icon_lib_label 
+	}
+}
+__type = "ui_widget_lib"

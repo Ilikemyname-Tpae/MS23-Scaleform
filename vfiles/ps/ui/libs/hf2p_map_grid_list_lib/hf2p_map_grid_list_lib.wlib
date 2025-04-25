@@ -1,0 +1,54 @@
+classes   =   {
+   mapGridList   =   {
+      visible   =    True      customProps   =   [
+         {
+            propName   =   "width"
+            propVal   =   {
+               val   =   500
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      lir   =   {
+         __type   =   "hf2p_map_grid_list_lib::mapGridListLIR"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_map_grid_list_lib::mapGridListScrollBar"
+      }
+      __type   =   "ui_mapGridList_lib::hf2pMapGridList"
+   }
+   mapGridListLIR   =   {
+      sslClass   =   "UiMapGridListLIR"
+      sslModule   =   "ui.libs.hf2p_map_grid_list_lib.hf2p_map_grid_list_lib"
+      elements   =   {
+         imageAttach   =   {
+            __type   =   "ui_widget_image"
+         }
+      }
+      propMapping   =   {
+         textField2   =   {
+            isNoTranslate   =   True
+         }
+         text   =   {
+            mapping   =   "textField.text"
+         }
+         textClr   =   {
+            mapping   =   "textField.textColor"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "text"
+            propVal   =   {
+               val   =   "LIR_default_Text"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_mapGridList_lib::hf2pMapGridListLIR"
+   }
+   mapGridListScrollBar   =   {
+      __type   =   "ui_mapGridList_lib::hf2pMapGridListScrollBar"
+   }
+}
+__type   =   "ui_widget_lib"

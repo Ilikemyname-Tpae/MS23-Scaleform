@@ -1,0 +1,7 @@
+import ssl.lib.ui.ui_widget_container
+
+class menuGridRight_UiMain : UiWidgetContainer
+
+func OnShowGrid()
+end
+end

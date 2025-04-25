@@ -1,0 +1,128 @@
+classes = {
+	rtts_class_selection = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_class_selection" 
+		lib     = rtts_container 
+	}
+
+	rtts_consumable = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_consumable" 
+		lib     = rtts_container 
+	}
+
+	rtts_gender_selection = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_gender_selection" 
+		lib     = rtts_container 
+	}
+
+	rtts_killer_biped = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_killer_biped" 
+		lib     = rtts_container 
+	}
+
+	rtts_loadout_biped_0 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_loadout_biped_0" 
+		lib     = rtts_container 
+	}
+
+	rtts_loadout_biped_1 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_loadout_biped_1" 
+		lib     = rtts_container 
+	}
+
+	rtts_loadout_biped_2 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_loadout_biped_2" 
+		lib     = rtts_container 
+	}
+
+	rtts_loadout_biped_3 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_loadout_biped_3" 
+		lib     = rtts_container 
+	}
+
+	rtts_loadout_biped_4 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_loadout_biped_4" 
+		lib     = rtts_container 
+	}
+
+	rtts_pm_biped = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_pm_biped" 
+		lib     = rtts_container 
+	}
+
+	rtts_profile_biped = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_profile_biped" 
+		lib     = rtts_container 
+	}
+
+	rtts_scoreboard_biped = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_scoreboard_biped" 
+		lib     = rtts_container 
+	}
+
+	rtts_user_card_biped_0 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_user_card_biped_0" 
+		lib     = rtts_container 
+	}
+
+	rtts_user_card_biped_1 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_user_card_biped_1" 
+		lib     = rtts_container 
+	}
+
+	rtts_user_card_biped_2 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_user_card_biped_2" 
+		lib     = rtts_container 
+	}
+
+	rtts_weapons = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_weapons" 
+		lib     = rtts_container 
+	}
+
+	rtts_weapon_preview_0 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_weapon_preview_0" 
+		lib     = rtts_container 
+	}
+
+	rtts_weapon_preview_1 = {
+		__type = "ui_widget_container"
+
+		symbol  = "rtts_weapon_preview_1" 
+		lib     = rtts_container 
+	}
+}
+__type = "ui_widget_lib"

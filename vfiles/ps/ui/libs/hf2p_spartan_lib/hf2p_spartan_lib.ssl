@@ -1,0 +1,40 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_list_item
+
+import ssl.lib.ui.ui_widget_button
+import ssl.lib.ui.ui_widget_list
+class UiColorLir : UiWidgetListItem
+
+override SetData
+   Log("ui~colorLir", "SetData")
+   Widgets.bigPalette.colorMult := p
+   //var pp :  params
+   //pp.rMult    := (float)p.r
+   //pp.rShift   := (float)0.0
+   //pp.gMult    := (float)p.g
+   //pp.gShift   := (float)0.0
+   //pp.bMult    := (float)p.b
+   //pp.bShift   := (float)0.0
+   //pp.aMult    := (float)100.0
+   //pp.aShift   := (float)0.0
+   //Widgets.bigPallete.fullTint := pp
+end
+
+end
+
+
+class UiPaletteAssignBtn : UiWidgetContainer
+end
+
+class UiPaletteBtn : UiWidgetButton
+
+func SetBtnColor(p:params)
+   Widgets.colorPallete.cornerPalleteBig.colorMult := p
+end
+end
+
+class UiPaletteList : UiWidgetList
+
+
+end

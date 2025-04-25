@@ -1,0 +1,885 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.ui_party_monitor
+
+class UiSlidingScreens : UiWidgetContainer
+
+var   slidingElements         :  vector
+var   slidingElementsOrig     :  vector
+var   totalElems              :  int      = 0
+var   isScrolling             :  bool     = false
+var   scrollOffset            :  int      = 0
+var   scrollTime              :  float    = 0.625
+var   scrollDir               :  int      = 0
+var   firstSlide              :  bool     = true
+var   bgMaskAlpha             :  float    = 0
+var   frameAlpha              :  float    = 0   
+
+var   frameLeft               :  int      = 29
+var   frameCenter             :  int      = 44
+var   frameRight              :  int      = 59
+
+var   useScales               :  bool     = true
+var   useBtnScales            :  bool     = false
+var   fullScale               :  float    = 1.0
+var   smallScale              :  float    = 1.0
+
+var   useContentAlpha         :  bool     = true
+var   useBtnAlpha             :  bool     = false
+var   startingScreen          :  string   = $uiEnums.SLIDING_PAGE_WEAPONS
+var   prevState               :  string   = ""
+var   prevPage                :  string   = ""
+var   isShowOver              :  ObservableProperty   = $OM.Property(false)
+
+var   leftSlideBtnX           :  int      = 430
+var   rightSlideBtnX          :  int      = 1350
+var   isLooping               :  bool     = true
+
+var   flowElements            :  vector
+var   scrollFromIdx           :  int      = 0
+var   scrollToIdx             :  int      = 0
+
+var   needsSpecialCamera      :  bool     = false
+
+var   viewMode                :  string   = ""
+var   isLeavingVisibleNoFade  :  bool     = false
+
+func GetScreenIndexByName(_startingScreen: string): int
+   var   ret:  int   = -1
+   var   i  :  int   = 0
+   for i := 0 to flowElements.Count() - 1
+      var elem: params = flowElements.Get(i)
+      
+      Log("ui~content", "Test get starting index:  " + elem.name + ":: with ::" + _startingScreen)
+      if (elem.name == _startingScreen)
+         ret := i
+         break
+      end
+   end
+   return ret    
+end
+
+override SaveState //() : params
+   var ret : params   
+   
+   ret.viewMode      := viewMode
+   ret.page          := GetCurrentScreenName()
+   ret.flowelements  := flowElements
+   ret.stateName     := GetStateName()
+   
+   if (GetTotalElems() > 0)
+      if (GetCurrentSlidingElement() != null)
+         ret.pageParams := GetCurrentSlidingElementContent().SaveState()
+      end
+   end
+   
+   return ret
+end
+
+override LoadState // (p : params) : bool
+   var stateName  : string
+   if (!IsVoid(p.stateName))
+      stateName := p.stateName
+   end
+   if (stateName != "")
+      if (stateName != "Initial")         
+         if (GetStateName() == "Visible" and stateName == "Visible")
+            stateName := "VisibleNoFade"
+         end
+         
+         var pMode      : string
+         if (!IsVoid(p.viewMode))
+            var pviewMode : string = p.viewMode
+            if (pviewMode != "")
+               SetViewMode(pviewMode)         
+            end
+         end
+         if (!IsVoid(p.page))
+            var ppage : string = p.page
+            if (ppage != "")
+               SetStartPage(ppage)         
+            end
+         end
+      end
+      SetStateName(stateName)
+      
+      if (!IsVoid(p.page))
+         if (GetTotalElems() > 0)
+            if (GetCurrentSlidingElementContent() != null)
+               if (GetCurrentScreenName() == p.page)
+                  if (!IsVoid(p.pageParams))
+                     var pageParams : params = p.pageParams
+                     GetCurrentSlidingElementContent().LoadState(pageParams)
+                  end
+               end
+            end      
+         end
+      end
+   end
+   return true
+end
+
+func SwitchToScreenByName(_screenName: string)
+   var currentFlowIdx   : int    = GetCurrentFlowIndex()
+   var newScreenIdx     : int    = GetScreenIndexByName(_screenName)
+   if (!isScrolling)
+      if (newScreenIdx != -1)
+         Widgets.flowButtons.SetSelectionIdx(newScreenIdx, false)
+         //if (currentFlowIdx != newScreenIdx)
+            SlideFromTo(currentFlowIdx, newScreenIdx)
+         //end
+      end
+   else
+      isScrolling := true
+   end
+end
+
+func GetCurrentScreenParams(): params
+   var p                : params
+   var currentFlowIdx   : int    = GetCurrentFlowIndex()
+   var screenName       : string = ""
+   if (currentFlowIdx >= 0 and currentFlowIdx < flowElements.Count())
+      p := flowElements.Get(currentFlowIdx)
+   end
+   return screenName
+end
+
+func GetCurrentScreenName(): string
+   var currentFlowIdx   : int    = GetCurrentFlowIndex()
+   var screenName       : string = ""
+   if (currentFlowIdx >= 0 and currentFlowIdx < flowElements.Count())
+      screenName := flowElements.Get(currentFlowIdx).name
+   end
+   return screenName
+end
+
+func Init()
+end
+
+func HasLobbyMode() : bool
+   return true
+end
+
+func SetViewMode(_viewMode: string)
+   var needReinit : bool = viewMode != _viewMode
+   var isAnyState : bool = viewMode != ""
+   viewMode := _viewMode   
+   if (needReinit)
+      if (isAnyState)
+         HideCurrentSlide()
+      end
+      Init()
+      Reset()
+   end
+end
+
+func SetStartPage(_startingPage : string)
+   startingScreen := _startingPage   
+   if (GetStateName() == "Visible")
+      SwitchToScreenByName(startingScreen)
+   end
+end
+
+func SetViewPage(_viewMode: string, _startingPage : string)
+   SetViewMode(_viewMode)
+   SetStartPage(_startingPage)
+end
+
+func GetViewMode(): string
+   return viewMode
+end
+
+func GetInnerElement(_idx: int): UiWidget
+   return (UiWidget)GetWidget("slidingElement" + _idx)
+end
+
+func GetFlowElement(_idx: int): UiWidget
+   var flowElem: params = flowElements.Get(_idx)
+   return GetInnerElement(flowElem.idx)
+end
+
+func GetFlowElementContent(_idx: int): UiSlidingScreenPageBase
+   var flowElem: params = flowElements.Get(_idx)
+   return GetSlidingElementContent(flowElem.idx)
+end
+
+func GetSlidingElement(idx :int): UiWidget
+   return GetInnerElement(idx)
+end
+
+func GetSlidingElementContent(idx :int): UiSlidingScreenPageBase   
+   return (UiSlidingScreenPageBase)(GetSlidingElement(idx).Widgets.animatedContent.contentContainer.GetWidget("content"))
+end
+
+func Reset()
+   scrollOffset   := 0 
+   firstSlide     := true
+end
+
+func ArrangeElements(_firstTime: bool = false)
+   var elem: *   
+   if (_firstTime)
+      var i : int
+      for i := 0 to totalElems - 1
+         GetInnerElement(i).Props.visible := false
+      end
+   end
+   EnableLeftRightButtons()   
+end
+
+func EnableLeftRightButtons()
+   var isNavigation : bool = GetOffsetSlidingElement(0).Props.isNavigation
+   
+   Widgets.xleftSlideBtn.label    := GetOffsetSlidingElement(-1).Props.elemLabel
+   var isLeft := isNavigation and (isLooping or (GetCurrentElemIndex() >= 0)) and flowElements.Count() > 1
+   
+   Widgets.xrightSlideBtn.label   := GetOffsetSlidingElement(1).Props.elemLabel
+   var isRight := isNavigation and (isLooping or (GetCurrentFlowIndex() < GetTotalElems())) and flowElements.Count() > 1
+
+   ((SlidingScreensVM)GetDC()).EnableLeftRightSlideButtons(isLeft, isRight)
+end
+
+func onFlowTabButtonClicked(p: params): bool
+   Log("ui~slidingScreens", "onFlowTabButtonClicked " + (string)(p.widget.localIdx))
+   var newIdx  : int = p.newSelection
+   var prevIdx : int = p.prevSelection
+   if (! isScrolling and (newIdx != prevIdx))
+      Log("ui~slidingScreens", "Sliding_log from: " + (string)(prevIdx))
+      Log("ui~slidingScreens", "Sliding_log to: " + (string)(newIdx))
+      SlideFromTo(prevIdx, newIdx)
+   end
+   return false
+end
+
+func Slide(_dir: int)
+   SlideAnim(_dir)
+end
+
+func SlideAnim(_dir: int)
+   StartScrolling(_dir)
+end
+
+func OnEnterVisible()
+end
+
+func EnterVisible(doReset : bool)
+   Init()
+   if doReset
+      Reset()
+   end
+   
+   Widgets.xrightBtn.visible  := false
+   
+   ArrangeElements(true)
+   Log("ui~slidingScreens", "Sliding_OnEnteringState")
+   Log("ui~slidingScreens", "Sliding_OnEnteringState start screen = " + startingScreen)
+   var startingScreenIdx: int = GetScreenIndexByName(startingScreen)
+   if (startingScreenIdx >= 0)
+      Log("ui~slidingScreens", "Sliding_OnEnteringState start idx = " + (string)(startingScreenIdx))
+      //Slide(startingScreenIdx)
+      SlideFromTo(0, startingScreenIdx, 1)
+   else
+      Widgets.flowButtons.mouseEnabled  := true
+      Widgets.flowButtons.mouseChildren := true
+   end
+   OnEnterVisible()
+end
+
+handle OnEnteringState("VisibleNoFade")
+   EnterVisible(false)
+   SetScreenAlpha(100)
+   Props.alpha := 100.0
+   Set("visible", true)   
+end
+
+handle OnEnterState("VisibleNoFade")
+   isLeavingVisibleNoFade := true
+   SetStateName("Visible")
+end
+
+handle OnEnteringState("Visible")
+   if (!isLeavingVisibleNoFade)
+      EnterVisible(true)
+      
+      SetScreenAlpha(100)
+      Props.alpha := 0.0
+      AddTween("alpha", 1.0, 0.5, "linear")
+      Set("visible", true)   
+   end
+   isLeavingVisibleNoFade := false
+end
+
+func HideSlidesOverride()
+   
+end
+
+func HideSlides()
+   if (flowElements.Count() > 0)
+      var i: int
+      for i := 0 to totalElems - 1
+         DeactivateSlidingElement(i)
+      end
+   end
+   if (! firstSlide)
+      GetCurrentSlidingElement().GotoAndPlay("topDownFadeOut")
+   end 
+   HideSlidesOverride()
+end
+
+func ForceStopTweens()
+   if (isScrolling)
+      RemTweens()
+      Widgets.bgMaskDark.RemTweens()
+      Widgets.background.RemTweens()
+      Widgets.background2.RemTweens()
+      
+      scrollingTweenCBInternal("complete", 1.0)
+      
+      Props.alpha := 100.0      
+      Widgets.bgMaskDark.alpha := bgMaskAlpha
+      Widgets.background.alpha := 1.0 - bgMaskAlpha
+      Widgets.background2.alpha := 1.0 - bgMaskAlpha
+      
+      EndScrolling()
+   end   
+end
+
+func HideCurrentSlide()
+   ForceStopTweens()
+   HideSlides()
+end
+
+handle OnEnteringState("Initial")
+   isLeavingVisibleNoFade := false
+   HideSlides()
+   AddTween("alpha", 0.0, 0.25, "linear")
+   Set("visible", false) : 0.25
+end
+
+handle OnChangeState("Initial")
+   //Set("visible", false)
+   viewMode := ""
+end
+
+func OnSlideLeft(p: params): bool
+   if (! isScrolling)
+      var currentFlowIdx : int = GetCurrentFlowIndex()
+      if (currentFlowIdx > 0)
+         SlideFromTo(currentFlowIdx, currentFlowIdx - 1, -1)
+      else
+         SlideFromTo(currentFlowIdx, GetTotalElems() - 1, -1)      
+      end
+   end
+   return false
+end
+
+func OnSlideRight(p: params): bool
+   if (! isScrolling)
+      var currentFlowIdx : int = GetCurrentFlowIndex()
+      if (currentFlowIdx < GetTotalElems() - 1)
+         SlideFromTo(currentFlowIdx, currentFlowIdx + 1, 1)
+      else
+         SlideFromTo(currentFlowIdx, 0, 1)
+      end
+   end
+   return false
+end
+
+func SlideFromTo(_scrollFromIdx: int, _scrollToIdx: int, _dirOverride: int = 0)
+   if (! isScrolling)
+      scrollFromIdx  := _scrollFromIdx
+      scrollToIdx    := _scrollToIdx
+      Widgets.flowButtons.SetSelectionIdx(_scrollToIdx, false)
+      var dirOverride: int = scrollToIdx - scrollFromIdx
+      if (_dirOverride != 0)
+         dirOverride := _dirOverride
+      end
+      Log("ui~slidingScreens", "SlideFromTo from = " + (string)(_scrollFromIdx) + ", to = " + (string)(_scrollToIdx))
+      StartScrolling(dirOverride)
+   end
+end
+
+func StartScrollingOverride()
+   
+end
+
+func StartScrolling(direction: int)
+   if (isScrolling)
+      return
+   end
+      
+   Widgets.flowButtons.mouseEnabled  := false
+   Widgets.flowButtons.mouseChildren := false
+   
+   var showBg        : bool   = flowElements.Get(scrollToIdx).showBg
+   var showStarBg    : bool   = flowElements.Get(scrollToIdx).showStarBg
+   var tweenTime     : float  = 0.35
+   if (showBg)
+      bgMaskAlpha := 0.0
+   else
+      bgMaskAlpha := 1.0
+   end
+   
+   Widgets.bgMaskDark.visible := false
+   if (scrollDir != 0 or firstSlide)
+      Widgets.bgMaskDark.AddTween("alpha", bgMaskAlpha, tweenTime, "linear")
+      Widgets.background.AddTween("alpha", 1.0 - bgMaskAlpha, tweenTime, "linear")
+      Widgets.background2.AddTween("alpha", 1.0 - bgMaskAlpha, tweenTime, "linear")
+      
+      if showStarBg
+         Widgets.bgPm.AddTween("alpha", 1.0, tweenTime, "linear")
+      else
+         Widgets.bgPm.AddTween("alpha", 0.0, tweenTime, "linear")
+      end
+      
+      var showFrame  : bool   = flowElements.Get(scrollToIdx).showFrame
+      if (showFrame)
+         frameAlpha := 1.0
+      else 
+         frameAlpha := 0.0
+      end
+      GetSlidingElementTo().Widgets.animatedContent.contentBackGround.AddTween("alpha", frameAlpha, tweenTime, "linear")
+   end
+   
+   isScrolling := true
+   scrollDir   := direction   
+   
+   if (firstSlide)   
+      GetSlidingElementFrom().Props.visible := false
+      GetSlidingElementToContent().SetFocus()
+      GetSlidingElementToContent().PrepareSlide()
+      GetSlidingElementTo().Props.visible := true
+      GetSlidingElementTo().GotoAndPlay("topDownFadeIn")  
+   else
+      if (scrollDir != 0)
+         GetSlidingElementFromContent().PrepareHideSlide()
+      end
+      GetSlidingElementToContent().SetFocus()
+      GetSlidingElementToContent().PrepareSlide()
+      GetSlidingElementTo().Props.visible := true
+      if (scrollDir > 0)
+         GetSlidingElementFrom().GotoAndPlay("PopLeft_R")
+         GetSlidingElementTo().GotoAndPlay("Middle_R")                       
+      else if (scrollDir < 0)
+         GetSlidingElementFrom().GotoAndPlay("PopRight_L")
+         GetSlidingElementTo().GotoAndPlay("Middle_L")                       
+      end
+   end
+   
+   if (scrollDir != 0 or firstSlide)
+      $root.playSound("armory_screen_appear_whoosh")
+      $root.playSound("UI_Frontend_ArmoryScreenAppear_HUD")
+      
+      var tweenParm:params
+      tweenParm.propName   := "scrollVar"
+      tweenParm.startVal   := 0         
+      tweenParm.endVal     := 1
+      tweenParm.duration   := scrollTime
+      tweenParm.fadeType   := "linear"
+      AddTweenCb("scrollingTweenCB", tweenParm)
+      
+      StartScrollingOverride()
+   else
+      EndScrolling()
+   end
+   firstSlide := false
+end
+
+func EndScrolling()
+   if (! isScrolling)
+      return
+   end
+         
+   Widgets.flowButtons.mouseEnabled  := true
+   Widgets.flowButtons.mouseChildren := true
+   
+   ArrangeElements()
+   isScrolling := false
+end
+
+func scrollingTweenCB(updType : string)
+   var scrollVal : float = (float)(Props.scrollVar)   
+   scrollingTweenCBInternal(updType, scrollVal)
+end
+
+func scrollingTweenCBInternal(updType:string, val : float)
+   var scrollVal  : float = val
+   var elem       : *
+      
+   var v01  : float = scrollVal
+   var v10  : float = 1 - scrollVal
+   
+   var s01  : float = 1.0 + 0.5 * v01 * 2
+   var s10  : float = 1.5 - 0.5 * v01 * 2
+   if (s01 > 1.5)
+      s01 := 1.5
+   end
+   if (s10 < 1.0)
+      s10 := 1.0
+   end
+   
+   var v01_2 : float = v01 * 2.0
+   if (v01_2 > 1.0)
+      v01_2 := 1.0
+   end
+   var v10_2 : float = 1.0 - v01_2
+      
+   var balpha : float = 1.0
+   if (v01 <= 0.5)
+      balpha := 1.0 - 2.0 * v01
+   else
+      balpha := (v01 - 0.5) * 2.0
+   end
+   
+   var bslide: float = 0.0
+   if (scrollDir > 0)
+      if (v01 <= 0.5)
+         bslide := - 2.0 * v01
+      else
+         EnableLeftRightButtons()
+         bslide := 1.0 - (v01 - 0.5) * 2.0
+      end
+   else
+      if (v01 <= 0.5)
+         bslide := 2.0 * v01
+      else
+         bslide := - 1.0 + (v01 - 0.5) * 2.0
+         EnableLeftRightButtons()
+      end
+   end
+
+   //Log("ui~slidingScreens", "SlideFromTo time = " + (string)(scrollVal))
+   if (updType == "complete")
+      EndScrolling()
+      Widgets.xleftSlideBtn.alpha                := 100.0
+      Widgets.xrightSlideBtn.alpha               := 100.0
+      Widgets.xleftSlideBtn.x                    := leftSlideBtnX
+      Widgets.xrightSlideBtn.x                   := rightSlideBtnX
+   else
+      //Widgets.xleftSlideBtn.alpha    := balpha*100.0
+      //Widgets.xrightSlideBtn.alpha   := balpha*100.0
+      Widgets.xleftSlideBtn.x        := leftSlideBtnX  + 0 * bslide
+      Widgets.xrightSlideBtn.x       := rightSlideBtnX + 0 * bslide
+            
+      if (v01 > 0)            
+         if (useContentAlpha)
+            GetSlidingElementTo().Props.alpha   := v01_2*100.0
+         end
+         GetSlidingElementTo().Props.visible := true
+         
+         if (scrollToIdx != scrollFromIdx)
+            if (useContentAlpha)
+               GetSlidingElementFrom().Props.alpha   := v10_2*100.0
+            end
+         end
+      end
+   end
+end
+
+func SetScreenAlpha(_alpha: float)
+   Widgets.xcloseBtn.alpha        := _alpha
+   Widgets.xrightBtn.alpha        := _alpha
+   Widgets.xleftBtn.alpha         := _alpha
+   Widgets.xleftSlideBtn.alpha    := _alpha
+   Widgets.xrightSlideBtn.alpha   := _alpha
+   Widgets.flowButtons.alpha      := _alpha
+  
+  GetCurrentSlidingElement().Props.alpha := _alpha
+end
+
+func OnDialogShowTween(p: params): bool
+   var alphaParm : float = p.dialogTweenParm
+   if (GetStateName() == "Visible")
+      SetScreenAlpha(100.0 - alphaParm * 95)
+   end
+   return true
+end
+
+func GetOffsetElemIndex(_offset: int): int
+   return Widgets.flowButtons.GetSelectionOffsetData(_offset).idx
+end
+
+func GetCurrentElemIndex(): int 
+   return GetOffsetElemIndex(0)
+end
+
+func GetNextElemIndex(): int 
+   return GetOffsetElemIndex(scrollDir)
+end
+
+func PreactivateSlidingElement(_idx: int)
+   GetSlidingElementContent(_idx).PrepareSlide()
+end
+
+func DeactivateSlidingElement(_idx: int)
+   GetSlidingElementContent(_idx).DisableSlide()
+end
+
+func GetCurrentSlidingElement(): UiWidget
+   return GetSlidingElement(GetOffsetElemIndex(0))
+end
+
+func GetCurrentSlidingElementContent(): UiSlidingScreenPageBase
+   return GetSlidingElementContent(GetOffsetElemIndex(0))
+end
+
+func GetNextSlidingElement(): UiWidget
+   return GetSlidingElement(GetOffsetElemIndex(scrollDir))
+end
+
+func GetSlidingElementFrom(): UiWidget
+   return GetFlowElement(scrollFromIdx)
+end
+
+func GetSlidingElementFromContent(): UiSlidingScreenPageBase
+   return GetFlowElementContent(scrollFromIdx)
+end
+
+func GetSlidingElementTo(): UiWidget
+   return GetFlowElement(scrollToIdx)
+end
+
+func GetSlidingElementToContent(): UiSlidingScreenPageBase
+   return GetFlowElementContent(scrollToIdx)
+end
+
+func GetOffsetSlidingElement(_offset: int): UiWidget
+   return GetSlidingElement(GetOffsetElemIndex(_offset))
+end
+
+func GetTotalElems(): int
+   return Widgets.flowButtons.GetTotalElems()
+end
+
+func GetCurrentFlowIndex(): int
+   return Widgets.flowButtons.GetSelectionIdx()
+end
+
+func OnCloseSlidingScreensByBtn(p : params) : bool
+   if (GetStateName() == "Visible" and p.isOK)
+      Log("ui~slidingScreens", " CloseSlidingScreensByBtn() ")
+      var leaveWithParty : bool = false
+      if (!IsVoid(p.leaveWithParty))
+         leaveWithParty := p.leaveWithParty
+      end
+      $uiPartyMonitor.LeaveLobby(null, leaveWithParty)
+   end
+   return true
+end
+
+func SlidingScreenBlink(p : params) : bool
+   Widgets.flowButtons.StartDefaultBlinking(0.0)
+   return false
+end
+
+func IsSlidingChangingState() : bool
+   var ret : bool = false
+   ret := GetCurrentSlidingElement().IsChangingStateInProgress() or IsChangingStateInProgress()
+   return ret
+end
+
+func SlidingBaseInputEvent(p : params) : bool
+   if (p.keyCode != $uiKeys.VK_ENTER and p.keyCode != $uiKeys.VK_SPACE)
+      p.eventState.SetIsTerminated()      
+      if (!IsSlidingChangingState())
+         if (p.keyCode == $uiKeys.VK_ESC and p.isDown)
+            GenerateEvent("#OnEscClicked")
+         elif (p.keyCode == $uiKeys.VK_LEFT and ! p.isDown)
+            if (flowElements.Count() > 1)
+               //OnSlideLeft(null)
+            end
+         elif (p.keyCode == $uiKeys.VK_RIGHT and ! p.isDown)
+            if (flowElements.Count() > 1)
+               //OnSlideRight(null)
+            end
+         end
+      end
+   end
+   return false   
+end
+
+func inputEvent(p : params) : bool
+   return SlidingBaseInputEvent(p)
+end
+
+end
+
+class SlidingScreensVM
+   var wgt                    : UiSlidingScreens   = null
+   var closeButtonLabel       : ObservableProperty = $OM.Calculated(this, "GetCloseButtonLabel")
+   var isFlowButtonsVisible   : ObservableProperty = $OM.Property(true)
+   var isLeftSlideButton      : ObservableProperty = $OM.Property(false)
+   var isRightSlideButton     : ObservableProperty = $OM.Property(false)
+   var isLobbyMode            : ObservableProperty = $OM.Calculated(this, "GetIsLobbyMode")
+   var isSpartanStoreMode     : ObservableProperty = $OM.Property(false)
+   var isCloseVisible         : ObservableProperty       = $OM.Property(true)
+   var isCloseVisibleGetter   : ObservableProperty       = $OM.Calculated(this, "GetIsCloseVisibleGetter")
+   
+   func InitOverride()
+      
+   end
+   
+   func TermOverride()
+      
+   end
+   
+   func EnableLeftRightSlideButtons(isLeft : bool, isRight : bool)
+      isLeftSlideButton.Set(isLeft)
+      isRightSlideButton.Set(isRight)
+   end
+
+   func Init(p : params)
+      wgt := p.widget
+      isFlowButtonsVisible.Subscribe(this, "OnUpdateIsFlowButtonsVisible")
+      isLobbyMode.Invalidate()
+      closeButtonLabel.Invalidate()
+      InitOverride()
+   end
+   
+   func Term()
+      isFlowButtonsVisible.Unsubscribe(this, "OnUpdateIsFlowButtonsVisible")
+      TermOverride()
+   end
+   
+   func ShowHideFlowButtons(p : params) : bool
+      if (! IsVoid(p.isVisible))
+         isFlowButtonsVisible.Set((bool)p.isVisible)
+      end
+      return true
+   end
+   
+   func HasLobbyMode() : bool
+      if (wgt != null)
+         return wgt.HasLobbyMode()
+      end
+      return true
+   end
+   
+   func GetIsLobbyMode() : bool
+      var ret : bool = HasLobbyMode()
+      if (ret)
+         ret := $uiPartyMonitor.IsLeaveLobbyConfirmation()
+      end            
+   
+      return ret
+   end
+   
+   func GetIsCloseLeaveEnabled() : bool
+      var ret : bool = true
+      if (GetIsLobbyMode())
+         ret := $uiPartyMonitor.IsLeaveLobbyEnabled()
+      end
+      return ret
+   end
+   
+   func GetIsLeaveWithPartyEnabled() : bool
+      var ret : bool = false
+      if (GetIsLobbyMode() and $uiPartyMonitor.IsInParty() and $uiPartyMonitor.IsPartyOwner())
+         ret := $uiPartyMonitor.IsMatchmakingActive()
+      end
+      return ret      
+   end
+   
+   func GetCloseButtonLabel() : string
+      var ret : string = ""
+      if isSpartanStoreMode.Get() == true
+         ret := "main_btn_back"
+      elif ((bool)isLobbyMode.Get())
+         ret := "lobby_btn_leave_lobby"
+      else
+         ret := "main_btn_close"
+      end      
+      return ret
+   end
+   
+   func OnUpdateIsFlowButtonsVisible(_val : *)
+      if (wgt != null)
+         wgt.Widgets.flowButtons.ShowHide((bool)isFlowButtonsVisible.Get())
+         wgt.Widgets.xleftSlideBtn.visible   := wgt.Widgets.flowButtons.visible
+         wgt.Widgets.xrightSlideBtn.visible  := wgt.Widgets.flowButtons.visible
+      end
+   end
+   
+   global event OnSpartanStoreOpen()
+      isSpartanStoreMode.Set(true)
+   end
+   
+   func SetSlidingIsCloseVisible(p : params) : bool
+      if (! IsVoid(p.isCloseVisible))
+         isCloseVisible.Set((bool)p.isCloseVisible)
+         isCloseVisibleGetter.Invalidate()
+      end
+      return true
+   end
+   
+   func UpdateCloseBtnVisible()
+      isCloseVisibleGetter.Invalidate()
+   end
+   
+   func GetIsCloseVisibleGetter() : bool
+      var ret : bool = ((bool)isCloseVisible.Get() and (!(bool)isSpartanStoreMode.Get()) and (!(bool)$UiGlobals.techSelectView.Get())) //or 
+      return ret
+   end
+   
+   func OnEscClicked(p : params) : bool
+      if (GetIsCloseVisibleGetter())
+         OnCloseBtn(null)
+      end
+      return true
+   end
+
+   global event OnSpartanStoreClose()
+      isSpartanStoreMode.Set(false)
+   end
+   
+   func OnCloseBtnHandler(leaveWithParty : bool) : bool
+      if (wgt != null and wgt.GetStateName() == "Visible")
+         if ((bool)isLobbyMode.Get())
+            var pp:params
+            pp.mbType            := $uiEnums.MB_TYPE_NO_YES
+            pp.callbackEvent     := "CloseSlidingScreensByBtn"
+            pp.callbackTarget    := wgt.Props
+            pp.leaveWithParty    := leaveWithParty
+            if ($UserDataStorage.local_user.IsInParty())
+               if ($UserDataStorage.local_user.IsPartyLeader())
+                  pp.titleTxt    := "msg_leader_leave_party_hdr"
+                  pp.messageTxt  := "msg_leader_leave_party_txt"
+               else
+                  pp.titleTxt    := "msg_leave_party_hdr"
+                  pp.messageTxt  := "msg_leave_party_txt"
+               end
+            else
+               pp.titleTxt       := "lobby_leave_lobby_title"
+               pp.messageTxt     := "lobby_do_you_really_exit"
+            end
+            pp.isSaveFocus       := true
+            wgt.GenerateEvent("MainMenuDialogRequest", pp)   
+         else
+            var curScreenWgt : UiSlidingScreenPageBase   = wgt.GetCurrentSlidingElementContent()
+            if (curScreenWgt.HasConfirmationOnClose())
+               curScreenWgt.OnCloseConfirmation(CreateFuncPtr(this, "OnConfirmationAgreed"))
+            else
+               if (wgt.HasLobbyMode())
+                  $root.UiLog("--- LeaveParty From sliding --- ")
+                  $uiPartyMonitor.LeaveParty()
+               end
+               wgt.GenerateEvent("closeSlidingScreens")
+            end
+         end
+      end
+      return true
+   end
+   
+   func OnCloseBtn(p:params) : bool
+      Log("ui~hf2p_Sliding_Screen", "Sliding_Screen OnCloseBtn()")
+      return OnCloseBtnHandler(false)
+   end
+   
+   func OnCloseBtnWithParty(p:params) : bool
+      return OnCloseBtnHandler(true)
+   end
+   
+   func OnConfirmationAgreed()
+      wgt.GenerateEvent("closeSlidingScreens")
+   end
+end

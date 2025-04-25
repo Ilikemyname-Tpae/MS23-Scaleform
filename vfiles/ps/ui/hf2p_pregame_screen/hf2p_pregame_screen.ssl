@@ -1,0 +1,291 @@
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.ui_globals
+import ssl.hf2p.ui_ingame
+import ui.hf2p_SlidingScreens.hf2p_challenges_screen.hf2p_challengeProgressPopup
+import ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib
+
+class UiPreGameScreen : UiWidgetContainer
+
+var isSubscribed : bool = false
+
+func onLoadoutSelected(p: params): bool
+   //SetStateName("Waiting")
+
+   return true
+end
+
+handle OnChangeStateAny // ()
+   if (IsBindingsActivated())
+      GetDC().HandleStateChange()
+   end
+end
+
+func loadoutChoiceClickPregame(p: params): bool
+   if (GetStateName() == "Waiting")
+      SetStateName("Loadout")
+   end
+
+   return true
+end
+
+handle OnEnteringState("Initial")
+   Widgets.waitingInfo.visible       := false
+   Widgets.scoreboardScreen.SetStateName("Initial")
+   Widgets.scoreboardScreen.visible  := false
+   Widgets.loadoutScreen.visible     := false
+end
+
+handle OnEnteringState("WaitingForPlayers") 
+   Widgets.scoreboardScreen.visible := true
+   Widgets.scoreboardScreen.SetStateName("PreGameVisible")
+   Widgets.waitingInfo.visible := false //true //temporary hidden
+end
+
+handle OnExitState("WaitingForPlayers")
+   Widgets.scoreboardScreen.visible := false
+   Widgets.waitingInfo.visible := false
+end
+
+handle OnEnteringState // (name : string)
+   if (name != "Initial")
+      Props.visible := true
+   end
+end
+
+handle OnEnterState // (name : string)
+   if (name == "Initial")
+      Props.visible := false
+   end
+end
+
+func GetTeamIdx() : int
+   return (int)$UiIngame.team_index.Get()
+   //return $uiEnums.PLAYER_TEAM_RED
+end
+
+handle OnEnteringState("GameMode") 
+   var local_team : int    = GetTeamIdx()
+   var teamMode   : bool   = local_team > $uiEnums.PLAYER_TEAM_NONE
+   var iconName   : string 
+   var iconScale  : float  = 0.625
+
+   var modeUIcomp : GL_ComponentUI = (GL_ComponentUI)($UiGlobals.componentsUI.Get($UiIngame.game_mode_id.Get()))
+   Widgets.gameMode.visible := true         
+   Widgets.gameMode.head    := (string)(modeUIcomp.name.Get())
+   Widgets.gameMode.desc    := (string)(modeUIcomp.desc.Get())
+   if (local_team == $uiEnums.PLAYER_TEAM_RED and teamMode)        
+      Widgets.gameMode.container.SetStateName("red")
+   else
+      Widgets.gameMode.container.SetStateName("blue")
+   end   
+
+   iconName := (string)modeUIcomp.icon.Get()
+   Widgets.gameMode.container.gameModeAttach.pic := iconName
+   Widgets.gameMode.container.gameModeAttach.scaleX := iconScale
+   Widgets.gameMode.container.gameModeAttach.scaleY := iconScale
+   Widgets.gameMode.container.gameModeAttach.visible := true
+end
+
+handle OnEnterState("GameMode") 
+   var local_team : int    = GetTeamIdx()
+   var teamMode   : bool   = local_team > $uiEnums.PLAYER_TEAM_NONE
+   if (teamMode)
+      SetStateName("Team") : 5
+   end
+end
+
+handle OnExitState("GameMode")
+   Widgets.gameMode.visible := false
+   Widgets.gameMode.container.gameModeAttach.visible := false
+end
+
+handle OnEnteringState("Team")          
+   var local_team : int = GetTeamIdx()
+   if (local_team == $uiEnums.PLAYER_TEAM_RED)
+      Widgets.localTeam.bckg.bg.SetStateName("red")
+      Widgets.localTeam.text    := "ingame_team_notice_red"
+   else
+      Widgets.localTeam.bckg.bg.SetStateName("blue")
+      Widgets.localTeam.text    := "ingame_team_notice_blue"
+   end
+   Widgets.localTeam.visible := true
+end
+
+handle OnExitState("Team")
+   Widgets.localTeam.visible := false
+end
+
+handle OnEnteringState("Waiting")
+   Widgets.choiceLoadoutBtnPregame.visible := false //true
+   Widgets.loadoutScreen.visible := false //true
+end
+
+handle OnLeavingState("Waiting")
+   Widgets.choiceLoadoutBtnPregame.visible := false
+   Widgets.loadoutScreen.visible := false
+end
+end
+
+class UiPreGameScreenVM
+   var wgt              : UiWidget           = null
+   var isTimerVisible   : ObservableProperty = $OM.Property(false)
+   var desiredState     : string             = ""
+   
+
+   func Init(p : params)
+      wgt := p.widget 
+      $UiIngame.state.Subscribe(this, "UpdatePregameState")
+      UpdatePregameState()
+   end
+   
+   func Term()
+      $UiIngame.state.Unsubscribe(this, "UpdatePregameState")      
+   end
+   
+   func GetTimeLeftInt() : int
+      var timerVal   : int    = (int)$UiIngame.state_timer.Get()
+      var ret        : int    = -1
+      if (timerVal >= 0)
+         ret := timerVal
+         if (timerVal <= 2)
+            if ((bool)isTimerVisible.Get())
+               $root.playSound("mp_timer")   
+            end
+         end
+      end
+      return ret
+   end   
+
+   func GetTimeLeft() : string
+      var ret : string = (string)(GetTimeLeftInt() + 1)
+      return ret
+   end
+   
+   func IsTimerVisible() : bool
+      var ret : bool = (bool)isTimerVisible.Get() and GetTimeLeftInt() >= 0
+      return ret
+   end
+   
+   func UpdatePregameState()
+      var pregameStat : int = (int)$UiIngame.state.Get()
+      if (wgt != null)
+         var newState            : string = "Initial"
+         var isTimerVisibleSet   : bool   = false
+         if (pregameStat == $uiEnums.INGAME_STATE_NONE)
+            Log("ui~hf2p_pregame", "pregame_state_NONE")
+            newState := "Initial"
+         elif (pregameStat == $uiEnums.INGAME_STATE_WAITING_FOR_PLAYERS)
+            $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_PREMATCH)
+            Log("ui~hf2p_pregame", "pregame_state_WAITING_PLAYERS")
+            newState := "WaitingForPlayers"
+            //$UiIngame.upcomingChallenges.state.Set("hidden")
+         elif (pregameStat == $uiEnums.INGAME_STATE_MATCH_INTRODUCTION)
+            Log("ui~hf2p_pregame", "pregame_state_MATCH_INTRO")
+            isTimerVisibleSet := true
+            newState := "GameMode"
+            //$UiIngame.upcomingChallenges.state.Set("fadeIn")
+         elif (pregameStat == $uiEnums.INGAME_STATE_LOADOUT_SELECTION_INITIAL)
+            Log("ui~hf2p_pregame", "pregame_state_LOADOUT")
+            isTimerVisibleSet := true
+            newState := "Loadout"
+            //$UiIngame.upcomingChallenges.state.Set("fadeOut")
+         elif (pregameStat == $uiEnums.INGAME_STATE_HUD)
+            Log("ui~hf2p_pregame", "pregame_state_HUD")
+            newState := "Initial"
+            //$UiIngame.upcomingChallenges.state.Set("hidden")
+         else
+            Log("ui~hf2p_pregame", "pregame_state_INITAL")
+            newState := "Initial"
+            //$UiIngame.upcomingChallenges.state.Set("hidden")
+         end
+         
+         isTimerVisible.Set(isTimerVisibleSet)
+         if (wgt.IsChangingStateInProgress())
+            desiredState := newState
+         else
+            desiredState := ""
+            wgt.SetStateName(newState)
+         end
+      end
+   end
+   
+   func HandleStateChange()
+      if (desiredState != "")
+         var newState : string = desiredState
+         desiredState := ""
+         wgt.SetStateName(newState)
+      end
+   end
+   
+end
+
+class UpcomingChallengesVM
+   var upcomingChallenges : ObservableProperty = $OM.Calculated(this, "GetUpcomingChallenges")
+   var challengesState  : ObservableProperty = $OM.Property("hidden")
+
+   func GetUpcomingChallenges() : vector
+      return $UiGlobals.GetUpcomingChallenges()
+   end
+   
+   func IsChallengeBooster() : bool
+      return $uiEconomy.HasChallengeBooster()
+   end
+   
+   func GetUpcomingChallenge(idx : int) : *
+      if upcomingChallenges.Get().Count() > idx
+         return upcomingChallenges.Get().Get(idx)
+      end
+      return null
+   end
+   
+   func GetUpcomingChallengeCount() : int
+      var ret : int = (int)upcomingChallenges.Get().Count()
+      if ret > 3
+         ret := 3
+      end
+      return ret
+   end
+   
+   //global event uiDbgKey4()
+   //   challengesState.Set("fadeIn")
+   //end
+   
+   //global event uiDbgKey5()
+   //   challengesState.Set("fadeOut")
+   //end
+end
+
+class PregameChallengeVM : ChallengeProgressVM
+   
+   func Init(p : params)
+      if IsValid(p.challenge) and IsValid(p.challenge.itemId)
+         InitVM(p.challenge.itemId, p.challenge.challengeId, p.challenge.rank)
+      else
+         InitVM("", "", -1)
+      end
+   end
+   
+end
+
+class PregameChallenge : UiWidgetContainer
+   
+   handle OnEnterState("Initial")
+      var a = 0
+      a := 1
+      a := 2
+   end
+
+   handle OnEnterState("Waiting")                  
+   end
+   
+   handle OnEnteringState("AnimIn")
+   end
+
+   handle OnEnterState("AnimIn")                  
+   end
+
+   handle OnEnterState("AnimOut")
+   end
+   
+end

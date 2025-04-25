@@ -1,0 +1,312 @@
+classes = {
+	leftPanelContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "leftPanelContainer" 
+		lib     = podium_lib 
+
+		elements {
+			topLeftPanel {
+				__type = "ui_widget_container"
+
+				x         = -960
+				y         = -540
+
+				elements {
+					nameplateAttach {
+						__type = "ui_widget_container"
+
+						x         = 52
+						y         = 10
+					} 
+					loadoutAttach {
+						__type = "ui_widget_container"
+
+						x         = 27
+						y         = 77
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	PodiumContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "PodiumContainer" 
+		lib     = podium_lib 
+
+		elements {
+			firstPlaceAnimContainer {
+				__type = "ui_widget_container"
+
+				x         = 472
+				y         = 58
+
+				elements {
+					nicknameTfContainer {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 9.6
+						y         = 0.85
+						scaleX    = 1.225
+						scaleY    = 1.225
+						animated  = true
+					} 
+					scoreContainer {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 78.55
+						y         = 107
+						animated  = true
+					} 
+					bg {
+						__type = "ui_widget_container"
+
+						x         = -59.75
+						y         = -26.1
+						scaleX    = 1.225
+						scaleY    = 1.225
+
+						elements {
+							podiumAttach {
+								__type = "ui_widget_container"
+
+								x         = 175
+								y         = 65
+							} 
+						}
+						animated  = true
+					} 
+				}
+			} 
+			secondPlaceAnimContainer {
+				__type = "ui_widget_container"
+
+				x         = 935
+				y         = 136
+
+				elements {
+					scoreContainer {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 86.1
+						y         = 113.95
+						scaleX    = 1.243
+						scaleY    = 1.243
+						animated  = true
+					} 
+					nicknameTfContainer {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -27.95
+						y         = 13.05
+						animated  = true
+					} 
+					bg {
+						__type = "ui_widget_container"
+
+						x         = -220
+						y         = 0
+
+						elements {
+							podiumAttach {
+								__type = "ui_widget_container"
+
+								x         = 183
+								y         = 55
+							} 
+						}
+						animated  = true
+					} 
+				}
+			} 
+			thirdPlaceAnimContainer {
+				__type = "ui_widget_container"
+
+				x         = -37
+				y         = 113
+
+				elements {
+					nicknameTfContainer {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 368.05
+						y         = 37
+						animated  = true
+					} 
+					scoreContainer {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 356.05
+						y         = 134.9
+						scaleX    = 1.2433
+						scaleY    = 1.2433
+						animated  = true
+					} 
+					bg {
+						__type = "ui_widget_container"
+
+						x         = 220
+						y         = 0
+
+						elements {
+							podiumAttach {
+								__type = "ui_widget_container"
+
+								x         = 208
+								y         = 81
+							} 
+						}
+						animated  = true
+					} 
+				}
+			} 
+		}
+	}
+
+	PodiumPlayerEmbelm = {
+		__type = "ui_widget_image"
+
+		symbol  = "PodiumPlayerEmbelm" 
+		lib     = podium_lib 
+	}
+
+	rightPanelContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "rightPanelContainer" 
+		lib     = podium_lib 
+
+		elements {
+			meleeContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+					tfName = {
+						mapping = "tfName.text"
+					}
+				}
+				x         = 524.5
+				y         = -195.5
+
+				elements {
+					melee_panel {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			headshotsContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 524.5
+				y         = -302.5
+
+				elements {
+					headshots_panel {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			assistsContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 524.5
+				y         = -409.5
+
+				elements {
+					assists_panel {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			killsContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 524.5
+				y         = -516.5
+
+				elements {
+					kills_panel {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

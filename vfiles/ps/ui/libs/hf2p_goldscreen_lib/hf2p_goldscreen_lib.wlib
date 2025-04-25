@@ -1,0 +1,308 @@
+classes   =   {
+   gpBackBtn   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "closeGoldScreen"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::hf2pPanelLeftBtn"
+   }
+   gp_BG   =   {
+      __type   =   "ui_menu_lib::goldBG"
+   }
+   gp_Box   =   {
+      sslClass   =   "UiGpBox"
+      sslModule   =   "ui.libs.hf2p_GoldScreen_lib.hf2p_GoldScreen_lib"
+      elements   =   {
+         tfHeadBuyGold   =   {
+            bindings   =   {
+               tfHead   =   {
+                  binding   =   "{'main_buy_gold_screen'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         goldSlot5   =   {
+            customProps   =   [
+               {
+                  propName   =   "slotIdx"
+                  propVal   =   {
+                     val   =   5
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_GoldScreen_lib::goldSlot"
+         }
+         goldSlot1   =   {
+            customProps   =   [
+               {
+                  propName   =   "slotIdx"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_GoldScreen_lib::goldSlot"
+         }
+         goldSlot2   =   {
+            customProps   =   [
+               {
+                  propName   =   "slotIdx"
+                  propVal   =   {
+                     val   =   2
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_GoldScreen_lib::goldSlot"
+         }
+         goldSlot3   =   {
+            customProps   =   [
+               {
+                  propName   =   "slotIdx"
+                  propVal   =   {
+                     val   =   3
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_GoldScreen_lib::goldSlot"
+         }
+         goldSlot4   =   {
+            customProps   =   [
+               {
+                  propName   =   "slotIdx"
+                  propVal   =   {
+                     val   =   4
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_GoldScreen_lib::goldSlot"
+         }
+      }
+      __type   =   "ui_menu_lib::hf2pGoldContainer"
+   }
+   gp_BuyGold   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "openGoldScreen"
+         }
+      }
+      elements   =   {
+         itemCont   =   {
+            pic   =   "goldIcon"
+            __type   =   "ui_widget_image"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            this   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "menu_select_weapon"
+                  }
+               }
+            }
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "label"
+            propVal   =   {
+               val   =   "main_button_buy_gold"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      label   =   "main_button_buy_gold"
+      __type   =   "ui_menu_lib::hf2pPanelTileGold"
+   }
+   gp_headerBig   =   {
+      propMapping   =   {
+         text   =   {
+            mapping   =   "textField.text"
+         }
+      }
+      __type   =   "ui_menu_lib::headerBig"
+   }
+   goldSlot   =   {
+      sslClass   =   "UiGoldSlot"
+      sslModule   =   "ui.libs.hf2p_GoldScreen_lib.hf2p_GoldScreen_lib"
+      handlers   =   {
+         PurchaseGoldPoints   =   {
+            handlerName   =   "#OnPurchaseGoldPoints"
+         }
+         UpdateGoldPage   =   {
+            handlerName   =   "#OnUpdateGoldPage"
+         }
+      }
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#OnAddGoldPoint"
+         }
+      }
+      elements   =   {
+         highlightContGold   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isSuperGlow}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         highlightGold   =   {
+            elements   =   {
+               goldPulsing   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{isGlow}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgBoostIcon   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetGoldIcon()}"
+               }
+            }
+            __type   =   "ui_menu_lib::attachPoint"
+         }
+         tfRealMoney   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{priceTxt}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfOldPriceOld   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{priceOldTxt}"
+               }
+               visible   =   {
+                  binding   =   "{isSale}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfHeadGold   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{name}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         headerCont   =   {
+            elements   =   {
+               tfGold   =   {
+                  bindings   =   {
+                     tfGp   =   {
+                        binding   =   "{amountTxt}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{amountFrame}"
+               }
+            }
+            __type   =   "ui_menu_lib::headCont"
+         }
+         tfBonusGold   =   {
+            propMapping   =   {
+               tfHtml   =   {
+                  mapping   =   "tf.htmlText"
+               }
+            }
+            bindings   =   {
+               tfHtml   =   {
+                  binding   =   "{bonusTxt}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         lineGoldBonus   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isBonus}"
+               }
+               frame   =   {
+                  binding   =   "{bonusLineFrame}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         angleLeft   =   {
+            elements   =   {
+               tfBestBuyGold   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{'main_gold_best_value'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isBestOffer}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         angleRight   =   {
+            elements   =   {
+               tfSaleBuyGold   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{saleTxt}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isSale}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgGoldLine   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isGlow}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_GoldScreen_lib.hf2p_GoldScreen_lib.BuyGoldVM', slotIdx = (:slotIdx)}"
+         }
+         focusable   =   {
+            binding   =   "{false}"
+         }
+         enabled   =   {
+            binding   =   "{isEnabled}"
+         }
+         visible   =   {
+            binding   =   "{isVisible}"
+         }
+      }
+      __type   =   "ui_menu_lib::hf2pSlotContainer"
+   }
+}
+__type   =   "ui_widget_lib"

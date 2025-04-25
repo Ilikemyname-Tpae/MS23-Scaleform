@@ -1,0 +1,155 @@
+classes = {
+	LobbyLirSeparatorBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "LobbyLirSeparatorBg" 
+		lib     = nameplate_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	lobby_rosterLIRright = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "lobby_rosterLIRright" 
+		lib     = nameplate_lib 
+		propMapping {
+			tfNickname = {
+				mapping = "tfNickname.text"
+			}
+			tfClanTag = {
+				mapping = "tfClanTag.text"
+			}
+		}
+
+		elements {
+			separatorBg {
+				__type = "ui_nameplate_lib::LobbyLirSeparatorBg"
+				x         = 0
+				y         = 0
+			} 
+			rankIcon {
+				__type = "ui_nameplate_lib::nameplate_attachPoint"
+				x         = 240.75
+				y         = 3.5
+				scaleX    = 0.5
+				scaleY    = 0.5
+			} 
+			iconAttach {
+				__type = "ui_nameplate_lib::nameplate_attachPoint"
+				x         = 1
+				y         = 5
+				scaleX    = 0.3
+				scaleY    = 0.3
+			} 
+			partyLeaderIcon {
+				__type = "ui_widget_container"
+
+				x         = 242.25
+				y         = 28.5
+			} 
+			rankValue {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 258.25
+				y         = 37.7
+			} 
+			partyStatus {
+				__type = "ui_widget_container"
+
+				x         = -2.65
+				y         = 0
+				scaleX    = 0.1351
+				scaleY    = 0.9821
+			} 
+			bgOver {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+
+				elements {
+					addTextfield {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 45.75
+						y         = 14.95
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+
+				elements {
+					addTextfield {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 45.75
+						y         = 14.95
+						animated  = true
+					} 
+				}
+			} 
+			bgHighlightCont {
+				__type = "ui_widget_container"
+
+				x         = -0.25
+				y         = -0.25
+
+				elements {
+					bgHighlightAttach {
+						__type = "ui_nameplate_lib::nameplate_attachPoint"
+						x         = 0.25
+						y         = 0.25
+					} 
+				}
+				animated  = true
+			} 
+			bgAttach {
+				__type = "ui_nameplate_lib::nameplate_attachPoint"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	nameplate_attachPoint = {
+		__type = "ui_widget_image"
+
+		symbol  = "nameplate_attachPoint" 
+		lib     = nameplate_lib 
+
+		elements {
+			placeHolder {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

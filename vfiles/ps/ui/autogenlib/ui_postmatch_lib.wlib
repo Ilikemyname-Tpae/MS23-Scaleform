@@ -1,0 +1,1808 @@
+classes = {
+	attachPoint = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachPoint" 
+		lib     = postmatch_lib 
+
+		elements {
+			placeHolder {
+				__type = "ui_postmatch_lib::placeHolderContent"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	backgroundBooster = {
+		__type = "ui_widget_container"
+
+		symbol  = "backgroundBooster" 
+		lib     = postmatch_lib 
+	}
+
+	bgSuper = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgSuper" 
+		lib     = postmatch_lib 
+	}
+
+	challengeListCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengeListCont" 
+		lib     = postmatch_lib 
+
+		elements {
+			list {
+				__type = "ui_postmatch_lib::ItemChallengesList"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	challengesAnimationNew = {
+		__type = "ui_widget_container"
+
+		symbol  = "challengesAnimationNew" 
+		lib     = postmatch_lib 
+
+		elements {
+			animationNew {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	consecutive = {
+		__type = "ui_widget_container"
+
+		symbol  = "consecutive" 
+		lib     = postmatch_lib 
+
+		elements {
+			bar0 {
+				__type = "ui_postmatch_lib::consecutiveBarProgress"
+				x         = 0
+				y         = 18
+				animated  = true
+			} 
+			bar1 {
+				__type = "ui_postmatch_lib::consecutiveBarProgress"
+				x         = 71.4
+				y         = 13
+				scaleX    = 1
+				scaleY    = 1.625
+				animated  = true
+			} 
+			bar2 {
+				__type = "ui_postmatch_lib::consecutiveBarProgress"
+				x         = 142.85
+				y         = 8
+				scaleX    = 1
+				scaleY    = 2.2524
+				animated  = true
+			} 
+			bar3 {
+				__type = "ui_postmatch_lib::consecutiveBarProgress"
+				x         = 214.2
+				y         = 3
+				scaleX    = 1
+				scaleY    = 2.873
+				animated  = true
+			} 
+			bar4 {
+				__type = "ui_postmatch_lib::consecutiveBarProgress"
+				x         = 285.85
+				y         = -2
+				scaleX    = 1
+				scaleY    = 3.5026
+				animated  = true
+			} 
+			tfConsecutiveXp0 {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 0
+				y         = 29.25
+				animated  = true
+			} 
+			tfConsecutiveXp1 {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 71.4
+				y         = 29
+				animated  = true
+			} 
+			tfConsecutiveXp2 {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 142.85
+				y         = 29
+				animated  = true
+			} 
+			tfConsecutiveXp3 {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 214.35
+				y         = 29
+				animated  = true
+			} 
+			tfConsecutiveXp4 {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 285.85
+				y         = 29
+				animated  = true
+			} 
+		}
+	}
+
+	consecutiveBarProgress = {
+		__type = "ui_widget_container"
+
+		symbol  = "consecutiveBarProgress" 
+		lib     = postmatch_lib 
+	}
+
+	consecutivePanel = {
+		__type = "ui_widget_container"
+
+		symbol  = "consecutivePanel" 
+		lib     = postmatch_lib 
+
+		elements {
+			consecutiveBar {
+				__type = "ui_postmatch_lib::consecutive"
+				x         = 402.8
+				y         = 2
+				animated  = true
+			} 
+		}
+	}
+
+	glowBooster = {
+		__type = "ui_widget_container"
+
+		symbol  = "glowBooster" 
+		lib     = postmatch_lib 
+	}
+
+	gridCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "gridCont" 
+		lib     = postmatch_lib 
+
+		elements {
+			m1 {
+				__type = "ui_widget_container"
+
+				x         = 13.5
+				y         = -19.25
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m2 {
+				__type = "ui_widget_container"
+
+				x         = 128.95
+				y         = -19.25
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m3 {
+				__type = "ui_widget_container"
+
+				x         = 244.4
+				y         = -19.25
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m4 {
+				__type = "ui_widget_container"
+
+				x         = 359.85
+				y         = -19.25
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m7 {
+				__type = "ui_widget_container"
+
+				x         = 128.95
+				y         = 104.05
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m8 {
+				__type = "ui_widget_container"
+
+				x         = 244.4
+				y         = 104.05
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m9 {
+				__type = "ui_widget_container"
+
+				x         = 359.85
+				y         = 104.05
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m10 {
+				__type = "ui_widget_container"
+
+				x         = 475.25
+				y         = 104.05
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m5 {
+				__type = "ui_widget_container"
+
+				x         = 475.25
+				y         = -19.25
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+			m6 {
+				__type = "ui_widget_container"
+
+				x         = 13.5
+				y         = 104.05
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf2 = {
+								mapping = "tf2.text"
+							}
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -14
+						y         = 90
+						animated  = true
+					} 
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 41
+						y         = 51
+						scaleX    = 0.65
+						scaleY    = 0.65
+						animated  = true
+					} 
+				}
+			} 
+		}
+	}
+
+	headStatCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "headStatCont" 
+		lib     = postmatch_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	hf2p_pm_bonus_XP_gain = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_bonus_XP_gain" 
+		lib     = postmatch_lib 
+
+		elements {
+			counter {
+				__type = "ui_postmatch_lib::saber_ui_controls_CounterLabel"
+				x         = 807.75
+				y         = 149.7
+				scaleX    = 1.489
+				scaleY    = 1.489
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_Chip_popup = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_Chip_popup" 
+		lib     = postmatch_lib 
+
+		elements {
+			iconCont {
+				__type = "ui_widget_container"
+
+				propMapping {
+					lvl = {
+						mapping = "lvl.text"
+					}
+				}
+				x         = 310.05
+				y         = -46.55
+				scaleX    = 2.9244
+				scaleY    = 2.9244
+
+				elements {
+					attach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 0
+						y         = 0
+						scaleX    = 0.7
+						scaleY    = 0.7
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_credits_gain = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_credits_gain" 
+		lib     = postmatch_lib 
+
+		elements {
+			counter {
+				__type = "ui_postmatch_lib::saber_ui_controls_CounterLabel"
+				x         = 810.85
+				y         = 147.05
+				scaleX    = 1.5001
+				scaleY    = 1.5001
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_defeat = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_defeat" 
+		lib     = postmatch_lib 
+
+		elements {
+			defeatHeader {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = -183.45
+				y         = 439.15
+				scaleX    = 5.3119
+				scaleY    = 5.3119
+				animated  = true
+			} 
+			descV {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 506.25
+				y         = 664.45
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_end_of_round_module = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_end_of_round_module" 
+		lib     = postmatch_lib 
+	}
+
+	hf2p_pm_level_up = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_level_up" 
+		lib     = postmatch_lib 
+
+		elements {
+			lvlCont2 {
+				__type = "ui_postmatch_lib::LevelUpRewardContainer"
+				x         = 1042.1
+				y         = 802.35
+				animated  = true
+			} 
+			lvlCont1 {
+				__type = "ui_postmatch_lib::LevelUpRewardContainer"
+				x         = 620.1
+				y         = 802.35
+				animated  = true
+			} 
+			lvlCont0 {
+				__type = "ui_postmatch_lib::LevelUpRewardContainer"
+				x         = 200.1
+				y         = 802.35
+				animated  = true
+			} 
+			rankIconAttach2 {
+				__type = "ui_postmatch_lib::rankIconAttachMedal"
+				x         = 868.2
+				y         = 226.05
+				animated  = true
+			} 
+			rankIconAttach {
+				__type = "ui_postmatch_lib::rankIconAttachMedal"
+				x         = 868.2
+				y         = 226.05
+				animated  = true
+			} 
+			rankNameNew {
+				__type = "ui_postmatch_lib::rank_name_header"
+				x         = 576.1
+				y         = 399.3
+				animated  = true
+			} 
+			rankNameCurrent {
+				__type = "ui_postmatch_lib::rank_name_header"
+				x         = 576.1
+				y         = 399.3
+				animated  = true
+			} 
+			newLevelText {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 576.1
+				y         = 157.25
+				animated  = true
+			} 
+			bigLevelText {
+				__type = "ui_widget_container"
+
+				x         = 662.15
+				y         = 466.15
+				animated  = true
+			} 
+			levelUpHeader2 {
+				__type = "ui_postmatch_lib::level_up_header"
+				x         = 532.75
+				y         = 568.35
+				scaleX    = 1.9793
+				scaleY    = 1.9793
+				animated  = true
+			} 
+			levelUpHeader {
+				__type = "ui_postmatch_lib::level_up_header"
+				x         = 532.75
+				y         = 568.35
+				scaleX    = 1.9793
+				scaleY    = 1.9793
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_level_up_new = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_level_up_new" 
+		lib     = postmatch_lib 
+
+		elements {
+			lvlCont0 {
+				__type = "ui_postmatch_lib::LevelUpRewardContainer"
+				x         = 232
+				y         = 802.35
+				animated  = true
+			} 
+			lvlCont1 {
+				__type = "ui_postmatch_lib::LevelUpRewardContainer"
+				x         = 620.1
+				y         = 802.35
+				animated  = true
+			} 
+			lvlCont2 {
+				__type = "ui_postmatch_lib::LevelUpRewardContainer"
+				x         = 1010.2
+				y         = 802.35
+				animated  = true
+			} 
+			rankIconAttach2 {
+				__type = "ui_postmatch_lib::rankIconAttachMedal"
+				x         = 868.2
+				y         = 226.05
+				animated  = true
+			} 
+			rankIconAttach {
+				__type = "ui_postmatch_lib::rankIconAttachMedal"
+				x         = 868.2
+				y         = 226.05
+				animated  = true
+			} 
+			rankNameNew {
+				__type = "ui_postmatch_lib::rank_name_header"
+				x         = 576.1
+				y         = 399.3
+				animated  = true
+			} 
+			rankNameCurrent {
+				__type = "ui_postmatch_lib::rank_name_header"
+				x         = 576.1
+				y         = 399.3
+				animated  = true
+			} 
+			newLevelText {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 576.1
+				y         = 157.25
+				animated  = true
+			} 
+			bigLevelText {
+				__type = "ui_widget_container"
+
+				x         = 662.15
+				y         = 466.15
+				animated  = true
+			} 
+			levelUpHeader2 {
+				__type = "ui_postmatch_lib::level_up_header"
+				x         = 532.75
+				y         = 568.35
+				scaleX    = 1.9793
+				scaleY    = 1.9793
+				animated  = true
+			} 
+			levelUpHeader {
+				__type = "ui_postmatch_lib::level_up_header"
+				x         = 532.75
+				y         = 568.35
+				scaleX    = 1.9793
+				scaleY    = 1.9793
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_RandomDrop_new = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_RandomDrop_new" 
+		lib     = postmatch_lib 
+	}
+
+	hf2p_pm_random_drop = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_random_drop" 
+		lib     = postmatch_lib 
+
+		elements {
+			randomDropItem {
+				__type = "ui_widget_container"
+
+				propMapping {
+					message = {
+						mapping = "message.text"
+					}
+					desc = {
+						mapping = "desc.text"
+					}
+				}
+				x         = -1401.55
+				y         = 318.1
+				scaleX    = 7.3558
+				scaleY    = 9.0566
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_statsBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_statsBg" 
+		lib     = postmatch_lib 
+
+		elements {
+			statCont {
+				__type = "ui_postmatch_lib::listCont"
+				x         = 65.8
+				y         = 120
+				animated  = true
+			} 
+			statTf {
+				__type = "ui_postmatch_lib::headStatCont"
+				x         = 64
+				y         = 17
+				animated  = true
+			} 
+			subHeadCont {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfXp = {
+						mapping = "tfXp.text"
+					}
+					tfSum = {
+						mapping = "tfSum.text"
+					}
+				}
+				x         = 66.8
+				y         = 73.8
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_unlock = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_unlock" 
+		lib     = postmatch_lib 
+
+		elements {
+			unlockCont {
+				__type = "ui_postmatch_lib::ItemFoundContainer"
+				x         = 764.15
+				y         = 616.35
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_victory = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_victory" 
+		lib     = postmatch_lib 
+
+		elements {
+			victoryHeader {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = -183.45
+				y         = 439.15
+				scaleX    = 5.3119
+				scaleY    = 5.3119
+				animated  = true
+			} 
+			descV {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 506.25
+				y         = 664.45
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_victory_challenge = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_victory_challenge" 
+		lib     = postmatch_lib 
+	}
+
+	hf2p_pm_victory_gray = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_victory_gray" 
+		lib     = postmatch_lib 
+
+		elements {
+			victoryHeader {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = -183.45
+				y         = 439.15
+				scaleX    = 5.3119
+				scaleY    = 5.3119
+				animated  = true
+			} 
+			descV {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 506.25
+				y         = 664.45
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_victory_red = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_victory_red" 
+		lib     = postmatch_lib 
+
+		elements {
+			victoryHeader {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = -762.05
+				y         = 290.9
+				scaleX    = 7.3558
+				scaleY    = 9.0566
+				animated  = true
+			} 
+			teamDescription {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 412.9
+				y         = 205.05
+				scaleX    = 1.5001
+				scaleY    = 1.5001
+				animated  = true
+			} 
+			colorA {
+				__type = "ui_widget_container"
+
+				x         = 963.7
+				y         = 530.05
+				scaleX    = 2.1935
+				scaleY    = 0.0372
+
+				elements {
+					teamColor {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = -0.6
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_pm_XP_gain = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_pm_XP_gain" 
+		lib     = postmatch_lib 
+
+		elements {
+			counter {
+				__type = "ui_postmatch_lib::saber_ui_controls_CounterLabel"
+				x         = 828.25
+				y         = 157.4
+				scaleX    = 1.4916
+				scaleY    = 1.4916
+				animated  = true
+			} 
+		}
+	}
+
+	iconAttachMedals = {
+		__type = "ui_widget_image"
+
+		symbol  = "iconAttachMedals" 
+		lib     = postmatch_lib 
+	}
+
+	iconAttachRank = {
+		__type = "ui_widget_image"
+
+		symbol  = "iconAttachRank" 
+		lib     = postmatch_lib 
+
+		elements {
+			placeHolder {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ItemChallengesList = {
+		__type = "ui_widget_list"
+
+		symbol  = "ItemChallengesList" 
+		lib     = postmatch_lib 
+	}
+
+	ItemFoundContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "ItemFoundContainer" 
+		lib     = postmatch_lib 
+
+		elements {
+			unlockAttach {
+				__type = "ui_postmatch_lib::RewardItemAttach"
+				x         = 193.1
+				y         = 153
+			} 
+			unlockItem {
+				__type = "ui_widget_container"
+
+				propMapping {
+					itemTf = {
+						mapping = "itemTf.text"
+					}
+				}
+				x         = -141
+				y         = 207.6
+			} 
+			itemQualityCont {
+				__type = "ui_widget_container"
+
+				x         = -18.5
+				y         = 174.35
+				scaleX    = 1.0699
+				scaleY    = 1.0242
+			} 
+		}
+	}
+
+	leftPanel = {
+		__type = "ui_widget_container"
+
+		symbol  = "leftPanel" 
+		lib     = postmatch_lib 
+
+		elements {
+			header1 {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 40
+				y         = 18.7
+			} 
+			header {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 40
+				y         = 340.8
+			} 
+			itemsGridList {
+				__type = "ui_postmatch_lib::saber_ui_controls_GridList"
+				x         = -109.6
+				y         = 387.15
+			} 
+			chipsGridList {
+				__type = "ui_postmatch_lib::saber_ui_controls_GridList"
+				x         = -109.6
+				y         = 61.1
+			} 
+		}
+	}
+
+	LevelUpRewardContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "LevelUpRewardContainer" 
+		lib     = postmatch_lib 
+
+		elements {
+			tokenCont {
+				__type = "ui_postmatch_lib::tokenRewardCont"
+				x         = 169.7
+				y         = 69.6
+			} 
+			itemAttach {
+				__type = "ui_postmatch_lib::RewardItemAttach"
+				x         = 339.1
+				y         = 119.1
+			} 
+			itemTfCont {
+				__type = "ui_widget_container"
+
+				propMapping {
+					itemTf = {
+						mapping = "itemTf.text"
+					}
+				}
+				x         = 7.75
+				y         = 173.6
+			} 
+			rewardTfCont {
+				__type = "ui_widget_container"
+
+				propMapping {
+					rewardTf = {
+						mapping = "rewardTf.text"
+					}
+				}
+				x         = 162
+				y         = 12
+			} 
+			itemQualityCont {
+				__type = "ui_widget_container"
+
+				x         = 125.5
+				y         = 143.4
+				scaleX    = 1.0699
+				scaleY    = 1.0242
+			} 
+			rewardBg {
+				__type = "ui_postmatch_lib::reward_item_backdrop"
+				x         = 30
+				y         = -36.05
+			} 
+			borderRight {
+				__type = "ui_postmatch_lib::reward_bg_side"
+				x         = 418.1
+				y         = 0
+			} 
+			borderLeft {
+				__type = "ui_postmatch_lib::reward_bg_side"
+				x         = 258
+				y         = 0
+			} 
+		}
+	}
+
+	level_up_header = {
+		__type = "ui_widget_container"
+
+		symbol  = "level_up_header" 
+		lib     = postmatch_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	listCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "listCont" 
+		lib     = postmatch_lib 
+
+		elements {
+			postMatchStatsList {
+				__type = "ui_postmatch_lib::postMatchSummaryList"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	medalsCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "medalsCont" 
+		lib     = postmatch_lib 
+
+		elements {
+			headerMedal {
+				__type = "ui_postmatch_lib::medalsHead"
+				x         = 16.3
+				y         = 32.8
+				animated  = true
+			} 
+			medalsGrid {
+				__type = "ui_postmatch_lib::gridCont"
+				x         = 1
+				y         = 98
+				animated  = true
+			} 
+		}
+	}
+
+	medalsHead = {
+		__type = "ui_widget_container"
+
+		symbol  = "medalsHead" 
+		lib     = postmatch_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	NewItemsCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "NewItemsCont" 
+		lib     = postmatch_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			m6 {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf2 = {
+						mapping = "tf2.text"
+					}
+				}
+				x         = 11
+				y         = 104.1
+
+				elements {
+					iconAttach {
+						__type = "ui_postmatch_lib::iconAttachMedals"
+						x         = 0
+						y         = 8
+					} 
+				}
+			} 
+		}
+	}
+
+	placeHolderContent = {
+		__type = "ui_widget_container"
+
+		symbol  = "placeHolderContent" 
+		lib     = postmatch_lib 
+	}
+
+	pmChallengeCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "pmChallengeCont" 
+		lib     = postmatch_lib 
+
+		elements {
+			challengeTf {
+				__type = "ui_postmatch_lib::headStatCont"
+				x         = 0
+				y         = -75
+				animated  = true
+			} 
+			challengesCont {
+				__type = "ui_postmatch_lib::challengeListCont"
+				x         = 0
+				y         = -10
+				animated  = true
+			} 
+		}
+	}
+
+	pmContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "pmContainer" 
+		lib     = postmatch_lib 
+
+		elements {
+			statsBg {
+				__type = "ui_postmatch_lib::hf2p_pm_statsBg"
+				x         = 425
+				y         = 257
+			} 
+			medals {
+				__type = "ui_postmatch_lib::medalsCont"
+				x         = 472
+				y         = 597
+			} 
+			rightCountersPanel {
+				__type = "ui_postmatch_lib::RightCountersPanel"
+				x         = 1200
+				y         = 231
+			} 
+			rightBoostPanel {
+				__type = "ui_postmatch_lib::rightPanelBoost"
+				x         = 1067
+				y         = 674
+			} 
+			consPanel {
+				__type = "ui_postmatch_lib::consecutivePanel"
+				x         = 825.2
+				y         = 598
+			} 
+			challengesGrid {
+				__type = "ui_postmatch_lib::pmChallengeCont"
+				x         = 435
+				y         = 350
+			} 
+		}
+	}
+
+	PMscreenShade = {
+		__type = "ui_widget_container"
+
+		symbol  = "PMscreenShade" 
+		lib     = postmatch_lib 
+	}
+
+	postmatchRenderAttach = {
+		__type = "ui_widget_container"
+
+		symbol  = "postmatchRenderAttach" 
+		lib     = postmatch_lib 
+	}
+
+	postMatchSummaryLir = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "postMatchSummaryLir" 
+		lib     = postmatch_lib 
+		propMapping {
+			statName = {
+				mapping = "statName.text"
+			}
+			statCount = {
+				mapping = "statCount.text"
+			}
+			statBonuses = {
+				mapping = "statBonuses.text"
+			}
+		}
+	}
+
+	postMatchSummaryList = {
+		__type = "ui_widget_list"
+
+		symbol  = "postMatchSummaryList" 
+		lib     = postmatch_lib 
+	}
+
+	rankIconAttachMedal = {
+		__type = "ui_widget_container"
+
+		symbol  = "rankIconAttachMedal" 
+		lib     = postmatch_lib 
+
+		elements {
+			attachRank {
+				__type = "ui_postmatch_lib::iconAttachRank"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	rank_name_header = {
+		__type = "ui_widget_container"
+
+		symbol  = "rank_name_header" 
+		lib     = postmatch_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	RewardItemAttach = {
+		__type = "ui_widget_image"
+
+		symbol  = "RewardItemAttach" 
+		lib     = postmatch_lib 
+	}
+
+	reward_bg_side = {
+		__type = "ui_widget_container"
+
+		symbol  = "reward_bg_side" 
+		lib     = postmatch_lib 
+	}
+
+	reward_item_backdrop = {
+		__type = "ui_widget_container"
+
+		symbol  = "reward_item_backdrop" 
+		lib     = postmatch_lib 
+	}
+
+	RightCountersPanel = {
+		__type = "ui_widget_container"
+
+		symbol  = "RightCountersPanel" 
+		lib     = postmatch_lib 
+
+		elements {
+			GamerTag {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 25.5
+				y         = 42.8
+				animated  = true
+			} 
+			rightCounterItemXP {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 27
+				y         = 112
+
+				elements {
+					tfDesc {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 0
+						y         = 25.05
+					} 
+				}
+				animated  = true
+			} 
+			rightCounterItemBonusXP {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 27
+				y         = 175.55
+
+				elements {
+					tfDesc {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 0
+						y         = 25.05
+					} 
+				}
+				animated  = true
+			} 
+			rightCounterItemConsXP {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 27
+				y         = 239.1
+
+				elements {
+					tfDesc {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 0
+						y         = 25.05
+					} 
+				}
+				animated  = true
+			} 
+			rightCounterItemCompleteXP {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 27
+				y         = 302.6
+
+				elements {
+					tfDesc {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = 0
+						y         = 25.05
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	rightPanelBoost = {
+		__type = "ui_widget_container"
+
+		symbol  = "rightPanelBoost" 
+		lib     = postmatch_lib 
+
+		elements {
+			rightCounterItemXPTotal {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 161.7
+				y         = 18
+				animated  = true
+			} 
+			iconXpBooster {
+				__type = "ui_postmatch_lib::attachPoint"
+				x         = 478.95
+				y         = 90.3
+				animated  = true
+			} 
+			rightCounterItemXPTotalModif {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 161.7
+				y         = 71.1
+
+				elements {
+					glowAnim {
+						__type = "ui_postmatch_lib::glowBooster"
+						x         = -68.7
+						y         = -28.35
+					} 
+					bgLine {
+						__type = "ui_postmatch_lib::backgroundBooster"
+						x         = -2.5
+						y         = 0.3
+					} 
+				}
+				animated  = true
+			} 
+			rightCounterItemCreditsTotal {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 159.55
+				y         = 123.6
+				animated  = true
+			} 
+			iconCrBooster {
+				__type = "ui_postmatch_lib::attachPoint"
+				x         = 478.95
+				y         = 198.65
+				animated  = true
+			} 
+			rightCounterItemCreditsTotalModif {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 161.7
+				y         = 179.1
+
+				elements {
+					glowAnim {
+						__type = "ui_postmatch_lib::glowBooster"
+						x         = -68.7
+						y         = -28.35
+					} 
+					bgLine {
+						__type = "ui_postmatch_lib::backgroundBooster"
+						x         = -2.5
+						y         = 0.3
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	saber_ui_controls_CounterLabel = {
+		__type = "ui_widget_container"
+
+		symbol  = "saber.ui.controls.CounterLabel" 
+		lib     = postmatch_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	saber_ui_controls_GridList = {
+		__type = "ui_widget_container"
+
+		symbol  = "saber.ui.controls.GridList" 
+		lib     = postmatch_lib 
+
+		elements {
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	space = {
+		__type = "ui_widget_container"
+
+		symbol  = "space" 
+		lib     = postmatch_lib 
+
+		elements {
+			plrAttach {
+				__type = "ui_widget_container"
+
+				x         = -30
+				y         = 212
+
+				elements {
+					content {
+						__type = "ui_widget_container"
+
+						x         = -0.05
+						y         = 0
+						animated  = true
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	tokenRewardCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "tokenRewardCont" 
+		lib     = postmatch_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+}
+__type = "ui_widget_lib"

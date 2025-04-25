@@ -1,0 +1,696 @@
+classes = {
+	attachPoint = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachPoint" 
+		lib     = summary_lib 
+
+		elements {
+			placeHolder {
+				__type = "ui_widget_container"
+
+				x         = 3.8
+				y         = 3.55
+			} 
+		}
+	}
+
+	emptyArmorClassSm = {
+		__type = "ui_widget_container"
+
+		symbol  = "emptyArmorClassSm" 
+		lib     = summary_lib 
+	}
+
+	hf2pScoreList = {
+		__type = "ui_widget_list"
+
+		symbol  = "hf2pScoreList" 
+		lib     = summary_lib 
+	}
+
+	PersonalStatsContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "PersonalStatsContainer" 
+		lib     = summary_lib 
+
+		elements {
+			gamerTag {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 6.65
+				y         = 263.5
+			} 
+			kills {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 6.65
+				y         = 314
+			} 
+			deaths {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 6.65
+				y         = 344.5
+			} 
+			assists {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 6.65
+				y         = 374
+			} 
+			total {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 6.65
+				y         = 427
+			} 
+			positionTag {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfName = {
+						mapping = "tfName.text"
+					}
+					tfNum = {
+						mapping = "tfNum.text"
+					}
+				}
+				x         = 120.1
+				y         = 913.65
+			} 
+			playerEmblem {
+				__type = "ui_summary_lib::ScoreboardPersonalEmblem"
+				x         = 16.15
+				y         = 19.85
+				scaleX    = 0.3
+				scaleY    = 0.3
+			} 
+			separator1 {
+				__type = "ui_widget_container"
+
+				x         = 5.2
+				y         = 298.95
+				scaleX    = 1.0455
+				scaleY    = 1
+			} 
+			separator2 {
+				__type = "ui_widget_container"
+
+				x         = 5.2
+				y         = 410.85
+				scaleX    = 1.0455
+				scaleY    = 1
+			} 
+		}
+	}
+
+	placementAreaScoreBoard = {
+		__type = "ui_widget_container"
+
+		symbol  = "placementAreaScoreBoard" 
+		lib     = summary_lib 
+	}
+
+	ScbTxtStates = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScbTxtStates" 
+		lib     = summary_lib 
+
+		elements {
+			scbTxtContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfKills = {
+						mapping = "tfKills.text"
+					}
+					tfDeaths = {
+						mapping = "tfDeaths.text"
+					}
+					tfAssists = {
+						mapping = "tfAssists.text"
+					}
+					tfScore = {
+						mapping = "tfScore.text"
+					}
+					tfWScore = {
+						mapping = "tfWScore.text"
+					}
+				}
+				x         = 17.4
+				y         = 8.75
+				animated  = true
+			} 
+		}
+	}
+
+	ScoreboardDMContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScoreboardDMContainer" 
+		lib     = summary_lib 
+
+		elements {
+			heading {
+				__type = "ui_widget_container"
+
+				x         = 93
+				y         = 67.7
+
+				elements {
+					teamPositions {
+						__type = "ui_widget_container"
+
+						x         = -197
+						y         = 0
+
+						elements {
+							t2name {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfNameBlue = {
+										mapping = "tfNameBlue.text"
+									}
+								}
+								x         = 767.8
+								y         = 11.65
+								animated  = true
+							} 
+							t1name {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfNameRed = {
+										mapping = "tfNameRed.text"
+									}
+								}
+								x         = 145.35
+								y         = 11.65
+								animated  = true
+							} 
+							t1score {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfTeamScoreRed = {
+										mapping = "tfTeamScoreRed.text"
+									}
+								}
+								x         = 577.05
+								y         = 11.65
+								animated  = true
+							} 
+							t2score {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfTeamScoreBlue = {
+										mapping = "tfTeamScoreBlue.text"
+									}
+								}
+								x         = 1210.6
+								y         = 11.65
+								animated  = true
+							} 
+							EmblemAttachRed {
+								__type = "ui_summary_lib::attachPoint"
+								x         = 47.05
+								y         = 4
+								animated  = true
+							} 
+							EmblemAttachBlue {
+								__type = "ui_summary_lib::attachPoint"
+								x         = 667.95
+								y         = 4
+								animated  = true
+							} 
+						}
+					} 
+				}
+			} 
+			red_list {
+				__type = "ui_widget_container"
+
+				x         = -61
+				y         = 171
+
+				elements {
+					list {
+						__type = "ui_summary_lib::hf2pScoreList"
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			red_header {
+				__type = "ui_widget_container"
+
+				x         = -73
+				y         = 146
+
+				elements {
+					subHeading {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			blue_list {
+				__type = "ui_widget_container"
+
+				x         = 558
+				y         = 171
+
+				elements {
+					list {
+						__type = "ui_summary_lib::hf2pScoreList"
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			blue_header {
+				__type = "ui_widget_container"
+
+				x         = 546
+				y         = 146
+
+				elements {
+					subHeading {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			ffa_list {
+				__type = "ui_widget_container"
+
+				x         = 249
+				y         = -66
+
+				elements {
+					list {
+						__type = "ui_summary_lib::hf2pScoreList"
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			ffa_header {
+				__type = "ui_widget_container"
+
+				x         = 237
+				y         = -91
+
+				elements {
+					subHeading {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			blackBack {
+				__type = "ui_summary_lib::scroreboard_black_back"
+				x         = -400
+				y         = -200
+				animated  = true
+			} 
+		}
+	}
+
+	ScoreboardEmblemPlayer = {
+		__type = "ui_widget_image"
+
+		symbol  = "ScoreboardEmblemPlayer" 
+		lib     = summary_lib 
+	}
+
+	ScoreboardIngameContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScoreboardIngameContainer" 
+		lib     = summary_lib 
+
+		elements {
+			PersonalStats {
+				__type = "ui_summary_lib::PersonalStatsContainer"
+				x         = 1396.8
+				y         = 200.35
+			} 
+			heading {
+				__type = "ui_widget_container"
+
+				x         = 334.05
+				y         = 194.05
+
+				elements {
+					teamPositions {
+						__type = "ui_widget_container"
+
+						x         = -197
+						y         = 0
+
+						elements {
+							t2name {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfNameBlue = {
+										mapping = "tfNameBlue.text"
+									}
+								}
+								x         = 767.8
+								y         = 11.65
+								animated  = true
+							} 
+							t1name {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfNameRed = {
+										mapping = "tfNameRed.text"
+									}
+								}
+								x         = 145.35
+								y         = 11.65
+								animated  = true
+							} 
+							t1score {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfTeamScoreRed = {
+										mapping = "tfTeamScoreRed.text"
+									}
+								}
+								x         = 577.05
+								y         = 11.65
+								animated  = true
+							} 
+							t2score {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfTeamScoreBlue = {
+										mapping = "tfTeamScoreBlue.text"
+									}
+								}
+								x         = 1210.6
+								y         = 11.65
+								animated  = true
+							} 
+							EmblemAttachRed {
+								__type = "ui_summary_lib::attachPoint"
+								x         = 47.05
+								y         = 4
+								animated  = true
+							} 
+							EmblemAttachBlue {
+								__type = "ui_summary_lib::attachPoint"
+								x         = 667.95
+								y         = 4
+								animated  = true
+							} 
+						}
+					} 
+				}
+			} 
+			subHeading {
+				__type = "ui_widget_container"
+
+				x         = 492
+				y         = 261.05
+			} 
+			list {
+				__type = "ui_summary_lib::hf2pScoreList"
+				x         = 492
+				y         = 302.95
+			} 
+			blackBack {
+				__type = "ui_summary_lib::scroreboard_black_back"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	ScoreBoardLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "ScoreBoardLIR" 
+		lib     = summary_lib 
+
+		elements {
+			bombClassAttach {
+				__type = "ui_summary_lib::attachPoint"
+				x         = -35
+				y         = 7
+			} 
+			scbContainer {
+				__type = "ui_summary_lib::ScbTxtStates"
+				x         = -79.5
+				y         = 1
+			} 
+			nameplateAttach {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			color_bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				scaleX    = 0.9184
+				scaleY    = 0.8182
+			} 
+		}
+	}
+
+	ScoreboardPersonalEmblem = {
+		__type = "ui_widget_image"
+
+		symbol  = "ScoreboardPersonalEmblem" 
+		lib     = summary_lib 
+	}
+
+	ScoreboardTeamContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScoreboardTeamContainer" 
+		lib     = summary_lib 
+
+		elements {
+			resultsHeader {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 194
+				y         = -147.2
+			} 
+			PersonalStats {
+				__type = "ui_summary_lib::PersonalStatsContainer"
+				x         = 902.15
+				y         = -41.7
+			} 
+			heading {
+				__type = "ui_widget_container"
+
+				x         = -92.6
+				y         = -48
+
+				elements {
+					teamPositions {
+						__type = "ui_widget_container"
+
+						x         = -197
+						y         = 0
+
+						elements {
+							t2name {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfNameBlue = {
+										mapping = "tfNameBlue.text"
+									}
+								}
+								x         = 767.8
+								y         = 11.65
+								animated  = true
+							} 
+							t1name {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfNameRed = {
+										mapping = "tfNameRed.text"
+									}
+								}
+								x         = 145.35
+								y         = 11.65
+								animated  = true
+							} 
+							t1score {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfTeamScoreRed = {
+										mapping = "tfTeamScoreRed.text"
+									}
+								}
+								x         = 577.05
+								y         = 11.65
+								animated  = true
+							} 
+							t2score {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tfTeamScoreBlue = {
+										mapping = "tfTeamScoreBlue.text"
+									}
+								}
+								x         = 1210.6
+								y         = 11.65
+								animated  = true
+							} 
+							EmblemAttachRed {
+								__type = "ui_summary_lib::attachPoint"
+								x         = 47.05
+								y         = 4
+								animated  = true
+							} 
+							EmblemAttachBlue {
+								__type = "ui_summary_lib::attachPoint"
+								x         = 667.95
+								y         = 4
+								animated  = true
+							} 
+						}
+					} 
+				}
+			} 
+			subHeading {
+				__type = "ui_widget_container"
+
+				x         = -85.65
+				y         = 20
+			} 
+			topList {
+				__type = "ui_summary_lib::hf2pScoreList"
+				x         = -85.65
+				y         = 61.9
+				scaleX    = 1
+				scaleY    = 0.1714
+			} 
+			List {
+				__type = "ui_summary_lib::hf2pScoreList"
+				x         = -85.65
+				y         = 190.95
+				scaleX    = 1
+				scaleY    = 0.7436
+			} 
+			blackBack {
+				__type = "ui_summary_lib::scroreboard_black_back"
+				x         = -400
+				y         = -200
+				animated  = true
+			} 
+		}
+	}
+
+	scroreboard_black_back = {
+		__type = "ui_widget_container"
+
+		symbol  = "scroreboard_black_back" 
+		lib     = summary_lib 
+	}
+
+	tfPartyStatusShapeAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "tfPartyStatusShapeAnim" 
+		lib     = summary_lib 
+		propMapping {
+			tfPartyStatusShape = {
+				mapping = "tfPartyStatusShape.text"
+			}
+		}
+	}
+
+	waitingInfo = {
+		__type = "ui_widget_container"
+
+		symbol  = "waitingInfo" 
+		lib     = summary_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+}
+__type = "ui_widget_lib"

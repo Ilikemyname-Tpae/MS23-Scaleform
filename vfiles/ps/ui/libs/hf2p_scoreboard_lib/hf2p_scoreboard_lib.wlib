@@ -1,0 +1,134 @@
+classes   =   {
+   sc_waitingInfo   =   {
+      propMapping   =   {
+         text   =   {
+            mapping   =   "tf.text"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "text"
+            propVal   =   {
+               val   =   "lobby_waiting_for"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_summary_lib::waitingInfo"
+   }
+   scoreboard_lir   =   {
+      sslClass   =   "UiStatsPlayerLIR"
+      sslModule   =   "ui.hf2p_scoreboard.hf2p_scoreboard_logic.hf2p_scoreboard_stats_ingame"
+      isBlinkable   =   True
+      fixed   =   False
+      elements   =   {
+         bombClassAttach   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{'' + flag_pic_str}"
+               }
+            }
+            __type   =   "ui_summary_lib::attachPoint"
+         }
+         scbContainer   =   {
+            elements   =   {
+               scbTxtContainer   =   {
+                  propMapping   =   {
+                     tfKills   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfDeaths   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfAssists   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfScore   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfWScore   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfWRank   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfTag   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfName   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfName2   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfRankTop   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfRankSt   =   {
+                        isNoTranslate   =   True
+                     }
+                     tfRank   =   {
+                        isNoTranslate   =   True
+                     }
+                  }
+                  bindings   =   {
+                     tfName   =   {
+                        binding   =   "{name}"
+                     }
+                     tfName2   =   {
+                        binding   =   "{clanTag}"
+                     }
+                     tfTag   =   {
+                        binding   =   "{tag}"
+                     }
+                     tfKills   =   {
+                        binding   =   "{'' + kills}"
+                     }
+                     tfDeaths   =   {
+                        binding   =   "{'' + deaths}"
+                     }
+                     tfAssists   =   {
+                        binding   =   "{'' + assists}"
+                     }
+                     tfScore   =   {
+                        binding   =   "{'' + score}"
+                     }
+                     tfWScore   =   {
+                        binding   =   "{'' + wp}"
+                     }
+                     tfWRank   =   {
+                        binding   =   "{'' + rank}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{player_state_anim}"
+               }
+            }
+            __type   =   "ui_summary_lib::ScbTxtStates"
+         }
+         nameplateAttach   =   {
+            lib   =   "icon_lib_label"
+            elements   =   {
+               nameplate   =   {
+                  __type   =   "hf2p_nameplate::ScoreboardNameplate"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         color_bg   =   {
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{color_anim}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      __type   =   "ui_summary_lib::ScoreBoardLIR"
+   }
+}
+__type   =   "ui_widget_lib"

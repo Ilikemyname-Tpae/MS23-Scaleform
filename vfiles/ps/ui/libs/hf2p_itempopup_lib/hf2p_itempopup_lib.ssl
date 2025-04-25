@@ -1,0 +1,567 @@
+import ssl.lib.logging
+import ssl.lib.events
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ui.ui_party_monitor
+import ui.ui_matchmaking
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+import ui.hf2p_SlidingScreens.hf2p_Armory.hf2p_Armory
+
+
+class UiItemStatsVM
+   var itemId              : ObservableProperty    = $OM.Property("")
+   var compareItemId       : ObservableProperty    = $OM.Property("")
+   var isVisible           : ObservableProperty    = $OM.Property(true)
+   var isEquipped          : ObservableProperty    = $OM.Property(true)
+   var headerText          : ObservableProperty    = $OM.Property("main_itempopup_equipped")
+   
+   // Armors
+   var armorModifs         : ObservableProperty    = $OM.Calculated(this, "GetArmorModifs")
+   var armorBonusesTxt     : ObservableProperty    = $OM.Calculated(this, "GetArmorBonusesTxt")
+   var armorStats          : UiArmorStatsHelper    = new UiArmorStatsHelper()
+   var armorStatComp       : ObservableProperty    = $OM.Calculated(this, "GetArmorStatComp")
+   var armorStatCompCmp    : ObservableProperty    = $OM.Calculated(this, "GetArmorStatCompCmp")
+   
+   // Progress Bars  
+   var weaponComp          : ObservableProperty    = $OM.Calculated(this, "GetWeaponComp")
+   var weaponCompCmp       : ObservableProperty    = $OM.Calculated(this, "GetWeaponCompCmp")
+   var clipSize            : ObservableProperty    = $OM.Calculated(this, "GetClipSize")
+   var barColor            : ObservableProperty    = $OM.Calculated(this, "GetBarColor")
+   var tfColor             : ObservableProperty    = $OM.Calculated(this, "GetTfColor")
+   
+   // Tactical stats 
+   var perkDuration        : ObservableProperty    = $OM.Calculated(this, "GetDuration")
+   var perkCost            : ObservableProperty    = $OM.Calculated(this, "GetCost")
+   var perkCooldown        : ObservableProperty    = $OM.Calculated(this, "GetCooldown")
+   var textStatsVectorObs  : ObservableProperty    = $OM.Calculated(this, "GetTextStatsVector")
+   var textStatsVector     : vector
+   // TODO : Grenade & Boost
+   
+   //common
+   var icon                : ObservableProperty    = $OM.Calculated(this, "GetIcon")
+   var iconMed             : ObservableProperty    = $OM.Calculated(this, "GetIconMed")
+   var name                : ObservableProperty    = $OM.Calculated(this, "GetName")
+   var desc                : ObservableProperty    = $OM.Calculated(this, "GetDesc")
+   var techClass           : ObservableProperty    = $OM.Calculated(this, "GetTechClass")
+   var techClassIcon       : ObservableProperty    = $OM.Calculated(this, "GetTechClassIcon")
+   var techClassName       : ObservableProperty    = $OM.Calculated(this, "GetTechClassName")
+   var challengeRank       : ObservableProperty    = $OM.Calculated(this, "GetChallengeRank")
+   var isChallengeRank     : ObservableProperty    = $OM.Calculated(this, "GetIsChallengeRank")
+   
+   var wgt                 : UiWidget              = null
+   var contentType         : ObservableProperty    = $OM.Calculated(this, "GetContentType")
+   var contentAnim         : ObservableProperty    = $OM.Calculated(this, "GetContentAnim")
+   var contentWidth        : ObservableProperty    = $OM.Property(300.0)
+   var contentHeight       : ObservableProperty    = $OM.Property(300.0)
+   var contentMaskWidth    : ObservableProperty    = $OM.Property(300.0)
+   var contentMaskHeight   : ObservableProperty    = $OM.Property(300.0)
+   
+   func InvalidateSize()
+      if (wgt != null)
+         var content : UiWidget = (UiWidget)wgt.GetWidget("content")
+         
+         var txt        : string = content.Widgets.desc.textField.text
+         var textH      : float  = content.Widgets.desc.textField.textHeightEx
+         var textBottom : float  = content.Widgets.desc.y + textH
+         var yBottom    : float  = textBottom
+         
+         var contentTypeVal : string = (string)contentType.Get()
+         if (contentTypeVal == "weapon")
+            var itemType : int = $uiEconomy.GetItemType((string)itemId.Get())            
+            if (itemType == $uiEnums.ITEM_TYPE_WEAPON)
+               textBottom := textBottom + 16
+               content.Widgets.progressBars.y := textBottom
+               yBottom := textBottom + content.Widgets.progressBars.height - 12
+            else
+               textBottom := textBottom + 16
+               yBottom := textBottom
+            end
+         elif (contentTypeVal == "tactical")
+            textBottom := textBottom - 4
+            content.Widgets.textStats.y := textBottom
+            yBottom := textBottom + content.Widgets.textStats.height - 48
+         elif (contentTypeVal == "armor")
+            textBottom := textBottom
+            content.Widgets.armorModifiersCont.y := textBottom
+            yBottom := textBottom
+            if (content.Widgets.armorModifiersCont.textArmorStats3.visible)
+               yBottom := textBottom + content.Widgets.armorModifiersCont.height
+            elif (content.Widgets.armorModifiersCont.textArmorStats2.visible)
+               yBottom := textBottom + content.Widgets.armorModifiersCont.textArmorStats3.y
+            elif (content.Widgets.armorModifiersCont.textArmorStats1.visible)
+               yBottom := textBottom + content.Widgets.armorModifiersCont.textArmorStats2.y
+            elif (content.Widgets.armorModifiersCont.textArmorStats0.visible)
+               yBottom := textBottom + content.Widgets.armorModifiersCont.textArmorStats1.y
+            end
+            yBottom := yBottom + 8
+         end
+         
+         contentWidth.Set(300.0)
+         contentHeight.Set(yBottom)
+         contentMaskWidth.Set((float)contentWidth.Get() - 2)
+         contentMaskHeight.Set((float)contentHeight.Get() - 2)
+      end
+   end
+      
+   func Init(itemIdVal : string)
+      itemId.Set(itemIdVal)
+      InvalidateTextStats()
+   end
+   
+   func Term()
+      itemId.Set("")
+   end
+   
+   func GetWeaponComp() : GL_ComponentWeapon
+      var   weapon   :  GL_ComponentWeapon = null
+      weapon := (GL_ComponentWeapon)$UiGlobals.componentsWeapon.Get((string)itemId.Get())
+      return weapon
+   end
+   
+   func GetWeaponCompCmp() : GL_ComponentWeapon
+      var   weapon   :  GL_ComponentWeapon = null
+      if ((string)compareItemId.Get() != "")
+         weapon := (GL_ComponentWeapon)$UiGlobals.componentsWeapon.Get((string)compareItemId.Get())
+      end
+      return weapon
+   end
+   
+   func GetArmorStatComp() : GL_ComponentArmor
+      var   armorStat   :  GL_ComponentArmor = null
+      armorStat := (GL_ComponentArmor)$UiGlobals.componentsArmor.Get((string)itemId.Get())
+      return armorStat
+   end
+   
+   func GetArmorStatCompCmp() : GL_ComponentArmor
+      var   armorStat   :  GL_ComponentArmor = null
+      if ((string)compareItemId.Get() != "")
+         armorStat := (GL_ComponentArmor)$UiGlobals.componentsArmor.Get((string)compareItemId.Get())
+      end
+      return armorStat
+   end
+
+   func GetArmorComp() :  GL_ComponentArmor
+      var armor   :  GL_ComponentArmor = null
+      armor := (GL_ComponentArmor)$UiGlobals.componentsArmor.Get((string)itemId.Get())
+      return armor
+   end
+   
+   func GetPerkComp() : GL_ComponentConsumable
+      var   perk   :  GL_ComponentConsumable = null
+      perk := (GL_ComponentConsumable)$UiGlobals.componentsConsumable.Get((string)itemId.Get())
+      return perk
+   end
+   
+   func GetDuration () : float 
+      var   perk   :  GL_ComponentConsumable = GetPerkComp()
+      var   ret    :  float = 0
+      if (perk != null)
+         ret := (float)perk.duration.Get()
+      end
+      return ret
+   end   
+   
+   func GetCost () : int 
+      var   perk   :  GL_ComponentConsumable = GetPerkComp()
+      var   ret    :  int = 0
+      if (perk != null)
+         ret := (int)perk.cost.Get()
+      end
+      return ret
+   end 
+   
+   func GetCooldown () : float 
+      var   perk   :  GL_ComponentConsumable = GetPerkComp()
+      var   ret    :  float = 0
+      if (perk != null)
+         ret := (float)perk.cooldown.Get()
+      end
+      return ret
+   end
+
+   func GetArmorModifs() : vector
+      var items      : vector      
+      var itemType   : int = $uiEconomy.GetItemType((string)itemId.Get())
+      if (itemType == $uiEnums.ITEM_TYPE_ARMOR)
+         items.Push(itemId.Get())
+      elif (itemType == $uiEnums.ITEM_TYPE_ARMOR_SUIT)
+         var suit    : GL_ComponentArmorSuit    = (GL_ComponentArmorSuit)$UiGlobals.componentsArmorSuit.Get((string)itemId.Get())
+         var parts   : vector                   = suit.parts.Get()
+         var j       : int
+         for j := 0 to parts.Count() - 1
+            items.Push(parts.Get(j).value.Get())
+         end
+      end
+      var ret : vector = $UiGlobals.GetPartsModifiersVec(items)
+      return ret
+   end
+   
+   func GetArmorBonusesTxt() : wstring
+      var ret        : wstring
+      var itemType   : int = $uiEconomy.GetItemType((string)itemId.Get())
+      if (itemType == $uiEnums.ITEM_TYPE_ARMOR and (string)contentType.Get() == "armor")
+         var armorStatsParams : params
+         if ((bool)isEquipped.Get())
+            armorStatsParams := armorStats.GetArmorModifiers($uiPlayerInfo.GetBackendArmorLoadout(-1), true)
+         else
+            $hq.ShowroomBegin()
+            $hq.ShowroomTryOn((string)itemId.Get())
+            var currentLoadout   : UD_ArmorLoadout = $UserDataStorage.local_user.GetCurrentLoadout()
+            var showroomLoadout  : UD_ArmorLoadout = (UD_ArmorLoadout)$UiGlobals.showroom.armor_loadouts.spartan.loadouts.Get().Get((int)$UiGlobals.showroom.armor_loadouts.spartan.active_loadout_index.Get())
+            $hq.ShowroomEnd()
+            armorStatsParams := armorStats.GetArmorModifiers(showroomLoadout, true)
+         end
+         ret := armorStatsParams.text
+      end
+      return ret
+   end
+      
+   func GetArmorModifId(idx : int) : string
+      var ret : string = ""
+      var modifs : vector = armorModifs.Get()
+      if (modifs.Count() > idx)
+         ret := modifs.Get(idx).uiId
+      end
+      return ret 
+   end
+   
+   func GetArmorModifValue(idx : int) : wstring
+      var ret : wstring = ""
+      var modifs : vector = armorModifs.Get()
+      if (modifs.Count() > idx)
+         ret := $root.FormatArmorModifTempHack(modifs.Get(idx).id, modifs.Get(idx).value)
+      end
+      return ret
+   end
+      
+   func FormatDurationValue(val : float) : string
+      var ret : string = ""
+      if (val == 0)
+         ret := "carousel_cons_unit_instant"
+      elif (val == 1)
+         ret := "carousel_cons_unit_second," + $root.FormatFloat(val, 2)
+      else
+         ret := "carousel_cons_unit_seconds," + $root.FormatFloat(val, 2)
+      end
+      return ret
+   end
+   
+   func InvalidateTextStats()
+      textStatsVector.Clear()
+      
+      var p : params
+      p.name   := "carousel_perk_duration"
+      p.value  := FormatDurationValue((int)perkDuration.Get())
+      p.valid  := true
+      textStatsVector.Push(p.Clone())
+      
+      p.name   := "carousel_perk_cost"
+      p.value  := "carousel_cons_unit_energy," + (string)(int)perkCost.Get()
+      p.valid  := true
+      textStatsVector.Push(p.Clone())
+      
+      p.name   := "carousel_perk_cooldown"
+      p.value  := FormatDurationValue((int)perkCooldown.Get())
+      p.valid  := true
+      textStatsVector.Push(p.Clone())
+      
+      p.name   := ""
+      p.value  := ""
+      p.valid  := false
+      textStatsVector.Push(p.Clone())
+      
+      p.name   := ""
+      p.value  := ""
+      p.valid  := false
+      textStatsVector.Push(p.Clone())
+      textStatsVectorObs.Invalidate()
+   end
+   
+   func GetTextStatsVector() : vector
+      return textStatsVector
+   end
+   
+   func GetWeaponStat(statName : string, compWeapon : GL_ComponentWeapon) : float
+      var ret : float = 0
+      if (compWeapon != null)
+         if (statName == "dmg")
+            ret := (float)compWeapon.damage.Get()
+         elif (statName == "acc")
+            ret := (float)compWeapon.accuracy.Get()
+         elif (statName == "rof")
+            ret := (float)compWeapon.rate_of_fire.Get()
+         elif (statName == "rng")
+            ret := (float)compWeapon.range.Get()
+         end
+      end
+      return ret
+   end
+   
+   func GetArmorStat(statName : string, compArmor : GL_ComponentArmor) : float
+      var ret : float = 0
+      if (compArmor != null)
+         if (statName == "protection")
+            ret := (float)compArmor.ui_stats_protection.Get() / 100.0
+         elif (statName == "weapons")
+            ret := (float)compArmor.ui_stats_weapons.Get() / 100.0
+         elif (statName == "tech")
+            ret := (float)compArmor.ui_stats_tech.Get() / 100.0
+         elif (statName == "mobility")
+            ret := (float)compArmor.ui_stats_mobility.Get() / 100.0
+         elif (statName == "cqc")
+            ret := (float)compArmor.ui_stats_cqc.Get() / 100.0
+         elif (statName == "radar")
+            ret := (float)compArmor.ui_stats_radar.Get() / 100.0
+         end
+      end
+      return ret
+   end
+
+   func GetMinMaxWeaponStat(statName : string, getMin : bool) : float
+      var ret        : float              = 0
+      var weapon     : GL_ComponentWeapon = (GL_ComponentWeapon)weaponComp.Get()
+      var weaponCmp  : GL_ComponentWeapon = (GL_ComponentWeapon)weaponCompCmp.Get()
+      if (weapon != null)
+         if (weaponCmp != null)
+            var v1 : float = GetWeaponStat(statName, weapon)
+            var v2 : float = GetWeaponStat(statName, weaponCmp)
+            ret := v1
+            if (getMin)
+               if (v2 < ret)
+                  ret := v2
+               end
+            else
+               if (v2 > ret)
+                  ret := v2
+               end
+            end
+         else
+            ret := GetWeaponStat(statName, weapon)
+         end
+      end
+      return ret
+   end
+   
+   func GetMinMaxArmorStat(statName : string, getMin : bool) : float
+      var ret           : float                    = 0
+      var armorStat     : GL_ComponentArmor = (GL_ComponentArmor)armorStatComp.Get()
+      var armorStatCmp  : GL_ComponentArmor = (GL_ComponentArmor)armorStatCompCmp.Get()
+      if (armorStat != null)
+         if (armorStatCmp != null)
+            var v1 : float = GetArmorStat(statName, armorStat)
+            var v2 : float = GetArmorStat(statName, armorStatCmp)
+            ret := v1
+            if (getMin)
+               if (v2 < ret)
+                  ret := v2
+               end
+            else
+               if (v2 > ret)
+                  ret := v2
+               end
+            end
+         else
+            ret := GetArmorStat(statName, armorStat)
+         end
+      end
+      return ret
+   end
+   
+   func GetMinWeaponStat(statName : string) : float
+      return GetMinMaxWeaponStat(statName, true)
+   end
+   
+   func GetMaxWeaponStat(statName : string) : float
+      return GetMinMaxWeaponStat(statName, false)
+   end
+      
+   func GetMinArmorStat(statName : string) : float
+      return GetMinMaxArmorStat(statName, true)
+   end
+   
+   func GetMaxArmorStat(statName : string) : float
+      return GetMinMaxArmorStat(statName, false)
+   end
+   
+   func GetClipSize() : int
+      var   weapon   :  GL_ComponentWeapon = (GL_ComponentWeapon)weaponComp.Get()
+      var ret : int = 0 
+      if (weapon != null)
+         ret := (int)weapon.clip_size.Get()
+      end
+      return ret
+   end
+      
+   func GetCmpBarColor(paramName : string) : params
+      var ret           :  params
+      var selectedWpn   :  GL_ComponentWeapon   = (GL_ComponentWeapon)weaponComp.Get()
+      var wpnStat       :  float                = 0
+      var myWpn         :  GL_ComponentWeapon   = (GL_ComponentWeapon)weaponCompCmp.Get()
+      var myWpnStat     :  float                = 0 
+      
+      if (selectedWpn == null or myWpn == null)
+         ret.r  := 33
+         ret.g  := 61
+         ret.b  := 98
+         return ret
+      end
+      
+      wpnStat     := GetWeaponStat(paramName, selectedWpn)
+      myWpnStat   := GetWeaponStat(paramName, myWpn)
+      
+      if (wpnStat >= myWpnStat)
+         ret.r  := 166
+         ret.g  := 248
+         ret.b  := 255
+      else
+         ret.r  := 48
+         ret.g  := 76
+         ret.b  := 103
+      end
+      return ret
+   end
+   
+   func GetCmpBarColorArmor(paramName : string) : params
+      var ret           :  params
+      var selectedItem  :  GL_ComponentArmor   = (GL_ComponentArmor)armorStatComp.Get()
+      var selectedStat  :  float                      = 0
+      var myItem        :  GL_ComponentArmor   = (GL_ComponentArmor)armorStatCompCmp.Get()
+      var myStat        :  float                      = 0 
+      
+      if (selectedItem == null or myItem == null)
+         ret.r  := 33
+         ret.g  := 61
+         ret.b  := 98
+         return ret
+      end
+      
+      selectedStat   := GetArmorStat(paramName, selectedItem)
+      myStat         := GetArmorStat(paramName, myItem)
+      
+      if (selectedStat >= myStat)
+         ret.r  := 166
+         ret.g  := 248
+         ret.b  := 255
+      else
+         ret.r  := 48
+         ret.g  := 76
+         ret.b  := 103
+      end
+      return ret
+   end
+   
+   func GetBarColor() : params
+      var ret : params = $uiEconomy.GetWeaponPrimaryArrtibuteColor("unknown")
+      return ret
+   end
+   
+   func GetTfColor : int
+      var defClr : params = $uiEconomy.GetWeaponPrimaryArrtibuteColor("unknown")
+      var clr : int = $root.RGB2Clr(defClr.r, defClr.g, defClr.b)
+      return clr
+   end
+   
+   // common
+   func GetUiComp() : GL_ComponentUI
+      return (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)itemId.Get())
+   end
+   
+   func GetIcon() : string
+      var ret     : string          = ""
+      var uiComp  : GL_ComponentUI  = GetUiComp()
+      ret := (string)uiComp.icon.Get()
+      return ret      
+   end
+   
+   func GetIconMed() : string
+      var ret     : string          = ""
+      var uiComp  : GL_ComponentUI  = GetUiComp()
+      ret := (string)uiComp.icon_med.Get()
+      return ret      
+   end
+   
+   func GetName() : string
+      var ret     : string          = ""
+      var uiComp  : GL_ComponentUI  = GetUiComp()
+      ret := (string)uiComp.name.Get()
+      return ret      
+   end
+   
+   func GetDesc() : string
+      var ret     : string          = ""
+      var uiComp  : GL_ComponentUI  = GetUiComp()
+      ret := (string)uiComp.desc.Get()
+      return ret      
+   end
+   
+   func GetTechClass() : string
+      var ret : string = (string)$UiGlobals.componentsItem.Get(itemId.Get()).career_tree.Get()
+      return ret      
+   end
+   
+   func GetTechClassIcon() : string
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)techClass.Get())
+      var ret     : string          = (string)uiComp.icon.Get()
+      return ret      
+   end
+   
+   func GetTechClassName() : string
+      var uiComp  : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)techClass.Get())
+      var ret     : string          = (string)uiComp.name.Get()
+      return ret      
+   end
+   
+   func GetChallengeRank() : int
+      return $UiGlobals.componentsItem.Get(itemId.Get()).GetCurrentChallengeRank()
+   end
+   
+   func GetIsChallengeRank() : bool
+      var ret : bool = false
+      var compShop : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(itemId.Get())
+      var techId : string = (string)compShop.requirement.Get()
+      if $UiGlobals.componentsShop.Exist(techId)
+         ret := true
+      end   
+      return ret
+   end
+
+   func GetContentType() : string
+      var ret        : string          = "armor"
+      var itemType   : int             = $uiEconomy.GetItemType((string)itemId.Get())
+      
+      if (itemType == $uiEnums.ITEM_TYPE_WEAPON)
+         ret := "weapon"
+      elif (itemType == $uiEnums.ITEM_TYPE_TACTICAL)
+         ret := "tactical"
+      elif (itemType == $uiEnums.ITEM_TYPE_ARMOR or itemType == $uiEnums.ITEM_TYPE_ARMOR_SUIT)
+         ret := "armor"
+      else
+         ret := "armor"
+      end
+      
+      return ret
+   end
+   
+   func GetContentAnim() : string
+      var ret        : string          = "armor"
+      var compUI     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(itemId.Get())
+      var video      : string          = (string)compUI.video.Get()
+      var iconBig    : string          = (string)compUI.icon_big.Get()      
+      var itemType   : int             = $uiEconomy.GetItemType((string)itemId.Get())
+      var itemSubType: int             = $uiEconomy.GetItemSubType((string)itemId.Get())
+      
+      if (itemType == $uiEnums.ITEM_TYPE_WEAPON or itemSubType == $uiEnums.ITEM_SUB_TYPE_WPN_GRENADE)
+         ret := "weapon"
+      elif (itemType == $uiEnums.ITEM_TYPE_TACTICAL)
+         ret := "tactical"
+      elif (itemType == $uiEnums.ITEM_TYPE_ARMOR or itemType == $uiEnums.ITEM_TYPE_ARMOR_SUIT)
+         ret := "armor"
+      else
+         ret := "armor"
+      end
+      
+      return ret
+   end
+end

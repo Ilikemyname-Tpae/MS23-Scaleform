@@ -1,0 +1,535 @@
+classes   =   {
+   hf2p_ItemPopupContent   =   {
+      elements   =   {
+         content   =   {
+            elements   =   {
+               popupHead   =   {
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{isEquipped}"
+                     }
+                     tf   =   {
+                        binding   =   "{headerText}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               iconAttach   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{iconMed}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_weaponConf_lib::attachPoint"
+               }
+               perkRenderAttach   =   {
+                  elements   =   {
+                     ConsumableRenderContainer   =   {
+                        isBlinkable   =   True
+                        elements   =   {
+                           consumableRenderContent   =   {
+                              elements   =   {
+                                 rtts_consumable   =   {
+                                    __type   =   "ui_rtts_container::rtts_consumable"
+                                 }
+                              }
+                              __type   =   "ui_icon_lib_cons::ConsumableRendterTexture"
+                           }
+                        }
+                        __type   =   "ui_icon_lib_cons::ConsumableRenderContainer"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               progIndicator0   =   {
+                  bindings   =   {
+                     anim   =   {
+                        binding   =   "{challengeRank >= 0 ? 'bronze' : 'gray'}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib_slide::medalChallenge"
+               }
+               progIndicator1   =   {
+                  bindings   =   {
+                     anim   =   {
+                        binding   =   "{challengeRank >= 1 ? 'silver' : 'gray'}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib_slide::medalChallenge"
+               }
+               progIndicator2   =   {
+                  bindings   =   {
+                     anim   =   {
+                        binding   =   "{challengeRank >= 2 ? 'gold' : 'gray'}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib_slide::medalChallenge"
+               }
+               classIcon   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{techClassIcon}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_weaponConf_lib::attachPoint"
+               }
+               modifiers   =   {
+                  isBlinkable   =   True
+                  elements   =   {
+                     textField   =   {
+                        isNoTranslate   =   True
+                        bindings   =   {
+                           styleSheet   =   {
+                              binding   =   "{new [new {name: '.incompleteSet', style: new {color:'#FF0000'}}, new {name: '.completeSet', style: new {color:'#00FF00'}}, new {name: '.part', style: new {color:'#8FB8C9'}},new {name: '.mod', style: new {color:'#D3D3D3'}}]}"
+                           }
+                        }
+                        __type   =   "ui_widget_text"
+                     }
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::ItemStatsTooltipModifiers"
+               }
+               armorModifiersCont   =   {
+                  elements   =   {
+                     textArmorStats0   =   {
+                        propMapping   =   {
+                           tf2   =   {
+                              isNoTranslate   =   True
+                           }
+                        }
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{GetArmorModifId(0)}"
+                           }
+                           tf2   =   {
+                              binding   =   "{GetArmorModifValue(0)}"
+                           }
+                           visible   =   {
+                              binding   =   "{contentType == 'armor' and GetArmorModifId(0) != ''}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     textArmorStats1   =   {
+                        propMapping   =   {
+                           tf2   =   {
+                              isNoTranslate   =   True
+                           }
+                        }
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{GetArmorModifId(1)}"
+                           }
+                           tf2   =   {
+                              binding   =   "{GetArmorModifValue(1)}"
+                           }
+                           visible   =   {
+                              binding   =   "{contentType == 'armor' and GetArmorModifId(1) != ''}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     textArmorStats2   =   {
+                        propMapping   =   {
+                           tf2   =   {
+                              isNoTranslate   =   True
+                           }
+                        }
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{GetArmorModifId(2)}"
+                           }
+                           tf2   =   {
+                              binding   =   "{GetArmorModifValue(2)}"
+                           }
+                           visible   =   {
+                              binding   =   "{contentType == 'armor' and GetArmorModifId(2) != ''}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     textArmorStats3   =   {
+                        propMapping   =   {
+                           tf2   =   {
+                              isNoTranslate   =   True
+                           }
+                        }
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{GetArmorModifId(3)}"
+                           }
+                           tf2   =   {
+                              binding   =   "{GetArmorModifValue(3)}"
+                           }
+                           visible   =   {
+                              binding   =   "{contentType == 'armor' and GetArmorModifId(3) != ''}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               textStats   =   {
+                  elements   =   {
+                     line1   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].name}"
+                           }
+                           textField2   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].value}"
+                           }
+                           idx   =   {
+                              binding   =   "{0}"
+                           }
+                           visible   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].valid}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     line2   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].name}"
+                           }
+                           textField2   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].value}"
+                           }
+                           idx   =   {
+                              binding   =   "{1}"
+                           }
+                           visible   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].valid}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     line3   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].name}"
+                           }
+                           textField2   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].value}"
+                           }
+                           idx   =   {
+                              binding   =   "{2}"
+                           }
+                           visible   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].valid}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     line4   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].name}"
+                           }
+                           textField2   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].value}"
+                           }
+                           idx   =   {
+                              binding   =   "{3}"
+                           }
+                           visible   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].valid}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     line5   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].name}"
+                           }
+                           textField2   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].value}"
+                           }
+                           idx   =   {
+                              binding   =   "{4}"
+                           }
+                           visible   =   {
+                              binding   =   "{textStatsVectorObs[(:idx)].valid}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{contentType == 'tactical'}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::ItemStatsTooltipTextStats"
+               }
+               progressBars   =   {
+                  isBlinkable   =   True
+                  propMapping   =   {
+                     AccTfContainerTxt   =   {
+                        mapping   =   "AccTfContainer.textField.text"
+                     }
+                     ClipTfContainerTxt   =   {
+                        mapping   =   "ClipTfContainer.textField.text"
+                     }
+                     DmgTfContainerTxt   =   {
+                        mapping   =   "DmgTfContainer.textField.text"
+                     }
+                     HeadrTfContainerTxt   =   {
+                        mapping   =   "HeadrTfContainer.textField.text"
+                     }
+                     RateTfContainerTxt   =   {
+                        mapping   =   "RateTfContainer.textField.text"
+                     }
+                     ClipSizeNumberTfContainerTxt   =   {
+                        mapping   =   "ClipSizeNumberTfContainer.textField.text"
+                     }
+                     RangeTfContainerTxt   =   {
+                        mapping   =   "RangeTfContainer.textField.text"
+                     }
+                     ClipSizeColor   =   {
+                        mapping   =   "ClipSizeNumberTfContainer.textField.textColor"
+                     }
+                     ClipSizeTxtColor   =   {
+                        mapping   =   "ClipTfContainer.textField.textColor"
+                     }
+                  }
+                  elements   =   {
+                     bar4   =   {
+                        elements   =   {
+                           bar   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{barColor}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMinWeaponStat('rng')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                           barCmp   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{GetCmpBarColor('rng')}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMaxWeaponStat('rng')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        __type   =   "hf2p_WeaponConfProgressBar"
+                     }
+                     bar3   =   {
+                        elements   =   {
+                           bar   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{barColor}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMinWeaponStat('rof')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                           barCmp   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{GetCmpBarColor('rof')}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMaxWeaponStat('rof')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        __type   =   "hf2p_WeaponConfProgressBar"
+                     }
+                     bar2   =   {
+                        elements   =   {
+                           bar   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{barColor}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMinWeaponStat('acc')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                           barCmp   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{GetCmpBarColor('acc')}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMaxWeaponStat('acc')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        __type   =   "hf2p_WeaponConfProgressBar"
+                     }
+                     bar1   =   {
+                        elements   =   {
+                           bar   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{barColor}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMinWeaponStat('dmg')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                           barCmp   =   {
+                              bindings   =   {
+                                 colorMult   =   {
+                                    binding   =   "{GetCmpBarColor('dmg')}"
+                                 }
+                                 scaleX   =   {
+                                    binding   =   "{GetMaxWeaponStat('dmg')}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        __type   =   "hf2p_WeaponConfProgressBar"
+                     }
+                  }
+                  bindings   =   {
+                     visible   =   {
+                        binding   =   "{contentType == 'weapon'}"
+                     }
+                     DmgTfContainerTxt   =   {
+                        binding   =   "{'carousel_damage'}"
+                     }
+                     AccTfContainerTxt   =   {
+                        binding   =   "{'carousel_accuracy'}"
+                     }
+                     RateTfContainerTxt   =   {
+                        binding   =   "{'carousel_rate_of_fire'}"
+                     }
+                     ClipTfContainerTxt   =   {
+                        binding   =   "{'carousel_clip_size'}"
+                     }
+                     RangeTfContainerTxt   =   {
+                        binding   =   "{'carousel_range'}"
+                     }
+                     ClipSizeNumberTfContainerTxt   =   {
+                        binding   =   "{'' + clipSize}"
+                     }
+                     ClipSizeTxtColor   =   {
+                        binding   =   "{16777215}"
+                     }
+                     ClipSizeColor   =   {
+                        binding   =   "{tfColor}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::ItemStatsTooltipProgressBars"
+               }
+               desc   =   {
+                  elements   =   {
+                     textField   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           text   =   {
+                              binding   =   "{desc}"
+                           }
+                        }
+                        __type   =   "ui_widget_text"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               classHeader   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{techClassName}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               header   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{name}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{contentAnim}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::ItemStatsTooltipContentInternal"
+         }
+         bg   =   {
+            isBlinkable   =   True
+            elements   =   {
+               bgMask   =   {
+                  bindings   =   {
+                     _width   =   {
+                        binding   =   "{contentMaskWidth}"
+                     }
+                     _height   =   {
+                        binding   =   "{contentMaskHeight}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::ItemStatsTooltipBGMask"
+               }
+               bgBorder   =   {
+                  bindings   =   {
+                     _width   =   {
+                        binding   =   "{contentWidth}"
+                     }
+                     _height   =   {
+                        binding   =   "{contentHeight}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::ItemStatsTooltipBGBorder"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::ItemStatsTooltipBG"
+         }
+      }
+      bindings   =   {
+         renderHelper   =   {
+            binding   =   "{new: 'ui.hf2p_SlidingScreens.hf2p_Bundles.hf2p_Bundles.BundleItemRenderHelper', itemId = itemId}"
+         }
+         visible   =   {
+            binding   =   "{isVisible}"
+         }
+         DC   =   {
+            binding   =   "{itemStats}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::ItemStatsTooltipContent"
+   }
+}
+__type   =   "ui_widget_lib"

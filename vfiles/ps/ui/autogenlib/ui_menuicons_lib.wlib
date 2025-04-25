@@ -1,0 +1,9 @@
+classes = {
+	loadout100x100 = {
+		__type = "ui_widget_container"
+
+		symbol  = "loadout100x100" 
+		lib     = menuIcons_lib 
+	}
+}
+__type = "ui_widget_lib"

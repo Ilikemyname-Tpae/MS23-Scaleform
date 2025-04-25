@@ -1,0 +1,452 @@
+classes   =   {
+   pc_left_container   =   {
+      elements   =   {
+         topLeftPanel   =   {
+            elements   =   {
+               loadoutAttach   =   {
+                  elements   =   {
+                     loadout   =   {
+                        elements   =   {
+                           btnBox   =   {
+                              elements   =   {
+                                 btn8   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementBoost"
+                                 }
+                                 btn4   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn5   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn6   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn7   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn1   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElement"
+                                 }
+                                 btn2   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElement"
+                                 }
+                                 btn3   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElement"
+                                 }
+                                 btn0   =   {
+                                    elements   =   {
+                                       camContainer   =   {
+                                          elements   =   {
+                                             attachContainer   =   {
+                                                visible   =   False
+                                                __type   =   "ui_weaponConf_lib_slide::attachContainer"
+                                             }
+                                             render0   =   {
+                                                bindings   =   {
+                                                   visible   =   {
+                                                      binding   =   "{(:UD).customizations.character_active_index == 0}"
+                                                   }
+                                                }
+                                                __type   =   "ui_rtts_container::rtts_loadout_biped_0"
+                                             }
+                                             render1   =   {
+                                                bindings   =   {
+                                                   visible   =   {
+                                                      binding   =   "{(:UD).customizations.character_active_index == 1}"
+                                                   }
+                                                }
+                                                __type   =   "ui_rtts_container::rtts_loadout_biped_1"
+                                             }
+                                             render2   =   {
+                                                bindings   =   {
+                                                   visible   =   {
+                                                      binding   =   "{(:UD).customizations.character_active_index == 2}"
+                                                   }
+                                                }
+                                                __type   =   "ui_rtts_container::rtts_loadout_biped_2"
+                                             }
+                                          }
+                                          __type   =   "ui_widget_container"
+                                       }
+                                    }
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementArmor"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::loadoutContNew"
+                           }
+                        }
+                        bindings   =   {
+                           DC   =   {
+                              binding   =   "{loadoutVM.userData.GetActiveCharacter()}"
+                           }
+                           selected   =   {
+                              binding   =   "{true}"
+                           }
+                           UD   =   {
+                              binding   =   "{loadoutVM.userData}"
+                           }
+                        }
+                        __type   =   "hf2p_Loadout_lib::loadoutSlot"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeIn"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+               transitionsOut   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeOut"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_podium_lib::leftPanelContainer"
+   }
+   pc_podium_container   =   {
+      elements   =   {
+         firstPlaceAnimContainer   =   {
+            sslClass   =   "UiFirstPlaceAnimContainer"
+            sslModule   =   "ui.libs.hf2p_podium_screen_lib.hf2p_podium_screen_lib"
+            elements   =   {
+               nicknameTfContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               scoreContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Initial   =   {
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                     transitionsOut   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         secondPlaceAnimContainer   =   {
+            sslClass   =   "UiSecondPlaceAnimContainer"
+            sslModule   =   "ui.libs.hf2p_podium_screen_lib.hf2p_podium_screen_lib"
+            elements   =   {
+               scoreContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               nicknameTfContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Initial   =   {
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                     transitionsOut   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         thirdPlaceAnimContainer   =   {
+            sslClass   =   "UiThirdPlaceAnimContainer"
+            sslModule   =   "ui.libs.hf2p_podium_screen_lib.hf2p_podium_screen_lib"
+            elements   =   {
+               nicknameTfContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               scoreContainer   =   {
+                  elements   =   {
+                     tf   =   {
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Initial   =   {
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                     transitionsOut   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            FirstWent   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        state   =   "firstPlaceAnimContainer.Visible"
+                        __type   =   "ui_widget_action_state"
+                     }
+                  }
+               }
+            }
+            Initial   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        elements   =   {
+                           elem_1   =   {
+                              state   =   "thirdPlaceAnimContainer.Initial"
+                              __type   =   "ui_widget_action_state"
+                           }
+                           elem_2   =   {
+                              state   =   "secondPlaceAnimContainer.Initial"
+                              __type   =   "ui_widget_action_state"
+                           }
+                           elem_3   =   {
+                              state   =   "firstPlaceAnimContainer.Initial"
+                              __type   =   "ui_widget_action_state"
+                           }
+                        }
+                        __type   =   "ui_widget_action_sequence"
+                     }
+                  }
+               }
+            }
+            SecondWent   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        state   =   "secondPlaceAnimContainer.Visible"
+                        __type   =   "ui_widget_action_state"
+                     }
+                  }
+               }
+            }
+            ThirdWent   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        state   =   "thirdPlaceAnimContainer.Visible"
+                        __type   =   "ui_widget_action_state"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_podium_lib::PodiumContainer"
+   }
+   pc_right_container   =   {
+      elements   =   {
+         meleeContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         headshotsContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         assistsContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         killsContainer   =   {
+            elements   =   {
+               tfName   =   {
+                  __type   =   "ui_widget_container"
+               }
+               tfNum   =   {
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+               transitionsIn   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeIn"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+               transitionsOut   =   {
+                  any   =   {
+                     action   =   {
+                        anim   =   "fadeOut"
+                        __type   =   "ui_widget_action_anim"
+                     }
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_podium_lib::rightPanelContainer"
+   }
+}
+__type   =   "ui_widget_lib"

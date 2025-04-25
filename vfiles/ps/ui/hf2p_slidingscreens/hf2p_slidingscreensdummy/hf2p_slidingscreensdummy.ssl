@@ -1,0 +1,34 @@
+import ssl.lib.ui.ui_widget_container
+import ui.libs.hf2p_SlidingScreens.hf2p_sliding_screens_lib
+
+class animatedContent_contentContainer_UiContent_4 : UiSlidingScreenPageMainMenu
+
+var   isSlidingElement  :  bool  = false
+
+func Init()
+end
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end          
+
+handle OnEnteringState("Visible")
+   Init()         
+   Set("visible", true)
+end  
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+end
+
+override PrepareHideSlide // ()
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+   end
+end
+end

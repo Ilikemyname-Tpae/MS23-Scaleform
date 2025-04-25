@@ -1,0 +1,850 @@
+classes   =   {
+   ChatCont   =   {
+      sslClass   =   "UiChat"
+      sslModule   =   "ui.libs.hf2p_Chat_lib.hf2p_Chat_lib"
+      visible   =   False
+      fixed   =   False
+      handlers   =   {
+         SetChatPrivateUser   =   {
+            handlerName   =   "#OnSetChatPrivateUser"
+         }
+         OpenNewPrivateChat   =   {
+            handlerName   =   "#OnOpenNewPrivateChat"
+         }
+         SetFocusInputText   =   {
+            handlerName   =   "OnSetFocusInputText"
+         }
+         CleanChat   =   {
+            handlerName   =   "#OnCleanChat"
+         }
+         AppendChatText   =   {
+            handlerName   =   "#OnAppendChatText"
+         }
+         SetChatText   =   {
+            handlerName   =   "#OnSetChatText"
+         }
+      }
+      elements   =   {
+         expandBtn   =   {
+            sslClass   =   "ChatExpandBtn"
+            sslModule   =   "ui.libs.hf2p_Chat_lib.hf2p_Chat_lib"
+            dragEnabled   =   True
+            handlers   =   {
+               ChatDrag   =   {
+                  handlerName   =   "OnChatDrag"
+               }
+            }
+            events   =   {
+               doubleClick   =   {
+                  eventRemap   =   "#ToggleCollapsed2"
+               }
+            }
+            bindings   =   {
+               focusable   =   {
+                  binding   =   "{false}"
+               }
+               doubleClickEnabled   =   {
+                  binding   =   "{true}"
+               }
+            }
+            __type   =   "ui_chat_lib::ChatExpandBtn"
+         }
+         userShowBtn   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#ToggleMembers"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!IsNewsVisible() and CanShowHideMembers()}"
+               }
+               selected   =   {
+                  binding   =   "{IsMembersBtnVisible()}"
+               }
+               y   =   {
+                  binding   =   "{GetMembersBtnYPos()}"
+               }
+               focusable   =   {
+                  binding   =   "{false}"
+               }
+               enabled   =   {
+                  binding   =   "{CanShowHideMembers()}"
+               }
+            }
+            __type   =   "ui_chat_lib::ChatUserShowBtn"
+         }
+         tabsCont   =   {
+            __type   =   "hf2p_Chat_lib::ChatTabs"
+         }
+         inputCont   =   {
+            elements   =   {
+               inputTf   =   {
+                  sslClass   =   "UiChatMessage"
+                  sslModule   =   "ui.libs.hf2p_Chat_lib.hf2p_Chat_lib"
+                  isNoTranslate   =   True
+                  propMapping   =   {
+                     caretIndex   =   {
+                        mapping   =   "raw_textField.caretIndex"
+                     }
+                     length   =   {
+                        mapping   =   "raw_textField.length"
+                     }
+                  }
+                  bindings   =   {
+                     editable   =   {
+                        binding   =   "{true}"
+                     }
+                     defaultText   =   {
+                        binding   =   "{GetDefaultInputText()}"
+                     }
+                     enabled   =   {
+                        binding   =   "{CanSendMessage()}"
+                     }
+                     focusable   =   {
+                        binding   =   "{true}"
+                     }
+                     actAsButton   =   {
+                        binding   =   "{true}"
+                     }
+                     maxChars   =   {
+                        binding   =   "{250}"
+                     }
+                     x   =   {
+                        binding   =   "{CanShowHideMembers() ? 18.75 : 3}"
+                     }
+                     width   =   {
+                        binding   =   "{CanShowHideMembers() ? 630 : 646}"
+                     }
+                  }
+                  __type   =   "ui_chat_lib::ChatTextInputSkinnedMenu"
+               }
+               sendBtn   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "#OnSendBtnClicked"
+                     }
+                  }
+                  __type   =   "ui_chat_lib::SendMessageBtn"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{IsSendVisible()}"
+               }
+               y   =   {
+                  binding   =   "{GetInputContYPos()}"
+               }
+            }
+            __type   =   "ui_chat_lib::ChatInputCont"
+         }
+         listMessages   =   {
+            fixed   =   False
+            __type   =   "hf2p_Chat_lib::MessagesListCont"
+         }
+         listMembers   =   {
+            y   =   31
+            fixed   =   False
+            elements   =   {
+               chatMask   =   {
+                  bindings   =   {
+                     _height   =   {
+                        binding   =   "{GetUsersBgHeight()}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               bg   =   {
+                  bindings   =   {
+                     _height   =   {
+                        binding   =   "{GetUsersBgHeight()}"
+                     }
+                  }
+                  __type   =   "ui_chat_lib::CharUserBg"
+               }
+            }
+            __type   =   "hf2p_Chat_lib::MembersListCont"
+         }
+         bg   =   {
+            bindings   =   {
+               _height   =   {
+                  binding   =   "{GetBgHeight()}"
+               }
+               focusable   =   {
+                  binding   =   "{true}"
+               }
+            }
+            __type   =   "ui_chat_lib::ChatBgPic"
+         }
+         motd   =   {
+            x   =   32
+            fixed   =   False
+            propMapping   =   {
+               motdMessage   =   {
+                  isNoTranslate   =   True
+               }
+            }
+            bindings   =   {
+               motdHeader   =   {
+                  binding   =   "{'main_motd_header'}"
+               }
+               motdMessage   =   {
+                  binding   =   "{$UiGlobals.motd.message}"
+               }
+               visible   =   {
+                  binding   =   "{false}"
+               }
+               y   =   {
+                  binding   =   "{GetMOTDYPos()}"
+               }
+            }
+            layer   =   "layer0"
+            __type   =   "ui_menu_lib::motdContainer"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_Chat_lib.hf2p_Chat_lib.UiChatVM'}"
+         }
+         y   =   {
+            binding   =   "{GetChatYPos()}"
+         }
+         tabsData   =   {
+            binding   =   "{GetTabsData()}"
+         }
+      }
+      __type   =   "ui_chat_lib::ChatCont"
+   }
+   MessagesLIR   =   {
+      elements   =   {
+         tf   =   {
+            propMapping   =   {
+               textField   =   {
+                  isNoTranslate   =   True
+               }
+               textFieldHtml   =   {
+                  mapping   =   "textField.htmlText"
+                  isNoTranslate   =   True
+               }
+            }
+            bindings   =   {
+               textFieldHtml   =   {
+                  binding   =   "{GetText()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_Chat_lib.hf2p_Chat_lib.UiChatMessageLIRVM', message = (:DC2)}"
+         }
+         _width   =   {
+            binding   =   "{(#parent)GetMessagesLIRWidth()}"
+         }
+      }
+      contextMenu   =   {
+         __type   =   "hf2p_Default_lib::UserContextMenu"
+      }
+      __type   =   "ui_chat_lib::ChatMessagesLIR"
+   }
+   MembersLIR   =   {
+      elements   =   {
+         notif   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{'' + unreadMsgCount}"
+               }
+               visible   =   {
+                  binding   =   "{unreadMsgCount > 0}"
+               }
+            }
+            __type   =   "ui_chat_lib::ChatNotificationItem"
+         }
+         status   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{IsStatusVisible()}"
+               }
+               frame   =   {
+                  binding   =   "{GetStatusFrame()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tf   =   {
+            propMapping   =   {
+               textField   =   {
+                  isNoTranslate   =   True
+               }
+               textFieldHtml   =   {
+                  mapping   =   "textField.htmlText"
+                  isNoTranslate   =   True
+               }
+            }
+            bindings   =   {
+               textFieldHtml   =   {
+                  binding   =   "{GetNickname()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_Chat_lib.hf2p_Chat_lib.UiChatMembersLIRVM', uid = (:DC2).value, chatVM = this}"
+         }
+      }
+      contextMenu   =   {
+         __type   =   "hf2p_Default_lib::UserContextMenu"
+      }
+      __type   =   "ui_chat_lib::ChatMembersLIR"
+   }
+   MessagesList   =   {
+      bindings   =   {
+         items   =   {
+            binding   =   "{GetMessages()}"
+         }
+         _height   =   {
+            binding   =   "{GetMessagesListHeight()}"
+         }
+         _width   =   {
+            binding   =   "{GetMessagesListWidth()}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "wrapping"
+            propVal   =   {
+               val   =   "stick"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      lir   =   {
+         contextMenu   =   {
+            __type   =   "hf2p_Default_lib::UserContextMenu"
+         }
+         __type   =   "hf2p_Chat_lib::MessagesLIR"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBarNew"
+      }
+      __type   =   "ui_chat_lib::ChatMessagesList"
+   }
+   MembersLIRold   =   {
+      elements   =   {
+         tf   =   {
+            fixed   =   False
+            propMapping   =   {
+               textField   =   {
+                  isNoTranslate   =   True
+               }
+               textFieldHtml   =   {
+                  mapping   =   "textField.htmlText"
+                  isNoTranslate   =   True
+               }
+            }
+            bindings   =   {
+               textFieldHtml   =   {
+                  binding   =   "{GetNickname()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_Chat_lib.hf2p_Chat_lib.UiChatMembersLIRVM', uid = (:DC2).value}"
+         }
+      }
+      contextMenu   =   {
+         __type   =   "hf2p_Default_lib::UserContextMenu"
+      }
+      __type   =   "ui_chat_lib::ChatMembersLIR"
+   }
+   MembersList   =   {
+      events   =   {
+         indexChange   =   {
+            eventRemap   =   "#OnSelectedMemberChanged"
+         }
+      }
+      bindings   =   {
+         items   =   {
+            binding   =   "{membersObservable}"
+         }
+         _height   =   {
+            binding   =   "{GetMembersListHeight()}"
+         }
+         selection   =   {
+            binding   =   "{selectedMemberIdx}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "wrapping"
+            propVal   =   {
+               val   =   "stick"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      lir   =   {
+         contextMenu   =   {
+            __type   =   "hf2p_Default_lib::UserContextMenu"
+         }
+         __type   =   "hf2p_Chat_lib::MembersLIR"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBarNew"
+      }
+      __type   =   "ui_chat_lib::ChatMembersList"
+   }
+   MembersListCont   =   {
+      sslClass   =   "UiChatMembersListCont"
+      sslModule   =   "ui.libs.hf2p_Chat_lib.hf2p_Chat_lib"
+      x   =   6
+      y   =   31
+      elements   =   {
+         chatMask   =   {
+            bindings   =   {
+               _width   =   {
+                  binding   =   "{GetMembersWidth()+10}"
+               }
+               _height   =   {
+                  binding   =   "{GetMembersHeight()+10}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtAreaCont   =   {
+            visible   =   False
+            elements   =   {
+               txtArea   =   {
+                  propMapping   =   {
+                     htmlText   =   {
+                        mapping   =   "htmlText"
+                        isNoTranslate   =   True
+                     }
+                  }
+                  elements   =   {
+                     raw_textField   =   {
+                        events   =   {
+                           link   =   {
+                              eventRemap   =   "#OnLinkClicked"
+                           }
+                           linkMouseOver   =   {
+                              eventRemap   =   "#OnLinkMouseOver"
+                           }
+                           linkMouseOut   =   {
+                              eventRemap   =   "#OnLinkMouseOut"
+                           }
+                        }
+                        bindings   =   {
+                           styleSheet   =   {
+                              binding   =   "{GetStyleSheet()}"
+                           }
+                        }
+                        contextMenu   =   {
+                           __type   =   "hf2p_Default_lib::UserContextMenu"
+                        }
+                        __type   =   "ui_widget_text"
+                     }
+                  }
+                  bindings   =   {
+                     htmlText   =   {
+                        binding   =   "{membersTxtObservable}"
+                     }
+                     _width   =   {
+                        binding   =   "{GetMembersWidth()}"
+                     }
+                     _height   =   {
+                        binding   =   "{GetMembersHeightDelayed()}"
+                     }
+                     editable   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_common_lib::DefaultTextArea"
+               }
+            }
+            __type   =   "ui_common_lib::DefaultTextAreaCont"
+         }
+         listContentAttach   =   {
+            elements   =   {
+               memberList   =   {
+                  lir   =   {
+                     contextMenu   =   {
+                        __type   =   "hf2p_Default_lib::UserContextMenu"
+                     }
+                     __type   =   "hf2p_Chat_lib::MembersLIR"
+                  }
+                  scrollbar   =   {
+                     __type   =   "hf2p_WeaponList_lib::wc_ItemsListScrollBarNew"
+                  }
+                  __type   =   "hf2p_Chat_lib::MembersList"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      stateMap   =   {
+         states   =   {
+            Hidden   =   {
+            }
+            Visible   =   {
+            }
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{IsMembersVisible()}"
+         }
+         state   =   {
+            binding   =   "{GetMembersPanelState()}"
+         }
+      }
+      __type   =   "ui_chat_lib::ChatLeftListCont"
+   }
+   MessagesListCont   =   {
+      sslClass   =   "UiChatMessagesListCont"
+      sslModule   =   "ui.libs.hf2p_Chat_lib.hf2p_Chat_lib"
+      x   =   5
+      y   =   25
+      handlers   =   {
+         AppendChatTabText   =   {
+            handlerName   =   "OnAppendChatTabText"
+         }
+         SetChatTabText   =   {
+            handlerName   =   "OnSetChatTabText"
+         }
+         ShowChatTabMessages   =   {
+            handlerName   =   "OnShowChatTabMessages"
+         }
+      }
+      elements   =   {
+         maskClip   =   {
+            bindings   =   {
+               _width   =   {
+                  binding   =   "{GetMessagesMaskWidth()+(isCollapsed ? -5 : 11)}"
+               }
+               _height   =   {
+                  binding   =   "{GetMessagesHeight()+10}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         txtAreaCont0   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont1   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont2   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont3   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont4   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont5   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont6   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont7   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont8   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+         txtAreaCont9   =   {
+            __type   =   "hf2p_Chat_lib::ChatTxtAreaCont"
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{IsMessagesVisible()}"
+         }
+      }
+      __type   =   "ui_chat_lib::ChatBigListCont"
+   }
+   ChatTabs   =   {
+      elements   =   {
+         tab0   =   {
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab9   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   9
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab1   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab2   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   2
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab3   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   3
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab4   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   4
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab5   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   5
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab6   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   6
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab7   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   7
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+         tab8   =   {
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   8
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Chat_lib::ChatBaseTabCont"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{tabs}"
+         }
+      }
+      __type   =   "ui_chat_lib::ChatTabsContCont"
+   }
+   ChatBaseTab   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#TabClicked"
+         }
+      }
+      elements   =   {
+         tf   =   {
+            propMapping   =   {
+               tfWidth   =   {
+                  mapping   =   "textField.width"
+               }
+            }
+            bindings   =   {
+               textField   =   {
+                  binding   =   "{data.privateUid ? ($UserDataStorage.users[data.privateUid].has_base ? $UserDataStorage.users[data.privateUid].base.full_nickname + '~' : '???~') : data.name}"
+               }
+               scaleX   =   {
+                  binding   =   "{tabScaleInv}"
+               }
+               tfWidth   =   {
+                  binding   =   "{tabWidth - 20}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bg   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{isNewMessages ? 'newMsg' : 'init'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         selected   =   {
+            binding   =   "{isSelected}"
+         }
+         scaleX   =   {
+            binding   =   "{tabScale}"
+         }
+      }
+      __type   =   "ui_chat_lib::ChatMidTab"
+   }
+   ChatBaseTabCont   =   {
+      sslClass   =   "ChatTab"
+      sslModule   =   "ui.libs.hf2p_Chat_lib.hf2p_Chat_lib"
+      elements   =   {
+         closeBtn   =   {
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#ClosePrivateTab"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{GetCloseButtonVisible()}"
+               }
+               x   =   {
+                  binding   =   "{notifOffset + 10}"
+               }
+            }
+            __type   =   "ui_chat_lib::ChatTabCloseBtn"
+         }
+         notif   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{isNewMessages and false}"
+               }
+               tf   =   {
+                  binding   =   "{newMessagesCount}"
+               }
+               x   =   {
+                  binding   =   "{notifOffset}"
+               }
+            }
+            __type   =   "ui_chat_lib::ChatNotificationItem"
+         }
+         tab   =   {
+            __type   =   "hf2p_Chat_lib::ChatBaseTab"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{tabs[(:idx)]}"
+         }
+         visible   =   {
+            binding   =   "{isValidTab}"
+         }
+         x   =   {
+            binding   =   "{tabOffset}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "idx"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      contextMenu   =   {
+         __type   =   "hf2p_Default_lib::UserContextMenu"
+      }
+      __type   =   "ui_chat_lib::ChatMidTabCont"
+   }
+   ChatTxtAreaCont   =   {
+      x   =   10
+      y   =   10
+      fixed   =   False
+      elements   =   {
+         txtArea   =   {
+            propMapping   =   {
+               htmlText   =   {
+                  mapping   =   "htmlText"
+                  isNoTranslate   =   True
+               }
+            }
+            elements   =   {
+               raw_textField   =   {
+                  events   =   {
+                     link   =   {
+                        eventRemap   =   "#OnLinkClicked"
+                     }
+                     linkMouseOver   =   {
+                        eventRemap   =   "#OnLinkMouseOver"
+                     }
+                     linkMouseOut   =   {
+                        eventRemap   =   "#OnLinkMouseOut"
+                     }
+                  }
+                  bindings   =   {
+                     styleSheet   =   {
+                        binding   =   "{GetStyleSheet()}"
+                     }
+                  }
+                  contextMenu   =   {
+                     __type   =   "hf2p_Default_lib::UserContextMenu"
+                  }
+                  __type   =   "ui_widget_text"
+               }
+            }
+            bindings   =   {
+               editable   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_common_lib::DefaultTextArea"
+         }
+      }
+      __type   =   "ui_common_lib::DefaultTextAreaCont"
+   }
+}
+__type   =   "ui_widget_lib"

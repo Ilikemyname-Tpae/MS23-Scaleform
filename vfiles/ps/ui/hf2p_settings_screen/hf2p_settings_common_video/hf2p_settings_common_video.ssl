@@ -1,0 +1,141 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.game_preferences
+import ui.libs.hf2p_SlidingScreens.hf2p_sliding_screens_lib
+
+class UiStCommonVideo : UiSlidingScreenPageSettings  
+   
+var is_inited :  bool = false
+   
+override tryToCloseOrReturn // () : bool //true if close
+Log("ui~advanced_video", "__________________________________________________ On Advanced out sub screen")
+
+   if (Widgets.video_screen.GetStateName() != "Visible")
+      Widgets.video_screen.SetStateName("Visible")
+      Widgets.video_advanced_screen.SetStateName("Initial")
+      return false
+   end
+   return true
+end
+   
+func onAdvancedWasCustomized(p:params):bool
+   return false
+end
+   
+
+func onAdvancedVideoClicked(p:params):bool
+Log("ui~advanced_video", "__________________________________________________ On Advanced video Selected")
+   if (Widgets.video_advanced_screen.GetStateName() != "Visible")
+      GenerateEvent("OnEnterSubscreen")
+      Widgets.video_screen.SetStateName("Initial")
+      Widgets.video_advanced_screen.SetStateName("Visible")
+   end
+   return false
+end   
+ 
+handle OnEnterState("Initial")
+   Widgets.video_screen.SetStateName("Initial")
+   Widgets.video_advanced_screen.SetStateName("Initial")
+   Set("visible", false)            
+end  
+        
+handle OnEnteringState("Visible")  
+   Init()
+   Widgets.video_screen.SetStateName("Visible")
+   Widgets.video_advanced_screen.SetStateName("Initial")
+   Set("visible", true)
+end  
+
+override SwitchToScreen // ()
+   Log("ui~content", "Audio setting SwitchSlide")
+   Props.visible := true
+end
+
+override PrepareSlide // ()
+   Log("ui~content", "Audio setting EnableSlide")
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   GenerateEvent("OnEnterNewTab")
+   Props.visible := true
+   
+   if (Widgets.video_screen.GetStateName() != "Visible")
+      Widgets.video_screen.SetStateName("Visible")
+   else
+      StartDefaultBlinking(0.5, 1.0)
+   end
+   
+   Widgets.video_advanced_screen.SetStateName("Initial")  
+   
+   var p: params
+   p.state := "s_controlls"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+override PrepareHideSlide //()
+end
+
+override Init //()
+   is_inited := true
+   Widgets.video_advanced_screen.Init()
+   Widgets.video_screen.Init()
+end
+
+override Reset // ()
+   Widgets.video_advanced_screen.Reset()
+   Widgets.video_screen.Reset()
+end
+
+override Revert // ()
+   Widgets.video_advanced_screen.Revert()
+   Widgets.video_screen.Revert()
+end
+
+override HaveUnsavedChanges // () :  bool
+   Log("ui~content", "Check controls result1")
+   if (!is_inited)
+      return false
+   end
+   
+   Log("ui~content", "Check controls result2")
+   var res : bool = Widgets.video_advanced_screen.HaveUnsavedChanges()
+   res := res or Widgets.video_screen.HaveUnsavedChanges()
+   
+   return res
+end
+
+func ContinueApplyVideoSettings(p : params) : bool
+   Widgets.video_advanced_screen.Apply()
+   GenerateEvent("closeSlidingScreens")
+   return false
+end
+
+func ContinueRevertVideoSettings(p : params) : bool
+   // not very user friendly, comment for now
+   //Widgets.video_advanced_screen.Revert()
+   return false
+end
+
+override Apply // () : bool
+   if (!is_inited)
+      return true
+   end
+   
+   var res : bool = Widgets.video_advanced_screen.CheckCanApply()
+   if (res)
+      res := Widgets.video_screen.Apply()
+      if (res)
+         Widgets.video_advanced_screen.Apply()      
+      end
+   end
+   return res
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      Log("ui~content", "Audio setting DisableSlide")
+      Props.visible := false
+      SetStateName("Initial")
+   end
+end
+end

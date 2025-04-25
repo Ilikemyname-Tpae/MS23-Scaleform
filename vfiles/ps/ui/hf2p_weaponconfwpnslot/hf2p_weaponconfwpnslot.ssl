@@ -1,0 +1,61 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+
+class UiWcWeaponCont : UiWidgetContainer
+
+var   itemType :  string   = ""
+var   itemName :  string   = ""
+var   slotIdx  :  int      = 0
+
+func Init(_itemType:string, _itemName: string, _slotIdx:int, _isSelected: bool, _isEnable: bool = true)
+   itemType    := _itemType
+   slotIdx     := _slotIdx
+   if (_itemType != "")
+      Widgets.wpnSlot.label       := _itemName
+      //Props.visible               := true
+   else
+      //Props.visible               := false
+   end
+   EnableSlot(_isEnable)
+   //SelectSlot(_isSelected)
+   Update()
+end
+
+func Update()
+
+end
+
+func IsSelected():bool
+   var ret:bool = false
+   return ret
+end
+
+func SelectSlot(_isSelected: bool)
+   Widgets.wpnSlot.selected := _isSelected
+end
+
+func EnableSlot(_enable:bool)  
+   if (_enable)
+      Widgets.wpnSlot.enabled := true
+      Widgets.wpnSlot.alpha := 100
+   else
+      Widgets.wpnSlot.enabled := false
+      Widgets.wpnSlot.alpha := 50
+   end   
+end
+
+func SendWeaponSlotSelected()
+   var pp:params
+   pp.elemID      := itemType
+   pp.itemCatIdx  := (int)Props.itemCatIdx
+   Log("ui~wc_weaponCont", "OnSubTabSelected = " + itemType)
+   GenerateEvent("#OnSubTabSelected", pp)
+   //GenerateEvent("OnSubTabSelected", pp)
+end
+
+func OnWpnSlotClicked(p:params):bool 
+   SendWeaponSlotSelected()
+   return false
+end
+
+end

@@ -1,0 +1,303 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.game_preferences
+import ssl.lib.ui.ui_widget_button
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_list_item
+import ssl.lib.ui.ui_widget_stepper
+import ssl.hf2p.ui_globals
+
+class UiStRebindKeys : UiWidgetContainer
+
+var labels : vector
+var hover_item : int = -1
+var hover_primary : bool = true
+
+func GetLabel(idx:int):string
+   return Widgets.labelList.GetItemData(idx).tfLabels.tfAction.text
+end
+
+func GetKeyText(key_code:int):string
+   return $hf2pPreferences.GetKeyTextInternal(key_code)
+end
+
+func SetActionLabels(data:vector)
+   var i : int
+
+   labels.Clear()
+   
+   for i := 0 to data.Last()
+      var label : params
+      var sublabels : params
+      sublabels.text := data.Get(i)
+      label.labels := sublabels
+      labels.Push(label)
+   end
+
+   Widgets.labelList.SetData(labels)
+end
+
+func GetKeys():vector
+   var keys : vector
+
+   var i : int
+   for i := 0 to labels.Last()
+      var p:params
+      p.primary := labels.Get(i).primary
+      p.alternative := labels.Get(i).alt
+      keys.Push(p)
+   end
+  
+   return keys
+end
+
+func SetKeys(data:vector)
+   var i : int
+   
+   for i := 0 to data.Last()
+      var primary : params
+      var alternative : params
+
+      primary.keycode := data.Get(i).primary
+      alternative.keycode := data.Get(i).alternative
+
+      labels.Get(i).primary := primary
+      labels.Get(i).alt := alternative
+   end
+
+   UpdateKeyLists()
+end
+
+func UpdateKeyLists()
+   UpdateKeyText()
+
+   Widgets.labelList.SetData(labels)
+end
+
+func UpdateKeyText()
+   var key_labels : vector = $hf2pPreferences.GetKeyLabels()
+
+   var i : int
+   for i := 0 to labels.Last()
+      labels.Get(i).primary.text := $hf2pPreferences.GetKeyTextInternal(labels.Get(i).primary.keycode)
+      labels.Get(i).alt.text := $hf2pPreferences.GetKeyTextInternal(labels.Get(i).alt.keycode)
+      Log("ui~st_RebindKeys", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Labels[" + (string)(i) + "].primary.text = " + labels.Get(i).primary.text)
+   end
+end
+
+func SetPrimaryKey(index : int, keycode : int)
+   if (keycode >= 0)
+      RemoveKey(keycode)
+   end
+   labels.Get(index).primary.keycode := keycode
+   UpdateKeyLists()
+end
+
+func SetAltKey(index : int, keycode : int)
+   if (keycode >= 0)
+      RemoveKey(keycode)
+   end
+   labels.Get(index).alt.keycode := keycode
+   UpdateKeyLists()
+end
+
+func RemoveKey(keycode : int)
+   var i : int
+
+   for i := 0 to labels.Last()
+      if (labels.Get(i).primary.keycode == keycode)
+         labels.Get(i).primary.keycode := -1
+      end
+      if (labels.Get(i).alt.keycode == keycode)
+         labels.Get(i).alt.keycode := -1
+      end
+   end
+end
+
+func OnPrimaryMouseIn(p:params):bool
+   hover_primary := true
+   return false
+end
+
+func OnAltMouseIn(p:params):bool
+   hover_primary := false
+   return false
+end
+
+func OnPrimaryMouseOut(p:params):bool
+   hover_item := -1
+   return false
+end
+
+func OnAltMouseOut(p:params):bool
+   hover_item := -1
+   return false
+end
+
+func onPrimaryKeyClick(p:params):bool
+   if (hover_primary)
+      GenerateEvent("OnPrimaryKeyClick", p)
+   else
+      GenerateEvent("OnAltKeyClick", p)
+   end
+   return false
+end
+
+global event OnKeyPress(p:params)
+   if (GetParentWidget().GetStateName() != "Visible")
+      return
+   end
+
+   if (p.key == 84 and hover_item >= 0) // DELETE key
+      // clear bind under mouse
+      if (hover_primary)
+         //SetPrimaryKey(hover_item, -1)
+      else
+         //SetAltKey(hover_item, -1)
+      end
+   end
+end
+end
+
+class UiStCheckbox : UiWidgetButton
+
+func onCheckBoxValueChange(p:params):bool
+   GenerateEvent("OnCheckBoxValueChange")
+   return false
+end
+end
+
+class UiStRebindLIR : UiWidgetListItem
+var def_color : int = -1
+override SetData//(p:params)
+   Props.mouseChildren := true
+   Props.tfLabels.Props.enabled := false
+
+   if (def_color == -1)
+      def_color := Props.tfPrimary.tfAction.textColor
+   end
+
+   if (! IsVoid(p.labels))
+      Props.tfLabels.tfAction.text := p.labels.text
+   end
+   if (! IsVoid(p.primary))
+      Props.tfPrimary.tfAction.text := p.primary.text
+      Log("ui~rebind", "text = " + p.primary.text)
+      if (p.primary.text == "settings_keys_none")
+         Props.tfPrimary.tfAction.textColor := 3355443
+      else 
+         Props.tfPrimary.tfAction.textColor := def_color
+      end
+   end
+   if (! IsVoid(p.alt))
+      Props.tfAlternative.tfAction.text := p.alt.text
+      Log("ui~rebind", "text = " + p.alt.text)
+      if (p.alt.text == "settings_keys_none")
+         Props.tfAlternative.tfAction.textColor := 3355443
+      else 
+         Props.tfAlternative.tfAction.textColor := def_color
+      end
+   end
+end
+end
+
+class UiStSlider : UiWidgetContainer
+
+func OnSliderValueChange(p:params):bool
+   if (Props.textvisible)
+      Widgets.textbox.text := (string)((int)(Props.value))
+   end
+   GenerateEvent("onSliderValueChange") 
+   return false
+end
+
+func OnMouseIn(p:params):bool
+   Props.SetFocus()
+   return false
+end
+
+func OnMouseOut(p:params):bool
+   return false
+end
+
+func OnFocusIn(p:params):bool
+   GenerateEvent("onFocusIn")
+   return false
+end
+
+func OnFocusOut(p:params):bool
+   GenerateEvent("onFocusOut")
+   return false
+end
+end
+
+class UiStStepper : UiWidgetStepper
+
+func OnMouseIn(p:params):bool
+   Props.SetFocus()
+   return false
+end
+
+func OnMouseOut(p:params):bool
+   return false
+end
+
+func OnFocusIn(p:params):bool
+   GenerateEvent("onFocusIn")
+   return false
+end
+
+func OnFocusOut(p:params):bool
+   GenerateEvent("onFocusOut")
+   return false
+end
+
+func SetDataCustom(data : vector)
+   SetData(data)
+end
+
+func EnableNavigationByIdx(idx : int)   
+   var items : vector = GetData()
+   EnableNavigation(idx > 0, idx < items.Count() - 1)
+end
+
+func UpdateStepperNavigation(p : params) : bool
+   EnableNavigationByIdx(Props.selection)
+   return false
+end
+
+func onStepperIndexChange(p:params):bool
+   GenerateEvent("OnStepperIndexChange")
+   return false
+end
+
+func EnableNavigation(prev: bool, next: bool)
+   Widgets.prevBtn.visible  := prev
+   Widgets.nextBtn.visible  := next
+   Props.mouseEnabled       := prev or next
+   Props.mouseChildren      := prev or next
+end
+
+func inputEvent (p : params) : bool
+   var isTerminated  : bool   = false
+   var keyCode       : int    = p.keyCode
+   var idx : int = p.widget.GetSelectionIdx()
+   if (p.isDown)
+      if (keyCode == $uiKeys.VK_RIGHT)
+         if (idx < p.widget.GetData().Count() - 1)
+            p.widget.SetSelectionIdx(idx + 1)
+         end
+      elif (keyCode == $uiKeys.VK_LEFT)    
+         if (idx > 0)
+            p.widget.SetSelectionIdx(idx - 1)
+         end
+      end
+      isTerminated := true
+   end
+   if (isTerminated)
+      p.eventState.SetIsTerminated(isTerminated)
+   end
+   return false
+end
+
+end

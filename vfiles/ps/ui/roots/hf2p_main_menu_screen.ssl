@@ -1,0 +1,1876 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_state_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.options_sys
+import ssl.lib.ui.ui_widget_manager
+import ui.root
+import ui.ui_party_monitor
+import ui.ui_matchmaking
+import ui.ui_player_info
+import ssl.hf2p.user_service
+import ssl.hf2p.ui_ingame
+import ssl.hf2p.hq
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreensMainMenu
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreensSettingsMenu
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreens_Clans
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreens_LootBox
+import ui.libs.hf2p_Chat_lib.hf2p_Chat_lib
+
+class UiHf2pMainMenuDebugPanelVM : UiWidgetContainer
+   var   debugTxt             : ObservableProperty = $OM.Calculated(this, "GetDebugTxt")
+   var   debugStrings         : vector
+   var   startTime            : int = -1
+   var   isEnabled            : ObservableProperty = $OM.Property("false")
+
+   //global event uiDbgKey4()
+   //   isEnabled.Set(! (bool)isEnabled.Get())
+   //end
+
+   func GetIsVisible() : bool
+      var isConsoleEnabled : bool = (bool)($sslOptionsSys.GetVariable("Debug.EnableConsole"))
+      return isConsoleEnabled and (bool)isEnabled.Get()
+   end
+   
+   func GetCurTime() : int
+      if (startTime == -1)
+         startTime := (int)$UiGlobals.timer.Get()
+      end
+      var curTimer : int = (int)$UiGlobals.timer.Get()
+      return curTimer
+   end
+   
+   func GetDebugTxt() : string
+      var ret : string = ""
+      if (GetIsVisible())
+         var curTimer : int = GetCurTime()
+         ret := ret + " Time = " + (string) curTimer + "\n"
+         
+         var i : int
+         var startI : int = debugStrings.Count() - 45
+         if (startI < 0)
+            startI := 0
+         end
+         for i := startI to debugStrings.Count() - 1
+            var p : params = debugStrings.Get(i)
+            var mesTime : int = (int)p.mesTime
+            //if (curTimer - mesTime < 15)
+               ret := ret + " " + (string)(i+1) + ") " + p.mesTxt + "\n"
+            //end
+         end
+      end
+      return ret
+   end
+   
+   func AddMesEvent(p : params) : bool
+      AddMes(p.str)
+      return false
+   end
+   
+   func AddMes(_str : string)
+      if (! GetIsVisible())
+         return
+      end
+      var curTimer : int = GetCurTime()
+      var p : params
+      p.mesTime   := curTimer
+      p.mesTxt    := _str
+      debugStrings.Push(p)
+      debugTxt.Invalidate()
+   end
+end
+
+
+class UiHf2pMainMenu : UiWidgetStateContainer
+ 
+var   framesCnt               : int    = 0
+var   totalTime               : float  = 0 
+var   fpsCalc                 : float  = 0
+var   wasLvlLoaded            : bool   = false
+var   isLoadingDone           : bool   = false
+var   currentFakeBack         : string = "weapons"
+var   isFakeBackVisible       : bool   = false
+var   isLoggedIn              : bool   = false
+var   autoLoginScreen         : string = ""   
+var   notifSubscribed         : bool   = false
+var   settingsBtnEnabled      : bool   = true
+
+// child elements [need autogen for this]
+var   slidingScreens          : UiSlidingScreensMainMenu       = null
+var   slidingSettingsScreen   : UiSlidingScreensSettingsMenu   = null
+var   slidingScreensClans     : UiSlidingScreensClans          = null
+var   slidingScreensLoot      : UiSlidingScreensLoot           = null
+
+handle OnAdvance
+end
+
+var stateContainerChilds : vector
+override GetStateContainerChilds // () : vector
+   var ret : vector = stateContainerChilds
+   if (ret.Count() == 0)
+      var childRec   : params   
+      childRec.name  := slidingScreens.GetName()
+      childRec.layer := 0
+      ret.Push(childRec.Clone())
+      
+      childRec.name  := slidingSettingsScreen.GetName()
+      childRec.layer := 0
+      ret.Push(childRec.Clone())
+
+      childRec.name  := slidingScreensClans.GetName()
+      childRec.layer := 0
+      ret.Push(childRec.Clone())
+
+      childRec.name  := slidingScreensLoot.GetName()
+      childRec.layer := 0
+      ret.Push(childRec.Clone())
+
+      childRec.name  := "loadoutSelect"
+      childRec.layer := 1
+      ret.Push(childRec.Clone())
+      
+      childRec.name  := "armorLoadout"
+      childRec.layer := 1
+      ret.Push(childRec.Clone())
+      
+      childRec.name  := "newsScreen"
+      childRec.layer := 1
+      ret.Push(childRec.Clone())
+      
+      childRec.name  := "goldScreen"
+      childRec.layer := 2
+      ret.Push(childRec.Clone())
+      
+      childRec.name  := "boostScreen"
+      childRec.layer := 2
+      ret.Push(childRec.Clone())
+   end
+   return ret
+end
+
+func AddDebugString(_str : string)
+   
+end
+
+func OnMouseDown(p : params) : bool
+   var target : UiWidget = p.target
+   var rankPanel = (UiWidget)GetWidget("rankPanel")
+   var rosterDocker = (UiWidget)rankPanel.GetWidget("rosterDocker")
+   var rosterDockerState = rosterDocker.GetStateName()
+   var contextMenu = (UiWidget)GetCurrentPopup()
+   var messageBox = (UiWidget)GetWidget("messageBox")
+   
+   if (contextMenu != null)
+      if (target.IsChildOf(contextMenu))
+         return true
+      end
+   end
+   if !target.IsChildOf(rankPanel) and !target.IsChildOf(messageBox) and (rosterDockerState == "Visible" or rosterDockerState == "VisibleForce")
+      rankPanel.GenerateEvent("onRankPanelRosterClick")
+   end
+      
+   var chatPanel  = (UiChat)(Widgets.lowerPanel.chatCont.object)
+   chatPanel.ProcessMouseDown(target)
+   
+   return true
+end
+
+func OnRewardRequest(p : params) : bool
+   Widgets.rewardBox.PrepareInfo(p)
+   return false
+end
+
+func OnChallengeCompleteRequest(p : params) : bool
+   var reward : vector = p.reward
+   factLog("UI/MMENU", "ChallengeCompleteRequest, reward.Count() = " + reward.Count())
+   Widgets.challengeBox.ShowChallengeScr(p)
+   return false
+end
+
+func EnableNotificationsPopup(_enabled : bool) : bool
+   Widgets.challengePopupProgress.GetDC().EnablePopups(_enabled, false)
+   return false
+end
+
+func OnMainMenuDialogRequest(p:params):bool
+   Widgets.messageBox.OpenDialog(p)
+   return false
+end
+
+func UpdateTutorial(_stage: string = ""): bool
+   return Widgets.tutorialManager.ProcessTutorial(this, _stage)
+end
+
+func OnTutorialDialogRequest(p:params):bool
+   Widgets.tutorialMessageBox.OpenDialog(p)
+   return false
+end
+
+var isRematch        : bool = false
+var isRematchScreens : bool = false
+var shopEnabled      : bool = false
+
+func EnableGiftShop()
+   shopEnabled := true
+end
+
+func StartRematch() 
+   if (! $root.GetIsDisconnect())
+      Log("ui~hf2p_main_menu", "MAINMENU::StartRematch")
+      EnableGiftShop()
+      if ($uiPartyMonitor.NeedShowPostmatch()) 
+         isRematch         := true
+         isRematchScreens  := true
+         $uiMatchmaking.SetIsRematch()
+         OpenPostgame(false)
+      else
+         SetStateName("MainMenuInitial")
+      end
+   end
+end
+
+func OpenFullScreen(_fullscreenScreen : string, _layer : int = -1)
+   PrepareOpenChild(_fullscreenScreen, _layer)
+   SetStateName("FullscreenScreen")
+   EnableSettings(false)
+end
+
+func OpenFullScreenNoBG(_fullscreenScreen : string, _layer : int = -1)
+   PrepareOpenChild(_fullscreenScreen, _layer)
+   SetStateName("FullscreenScreenNoBG")
+   EnableSettings(false)
+end
+
+func OpenFullScreenEmpty(_fullscreenScreen : string, _layer : int = -1)
+   PrepareOpenChild(_fullscreenScreen, _layer)
+   SetStateName("FullscreenScreenEmpty")
+   EnableSettings(false)
+end
+
+func CloseFullScreen()
+   PopCurrentState()
+end
+
+func onCloseGoldScreen(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onCloseGoldScreen()")
+   CloseFullScreen()
+   return false
+end
+
+func EnableSettings(settingsEnabled : bool)
+   if (settingsEnabled)
+      Widgets.lowerPanelSettings.SetStateName("Visible")
+   else
+      Widgets.lowerPanelSettings.SetStateName("Hidden")
+   end   
+end
+
+func OnMainMenuEnableSettings(p : params) : bool
+   EnableSettings(true)
+   return false
+end
+
+func OnMainMenuDisableSettings(p : params) : bool
+   EnableSettings(false)
+   return false
+end
+
+func onBoostBtnClicked(p : params) : bool
+   OpenFullScreen("boostScreen")
+   Widgets.boostScreen.SetStateName("Visible")
+   return false
+end
+
+func onSlideBoxClose(p : params) :  bool
+   CloseFullScreen()
+   return false 
+end
+
+func OpenReopenSlidingScreen(childSlidingScreens : UiSlidingScreens, slidingScreenMode: string = "GiftShop", startingScreen: string, forceJump : bool = false)
+   if (childSlidingScreens.GetStateName() != "Visible" or childSlidingScreens.GetCurrentScreenName() != startingScreen) or forceJump
+      var screenLayer   : int = -1
+      var allowSettings : bool = true
+      if (startingScreen == $uiEnums.SLIDING_PAGE_TECHTREE or startingScreen == $uiEnums.SLIDING_PAGE_ITEM_CHALLENGES)
+         screenLayer := 1
+      end
+      if (childSlidingScreens.GetStateName() == "Visible")
+         if (startingScreen == $uiEnums.SLIDING_PAGE_TECHTREE or startingScreen == $uiEnums.SLIDING_PAGE_PROFILE or startingScreen == $uiEnums.SLIDING_PAGE_ITEM_CHALLENGES)
+            screenLayer := 1
+         end
+         if (startingScreen == $uiEnums.SLIDING_PAGE_POSTMATCH)
+            screenLayer := 1
+         end
+      elif (slidingScreenMode == "Settings")
+         if (slidingScreens.GetStateName() == "Visible")
+            screenLayer    := 1
+         end
+         allowSettings  := false
+      end   
+      PrepareOpenChild(childSlidingScreens.GetName(), screenLayer)
+      childSlidingScreens.SetViewPage(slidingScreenMode, startingScreen)
+      childSlidingScreens.SetStateName("Visible")
+      SetStateName("SlidingScreens")
+      EnableSettings(allowSettings)
+   else
+      childSlidingScreens.SetViewPage(slidingScreenMode, startingScreen)
+   end
+end
+
+override OnStateRollback//(stateName : string)   
+   if (stateName == "SlidingScreens")
+      var allowSettings : bool = slidingScreens.GetStateName() == "Visible"
+      EnableSettings(allowSettings)
+   end
+end
+
+func OpenSlidingScreenByName(_startingScreen: string, _slidingScreenMode: string = "GiftShop", forceJump : bool = false)
+   Log("ui~hf2p_main_menu", "OpenSlidingScreenByName " + _startingScreen)
+   OpenReopenSlidingScreen(slidingScreens, _slidingScreenMode, _startingScreen, forceJump)
+end
+
+func onOpenWeaponConfig(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onOpenWeaponConfig()")   
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_WEAPONS, $uiEnums.SLIDING_SCREENS_MODE_SHOP)
+   return false
+end
+
+var emblBackState: string = ""
+var emblShowBack: bool = true
+func onOpenEmblemEditor(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onOpenEmblemEditor()")
+   
+   if (! IsVoid(p.backState)) 
+      emblBackState := p.backState
+   end
+   SetStateName("EmblemEditor")
+   
+   return false
+end
+func onCloseEmblemEditor(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onCloseEmblemEditor() emblBackState=" + emblBackState)
+
+   if (emblBackState != "")
+      SetStateName(emblBackState)
+   else
+      SetStateName("LeaveFullScreen")
+   end
+   emblBackState := ""
+   emblShowBack := true
+   
+   return false
+end
+
+func onOpenLoadout(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onOpenLoadut()")   
+   OpenFullScreen("loadoutSelect")
+   Widgets.loadoutSelect.OpenLoadoutScr(p)
+   EnableSettings(false)
+   //GenerateEvent("SeeLoadout", p)   
+   return false
+end
+
+func onOpenSlidingScreens(p:params):bool
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_WEAPONS)
+   return false
+end
+
+func onStartTutorialLevel(p:params):bool
+   $hq.TutorialStart()
+   return false
+end
+
+func onOpenSlidingScreen(p:params):bool
+   var slidingScreenMode: string = $uiEnums.SLIDING_SCREENS_MODE_SHOP
+   if (! IsVoid(p.widget.slidingScreenMode))
+      slidingScreenMode := p.widget.slidingScreenMode
+   end
+   if (slidingScreenMode == "Profile")
+      $UiGlobals.profileScreenUID.Set($UserDataStorage.local_user.uid.Get())
+   end
+   OpenSlidingScreenByName(p.widget.slidingScreenName, slidingScreenMode)   
+   return false
+end
+
+func onCloseSlidingScreens(p:params):bool
+   if (GetStateName() == "TechSelect")
+      SetStateName("TutorialEmpty")
+   else
+      PopCurrentState()
+   end   
+   return false
+end
+
+func CloseGameModeLobby(p:params):bool
+   GotoMainMenuInitial()
+   return false
+end
+
+func openFriendRosterOnGameModeScr(p : params) :  bool
+   var vis : string = Widgets.rankPanel.joinFriendRankPanel.GetStateName()
+   if (vis == "Initial") 
+      Widgets.rankPanel.joinFriendRankPanel.SetStateName("Visible")
+   else
+      Widgets.rankPanel.joinFriendRankPanel.SetStateName("Initial")
+   end
+   return false
+end
+
+func onOpenGoldScreen(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onOpenGoldScreen()")
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_BUY_GOLD)
+   OpenFullScreenNoBG("goldScreen")
+   Widgets.goldScreen.SetStateName("Visible")
+   return false
+end
+
+func onShowNews(p : params) : bool
+   openNewsScreen(p)
+   return false
+end
+
+func openNewsScreen(p : params) : bool
+   OpenFullScreenEmpty("newsScreen")
+   var newsId : string = p.newsId
+   Widgets.newsScreen.PrepareNews(p)
+   return false
+end
+
+func closeNewsScreen(p : params) : bool
+   CloseFullScreen()
+   return false
+end
+
+func onOpenGameModeLobby(p:params):bool
+   OpenLobbySelectPlaylist()
+   return false
+end
+
+func onOpenChallengesScr(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onOpenChallengesScr()")
+   return false
+end
+
+func onCloseChellenges(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onCloseChellenges()")
+   return false
+end
+
+func onOpenProfileScr(p:params):bool
+   ShowUserProfile($UserDataStorage.local_user.uid.Get())
+   return false
+end
+
+func onCloseProfileScr(p:params):bool
+   return false
+end
+
+func onOpenGameStatsScreen(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onOpenGameStatsScreen()")
+   return false
+end
+
+func onCloseGameStatsScreen(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onCloseGameStatsScreen()")
+   return false
+end
+
+override GetDefaultState//() : string
+   return "MainMenuInitial"
+end
+
+func onPostgameOut(p: params): bool
+   var isReplay : bool = false
+   if (!IsVoid(p.isReplay))
+      isReplay := p.isReplay
+   end
+   //SetStateName("PostGameTutorial")
+   if (!$uiPartyMonitor.NeedShowPostmatch() or isReplay)
+      if ($uiMatchmaking.GetIsRematch() or $uiPartyMonitor.IsFormationOrLobby())
+         EnterRematchLobby($uiEnums.SLIDING_PAGE_POSTMATCH) // SLIDING_PAGE_LOBBY
+      else
+         PopCurrentState()
+      end
+   elif ($uiPartyMonitor.NeedShowPostmatch())
+      onRematch()
+   else 
+      PopCurrentState()
+   end
+   return false
+end
+
+func onOpenTacticalPackages(p:params):bool
+   Log("ui~hf2p_main_menu", "MAIN_MENU onOpenTacticalPackages()")
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_TACTICAL, $uiEnums.SLIDING_SCREENS_MODE_SHOP)      
+   return false
+end
+
+func SeeArmoryLoadouts(p:params):bool
+   Log("ui~hf2p_main_menu", "SeeArmoryLoadouts")
+   OpenFullScreen("armorLoadout")
+   Widgets.armorLoadout.OpenArmoryLoadoutScr(p)
+   return false
+end
+
+func SeeLoadout(p:params):bool
+   Log("ui~hf2p_main_menu", "SeeLoadout")
+   OpenFullScreen("loadoutSelect")
+   Widgets.loadoutSelect.OpenLoadoutScr(p)
+   return false
+end   
+
+func openLoadoutAssignPerks(p:params):bool
+   Log("ui~hf2p_main_menu", "openLoadoutAssign_MM")
+   OpenFullScreen("loadoutSelect")
+   Widgets.loadoutSelect.AssignSlotsTacticalPack(p)
+   return false
+end
+
+func openLoadoutAssignBooster(p:params):bool
+   Log("ui~hf2p_main_menu", "openLoadoutAssign_MM")
+   OpenFullScreen("loadoutSelect")
+   Widgets.loadoutSelect.AssignSlotsBooster(p)
+   return false
+end
+
+func openLoadoutAssignWpnConf(p:params):bool
+   Log("ui~hf2p_main_menu", "openLoadoutAssignWpnConf_MM")
+   OpenFullScreen("loadoutSelect")
+   Widgets.loadoutSelect.AssignSlotsArsenal(p)
+   return false
+end
+
+func openArmorLoadoutAssgin(p:params):bool
+   Log("ui~mm", "openArmorLoadoutAssgin " + Params2Str(p))
+   OpenFullScreen("loadoutSelect")
+   Widgets.loadoutSelect.AssignSlotsArmor(p)
+   return false
+end
+
+func onCloseArmoryLoadout(p:params):bool
+   Log("ui~hf2p_main_menu", "onCloseArmoryLoadout")
+   CloseFullScreen()
+   return false
+end
+
+func onCloseLoadoutSelection(p:params):bool
+   Log("ui~hf2p_main_menu", "onCloseLoadoutSelection - rcv")
+   CloseFullScreen()
+   return false
+end
+   
+func SwitchToPostGame()
+   Log("ui~hf2p_main_menu", "MAINMENU::SwitchToPostGame")
+   if (! $root.GetIsDisconnect())
+      wasLvlLoaded   := false  
+      isLoadingDone  := false
+      StartRematch() : 1 
+   end
+end
+
+
+global event uiPostgameStatReady(hasError: bool)
+   Props.global_mouse := true
+	// Delay call is required to avoid re-entering network_update() func 
+	// since it brokes http response callback logic
+	if (hasError)
+		LeaveLobby():0
+	end
+end
+
+handle OnActivate
+   $root.SetMainMenu(this)
+   Log("ui~hf2p_main_menu", "MAINMENU::OnHideLoadingScreen $root.GetMainMenuState()=" + $root.GetMainMenuState())
+   OnUpdateRootBrightnessContrast(null)
+end
+
+handle OnDeactivate
+   UnsubsribeFromAllNotif()
+end
+
+global event OnLevelLoaded(state: int)
+   Log("ui~hf2p_main_menu", "MAINMENU::OnLevelLoaded $root.GetMainMenuState()=" + $root.GetMainMenuState())      
+   wasLvlLoaded := true
+end
+
+handle OnEnteringState("Postgame")
+   Props.visible := true
+end
+
+global event beRequestUserStatesCompleted()
+   Log("ui~hf2p_main_menu", "beRequestUserStatesCompleted")
+end
+
+func InitMainMenu()
+   Log("ui~hf2p_main_menu", "InitMainMenu")
+end
+
+
+handle OnChangeState("Initial")
+   InitMainMenu(): 0
+end
+
+handle OnEnteringState("SlidingScreens")
+   GenerateEvent("closeRosterDocker")
+end
+
+handle OnEnteringState("MainMenuInitial")
+   EnableSettings(true)
+end
+
+handle OnChangeStateAny
+   var stateName : string = GetStateName()   
+   if (stateName == "MainMenuInitial")
+      Widgets.leftPanel.menuItems.main.QuickMatch.SetFocus()
+      $UiGlobals.isDockerEnabled.Set(true)
+      isLoggedIn := true
+   end   
+   
+   Widgets.timer.x := 888
+   Widgets.timer.y := 64   
+   
+   GetDC().OnChangeStateAny(GetStateName())
+   CheckDelayedStateChanges()
+end
+
+global event UserService_OnEvent(event_type: int, event_data: params)
+   Log("ui", "UserService_OnEvent " + Params2Str(event_data))
+   factLog("UI/MMENU", "Main_Menu_UserService_OnEvent")
+end
+
+func onSettingsClicked(p:params):bool   
+   
+   return false
+end
+
+var yr: float = 0
+var zs: float = 0
+var fov: float = 55
+
+func onStartGame2(p: params): bool
+   Log("ui~hf2p_main_menu", "MAIN::onStartGame2: " + Params2Str(p))
+   Widgets.timer.InitMatch()
+   return false  
+end   
+
+func onCancelMatch(p: params): bool
+   Widgets.timer.Reset()
+   return false
+end  
+
+func onShowRoster(p: params): bool
+   Log("ui~hf2p_main_menu", "MAIN::onShowRoster: " + Params2Str(p))            
+// Widgets.roster.SetStateName("Active")
+   return false  
+end   
+
+func onHideRoster(p: params): bool
+   Log("ui~hf2p_main_menu", "MAIN::onHideRoster: " + Params2Str(p))            
+//   Widgets.roster.SetStateName("Initial")
+   return false  
+end   
+
+//
+// MP
+//
+
+func onHostGame(p: params): bool
+   Log("ui~hf2p_main_menu", "MAIN::onHostGame: " + Params2Str(p))            
+   EnterFormation($uiEnums.MM_QUEUE_TYPE_CUSTOM)
+   return false
+end
+
+
+func onMatchmakeGame(p: params): bool
+   Log("ui~hf2p_main_menu", "MAIN::onMatchmakeGame: " + Params2Str(p))     
+   $UiGlobals.async_operations.matchmaking_enqueue.Start() // async version
+   OpenLobbyMatchmaking()
+   Widgets.timer.EnterLobby()
+   return false
+end
+
+func EnterRematchLobby(_startPage : string)
+   var partyState : int = (int)$UiGlobals.party.state.Get()
+   if (partyState != $uiEnums.PARTY_STATE_NONE)
+      $UiGlobals.IsPostMatchStatic.Set(false)
+      GotoLobby($UiGlobals.party.GetMMEnumFromState(), _startPage)
+   else
+      $uiMatchmaking.ResetIsRematch()
+      GotoMainMenuInitial()
+   end
+end
+
+global event onRematch()
+   Log("ui~hf2p_main_menu", "MAIN::onRematch: ")
+   EnterRematchLobby($uiEnums.SLIDING_PAGE_POSTMATCH)
+end
+
+func OnLeaveLobby(p: params = null): bool
+   Widgets.timer.Reset()   
+   return true
+end
+
+func LeaveLobby(p: params = null): bool
+   Widgets.timer.Reset()
+   RollbackAllStates()
+   return false
+end  
+
+func presenceTimeoutMbClose(p: params): bool
+   if (! IsVoid(p.newState) and p.newState != "")
+      SetStateName(p.newState)
+   end
+   return false
+end
+
+func genericErrorMessageBoxClosed(p :  params) : bool
+   if (! IsVoid(p.newState) and p.newState != "")
+      if (p.newState == "WelcomeInitial")         
+         $root.SetMainStartState("Welcome")   
+      end
+      SetStateName(p.newState)
+   end
+   return false
+end
+
+func OnOpenClansScreens(p : params) : bool
+   OpenSlidingScreenByNameClans($uiEnums.SLIDING_PAGE_CLAN_CREATE, $uiEnums.SLIDING_SCREENS_MODE_CLANS)
+   return false
+end
+
+func OpenSlidingScreenByNameClans(_startingScreen: string, _slidingScreenMode: string = "Settings", _prevState: string = "MainMenuInitial")
+   OpenReopenSlidingScreen(slidingScreensClans, _slidingScreenMode, _startingScreen)
+end
+
+func onCloseSlidingScreensClans(p:params):bool
+   PopCurrentState()
+   return false
+end
+
+func OnOpenSelectClassScreen(p : params) : bool
+   Widgets.classSelectScreen.visible := true
+   Fire("OnClassSelectionOpen")
+   return false
+end
+
+global event OnClassSelectionClose()
+   if (GetStateName() == "ClassSelect")
+      Widgets.classSelectScreen.SetStateName("Initial")
+      SetStateName("TutorialEmpty")
+      //SetStateName("TechSelect")
+      $hf2pEngine.TermUIScreenSounds()
+   end
+end
+
+func OpenTechTreeScreen (p : params) : bool
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_TECHTREE, $uiEnums.SLIDING_SCREENS_MODE_TECH_TREE)
+   return false
+end
+
+func OpenSlidingScreenByNameLoot(_startingScreen: string = "LootBox", _slidingScreenMode: string = "Loot")
+   OpenReopenSlidingScreen(slidingScreensLoot, _slidingScreenMode, _startingScreen)
+end
+
+func OpenSlidingScreenByNameSettings(_startingScreen: string, _slidingScreenMode: string = "Settings")
+   Log("ui~hf2p_ingame_menu", "OpenSlidingScreenByName0 " + _startingScreen)
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_SETTINGS_SCREEN)
+   OpenReopenSlidingScreen(slidingSettingsScreen, _slidingScreenMode, _startingScreen)
+end
+
+func onCloseSlidingScreensSettings(p:params):bool
+   Log("ui~hf2p_ingame_menu", "Close sliding screens")
+   PopCurrentState()
+   return false
+end
+
+handle OnEnterState("Settings")
+   
+end
+
+func OnLowerPanelSettingClick(p:params):bool
+   Log("hf2p_ingame_menu", "TRY TO START SETTINGS")
+   if (!IsChangingState() and settingsBtnEnabled)
+      OpenSlidingScreenByNameSettings("Gameplay", "Settings")
+   end
+   return false
+end
+
+func OnExitGameMbClosed(p : params) : bool
+   if (p.isOK)
+      $hf2pEngine.ExitGame()      
+   end
+   return false
+end
+
+func OnLowerPanelExitClick(p:params):bool
+   var pp : params
+   pp.titleTxt       := "msg_exit_game_confirm_title"
+   pp.messageTxt     := "msg_exit_game_confirm_message"
+   pp.callbackEvent  := "ExitGameMbClosed"
+   pp.mbType         := $uiEnums.MB_TYPE_NO_YES
+   pp.msgImage       := "exitIcon"
+   GenerateEvent("MainMenuDialogRequest", pp)   
+   return false
+end
+
+func EnablePanelsInput(_enable: bool)
+   Widgets.leftPanel.mouseChildren         := _enable
+   Widgets.leftPanel.mouseEnabled          := _enable
+   Widgets.rightPanel.mouseChildren        := _enable
+   Widgets.rightPanel.mouseEnabled         := _enable
+   Widgets.playerInfoPanel.mouseChildren   := _enable
+   //Widgets.racePanel.mouseChildren         := _enable
+   Widgets.playerInfoPanel.mouseEnabled    := _enable
+   //Widgets.racePanel.mouseEnabled          := _enable
+   Widgets.cashPanel.mouseChildren         := _enable
+   Widgets.cashPanel.mouseEnabled          := _enable
+   Widgets.rankPanel.mouseChildren         := _enable
+   Widgets.rankPanel.mouseEnabled          := _enable
+   Widgets.lowerPanel.mouseChildren        := _enable
+   Widgets.lowerPanel.mouseEnabled         := _enable
+   Widgets.lowerPanelSettings.mouseChildren:= _enable
+   Widgets.lowerPanelSettings.mouseEnabled := _enable
+   Widgets.lowerPanelExit.mouseChildren    := _enable
+   Widgets.lowerPanelExit.mouseEnabled     := _enable
+end
+
+func ShowPanels(_show: bool)
+   Widgets.leftPanel.visible         := _show
+   Widgets.rightPanel.visible        := _show
+   Widgets.playerInfoPanel.visible   := _show
+   Widgets.cashPanel.visible         := _show
+   Widgets.rankPanel.visible         := _show
+   Widgets.lowerPanel.visible        := _show
+   Widgets.lowerPanelSettings.visible:= _show
+   Widgets.lowerPanelExit.visible    := _show
+end
+
+func onLeftPanelVisible(p:params):bool
+   Log("ui~hf2p_main_menu", "onLeftPanelVisible")
+   Widgets.leftPanel.visible := p.visible
+   return false
+end 
+func OnUIPlaySound(p:params): bool
+   var soundName: string = "none"
+   if (! IsVoid(p.soundName))
+      soundName := p.soundName
+   end
+   if (soundName != "none")
+      $root.playSound(soundName)
+   end
+   return false
+end
+
+func OnShowDebugFrame(p:params): bool
+   var wgtR : UiWidget = (UiWidget) GetWidget("debugContainer")      
+   if (!p.show)
+      wgtR.Set("visible", false)
+      //wgtR.SetEnableDisplay(false)
+   else
+      //wgtR.SetEnableDisplay(true)
+      wgtR.Set("visible", true)
+      var wgt : UiWidget = (UiWidget) wgtR.GetWidget("dbgFrameOutside")      
+      
+      if ( ((float)p.x) < (1280/2))            
+         wgtR.Widgets.dbgWidgetInfo.Set("x", (1280/2) + 50.0)
+      else         
+         wgtR.Widgets.dbgWidgetInfo.Set("x", 50.0)
+      end
+      
+      wgt.Set("x", ((float)p.x))   
+      wgt.Set("y", ((float)p.y))      
+      wgt.Set("_width", ((float)p.width))
+      wgt.Set("_height", ((float)p.height))      
+      
+      var wgtInfo : UiWidget = (UiWidget) wgtR.GetWidget("dbgWidgetInfo")      
+      var wgtInfoProps : UiWidget = (UiWidget) wgtInfo.GetWidget("PropsList")      
+      
+      var propsInfo : vector
+      
+      var curWgt : UiWidget = (UiWidget) p.widget
+      
+      //var row1 :  params
+      //row1.Set("column1", "Name:" + curWgt.GetName())
+      //propsInfo.Push(row1)
+      var row3 :  params
+      row3.Set("column1", "FullName : " + p.FullName)
+      propsInfo.Push(row3)      
+      var row2 :  params
+      row2.Set("column1", "Type : " + p.BaseTypeName)
+      propsInfo.Push(row2)      
+      var row4 :  params
+      row4.Set("column1", "Cls : " + p.ClsName)
+      propsInfo.Push(row4)
+      var row5 :  params
+      row5.Set("column1", "Global bounds : ")
+      propsInfo.Push(row5)
+      var row6 :  params
+      row6.Set("column1", "x : " + (string)p.x + " y : " + (string)p.y)
+      propsInfo.Push(row6)
+      var row7 :  params
+      row7.Set("column1", "width : " + (string)p.width + " height : " + (string)p.height)
+      propsInfo.Push(row7)
+      
+      if (curWgt!=null)
+         var row52 :  params
+         row52.Set("column1", "Local  bounds : ")
+         propsInfo.Push(row52)
+      
+         var row81 :  params
+         row81.Set("column1", "x : " + (string)curWgt.Get("x") + " y : " + (string)curWgt.Get("y"))      
+         propsInfo.Push(row81)
+         
+         var row91 :  params
+         row91.Set("column1", "width : " + (string)curWgt.Get("width") + " height : " + (string)curWgt.Get("height"))         
+         propsInfo.Push(row91)         
+      end
+      
+      var rowP0 :  params
+      rowP0.Set("column1", "")
+      propsInfo.Push(rowP0)
+      
+      // ParentInfo
+      var pinfo : vector = p.Get("ParentInfo")
+      var i : int
+      for i:=0 to pinfo.Count() - 1
+         var elem : params = pinfo.Get(i)
+         //var rowP1 :  params
+         //rowP1.Set("column1", "name: " + (string)elem.Name + " type: " + (string)elem.BaseTypeName)
+         //var rowP2 :  params
+         //rowP2.Set("column1", "cls : " + (string)elem.ClsName)
+         
+         //propsInfo.Push(rowP1)
+         //propsInfo.Push(rowP2)
+         var rowP1 :  params
+         rowP1.Set("column1", ":" + (string)elem.Name + " cls : " + (string)elem.ClsName)
+         
+         propsInfo.Push(rowP1)         
+      end
+      wgtR.Widgets.dbgWidgetInfo.PropsList.SetData(propsInfo)
+      
+      //var type : string = (string)curWgt.Get("__type")
+      //wgtInfo.
+   end
+   return false
+end
+
+func SetGlobalMouseValue(val : bool)
+   Props.global_mouse := val
+end
+
+func OnStartUniversalDrag(p: params): bool
+   if (! IsVoid(p.dragEvent))
+      Widgets.universalDragSymbol.SetDragEvent(p.dragEvent, p.dragTarget)
+      var mousePos : params = GetMousePosLocal()
+      var universalDragSymbol : * = Widgets.universalDragSymbol
+      universalDragSymbol.x   := mousePos.x
+      universalDragSymbol.y   := mousePos.y
+      universalDragSymbol.StartDragManual()   
+   end
+   return false
+end
+
+handle OnEnteringState("WelcomeInitial")
+   ClearStateStack()
+   if ($root.GetMainMenuState() == "REMATCH" or $root.GetMainStartState() == "WelcomeRelogin")
+      Widgets.welcomeScreen.SetStateName("Initial")
+   else
+      Widgets.welcomeScreen.SetStateName("InitialVisible")
+   end   
+end
+
+// ssl from states:
+handle OnEnterState("WelcomeInitial")
+   Log("ui~hf2p_main_menu", "WelcomeInitial_OnEnterState")
+   $uiPlayerInfo.InitFromEquipped()
+
+   if ($root.GetMainMenuState() == "REMATCH")
+      Props.global_mouse := true
+      $root.SetMainMenuState("WELCOME_SCREEN")
+      $root.StartAcceptingErrors()
+      if ($root.GetIsDisconnect())
+         factLog("UI/MMENU", "Main_Menu_DisconnectIngameFlag")
+         DisconnectErrorMsgBox(0, (int)$UiGlobals.backend_session.error_code.Get(), (int)$UiGlobals.backend_session.error_code_l10n.Get())
+      else
+         isLoggedIn := true
+         //$hf2pEngine.RequestPostgameStat()
+         $hf2pEngine.TermUIScreenSounds()
+         //Widgets.rosterPanel.visible := true
+         SwitchToPostGame() : 1
+      end
+   else
+      var autoState : string = $root.GetMainStartState()
+      $root.SetMainStartState("")
+      if (autoState != "")
+         if (autoState == "Welcome")
+            SetStateName(autoState) : 4.5
+         else
+            SetStateName(autoState)
+         end
+      end
+   end
+end
+
+handle OnExitState("WelcomeInitial")
+end
+
+handle OnEnteringState("Welcome")
+   Log("ui~hf2p_main_menu", "Welcome_OnEnteringState")
+   Widgets.rewardBox.visible := false
+   Props.global_mouse := true 
+end
+
+handle OnEnterState("Welcome")
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_LOGIN_SCREEN)
+   //music
+   //$hf2pEngine.SetUIMusicId(0)
+   //var isAutoLogin : bool = (bool)($sslOptionsSys.GetVariable("Debug.autoLogin"))
+end
+
+handle OnEnteringState("WelcomeLoggedIn")
+   $root.playSound("menu_player_login_slide_away") : 1
+   Widgets.bg.visible := true
+   if (int)$UserDataStorage.local_user.token_class_selection.Get() > 0
+      OnOpenSelectClassScreen(new params)
+   end
+end
+
+handle OnEnterState("WelcomeLoggedIn")
+   Log("ui~hf2p_main_menu", "WelcomeLoggedIn_OnEnter")		
+   isLoggedIn := true
+   if (int)$UserDataStorage.local_user.token_class_selection.Get() > 0
+      SetStateName("ClassSelect") : 1
+   else
+      $hf2pEngine.TermUIScreenSounds()
+      SetStateName("TutorialEmpty")
+   end
+end     
+
+handle OnEnteringState("NewWelcome")
+   Widgets.bg.visible              := true
+   Widgets.rightPanel.visible      := false
+   Widgets.leftPanel.visible       := false
+   Widgets.leftPanel.mouseChildren := false
+   Widgets.leftPanel.mouseEnabled  := false
+   
+   Widgets.playerInfoPanel.visible := false
+   //Widgets.racePanel.visible       := false
+   Widgets.cashPanel.visible       := false
+   Widgets.rankPanel.visible       := false
+end
+		
+handle OnEnteringState("ClassSelect")   
+   Widgets.bg.visible              := true
+   Widgets.rightPanel.visible      := false
+   Widgets.leftPanel.visible       := false
+   Widgets.leftPanel.mouseChildren := false
+   Widgets.leftPanel.mouseEnabled  := false
+   
+   Widgets.playerInfoPanel.visible           := false
+   Widgets.cashPanel.visible                 := false
+   Widgets.rankPanel.visible                 := false
+end
+
+handle OnEnterState("ClassSelect")
+   Props.global_mouse := true
+end
+
+handle OnEnteringState("TutorialEmpty")
+   Widgets.bg.visible              := true
+   Widgets.rightPanel.visible      := false
+   Widgets.leftPanel.visible       := false
+   Widgets.leftPanel.mouseChildren := false
+   Widgets.leftPanel.mouseEnabled  := false
+   
+   Widgets.playerInfoPanel.visible           := false
+   //Widgets.racePanel.visible                 := false
+   Widgets.cashPanel.visible                 := false
+   Widgets.rankPanel.visible                 := false
+   //Widgets.hf2p_new_welcome_screen.visible   := false
+end
+
+handle OnEnterState("TutorialEmpty")
+   Props.global_mouse := true
+   EnableGiftShop()
+   if (! UpdateTutorial("TutorialEmpty"))
+      if (!ShowSpotlightScreen())
+         GotoMainMenuInitial()
+      end
+   end
+end
+
+handle OnEnterState("TechSelect")
+   $UiGlobals.techSelectView.Set(true)
+   slidingScreens.SetViewPage($uiEnums.SLIDING_SCREENS_MODE_TECH_TREE, $uiEnums.SLIDING_PAGE_TECHTREE)
+   slidingScreens.SetStateName("Visible")
+   EnableSettings(false)
+end
+
+handle OnExitState("TechSelect")
+   $UiGlobals.techSelectView.Set(false)
+   slidingScreens.SetStateName("Initial")
+end
+
+handle OnEnteringState("TutorialLeft")
+   Widgets.leftPanel.visible       := true
+   Widgets.leftPanel.mouseChildren := false
+   Widgets.leftPanel.mouseEnabled  := false
+end
+
+handle OnEnterState("TutorialLeft")
+   UpdateTutorial("TutorialLeft")
+end          
+
+handle OnEnteringState("TutorialUp")
+   Widgets.playerInfoPanel.visible         := true
+   //Widgets.racePanel.visible               := true
+   Widgets.playerInfoPanel.mouseChildren   := false
+   //Widgets.racePanel.mouseChildren         := false
+   Widgets.playerInfoPanel.mouseEnabled    := false
+   //Widgets.racePanel.mouseEnabled          := false
+
+   Widgets.cashPanel.visible         := true
+   Widgets.cashPanel.mouseChildren   := false
+   Widgets.cashPanel.mouseEnabled    := false
+
+   Widgets.rankPanel.visible         := true
+   Widgets.rankPanel.mouseChildren   := false
+   Widgets.rankPanel.mouseEnabled    := false
+end
+
+handle OnEnterState("TutorialUp")
+   UpdateTutorial("TutorialUp")
+end          
+
+handle OnEnteringState("TutorialDown")
+   Widgets.lowerPanel.visible              := true
+   Widgets.lowerPanel.mouseChildren        := false
+   Widgets.lowerPanel.mouseEnabled         := false
+   Widgets.lowerPanelSettings.visible      := true
+   Widgets.lowerPanelSettings.mouseChildren:= false
+   Widgets.lowerPanelSettings.mouseEnabled := false
+   Widgets.lowerPanelExit.visible          := true
+   Widgets.lowerPanelExit.mouseChildren    := false
+   Widgets.lowerPanelExit.mouseEnabled     := false
+end
+
+handle OnEnterState("TutorialDown")
+   UpdateTutorial("TutorialDown")
+end          
+
+handle OnEnteringState("MainMenuInitial")
+   Widgets.bg.visible := true   
+   EnableGiftShop()   
+   //Widgets.hf2p_new_welcome_screen.visible := false
+   ShowPanels(true)
+   EnablePanelsInput(false)
+   GenerateEvent("closeRosterDocker")
+   ClearStateStack()
+end
+
+handle OnEnterState("MainMenuInitial")
+   //music
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_MAIN_MENU)
+   EnableFakeBg()
+   $hf2pEngine.SetUIMusicId(1)   
+   isRematchScreens  := false
+   EnablePanelsInput(true)
+   if (autoLoginScreen != "")
+      var autoScreen : string = autoLoginScreen
+      autoLoginScreen := ""
+      if (autoScreen == $uiEnums.SLIDING_PAGE_WEAPONS)
+         OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_WEAPONS)
+      elif (autoScreen == "Playlist")
+         GenerateEvent("onMatchmakeGame", null)
+      end
+   end
+   if ($UiGlobals.notifications.session_reward_replayIdx != $uiEnums.NOTIFICATION_SESSION_REWARDS_UNDEFINED)
+      $UiGlobals.notifications.session_reward_replayIdx := $uiEnums.NOTIFICATION_SESSION_REWARDS_UNDEFINED
+   end
+   if (! notifSubscribed)
+      notifSubscribed := true
+      $UiGlobals.notifications.notifications.Subscribe(this, "CheckAllNotif")
+      //$UiGlobals.notifications.challenge_complete.Subscribe(this, "")
+   end
+   //ShowSpotlightScreen()
+end          
+
+func CheckAllNotif()
+   $root.CheckAllNotifications()
+end
+
+func ShowSpotlightScreen() : bool
+   var newsVec : vector = $UiGlobals.news.Get()
+   var ret     : bool = false
+   if (newsVec.Count() > 0)
+      var newsGl : GL_News = (GL_News)newsVec.Get(newsVec.Count() - 1)
+      var isRead : bool = (bool)newsGl.is_read.Get() 
+      if (!isRead)
+         var p : params
+         p.newsId := (string)newsGl.id.Get()
+         ret := true
+         openNewsScreen(p)
+      end   
+   end
+   return ret
+end
+/*
+global event uiDbgKey5()
+   //ShowSpotlightScreen()
+   //OnShowChallengePopupSlide(p)
+   //OpenSlidingScreenByNameLoot()
+   //OnChallengeCompleteRequest(p)
+   //SetFakeBackground(! isFakeBackVisible, currentFakeBack)
+   //ShowPanels(false)
+   //OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_POSTMATCH, $uiEnums.SLIDING_SCREENS_MODE_PMREPLAY, true)
+   //TestReward()
+   // Challenge Complete
+   var notifRef : NT_Notification      = new NT_Notification()
+   var notifRec : NT_ChallengeComplete = new NT_ChallengeComplete()
+   
+   notifRef.type           := $OM.Property($uiEnums.NOTIFICATION_CHALLENGE_COMPLETE)
+   notifRef.index          := $OM.Property($UiGlobals.notifications.challenge_complete.Get().Count())
+   
+   notifRec.challenge_id   := $OM.Property("challenge_oracle_1")
+   
+   $UiGlobals.notifications.challenge_complete.Get().Push(notifRec)      
+   $UiGlobals.notifications.notifications.Get().Push(notifRef)
+   
+   $UiGlobals.notifications.notifications.OnChanged()
+   $root.CheckChallengeUnlocks()
+
+end
+
+global event uiDbgKey4()
+   var notifRef : NT_Notification      = new NT_Notification()
+   var notifRec : NT_ChallengeComplete = new NT_ChallengeComplete()
+   
+   notifRef.type           := $OM.Property($uiEnums.NOTIFICATION_CHALLENGE_COMPLETE)
+   notifRef.index          := $OM.Property($UiGlobals.notifications.challenge_complete.Get().Count())
+   
+   notifRec.challenge_id   := $OM.Property("challenge_oracle_1")
+   
+   $UiGlobals.notifications.challenge_complete.Get().Push(notifRec)      
+   $UiGlobals.notifications.notifications.Get().Push(notifRef)
+   
+   $UiGlobals.notifications.notifications.OnChanged()
+end
+*/
+handle OnExitState("WelcomeInitial")
+   if (notifSubscribed)
+   end
+end
+
+func UnsubsribeFromAllNotif()
+   if (notifSubscribed)
+      $UiGlobals.notifications.notifications.Unsubscribe(this, "CheckAllNotif")
+      notifSubscribed := false
+   end   
+end
+
+handle OnExitState("MainMenuInitial")
+   UnsubsribeFromAllNotif()
+end
+
+handle OnEnterState("GoFullScreen")
+   Widgets.bg.visible              := false
+   //Widgets.rightPanel.visible      := false
+   //Widgets.leftPanel.visible       := false         
+   //Widgets.playerInfoPanel.visible := true
+   //Widgets.cashPanel.visible       := true
+   //Widgets.rankPanel.visible       := true
+end
+
+handle OnEnteringState("LeaveFullScreen")
+   Widgets.leftPanel.onLeftPanelReset()
+   Widgets.rightPanel.onRightPanelReset()
+   
+   Widgets.bg.visible              := true
+   Widgets.rightPanel.visible      := true
+   Widgets.leftPanel.visible       := true         
+   //Widgets.playerInfoPanel.visible := true
+   //Widgets.cashPanel.visible       := true
+   //Widgets.rankPanel.visible       := true
+   $root.playSound("menu_main_slide_in")            
+end
+
+handle OnEnteringState("HidePanels")            
+   //Props.savedRosterState := Widgets.roster.GetStateName()
+end
+
+handle OnEnterState("HidePanels")
+   Widgets.bg.visible              := false
+   //Widgets.rightPanel.visible      := false
+   //Widgets.leftPanel.visible       := false         
+   Widgets.playerInfoPanel.visible := true
+   //Widgets.racePanel.visible       := true
+   Widgets.cashPanel.visible       := true
+   Widgets.rankPanel.visible       := true   
+end
+
+handle OnEnteringState("RestorePanels")
+   //          if (Props.savedRosterState != "")
+   //             Widgets.roster.state := Props.savedRosterState
+   //             Props.savedRosterState := ""
+   //          end
+   Widgets.bg.visible              := true
+   ShowPanels(true)
+   EnablePanelsInput(false)   
+   $root.playSound("menu_main_slide_in")
+end
+
+handle OnEnterState("RestorePanels")
+   EnablePanelsInput(true)
+end
+
+handle OnEnterState("PostGameTutorial")
+end
+
+handle OnEnterState("EmblemEditor")   
+   if (isRematchScreens and emblBackState == "") or not emblShowBack
+      Widgets.emblemEditor.leftBtn.visible := false
+   else 
+      Widgets.emblemEditor.leftBtn.visible := true
+   end
+end                   
+
+func GotoLobby(_lobbyState : string, _startPage : string = "Lobby")
+   $hf2pEngine.SetUIMusicId(2)  
+   $uiPartyMonitor.SetLobbyMode(_lobbyState)
+   Widgets.timer.EnterLobby()
+   OpenSlidingScreenByName(_startPage)
+end
+
+func EnterFormation(mmQueueType : int)
+   $hq.MatchmakingSetQueue(mmQueueType)
+   $uiPartyMonitor.CreateParty()
+   GotoLobby($uiPartyMonitor.STATE_FORMATION)   
+end
+
+func OpenLobbyMatchmaking()
+   GotoLobby($uiPartyMonitor.STATE_MATCHMAKING)
+end          
+
+func OpenLobbySelectPlaylist()
+   EnterFormation($uiEnums.MM_QUEUE_TYPE_RANKED)
+end
+
+func TestReward()
+   var p : params
+   // itemUnlock // lvlUp
+   p.rewardType     := "itemUnlock"
+   GenerateEvent("RewardRequest", p)  
+end
+
+func SetFakeBackground(_isVisible: bool, _state: string) 
+   isFakeBackVisible    := _isVisible
+   currentFakeBack      := _state
+   if (isFakeBackVisible)
+      Widgets.fakeBackground.GotoAndStop(currentFakeBack)
+      var tintColor : params
+      tintColor.r  := 255 
+      tintColor.g  := 0 
+      tintColor.b  := 0 
+      tintColor.a  := 180
+      tintColor.v  := 255
+      Widgets.fakeBackground.colorMult := tintColor
+   end
+   Widgets.fakeBackground.visible := isFakeBackVisible
+   Widgets.fakeBackground.alpha := 50
+end
+
+func OnChangeFakeBackground(p: params) : bool
+   if (! IsVoid(p.state))
+      SetFakeBackground(isFakeBackVisible, p.state)
+   end
+   return false
+end
+
+func EnableFakeBg()
+   var p: params
+   p.state := "mainMenu"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+func UpdateBackendSessionState(p : params) : bool
+   var sessionState  : int = (int)$UiGlobals.backend_session.state.Get()
+   var errCode       : int = (int)$UiGlobals.backend_session.error_code.Get()
+   if (sessionState == $uiEnums.BACKEND_SESSION_OFFLINE and errCode != 0)
+      OnSessionDisconnect(0, (int)$UiGlobals.backend_session.error_code.Get(), (int)$UiGlobals.backend_session.error_code_l10n.Get())
+   end
+   return true
+end
+
+func GotoMainMenuInitial()
+   if (GetStateName() !=  "MainMenuInitial")
+      RollbackChildStates()
+      SetStateName("MainMenuInitial")   
+   end
+end
+
+
+func OnChangeLobbyState(p : params) : bool      
+   var lobbyStateIdx : int = (int)$UiGlobals.lobby.state.Get()
+   if (lobbyStateIdx == $uiEnums.LOBBY_STATE_GAME_START_COUNTDOWN)
+      OpenSlidingScreenByName("Lobby")
+   end
+   return true
+end
+
+func OnUpdatePartyState(p : params = null) : bool
+   if ($root.IsLoggedIn())
+      $root.UiLog("UpdatePartyState: " + $UiGlobals.party.GetStateStr() + ", leader = " + (string)$UserDataStorage.local_user.IsPartyLeader())
+      //if (! $UserDataStorage.local_user.IsPartyLeader()) 
+         var partyState : int = (int)$UiGlobals.party.state.Get()
+         if (partyState == $uiEnums.PARTY_STATE_NONE)
+            OnLeaveLobby()
+            GotoMainMenuInitial()
+         else
+            $uiPartyMonitor.UpdateLobbyMode(partyState)
+            if (slidingScreens.GetStateName() != "Visible" or slidingScreens.GetCurrentScreenName() != "Lobby")
+               GotoLobby($UiGlobals.party.GetMMEnumFromState())
+            end
+         end
+      //end
+   end
+   return false
+end
+
+func OnSessionDisconnect(disconnectReason: int, errorCode: int, errorCode_l10n: int)
+   var curState: string = GetStateName()
+   if (curState != "Welcome" and curState != "WelcomeLoggedIn" and curState != "WelcomeRelogin")
+      DisconnectErrorMsgBox(disconnectReason, errorCode, errorCode_l10n)
+   end
+end
+
+func DisconnectErrorMsgBox(_disconnectReason: int, _errorCode: int, _errorCode_l10n: int) 
+   Log("ui~welcomeScreen", "LoginErrorMsgBox")
+
+   if ($root.IsAcceptingErrors())
+      factLog("UI/MMENU", "Main_Menu_OnClientSessionDisconnect: disconnectReason = [" + (string)_disconnectReason + "], errorCode = [" + (string)_errorCode + "]")
+      $root.StopAcceptingErrors()
+      OnSessionDisconnectMb(null)
+   end
+end
+
+func OnSessionDisconnectMb(p: params): bool
+   var curState: string = GetStateName()
+   //SetStateName("WelcomeRelogin")
+   //
+   if (curState == "WelcomeInitial")
+      //SetStateName("Welcome")
+      SetStateName("WelcomeRelogin")
+   else
+      $root.SetMainStartState("WelcomeRelogin")
+      SetStateName("WelcomeInitial")
+   end
+   //
+   return false
+end
+
+func HaloDisposeFromOldMap(p :  params) :  bool
+   if (isLoggedIn)
+      $hq.ShowroomEnd()
+      $hq.isInShowroom := false
+   end
+   return false
+end
+
+func RestartFadeIn()
+   Widgets.rankPanel.SetStateName("Visible")
+   Widgets.playerInfoPanel.SetStateName("Visible")
+   Widgets.cashPanel.SetStateName("Visible")
+   Widgets.lowerPanel.SetStateName("Visible")
+   Widgets.lowerPanelSettings.SetStateName("Visible")
+   Widgets.lowerPanelExit.SetStateName("Visible")
+   //Widgets.racePanel.SetStateName("Visible")
+   Widgets.leftPanel.SetStateName("Visible")
+   Widgets.rightPanel.SetStateName("Visible")
+   
+   
+   /*Widgets.rankPanel.GotoAndPlay("fadeIn")
+   Widgets.playerInfoPanel.GotoAndPlay("fadeIn")
+   Widgets.cashPanel.GotoAndPlay("fadeIn")
+   Widgets.lowerPanel.GotoAndPlay("fadeIn")
+   Widgets.lowerPanelSettings.GotoAndPlay("fadeIn")
+   Widgets.lowerPanelExit.GotoAndPlay("fadeIn")
+   Widgets.racePanel.GotoAndPlay("fadeIn")
+   Widgets.leftPanel.SetStateName("Visible")
+   Widgets.rightPanel.SetStateName("Visible")
+   */
+end
+
+func RestartFadeOut()
+   
+   Widgets.rankPanel.SetStateName("Hidden")
+   Widgets.playerInfoPanel.SetStateName("Hidden")
+   Widgets.cashPanel.SetStateName("Hidden")
+   Widgets.lowerPanel.SetStateName("Hidden")
+   Widgets.lowerPanelSettings.SetStateName("Hidden")
+   Widgets.lowerPanelExit.SetStateName("Hidden")
+   //Widgets.racePanel.SetStateName("Hidden")
+   Widgets.leftPanel.SetStateName("Initial")
+   Widgets.rightPanel.SetStateName("Initial")
+   
+
+   /*Widgets.rankPanel.GotoAndPlay("fadeOut")
+   Widgets.playerInfoPanel.GotoAndPlay("fadeOut")
+   Widgets.cashPanel.GotoAndPlay("fadeOut")
+   Widgets.lowerPanel.GotoAndPlay("fadeOut")   
+   Widgets.lowerPanelSettings.GotoAndPlay("fadeOut")
+   Widgets.lowerPanelExit.GotoAndPlay("fadeOut")
+   Widgets.racePanel.GotoAndPlay("fadeOut")   
+   Widgets.leftPanel.SetStateName("Collapsed")
+   Widgets.rightPanel.SetStateName("Collapsed")
+   */
+end
+
+func inputEvent(p : params) : bool
+   if (p.keyCode != $uiKeys.VK_ENTER and p.keyCode != $uiKeys.VK_SPACE)
+      p.eventState.SetIsTerminated()      
+      //if (!IsChangingStateInProgress() and p.keyCode == $uiKeys.VK_ESC and ! p.isDown and GetStateName() == "MainMenuInitial")
+      //   OnLowerPanelSettingClick(null)
+      //end
+   end
+   return false
+end
+
+/*
+var isShiftPressed :  bool = false
+override ProcessHotKey 
+   var isUIDebugKeys : bool = false
+   if (isUIDebugKeys)
+      if (p.isDown)
+         if (p.keyCode == 16)
+            isShiftPressed := true      
+         end               
+      else
+         if (p.keyCode == 16)
+            isShiftPressed := false
+         elif (p.keyCode == 82)
+            if (isShiftPressed) 
+               RestartFadeIn()
+            end
+         elif (p.keyCode == 79)
+            if (isShiftPressed) 
+               RestartFadeOut()
+            end
+         end               
+      end
+   end
+   
+   return true
+end
+*/
+
+func OnOpenChallengesCarousel(p : params) : bool
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_SKILL_CHALLENGES)
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_ITEM_CHALLENGES, $uiEnums.SLIDING_SCREENS_MODE_CHALLENGES)
+   return false
+end
+
+func ShowUserProfile(_uid : *)
+   $UiGlobals.profileScreenUID.Set(_uid)
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_PROFILE, $uiEnums.SLIDING_SCREENS_MODE_PLAYER_PROFILE)
+end
+
+func OpenPostgame(pushState : bool)
+   if (pushState)
+      GenerateEvent("closeRosterDocker")
+   end
+
+   onPostgameOut(new params)
+   Widgets.playerInfoPanel.SetStateName("Visible")
+   EnableSettings(false)
+end
+
+func OnShowPostgameReplay(p : params) : bool
+   $UiGlobals.IsPostMatchStatic.Set(false)
+   $UiGlobals.notifications.session_reward_replayIdx := p.session_reward_idx
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_POSTMATCH, $uiEnums.SLIDING_SCREENS_MODE_PMREPLAY, true)
+   return false
+end
+
+
+func OnShowShopItem(p : params) : bool
+   var urlComp : vector = p.urlComp
+   if (urlComp.Count() > 2 and urlComp.Get(0) == "shop")
+      var shopItem      : string = urlComp.Get(urlComp.Count() - 1)
+      var shopLocation  : params = $uiEconomy.FindShopItem(shopItem)
+      if (shopLocation.found)
+         $UiGlobals.shop.openParams.isValid     := true
+         $UiGlobals.shop.openParams.sectionIdx  := shopLocation.sectionIdx
+         $UiGlobals.shop.openParams.shelfIdx    := shopLocation.shelfIdx
+         $UiGlobals.shop.openParams.itemIdx     := shopLocation.itemIdx
+         
+         var shopType : int = shopLocation.shopType
+         if (shopType == $uiEnums.SHOP_TYPE_WEAPON)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_WEAPONS, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         elif (shopType == $uiEnums.SHOP_TYPE_TACTICAL)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_TACTICAL, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         elif (shopType == $uiEnums.SHOP_TYPE_ARMOR)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_ARMORY, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         elif (shopType == $uiEnums.SHOP_TYPE_BUNDLES)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_BUNDLES, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         end         
+      end
+   end
+   return false
+end
+
+func OnShowShopBySection(p : params) : bool
+   var urlComp : vector = p.urlComp
+   if (urlComp.Count() > 2 and urlComp.Get(0) == "shop")
+      var shopType      : int = urlComp.Get(urlComp.Count() - 2)
+      var itemSubType   : int = urlComp.Get(urlComp.Count() - 1)
+      var shopLocation  : params = $uiEconomy.FindShopItemSection(shopType, itemSubType)
+      if (shopLocation.found)
+         $UiGlobals.shop.openParams.isValid     := true
+         $UiGlobals.shop.openParams.sectionIdx  := shopLocation.sectionIdx
+         $UiGlobals.shop.openParams.shelfIdx    := shopLocation.shelfIdx
+         $UiGlobals.shop.openParams.itemIdx     := 0 //shopLocation.itemIdx
+         
+         if (shopType == $uiEnums.SHOP_TYPE_WEAPON)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_WEAPONS, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         elif (shopType == $uiEnums.SHOP_TYPE_TACTICAL)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_TACTICAL, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         elif (shopType == $uiEnums.SHOP_TYPE_ARMOR)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_ARMORY, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         elif (shopType == $uiEnums.SHOP_TYPE_BUNDLES)
+            OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_BUNDLES, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+         end         
+      end
+   end
+   return false
+end
+
+func OnShowInventoryItem(p : params)
+   var itemId        : string
+   var itemType      : int = 0
+   var itemSubType   : int = 0
+   
+   if (!IsVoid(p.itemId))
+      itemId := p.itemId
+   end
+   if (!IsVoid(p.itemType))
+      itemType := p.itemType
+   end
+   if (!IsVoid(p.itemSubType))
+      itemSubType := p.itemSubType
+   end
+   
+   if (itemId != "")
+      itemType    := $uiEconomy.GetItemType(itemId)
+      itemSubType := $uiEconomy.GetItemSubType(itemId)      
+   end
+   
+   var invType : string = $root.GetInvTypeFromItemType(itemType, itemSubType)
+   
+   $UiGlobals.shop.inventoryParams.isValid   := true
+   $UiGlobals.shop.inventoryParams.itemId    := itemId
+   $UiGlobals.shop.inventoryParams.invType   := invType
+   OpenSlidingScreenByName($uiEnums.SLIDING_PAGE_INVENTORY, $uiEnums.SLIDING_SCREENS_MODE_SHOP_SMALL, true)
+end
+
+func OnStartAsyncWait(p : params) : bool
+   var asyncOp : UiAsyncOperation = null
+   if (! IsVoid(p.asyncOp))
+      asyncOp := p.asyncOp
+   end
+   Widgets.asyncWaiting.GetDC().StartWaiting(asyncOp)
+   return false
+end
+
+func OnStopAsyncWait(p : params) : bool
+   Widgets.asyncWaiting.GetDC().StopWaiting()
+   return false   
+end
+
+func StartSpartanWait()
+   var wgt : UiWidget = (UiWidget)GetWidget("spartanWaiting")
+   if (wgt != null)
+      wgt.GetDC().StartWaiting()
+   end
+end
+
+func StopSpartanWait()
+   var wgt : UiWidget = (UiWidget)GetWidget("spartanWaiting")
+   if (wgt != null and !IsVoid(wgt.GetDC()))
+      wgt.GetDC().StopWaiting()
+   end
+end
+
+func OnUpdateRootBrightnessContrast(p : params) : bool
+   $root.UpdateRootBrightnessContrast(this)
+   return false
+end
+
+func ShowErrorNotificationMessageBox(notifRef : NT_Notification, notifRec : NT_Error)
+   var pp               : params
+   var errorCode        : int = (int)notifRec.error_code.Get()
+   var errorCode_l10n   : int = (int)notifRec.error_code_l10n.Get()
+   
+   pp.mbType            := "Info"
+   pp.messageTxt        := " ERROR: " + (string)errorCode + " "
+   pp.messageTxt2       := "msg_error_code_" + (string)errorCode_l10n
+   pp.titleTxt          := "ERROR_NOTIFICATION"
+   pp.callbackEvent     := "ErrorNotificationShown"
+   pp.notifRef          := notifRef
+   pp.notifRec          := notifRec
+   GenerateEvent("MainMenuDialogRequest", pp)
+end
+
+func OnErrorNotificationShown(p : params) : bool
+   if (!IsVoid(p.notifRef))
+      $UiGlobals.notifications.NotificationProcessed(p.notifRef)
+   end
+   return false
+end
+
+func ShowErrorNotification(notifRef : NT_Notification, notifRec : NT_Error)
+   var isCritical : bool = (bool)notifRec.is_critical.Get()
+   ShowErrorNotificationMessageBox(notifRef, notifRec)
+end
+
+func OnErrorNotification(p : params) : bool
+   if (!IsVoid(p.notifRef))
+      var notifRef : NT_Notification = p.notifRef
+      if (notifRef.type.Get() == $uiEnums.NOTIFICATION_ERROR)
+         var notifRec : NT_Error = (NT_Error)$UiGlobals.notifications.GetNotifDetails(notifRef)
+         if (notifRec != null)
+            ShowErrorNotification(notifRef, notifRec)
+         end
+      end
+   end
+   return false
+end
+
+end
+
+class UiBg : UiWidgetContainer
+
+var   startCameraAngle  : float
+
+override StartDrag   
+   startCameraAngle  := $hf2pEngine.GetRotatePlayerModel()
+   var pp: params
+   pp.dragEvent   := "MainMenuCameraDrag"
+   pp.dragTarget  :=  this
+   GenerateEvent("StartUniversalDrag", pp)
+   return null
+end
+
+func OnMainMenuCameraDrag(p: params): bool
+   $hf2pEngine.SetRotatePlayerModel(startCameraAngle + p.mouseOffset.x * 0.5)
+   return false
+end
+
+func OnMouseDown(p: params): bool
+   StartDragManual()
+   return false
+end
+end
+
+
+class UiHf2pMainMenuVM 
+   var wgt                 :  UiHf2pMainMenu       = null
+   var isSpartanWaiting    :  ObservableProperty   = $OM.Calculated(this, "GetIsSpartanWaiting")
+   var currentState        :  ObservableProperty   = $OM.Property("")
+      
+   func Init(p : params)
+      wgt := p.widget
+      isSpartanWaiting.Subscribe(this, "UpdateSpartanWaiting")
+      isSpartanWaiting.Get()
+   end
+   
+   func Term()
+      isSpartanWaiting.Unsubscribe(this, "UpdateSpartanWaiting")      
+   end
+      
+   func UpdateSpartanWaiting(_val : *)
+      if (wgt != null)
+         if (GetIsSpartanWaiting())
+            wgt.StartSpartanWait()            
+         else
+            wgt.StopSpartanWait()            
+         end
+      end
+   end
+            
+   func GetIsSpartanWaiting() : bool
+      return IsMainMenuInitial() and $UserDataStorage.local_user.isWaitingLoadout.Get() == true
+   end
+
+   func IsMainMenuInitial() : bool
+      var ret : bool = false
+      if (wgt != null)
+         ret := currentState.Get() == "MainMenuInitial"
+      end
+      return ret
+   end
+   
+   func GetCurrentState() : string
+      return (string)currentState.Get()
+   end
+   
+   func OnChangeStateAny(_stateName : string)
+      currentState.Set(_stateName)
+      if (GetCurrentState() == "MainMenuInitial")
+         wgt.EnableNotificationsPopup(true)
+         $uiPartyMonitor.SetLobbyMode("")
+      elif (GetCurrentState() == "Welcome" or GetCurrentState() == "WelcomeInitial")
+         wgt.EnableNotificationsPopup(false)
+      end
+   end
+end
+
+class UiUniversalDragSymbol : UiWidgetContainer
+
+var   dragEvent      : string = ""
+var   startMousePos  : params
+var   dragTarget     : UiWidget = null
+
+override StartDrag   
+   if (dragEvent != "")
+      startMousePos := GetMousePos()
+      GenerateUpdateEvent("start")
+      Props.visible   := true
+      return this
+   end
+   return null
+end
+
+func GenerateUpdateEvent(_updType : string)
+   if (dragEvent != "")
+      var   curMousePos    : params = GetMousePos()
+      var   mouseOffset    : params
+      mouseOffset.x := curMousePos.x - startMousePos.x
+      mouseOffset.y := curMousePos.y - startMousePos.y
+      var dragParams: params
+      dragParams.startMousePos   := startMousePos
+      dragParams.curMousePos     := curMousePos
+      dragParams.mouseOffset     := mouseOffset
+      dragParams.updateType      := _updType
+      if (dragTarget != null)
+         GenerateEventTargeted(dragEvent, dragParams, dragTarget.Props)
+      else
+         GenerateEvent(dragEvent, dragParams)
+      end
+   end
+end
+
+override CanDrop
+   GenerateUpdateEvent("update")
+   return false
+end
+
+override EndDrag
+   GenerateUpdateEvent("end")
+   Props.visible := false
+end
+
+func SetDragEvent(_dragEvent: string, _dragTarget : UiWidget)
+   dragEvent   := _dragEvent
+   dragTarget  := _dragTarget
+end
+
+end

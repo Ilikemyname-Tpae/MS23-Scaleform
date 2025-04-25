@@ -1,0 +1,187 @@
+classes = {
+	crCost = {
+		__type = "ui_widget_container"
+
+		symbol  = "crCost" 
+		lib     = mapGridList_lib 
+		propMapping {
+			creditTf = {
+				mapping = "creditTf.text"
+			}
+		}
+	}
+
+	DefaultListItemRenderer = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "DefaultListItemRenderer" 
+		lib     = mapGridList_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			img {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+			hitTest {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	glowHGLIR = {
+		__type = "ui_widget_container"
+
+		symbol  = "glowHGLIR" 
+		lib     = mapGridList_lib 
+	}
+
+	gpCost = {
+		__type = "ui_widget_container"
+
+		symbol  = "gpCost" 
+		lib     = mapGridList_lib 
+		propMapping {
+			goldTf = {
+				mapping = "goldTf.text"
+			}
+		}
+	}
+
+	hf2pMapDescText = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pMapDescText" 
+		lib     = mapGridList_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	hf2pMapGridList = {
+		__type = "ui_widget_list"
+
+		symbol  = "hf2pMapGridList" 
+		lib     = mapGridList_lib 
+	}
+
+	hf2pMapGridListLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "hf2pMapGridListLIR" 
+		lib     = mapGridList_lib 
+		propMapping {
+			textField2 = {
+				mapping = "textField2.text"
+			}
+		}
+
+		elements {
+			imageAttach {
+				__type = "ui_widget_container"
+
+				x         = 7.25
+				y         = 10
+			} 
+			uiTileCostCont {
+				__type = "ui_mapGridList_lib::TileCostCont"
+				x         = 226.65
+				y         = 31
+			} 
+			tileOverGlow {
+				__type = "ui_widget_container"
+
+				x         = -25.45
+				y         = -2.75
+				scaleX    = 3.4726
+				scaleY    = 0.5063
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pMapGridListScrollBar = {
+		__type = "ui_widget_scrollbar"
+
+		symbol  = "hf2pMapGridListScrollBar" 
+		lib     = mapGridList_lib 
+
+		elements {
+			thumb {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			track {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	TileCostCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "TileCostCont" 
+		lib     = mapGridList_lib 
+
+		elements {
+			uiCrCost {
+				__type = "ui_mapGridList_lib::crCost"
+				x         = -26.25
+				y         = 1.75
+			} 
+			uiGpCost {
+				__type = "ui_mapGridList_lib::gpCost"
+				x         = 55.55
+				y         = 1.5
+			} 
+		}
+	}
+
+	_hf2pMapGridListLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "_hf2pMapGridListLIR" 
+		lib     = mapGridList_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			img {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+			hitTest {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

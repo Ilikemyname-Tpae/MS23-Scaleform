@@ -1,0 +1,1073 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_text
+import ssl.lib.ui.ui_widget_list_item
+import ssl.observables
+import ssl.hf2p.user_data
+import ssl.hf2p.ui_globals
+import ui.libs.hf2p_Default_lib.hf2p_Default_lib
+
+/*---------------------------------------------------------
+* UiRosterDocker
+-----------------------------------------------------------*/
+class UiRosterDocker : UiWidgetContainer
+   
+func GetVM() : UiRosterDockerVM
+   return (UiRosterDockerVM)GetDC()
+end
+
+func DoBlink()
+   StartDefaultBlinking(0)   
+end
+
+func SetVMActivated(_isActivated : bool)
+   if (!IsVoid(GetDC()))
+      if (GetVM() != null)
+         GetVM().SetIsActivated(_isActivated)
+      end
+   end
+end
+
+handle OnEnteringState("Visible")
+   GenerateEvent("dockerPanelOpen")
+   SetVMActivated(true)
+   Props.visible := true
+   StartDefaultBlinking(-0.25)
+   $root.playSound("friends_list_appear")
+end   
+
+handle OnEnterState("Visible")
+   $UiGlobals.isDockerOpened.Set(true)
+   GenerateEvent("#dockerPanelOpen")
+   GenerateEvent("OpenRosterDocker")
+end
+
+handle OnEnteringState("Initial")
+   GenerateEvent("CloseRosterDocker")
+   SetVMActivated(false)
+   StartDefaultBlinking(-0.25)
+   $root.playSound("friends_list_appear")
+end
+
+handle OnEnterState("Initial")
+   $UiGlobals.isDockerOpened.Set(false)
+   Props.visible := false
+   GenerateEvent("#dockerPanelClose")
+   GenerateEvent("dockerPanelClose")
+end
+
+// force states
+handle OnEnteringState("VisibleForce")
+   SetVMActivated(true)
+   Props.visible := true
+   StartDefaultBlinking(-0.25)
+   $root.playSound("friends_list_appear")
+end   
+
+handle OnEnteringState("InitialForce")
+   SetVMActivated(false)
+   StartDefaultBlinking(-0.25)
+   $root.playSound("friends_list_appear")
+end
+
+handle OnEnterState("VisibleForce")
+   $UiGlobals.isDockerOpened.Set(true)
+   GenerateEvent("#dockerPanelOpen")
+end
+
+handle OnEnterState("InitialForce")
+   $UiGlobals.isDockerOpened.Set(false)
+   GenerateEvent("#dockerPanelClose")
+end
+
+func OnCloseRosterDocker(p : params) : bool
+   SetStateName("InitialForce")
+   return true
+end
+
+func OnCloseRosterDockerAsNiceAsYouCan(p : params) : bool
+   SetStateName("Initial")
+   return true
+end
+
+func OnOpenRosterDocker(p : params) : bool
+   SetStateName("VisibleForce")
+   return true   
+end
+
+func OnOpenRosterDockerOver(p : params) : bool
+   SetStateName("Visible")
+   return true   
+end
+
+func GetSearchText() : wstring
+   var ret : wstring
+   ret := Widgets.content.searchModule.searchInputTf.wtext
+   return ret
+end
+
+func FocusOnSearchText()
+   //Widgets.content.searchModule.searchInputTf.SetFocus()
+end
+
+func ResetSearchText()
+   Widgets.content.searchModule.searchInputTf.text := ""
+end
+
+func OnPlayerLIRPlusClicked(p : params) : bool
+   GenerateEvent("#OnPlayerLIRPlusClicked", p)
+   return false
+end
+
+func OnPlayerLIRMinusClicked(p : params) : bool
+   GenerateEvent("#OnPlayerLIRMinusClicked", p)
+   return false
+end
+
+func OnPlayerLIRJoinClicked(p : params) : bool
+   GenerateEvent("#OnPlayerLIRJoinClicked", p)
+   return false
+end
+
+func SelectNotif(_idx : int)
+   Widgets.content.notificationList.SetSelectionIdx(_idx)
+end
+
+end
+
+/*---------------------------------------------------------
+* UiRosterDockerVM
+-----------------------------------------------------------*/
+class UiRosterDockerVM
+   var DOCKER_STATE_PLAYERS   : int                = 0
+   var DOCKER_STATE_NOTIF     : int                = 1
+   
+   var FILTER_USER_NONE       : int                = 0
+   var FILTER_USER_ALL        : int                = 1
+   var FILTER_USER_FRIENDS    : int                = 2
+   var FILTER_USER_RECENT     : int                = 3
+   
+   var FILTER_NOTIF_NONE      : int                = 0
+   var FILTER_NOTIF_ALL       : int                = 1
+   
+   var notifications          : ObservableProperty = $OM.Calculated(this, "GetNotifications")
+   var playersList            : ObservableProperty = $OM.Calculated(this, "GetPlayersList")
+   var isNotificationsVisible : ObservableProperty = $OM.Property(false)
+   var isPlayersVisible       : ObservableProperty = $OM.Property(true)
+   var dockerState            : ObservableProperty = $OM.Property(DOCKER_STATE_PLAYERS)
+   var filterSelection        : ObservableProperty = $OM.Property(0)
+   var friendsFilter          : ObservableProperty = $OM.Property(1)
+   var wgt                    : UiRosterDocker     = null
+   var searchErr              : ObservableProperty = $OM.Property("")
+   var isValidNick            : ObservableProperty = $OM.Property(false)
+   var isCollapsed            : ObservableProperty = $OM.Property(true)
+   var selectedPlayerUID      : ObservableProperty = $OM.Calculated(this, "GetSelectedPlayerUID")
+   var selectedGLUID          : GL_UID             = $UserDataStorage.NewEmptyUID()
+   var selectedIdx            : ObservableProperty = $OM.Calculated(this, "GetSelectedIdx")
+   var isPlusEnabled          : ObservableProperty = $OM.Calculated(this, "GetIsPlusEnabled")
+   var isMinusEnabled         : ObservableProperty = $OM.Calculated(this, "GetIsMinusEnabled")
+   var isJoinEnabled          : ObservableProperty = $OM.Calculated(this, "GetIsJoinEnabled")
+   var isNewPartyInvites      : ObservableProperty = $OM.Calculated(this, "GetIsNewPartyInvites")
+   var isNewPartyKicks        : ObservableProperty = $OM.Calculated(this, "GetIsNewPartyKicks")
+   var invitesNotifState      : ObservableProperty = $OM.Property("Hidden")
+   var isActivated            : ObservableProperty = $OM.Property(false)
+   var playersListYPos        : ObservableProperty = $OM.Calculated(this, "GetPlayersListYPos")
+   var playersListHeight      : ObservableProperty = $OM.Calculated(this, "GetPlayersListHeight")
+   
+   func Init(_wgt :  UiWidget)
+      wgt := (UiRosterDocker)_wgt
+      wgt.ResetSearchText()
+      selectedPlayerUID.Invalidate()
+      selectedIdx.Invalidate()
+      isNewPartyInvites.Get()
+      isNewPartyKicks.Get()
+      isNewPartyInvites.Subscribe(this, "UpdatePartyInvites")
+      isNewPartyKicks.Subscribe(this, "UpdatePartyKicks")
+   end
+   
+   func Term()
+      isNewPartyInvites.Unsubscribe(this, "UpdatePartyInvites")
+      isNewPartyKicks.Unsubscribe(this, "UpdatePartyKicks")
+   end
+   
+   func SetIsActivated(_isActivated : bool)
+      isActivated.Set(_isActivated)
+   end
+   
+   func GetIsActivated() : bool
+      return (bool)isActivated.Get()
+   end
+      
+   func SubscribeToSearch()
+      
+   end
+   
+   func UnsubscribeToSearch()
+      
+   end
+   
+   func GetPlayersListYPos() : float
+      var ret        : float  = 100
+      var filterVal  : int    = GetFilter()
+      if (IsPlayersMode())
+         if (filterVal == FILTER_USER_FRIENDS)
+            ret := ret - 25
+         end
+      end
+      return ret
+   end
+   
+   func GetPlayersListHeight() : float
+      var ret        : float  = 680
+      var filterVal  : int    = GetFilter()
+      if (IsPlayersMode())
+         if (filterVal == FILTER_USER_FRIENDS)
+            ret := ret// + 50
+         end
+      end
+      return ret
+   end
+   
+   func CollectUiBiLogs(uiState : string = "Initial")
+      // TODO : int2str
+      var state : string = (string)dockerState.Get()
+      var filter : string = (string)filterSelection.Get()
+      $UiBiLogger.LogNotificationState(uiState, state, filter)
+   end
+   
+   func OnCloseDockerClicked(p : params) : bool
+      wgt.GenerateEvent("onRankPanelRosterClick")
+      return true
+   end
+      
+   func GetIsNewPartyInvites() : bool
+      return $UiGlobals.notifications.IsNewNotificationByType($uiEnums.NOTIFICATION_PARTY_INVITE)
+   end
+   
+   func GetIsNewPartyKicks() : bool
+      return $UiGlobals.notifications.IsNewNotificationByType($uiEnums.NOTIFICATION_PARTY_KICK)
+   end
+
+   func UpdatePartyInvites()
+      if (GetIsNewPartyInvites())
+         if $uiPartyMonitor.lobbyModeObservable.Get() == "" or $uiPartyMonitor.lobbyModeObservable.Get() == $uiPartyMonitor.STATE_NONE
+            var notif         : NT_Notification = $UiGlobals.notifications.GetFirstUnprocessedByType($uiEnums.NOTIFICATION_PARTY_INVITE)
+            var inviteNotif   : NT_PartyInvite  = (NT_PartyInvite)$UiGlobals.notifications.GetNotifDetails(notif)
+            
+            var pp         : params
+            pp.mbType            := $uiEnums.MB_TYPE_NO_YES
+            pp.okBtnTxt          := "main_accept"
+            pp.cancelBtnTxt      := "main_decline"
+            pp.titleTxt          := "msg_accept_invite_hdr"
+            pp.messageTxt        := "msg_accept_invite_txt"
+            pp.callbackEvent     := "PartyInviteAccept"
+            pp.callbacktarget    := wgt.Props
+            pp.isPartyInvite     := true
+            pp.InviteUid         := inviteNotif.from_user.Get()
+            wgt.GenerateEvent("MainMenuDialogRequest", pp)            
+            
+            notif.isProcessed.Set(true)            
+            notif.isNew.Set(false)            
+         else
+            invitesNotifState.Set("Visible")
+            invitesNotifState.OnChanged()
+         end         
+      end
+   end
+   
+   func OnPartyInviteAccept(p : params) : bool
+      if (p.isOK and ! IsVoid(p.InviteUid))
+         DoAcceptInvite(p.InviteUid)
+      else
+         DoRefuseInvite(p.InviteUid)
+      end
+      return true
+   end
+   
+   func UpdatePartyKicks()
+      if (GetIsNewPartyKicks())
+         
+         $uiPartyMonitor.LeaveLobby(null, false)
+         
+         var notif         : NT_Notification = $UiGlobals.notifications.GetFirstUnprocessedByType($uiEnums.NOTIFICATION_PARTY_KICK)
+         
+         var par: params
+         par.mbType     := "Info"
+         par.titleTxt   := "msg_party_kick_hdr"
+         par.messageTxt := "msg_party_kick_txt"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+         
+         notif.isProcessed.Set(true)
+         notif.isNew.Set(false)
+      end      
+   end
+   
+   func GetIsPlayerMode() : bool
+      return IsPlayersMode()
+   end
+   
+   func GetIsCollapsed() : bool
+      return (bool)isCollapsed.Get()
+   end
+   
+   func GetIsPlusEnabled() : bool
+      var ret        : bool   = false
+      var filterVal  : int    = GetFilter()
+      if (IsPlayersMode())
+         if (filterVal == FILTER_USER_ALL or filterVal == FILTER_USER_RECENT)
+            ret := true
+         end
+      end
+      return ret      
+   end
+   
+   func GetIsMinusEnabled() : bool
+      var ret        : bool   = false
+      var filterVal  : int    = GetFilter()
+      if (IsPlayersMode())
+         if (filterVal == FILTER_USER_FRIENDS and ! IsSelectPlaylist())
+            ret := true
+         end
+      end
+      return ret      
+   end
+
+   func GetIsJoinEnabled() : bool
+      var ret        : bool   = false
+      var filterVal  : int    = GetFilter()
+      if (IsPlayersMode() and IsSelectPlaylist())
+         if (filterVal == FILTER_USER_FRIENDS)
+            ret := true
+         end
+      end
+      return ret      
+   end
+   
+   func IsSelectPlaylist() : bool
+      return $uiPartyMonitor.IsSelectPlaylist()
+   end
+   
+   func IsMatchMaking() : bool
+      return $uiMatchmaking.GetIsMathmakingObservable()
+   end
+
+   func dockerPanelOpen(p : params) : bool
+      isCollapsed.Set(false)
+      FocusSearch()
+      wgt.SetFocus()
+      if (IsPlayersMode())
+         ResetSearch()
+      else
+         ClearNotifications()
+      end
+      CollectUiBiLogs("Visible")
+      return true
+   end
+   
+   func dockerPanelClose(p : params) : bool
+      isCollapsed.Set(true)
+      CollectUiBiLogs()
+      return true
+   end
+   
+   func SelectLastNotif()
+      if (GetNotifications().Count() > 0)
+         wgt.SelectNotif(GetNotifications().Count() - 1)
+      end
+   end
+   
+   func GetIsSearchErr() : bool
+      return (string)searchErr.Get() != ""
+   end
+   
+   func UpdateSearchStatus(_val : *)
+      var searchStatus : int = (int)$UiGlobals.async_operations.find_users.progress.state.Get()
+      if (searchStatus == $uiEnums.BACKEND_REQUEST_STATE_COMPLETE)
+         OnFinishedSearch()
+      end
+   end
+   
+   func OnFinishedSearch()
+      wgt.GenerateEvent("OnFinishedSearch")
+   end
+   
+   func GetIsWaiting() : bool
+      return IsSearchActive()
+   end
+   
+   func GetDefaultInputText() : string
+      return "main_search_user_default_txt"
+   end
+   
+   func GetIsInputEnabled() : bool
+      return ! GetIsWaiting()
+   end
+   
+   func GetIsSearchModuleVisible() : bool
+      return (int)dockerState.Get() == DOCKER_STATE_PLAYERS and GetFilter() == FILTER_USER_ALL
+   end
+   
+   func IsPlayersMode() : bool
+      return (int)dockerState.Get() == DOCKER_STATE_PLAYERS
+   end
+   
+   func ResetSearch()
+      wgt.ResetSearchText()
+      isValidNick.Set(false)
+      if ((int)dockerState.Get() == DOCKER_STATE_PLAYERS)
+         playersList.Invalidate()
+      else
+         notifications.Invalidate()
+      end
+   end   
+   
+   func FocusSearch()
+      if (IsPlayersMode())
+         wgt.FocusOnSearchText()
+      end      
+   end
+   
+   func ToggleContent()
+      if ((int)dockerState.Get() == DOCKER_STATE_PLAYERS)
+         dockerState.Set(DOCKER_STATE_NOTIF)
+      else
+         dockerState.Set(DOCKER_STATE_PLAYERS)
+      end
+      ResetSearch()
+      var isPlayers : bool = (int)dockerState.Get() == DOCKER_STATE_PLAYERS      
+      isPlayersVisible.Set(isPlayers and ! GetIsWaiting())
+      isNotificationsVisible.Set(!isPlayers and ! GetIsWaiting())
+      
+      if (GetIsPlayerMode())
+         filterSelection.Set((int)friendsFilter.Get())
+      else
+         filterSelection.Set(1)
+      end
+      FocusSearch()
+      if (!(bool)isCollapsed.Get() and (int)dockerState.Get() == DOCKER_STATE_NOTIF)
+         ClearNotifications()
+      end
+      CollectUiBiLogs("Visible")
+   end
+   
+   func SetFilterSelection(_filterSelection : int)
+      ResetSearch()      
+      filterSelection.Set(_filterSelection)
+      if (GetIsPlayerMode())
+         friendsFilter.Set(_filterSelection)
+      end
+      CollectUiBiLogs("Visible")
+   end
+   
+   func GetFilter() : int
+      return (int)filterSelection.Get()
+   end
+   
+   func GetNotifications() : vector
+      var ret        : vector
+      if ((bool)isCollapsed.Get() or IsPlayersMode())
+         return ret
+      end
+      
+      var notifVec   : vector = $UiGlobals.notifications.notifications.Get()
+      var i          : int
+      
+      for i := 0 to notifVec.Count() - 1
+         var notifRec         : NT_Notification    = (NT_Notification)notifVec.Get(notifVec.Count() - 1 - i)
+         var notifRecDetails  : *                  = $UiGlobals.notifications.GetNotifDetails(notifRec)
+         var notifType        : int                = (int)notifRec.type.Get()
+         
+         if (notifRecDetails != null)
+            var isDisplayable : bool = false
+            if (notifType == $uiEnums.NOTIFICATION_SESSION_REWARDS or notifType == $uiEnums.NOTIFICATION_SESSION_LVLUP)
+               isDisplayable := true
+            end
+            if (notifType == $uiEnums.NOTIFICATION_SESSION_UNLOCK)
+               isDisplayable := true
+            end
+            if (notifType == $uiEnums.NOTIFICATION_CHALLENGE_COMPLETE)
+               isDisplayable := false
+            end
+            if (notifType == $uiEnums.NOTIFICATION_CLAN_INVITE)
+               isDisplayable := true
+            end
+            if (notifType == $uiEnums.NOTIFICATION_PARTY_INVITE)
+               var notifRecInvite :  NT_PartyInvite = (NT_PartyInvite)notifRecDetails
+               isDisplayable := (bool)notifRecInvite.is_active.Get()
+            end
+            
+            if (isDisplayable)
+               notifRecDetails.idx        := (int)notifRec.index.Get()
+               notifRecDetails.listIdx    := ret.Count()
+               notifRecDetails.heapIdx    := i
+               ret.Push(notifRecDetails)
+            end
+         end
+      end
+      
+      //for i:= 0 to 32
+      //   notif.txt   := " Test Text " + (string)i
+      //   notif.id    := "ID"         
+      //   ret.Push(notif.Clone())
+      //end
+      
+      return ret
+   end
+   
+   func invalidateNotifCounter(p : params)
+      if (!IsVoid(p.notif) and !IsVoid(p.notif.heapIdx))
+         var notif : NT_Notification = $UiGlobals.notifications.GetByIdx(p.notif.heapIdx)
+         notif.isNew.Set(false)
+      end
+   end
+
+
+   func ClearInvites()
+      if ((string)invitesNotifState.Get() == "Visible")
+         invitesNotifState.Set("Hidden")
+      end      
+   end
+   
+   func ClearNotifications()
+      isNewPartyInvites.Invalidate()
+      isNewPartyKicks.Invalidate()
+   end
+   
+   func ClearPartyNotificationsRecFromUserId(_uid : *)
+      //clean all invites from this user
+      var notifVec : vector = $UiGlobals.notifications.notifications.Get()
+      var idx      : int      
+      for idx := 0 to notifVec.Count() - 1
+         var notifRec   : NT_Notification    = (NT_Notification)notifVec.Get(idx)
+         if ((int)notifRec.type.Get() == $uiEnums.NOTIFICATION_PARTY_INVITE)
+            var inviteNotif : NT_PartyInvite  = (NT_PartyInvite)$UiGlobals.notifications.GetNotifDetails(notifRec)
+            if (_uid == inviteNotif.from_user.Get())
+               notifRec.MarkProcessed()
+            end
+         end
+      end
+   end
+   
+   func onAcceptNotificationRec(_notif : *)
+      if (_notif != null)
+         var notif : * = _notif
+         var pp : params
+         if (notif.type == $uiEnums.NOTIFICATION_SESSION_REWARDS)
+            pp.session_reward_idx := notif.idx
+            $sslWidgetMgr.GenerateEvent("ShowPostgameReplay", pp)
+            $UiBiLogger.LogNotificationEvent(notif.type , "ShowPostgameReplay")
+         elif (notif.type == $uiEnums.NOTIFICATION_SESSION_LVLUP)
+            var lvlUpvec    : vector = $UiGlobals.notifications.level_ups.Get()
+            var lvlUpIdx    : int = (int)notif.idx 
+            var levelId     : string = (string)lvlUpvec.Get(lvlUpIdx).level_id.Get()
+            var levelIdPrev : string = (string)lvlUpvec.Get(lvlUpIdx).level_id_previous.Get()
+            var level       : int =  (int)lvlUpvec.Get(lvlUpIdx).level.Get()
+            var levelPrev   : int = (int)lvlUpvec.Get(lvlUpIdx).level_previous.Get() 
+            var levelPromo  : bool = (bool)lvlUpvec.Get(lvlUpIdx).is_special_promotion.Get()
+            var levelUnlockItemsVec : vector = lvlUpvec.Get(lvlUpIdx).level_up_rewards.Get()
+            pp.rewardType     := "lvlUpReplay"
+            pp.showInPm       := false
+            pp.levelName      := levelId
+            pp.levelNamePrev  := levelIdPrev
+            pp.level          := level
+            pp.levelPromo     := levelPromo
+            pp.levelPrev      := levelPrev
+            pp.lvlRewards     := levelUnlockItemsVec
+            $sslWidgetMgr.GenerateEvent("RewardRequest", pp)
+            $UiBiLogger.LogNotificationEvent(notif.type , "RewardRequest")
+         elif (notif.type == $uiEnums.NOTIFICATION_CHALLENGE_COMPLETE)
+            var completeChallenge  : vector = $UiGlobals.notifications.challenge_complete.Get()
+            var challengeCmpIdx    : int = (int)notif.idx
+            var challengeCmpId     : string = completeChallenge.Get(challengeCmpIdx).challenge_id.Get()
+            var challengeRewards   : vector = completeChallenge.Get(challengeCmpIdx).rewards_tokens.Get()
+            pp.reward := challengeRewards
+            pp.challengeId := challengeCmpId
+            $sslWidgetMgr.GenerateEvent("ChallengeCompleteRequest", pp)
+            $UiBiLogger.LogNotificationEvent(notif.type , "ChallengeCompleteRequest")
+         elif (notif.type == $uiEnums.NOTIFICATION_SESSION_UNLOCK)
+            var unlockItems : vector = $UiGlobals.notifications.new_items.Get()
+            var unlockIdx   : int = (int)notif.idx
+            var unlockItemsVec : vector = unlockItems.Get(unlockIdx).new_items.Get()
+            pp.rewardType     := "itemUnlockReplay"
+            pp.showInPm       := false
+            if (unlockItemsVec.Count() > 0)
+               pp.unlcItemsVec := unlockItemsVec
+            end   
+            $sslWidgetMgr.GenerateEvent("RewardRequest", pp)
+            $UiBiLogger.LogNotificationEvent(notif.type , "RewardRequest")
+         elif (notif.type == $uiEnums.NOTIFICATION_PARTY_INVITE)
+            var invites :  vector = $UiGlobals.notifications.party_invites.Get()
+            var invite  : NT_PartyInvite = (NT_PartyInvite)invites.Get(notif.idx)
+            ClearPartyNotificationsRecFromUserId(invite.from_user.Get())
+            OnInviteAcceptDialog(invite.from_user.Get())
+            $UiBiLogger.LogNotificationEvent(notif.type , "PartyInvite")
+         elif (notif.type == $uiEnums.NOTIFICATION_CLAN_INVITE)
+            var invites :  vector = $UiGlobals.notifications.clan_invites.Get()
+            var invite  : NT_ClanInvite = (NT_ClanInvite)invites.Get(notif.idx)
+            var ud : UserData = (UserData)$UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+            if ($UserDataStorage.IsValidUID(ud.base.clan_id.Get()))
+               var par: params
+               par.mbType     := "Info"
+               par.titleTxt   := "msg_ui_warning"
+               if ($UserDataStorage.IsEqualUIDs(ud.base.clan_id.Get(), invite.to_clan_id.Get()))
+                  par.messageTxt := "msg_already_in_this_clan"
+               else
+                  par.messageTxt := "msg_already_in_another_clan"
+               end
+               $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+               return
+            end
+            OnClanInviteAccept(invite.to_clan_id.Get())
+            $UiBiLogger.LogNotificationEvent(notif.type , "ClanInvite")
+         end
+      end
+   end
+
+   func onCancelNotificationRec(_notif : *)
+      if (_notif != null)
+         var notif : * = _notif
+         if (notif.type == $uiEnums.NOTIFICATION_PARTY_INVITE)
+            var invites :  vector = $UiGlobals.notifications.party_invites.Get()
+            var invite  : NT_PartyInvite = (NT_PartyInvite)invites.Get(notif.idx)
+            ClearPartyNotificationsRecFromUserId(invite.from_user.Get())
+			DoRefuseInvite(invite.from_user.Get())
+            $UiBiLogger.LogNotificationEvent(notif.type , "RefusePartyInvite")
+         end
+      end
+   end
+
+   func OnSwitchPartyConfirmed(p : params) : bool
+      if (p.isOK and ! IsVoid(p.InviteUid))
+         DoAcceptInvite(p.InviteUid)
+      end
+      return true
+   end
+   
+   func AskSwitchPartyConfirmation(_uid : *)
+      var pp : params
+      pp.mbType            := $uiEnums.MB_TYPE_NO_YES
+      pp.titleTxt          := "msg_switch_party_hdr"
+      pp.messageTxt        := "msg_switch_party_txt"
+      pp.callbackEvent     := "SwitchPartyConfirmed"
+      pp.callbacktarget    := wgt.Props
+      pp.InviteUid         := _uid
+      wgt.GenerateEvent("MainMenuDialogRequest", pp)
+   end
+   
+   func ShowInviteAcceptUnavailableDialog()
+      var pp : params
+      pp.mbType            := $uiEnums.MB_TYPE_INFO
+      pp.titleTxt          := "msg_invite_accept_na_hdr"
+      pp.messageTxt        := "msg_invite_accept_na_txt"
+      wgt.GenerateEvent("MainMenuDialogRequest", pp)
+   end
+   
+   func DoAcceptInvite(_uid : *)
+      $UiGlobals.async_operations.party_invite_accept.Start(_uid, "OnInviteAcceptFinished")
+   end
+
+   func DoRefuseInvite(_uid : *)
+      //$UiGlobals.async_operations.party_invite_refuse.Start(_uid, "OnInviteRefuseFinished")
+      $hq.PartyInviteRefuse(_uid)
+   end
+
+   func OnInviteAcceptDialog(_uid : *)
+      if ($UserDataStorage.IsValidUID(_uid))
+         ClearInvites()
+         if ((int)$UiGlobals.party.state.Get() == $uiEnums.PARTY_STATE_NONE)
+            DoAcceptInvite(_uid)
+         elif ((int)$UiGlobals.party.state.Get() == $uiEnums.PARTY_STATE_FORMATION)
+            AskSwitchPartyConfirmation(_uid)
+         else
+            ShowInviteAcceptUnavailableDialog()
+         end
+      end
+   end
+   
+   func OnClanInviteAccept(_clanUid : *)
+      if ($UserDataStorage.IsValidUID(_clanUid))
+         $UiGlobals.async_operations.clan_invite_accept.Start(_clanUid, "OnClanInviteAcceptFinished")
+      end
+   end
+
+   func onAcceptNotification(p : params) : bool
+      if (!IsVoid(p.notif) and !IsVoid(p.notif.idx))
+         onAcceptNotificationRec(p.notif)
+      end
+      return true
+   end
+   
+   func onCancelNotification(p : params) : bool
+      if (!IsVoid(p.notif) and !IsVoid(p.notif.idx))
+         if (p.notif.type == $uiEnums.NOTIFICATION_PARTY_INVITE)
+            onCancelNotificationRec(p.notif)
+         else
+            onAcceptNotificationRec(p.notif)
+         end
+      end
+      return true
+   end
+
+   func notificationClick(p : params) : bool
+      var idx     : int    = p.index
+      var notifs  : vector =  GetNotifications()      
+      return true      
+      //if (idx >= 0 and idx < notifs.Count())
+      //   var notif : * = notifs.Get(idx)
+      //   if (! (bool)notif.hasCancel.Get())
+      //      onAcceptNotificationRec(idx)
+      //   end
+      //end
+   end
+   
+   func OnPlayerLIRPlusClicked(p : params) : bool
+      var filter : int = GetFilter()
+      if (filter == FILTER_USER_ALL or filter == FILTER_USER_RECENT)
+         $user_service.RequestFollow(p.uid)
+         $UiBiLogger.LogNotificationEvent("Users", "Follow")
+      end         
+      return false
+   end
+      
+   func OnPlayerLIRMinusClicked(p : params) : bool
+      var filter : int = GetFilter()
+      if (filter == FILTER_USER_FRIENDS)
+         var ud : UserData = (UserData)$UserDataStorage.users.Get(p.uid)
+         var pp : params
+         pp.titleTxt       := "msg_unfollow_confirm_title"
+         pp.messageTxt     := $UiGlobals.String2WString("msg_unfollow_confirm_msg,")
+         pp.messageTxt     += ud.base.full_nickname.Get()
+         pp.callbackEvent  := "unfollowConfirmClosed"
+         pp.mbType         := $uiEnums.MB_TYPE_NO_YES
+         pp.callbackParams := p
+         wgt.GenerateEvent("MainMenuDialogRequest", pp)
+         $UiBiLogger.LogNotificationEvent("Friends", "Unfollow")
+      end         
+      return false
+   end
+
+   func OnUnfollowConfirmClosed(p : params) : bool
+      if p.isOK
+         $user_service.RequestUnfollow(p.callbackParams.uid)
+      end
+      return false
+   end
+
+   func OnPlayerLIRJoinClicked(p : params) : bool
+      var filter : int = GetFilter()
+      if (filter == FILTER_USER_FRIENDS)
+         $hq.PartyInviteSend(p.uid)
+      end         
+      return false
+   end
+   
+   func ComparePlayers(userA : GL_UID, userB : GL_UID) : int
+      var udA     : UserData  = (UserData)$UserDataStorage.users.Get(userA.value.Get())
+      var udB     : UserData  = (UserData)$UserDataStorage.users.Get(userB.value.Get())            
+      var onlineA : bool      = (int)udA.presence.presence_state.Get() == $uiEnums.USER_PRESENCE_STATE_ONLINE
+      var onlineB : bool      = (int)udB.presence.presence_state.Get() == $uiEnums.USER_PRESENCE_STATE_ONLINE
+      var ingameA : bool      = (int)udA.presence.presence_state.Get() == $uiEnums.USER_PRESENCE_STATE_INGAME
+      var ingameB : bool      = (int)udB.presence.presence_state.Get() == $uiEnums.USER_PRESENCE_STATE_INGAME
+      var ret     : int       = 0
+      if (!onlineB and (onlineA or (ingameA and !ingameB)))
+         ret := -1
+      elif (!onlineA and (onlineB or (ingameB and !ingameA)))
+         ret := 1
+      else
+         ret := $UiGlobals.CmpWStrings(udA.base.nickname.Get(), udB.base.nickname.Get())
+      end
+      return ret
+   end 
+   
+   func SortPlayersList(_playersVec : vector) : vector
+      var i    : int
+      var ret  : vector
+      for i := 0 to _playersVec.Count() - 1
+         var user : GL_UID = (GL_UID)_playersVec.Get(i)
+         if ($UserDataStorage.IsValidUID(user.value.Get()))
+            $user_service.RequestData(user.value.Get(), $uiEnums.USER_DATA_BASE)
+            $user_service.RequestData(user.value.Get(), $uiEnums.USER_DATA_PRESENCE)
+            var ud : UserData = (UserData)$UserDataStorage.users.Get(user.value.Get())
+            if ((bool)ud.has_base.Get() and (bool)ud.has_presence.Get())
+               ret.Push(user)
+            end            
+         end         
+      end
+      ret.Sort(this, "ComparePlayers")
+      return ret
+   end
+   
+   func FormPlayersList(uidList : vector) : vector
+      var ret           : vector
+      var i             : int
+      var prevPresence  : int = -1
+      
+      for i := 0 to uidList.Count() - 1
+         var uid        : GL_UID    = (GL_UID)uidList.Get(i)
+         var ud         : UserData  = (UserData)$UserDataStorage.users.Get(uid.value.Get())
+         var presence      : int       = (int)ud.presence.presence_state.Get()
+         
+         if (presence != prevPresence)
+            prevPresence := presence
+            var separatorText : string = ""
+            if (presence == $uiEnums.USER_PRESENCE_STATE_ONLINE)
+               separatorText := "main_friends_online"
+            elif (presence == $uiEnums.USER_PRESENCE_STATE_OFFLINE)
+               separatorText := "main_friends_offline"
+            elif (presence == $uiEnums.USER_PRESENCE_STATE_INGAME)
+               separatorText := "main_friends_ingame"
+            end
+            var rec : params
+            rec.uid           := $UserDataStorage.invalidUID
+            rec.isSeparator   := true
+            rec.separatorText := separatorText
+            ret.Push(rec)
+         end
+         
+         var rec : params
+         rec.uid           := uid
+         rec.isSeparator   := false
+         rec.separatorText := ""
+         ret.Push(rec)
+      end
+      
+      return ret
+   end
+   
+   func GetPlayersList() : vector
+      var   ret         : vector
+      
+      if ((bool)isCollapsed.Get() or ! IsPlayersMode())
+         return ret
+      end
+      
+      var pp : params
+      pp.nick := wgt.GetSearchText()
+      var   filter      : int    = GetFilter()
+      var   isSearchRet : bool   = true
+
+      var playerRec : params
+      playerRec.uid  := $UserDataStorage.local_user.uid.Get()      
+      var isValidNickVal : bool = (bool)isValidNick.Get()
+      
+      if (IsSearchActive())
+         isSearchRet := false
+      else
+         if (pp.nick == $UiGlobals.String2WString(""))
+            if (filter == FILTER_USER_FRIENDS)
+               var ud : UserData = (UserData)$UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+               ret := ud.social.following.Get()
+            elif (filter == FILTER_USER_RECENT)
+               ret := $UserDataStorage.local_user.recent_users.Get()
+            end
+         elif (isValidNickVal)
+            var searchResult : vector = $UiGlobals.async_operations.find_users.result.Get()
+            ret := searchResult
+            UpdateSearchStatus(null)
+         end
+      end
+      
+      if (isSearchRet and IsSearchComplete() and isValidNickVal)
+         if (ret.Count() > 0)
+            searchErr.Set("")
+         else
+            searchErr.Set("msg_nothing_found")
+         end
+      else
+         searchErr.Set("")
+      end
+      
+      if (ret.Count() > 0)
+         ret := FormPlayersList(SortPlayersList(ret))
+      end
+      return ret
+   end
+   
+   func IsSearchActive() : bool
+      var searchState : int = (int)$UiGlobals.async_operations.find_users.progress.state.Get()
+      var ret : bool
+      ret := searchState == $uiEnums.BACKEND_REQUEST_STATE_IN_PROGRESS
+      return ret
+   end
+   
+   func IsSearchComplete() : bool
+      var searchState : int = (int)$UiGlobals.async_operations.find_users.progress.state.Get()
+      var ret : bool
+      ret := searchState == $uiEnums.BACKEND_REQUEST_STATE_COMPLETE
+      return ret
+   end
+   
+   func DoSearch(p : params) : bool
+      var pp : params
+      pp.nick := wgt.GetSearchText()
+      var filter  : int    = GetFilter()
+      if (pp.nick == $UiGlobals.String2WString(""))
+            isValidNick.Set(false)
+         playersList.Invalidate()
+      elif (! IsSearchActive() and filter > 0)
+         var nickCheckRet  : int       = $user_service.IsValidNickname(pp.nick)
+         if (nickCheckRet == 0)
+            isValidNick.Set(true)
+            $UiGlobals.async_operations.find_users.progress.state.Set($uiEnums.BACKEND_REQUEST_STATE_NONE)
+            $user_service.AsyncFindUsers(pp.nick, filter)         
+         else
+            isValidNick.Set(false)
+            searchErr.Set("msg_nick_err_" + (string)nickCheckRet)
+         end
+      end
+      return true
+   end
+   
+   func IsValidPlayerIndex(_idx : int) : bool
+      var players : vector = playersList.Get()
+      return _idx >= 0 and _idx < players.Count()
+   end
+
+   func GetPlayerUIDByIdx(_idx : int) : *
+      var players : vector = playersList.Get()
+      return players.Get(_idx).uid.value.Get()
+   end
+
+   func GetUserInfoByUID(uid : *) : GL_ComponentUserContextMenu
+      var ret : GL_ComponentUserContextMenu = (GL_ComponentUserContextMenu)$UiGlobals.componentsUserContextMenu.Get(uid)
+      return ret
+   end
+
+   func IsUserOnline(uid : *) : bool
+      var ret : bool = $UserDataStorage.IsOnline(uid)
+      return ret
+   end
+
+   func GetIsFormPartyEnabled(uid : *) : bool
+      var ret : bool = !$uiPartyMonitor.IsFormationOrLobby()
+      if (ret)
+         ret := IsUserOnline(uid) and (bool)GetUserInfoByUID(uid).party_can_invite.Get()
+      end
+      return ret
+   end
+
+   func GetIsInviteEnabled(uid : *) : bool
+      var ret : bool = (bool)GetUserInfoByUID(uid).party_can_invite.Get()
+      ret := ret and IsUserOnline(uid)
+      return ret
+   end
+
+   func friendsRosterLIR_Clicked(p : params) : bool
+      var idx : int = p.index
+      if (IsValidPlayerIndex(idx))
+         var uid : * = GetPlayerUIDByIdx(idx)
+         if GetIsFormPartyEnabled(uid)
+            $sslWidgetMgr.GenerateEvent("onOpenGameModeLobby")
+            $hq.PartyInviteSend(uid)
+            return true
+         else if GetIsInviteEnabled(uid)
+            $hq.PartyInviteSend(uid)
+            return true
+         end
+      end
+      return true
+   end
+      
+   func GetSelectedPlayerUID() : *
+      if (wgt != null)
+         var childWgt : * = wgt.Widgets.content.playersList.object
+         if (!IsVoid(childWgt.mouseOverItem.Get()) and childWgt.mouseOverItem.Get().uid != null)
+            var listItem : GL_UID = childWgt.mouseOverItem.Get().uid
+            selectedGLUID.value.Set(listItem.value.Get())
+         else
+            selectedGLUID.value.Set($UserDataStorage.invalidUID.value.Get())
+         end
+      else
+         selectedGLUID.value.Set($UserDataStorage.invalidUID.value.Get())
+      end
+      return selectedGLUID
+   end
+   
+   func GetSelectedIdx() : int
+      var ret : int = 0
+      if (wgt != null)
+         ret := (int)wgt.Widgets.content.playersList.object.mouseOverIdx.Get()
+      end
+      return ret
+   end
+   
+   func SetSelectedUID(val : *)
+      //uid.value.Set(val)
+   end
+   
+   func friendsRosterLIR_RollOver(p : params) : bool   
+      var idx : int = p.index
+      if (IsValidPlayerIndex(idx))
+         //selectedIdx.Set(idx)
+         //SetSelectedUID(GetPlayerUIDByIdx(idx))
+      end
+      return true
+   end
+   
+   func friendsRosterLIR_RollOut(p : params) : bool   
+      //selectedIdx.Set(0)
+      //SetSelectedUID($UserDataStorage.invalidUID.value.Get())
+      //var idx : int = p.index
+      //if (IsValidPlayerIndex(idx))
+      //end
+      return true
+   end 
+end
+
+/*---------------------------------------------------------
+* UiRosterDockerSearchField
+-----------------------------------------------------------*/
+class UiRosterDockerSearchField : UiWidgetText
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (p.isDown == true)
+         if (keyCode == $uiKeys.VK_ENTER)
+            GenerateEvent("#DoSearch")
+            isTerminated := true
+         end
+      end
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+   
+   func focusIn(p : params) : bool
+      var txt : string = Props.text
+      if (txt == "type to search")
+         Props.text := ""
+      end
+      return false
+   end
+end
+
+/*---------------------------------------------------------
+* UiNotificationsLir
+-----------------------------------------------------------*/
+class UiNotificationsLir : UiWidgetListItem
+   func GetDCAsParams() : params
+      var ret : params
+      ret.notif := GetDC()
+      return ret
+   end
+   
+   override SetData
+      Props.mouseChildren := true      
+      GenerateEvent("#invalidateNotifCounter", GetDCAsParams())
+   end
+   
+   func onAcceptClicked(p : params) : bool
+      GenerateEvent("#onAcceptNotification", GetDCAsParams())
+      return true
+   end
+   
+   func onCancelClicked(p : params) : bool
+      GenerateEvent("#onCancelNotification", GetDCAsParams())
+      return true
+   end
+end

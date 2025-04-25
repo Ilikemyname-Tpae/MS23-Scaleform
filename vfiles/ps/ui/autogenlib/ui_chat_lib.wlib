@@ -1,0 +1,864 @@
+classes = {
+	bgLeftTab = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgLeftTab" 
+		lib     = chat_lib 
+	}
+
+	bgLeftTabAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgLeftTabAnim" 
+		lib     = chat_lib 
+	}
+
+	bgMidTab = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgMidTab" 
+		lib     = chat_lib 
+	}
+
+	bgMidTabAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgMidTabAnim" 
+		lib     = chat_lib 
+	}
+
+	bgMidTabStAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgMidTabStAnim" 
+		lib     = chat_lib 
+	}
+
+	bgRightTab = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgRightTab" 
+		lib     = chat_lib 
+	}
+
+	bgRightTabAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgRightTabAnim" 
+		lib     = chat_lib 
+	}
+
+	CharUserBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "CharUserBg" 
+		lib     = chat_lib 
+	}
+
+	ChatBgPic = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatBgPic" 
+		lib     = chat_lib 
+	}
+
+	ChatBigListCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatBigListCont" 
+		lib     = chat_lib 
+
+		elements {
+			maskClip {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			txtAreaCont0 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 10
+				y         = 10
+			} 
+			txtAreaCont1 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 30
+				y         = 26
+			} 
+			txtAreaCont2 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 47
+				y         = 41
+			} 
+			txtAreaCont3 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 61
+				y         = 60
+			} 
+			txtAreaCont4 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 77
+				y         = 76
+			} 
+			txtAreaCont5 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 92
+				y         = 96
+			} 
+			txtAreaCont6 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 106
+				y         = 115
+			} 
+			txtAreaCont7 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 119
+				y         = 136
+			} 
+			txtAreaCont8 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 131
+				y         = 154
+			} 
+			txtAreaCont9 {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 145
+				y         = 173
+			} 
+			listContentAttach {
+				__type = "ui_widget_container"
+
+				x         = 10
+				y         = 10
+			} 
+		}
+	}
+
+	ChatCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatCont" 
+		lib     = chat_lib 
+
+		elements {
+			expandBtn {
+				__type = "ui_chat_lib::ChatExpandBtn"
+				x         = 17
+				y         = -10
+			} 
+			userShowBtn {
+				__type = "ui_chat_lib::ChatUserShowBtn"
+				x         = 22
+				y         = 494.5
+			} 
+			tabsCont {
+				__type = "ui_chat_lib::ChatTabsContCont"
+				x         = 4
+				y         = 3
+			} 
+			inputCont {
+				__type = "ui_chat_lib::ChatInputCont"
+				x         = 19.5
+				y         = 493
+			} 
+			listMessages {
+				__type = "ui_chat_lib::ChatBigListCont"
+				x         = 216
+				y         = 31
+			} 
+			listMembers {
+				__type = "ui_chat_lib::ChatLeftListCont"
+				x         = 4.05
+				y         = 29
+			} 
+			stripeBg {
+				__type = "ui_widget_container"
+
+				x         = 3
+				y         = 29
+			} 
+			bg {
+				__type = "ui_chat_lib::ChatBgPic"
+				x         = 3
+				y         = 30
+			} 
+		}
+	}
+
+	ChatExpandBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChatExpandBtn" 
+		lib     = chat_lib 
+	}
+
+	ChatHitArea = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatHitArea" 
+		lib     = chat_lib 
+	}
+
+	ChatInputCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatInputCont" 
+		lib     = chat_lib 
+
+		elements {
+			inputTf {
+				__type = "ui_chat_lib::ChatTextInputSkinnedMenu"
+				x         = 18.75
+				y         = -3
+				scaleX    = 5.2539
+				scaleY    = 1
+			} 
+			sendBtn {
+				__type = "ui_chat_lib::SendMessageBtn"
+				x         = 679.8
+				y         = 0.85
+			} 
+		}
+	}
+
+	ChatInputTf = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatInputTf" 
+		lib     = chat_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	ChatLeftListCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatLeftListCont" 
+		lib     = chat_lib 
+
+		elements {
+			chatMask {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			txtAreaCont {
+				__type = "ui_chat_lib::DefaultTextAreaCont"
+				x         = 8.35
+				y         = 7.35
+			} 
+			listContentAttach {
+				__type = "ui_widget_container"
+
+				x         = 10
+				y         = 10
+			} 
+			bg {
+				__type = "ui_chat_lib::CharUserBg"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatLeftTabSt = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChatLeftTabSt" 
+		lib     = chat_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 16
+				y         = 0.5
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatLeftTabStCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatLeftTabStCont" 
+		lib     = chat_lib 
+
+		elements {
+			notif {
+				__type = "ui_chat_lib::ChatNotificationItem"
+				x         = 65
+				y         = 4.6
+			} 
+			tab {
+				__type = "ui_chat_lib::ChatLeftTabSt"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatMembersLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "ChatMembersLIR" 
+		lib     = chat_lib 
+
+		elements {
+			notif {
+				__type = "ui_chat_lib::ChatNotificationItem"
+				x         = -2.05
+				y         = 1.75
+				scaleX    = 0.9905
+				scaleY    = 0.9905
+			} 
+			status {
+				__type = "ui_widget_container"
+
+				x         = -1
+				y         = 2.85
+			} 
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 13.9
+				y         = 0
+			} 
+		}
+	}
+
+	ChatMembersList = {
+		__type = "ui_widget_list"
+
+		symbol  = "ChatMembersList" 
+		lib     = chat_lib 
+	}
+
+	ChatMessageAttachPoint = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatMessageAttachPoint" 
+		lib     = chat_lib 
+	}
+
+	ChatMessagesLIR = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "ChatMessagesLIR" 
+		lib     = chat_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatMessagesList = {
+		__type = "ui_widget_list"
+
+		symbol  = "ChatMessagesList" 
+		lib     = chat_lib 
+	}
+
+	ChatMidTab = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChatMidTab" 
+		lib     = chat_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 1.25
+				y         = 0.8
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatMidTabCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatMidTabCont" 
+		lib     = chat_lib 
+
+		elements {
+			closeBtn {
+				__type = "ui_chat_lib::ChatTabCloseBtn"
+				x         = 52.6
+				y         = 4.6
+			} 
+			notif {
+				__type = "ui_chat_lib::ChatNotificationItem"
+				x         = 51
+				y         = 4.6
+			} 
+			tab {
+				__type = "ui_chat_lib::ChatMidTab"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatMidTabSt = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChatMidTabSt" 
+		lib     = chat_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 1.5
+				y         = 0.8
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = -0.15
+				y         = 0
+			} 
+		}
+	}
+
+	ChatMidTabStCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatMidTabStCont" 
+		lib     = chat_lib 
+
+		elements {
+			tab {
+				__type = "ui_chat_lib::ChatMidTabSt"
+				x         = 0.15
+				y         = 0
+			} 
+			notif {
+				__type = "ui_chat_lib::ChatNotificationItem"
+				x         = 51
+				y         = 4.6
+			} 
+		}
+	}
+
+	ChatNotificationItem = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatNotificationItem" 
+		lib     = chat_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	ChatRightTab = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChatRightTab" 
+		lib     = chat_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 0.75
+				y         = 0.8
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatRightTabCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatRightTabCont" 
+		lib     = chat_lib 
+
+		elements {
+			notif {
+				__type = "ui_chat_lib::ChatNotificationItem"
+				x         = 51
+				y         = 4.6
+			} 
+			tab {
+				__type = "ui_chat_lib::ChatRightTab"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChatTabCloseBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChatTabCloseBtn" 
+		lib     = chat_lib 
+	}
+
+	ChatTabsCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatTabsCont" 
+		lib     = chat_lib 
+
+		elements {
+			tab0 {
+				__type = "ui_chat_lib::ChatLeftTabSt"
+				x         = 0
+				y         = 0
+			} 
+			tab1 {
+				__type = "ui_chat_lib::ChatMidTabSt"
+				x         = 84
+				y         = -0.05
+			} 
+			tab2 {
+				__type = "ui_chat_lib::ChatMidTabSt"
+				x         = 154
+				y         = 0
+			} 
+			tab9 {
+				__type = "ui_chat_lib::ChatRightTab"
+				x         = 645.3
+				y         = 0
+			} 
+			tab3 {
+				__type = "ui_chat_lib::ChatMidTab"
+				x         = 223.85
+				y         = 0
+			} 
+			tab4 {
+				__type = "ui_chat_lib::ChatMidTab"
+				x         = 293
+				y         = 0
+			} 
+			tab5 {
+				__type = "ui_chat_lib::ChatMidTab"
+				x         = 362
+				y         = 0
+			} 
+			tab6 {
+				__type = "ui_chat_lib::ChatMidTab"
+				x         = 431
+				y         = 0
+			} 
+			tab7 {
+				__type = "ui_chat_lib::ChatMidTab"
+				x         = 500
+				y         = 0
+			} 
+			tab8 {
+				__type = "ui_chat_lib::ChatMidTab"
+				x         = 569
+				y         = 0
+			} 
+		}
+	}
+
+	ChatTabsContCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatTabsContCont" 
+		lib     = chat_lib 
+
+		elements {
+			tab0 {
+				__type = "ui_chat_lib::ChatLeftTabStCont"
+				x         = 0
+				y         = 0
+			} 
+			tab9 {
+				__type = "ui_chat_lib::ChatRightTabCont"
+				x         = 644.8
+				y         = 0
+			} 
+			tab1 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 85.85
+				y         = 0
+			} 
+			tab2 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 156.85
+				y         = 0
+			} 
+			tab3 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 228.35
+				y         = 0
+			} 
+			tab4 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 295.35
+				y         = 0
+			} 
+			tab5 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 363.35
+				y         = 0
+			} 
+			tab6 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 433.35
+				y         = 0
+			} 
+			tab7 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 504.3
+				y         = 0
+			} 
+			tab8 {
+				__type = "ui_chat_lib::ChatMidTabCont"
+				x         = 575.3
+				y         = 0
+			} 
+		}
+	}
+
+	ChatTextInputSkinned = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatTextInputSkinned" 
+		lib     = chat_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	ChatTextInputSkinnedMenu = {
+		__type = "ui_widget_container"
+
+		symbol  = "ChatTextInputSkinnedMenu" 
+		lib     = chat_lib 
+		propMapping {
+			raw_textField = {
+				mapping = "raw_textField.text"
+			}
+		}
+	}
+
+	ChatUserShowBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChatUserShowBtn" 
+		lib     = chat_lib 
+	}
+
+	DefaultTextArea = {
+		__type = "ui_widget_text_area"
+
+		symbol  = "DefaultTextArea" 
+		lib     = chat_lib 
+		propMapping {
+			raw_textField = {
+				mapping = "raw_textField.text"
+			}
+		}
+	}
+
+	DefaultTextAreaCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "DefaultTextAreaCont" 
+		lib     = chat_lib 
+
+		elements {
+			txtArea {
+				__type = "ui_chat_lib::DefaultTextArea"
+				x         = 1
+				y         = 1
+			} 
+		}
+	}
+
+	IngameChatCont = {
+		__type = "ui_widget_bucket"
+
+		symbol  = "IngameChatCont" 
+		lib     = chat_lib 
+
+		elements {
+			inputCont {
+				__type = "ui_chat_lib::IngameChatInputCont"
+				x         = 0
+				y         = 1
+			} 
+			tfTarget {
+				__type = "ui_chat_lib::IngameChatTargetTf"
+				x         = 57.3
+				y         = 0.3
+			} 
+			messagesCont {
+				__type = "ui_chat_lib::IngameChatMessagesCont"
+				x         = -1
+				y         = -212
+			} 
+		}
+	}
+
+	IngameChatInputCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "IngameChatInputCont" 
+		lib     = chat_lib 
+
+		elements {
+			inputTf {
+				__type = "ui_chat_lib::ChatTextInputSkinnedMenu"
+				x         = 48.25
+				y         = 0.35
+				scaleX    = 2.9999
+				scaleY    = 1
+			} 
+		}
+	}
+
+	IngameChatMessage = {
+		__type = "ui_widget_container"
+
+		symbol  = "IngameChatMessage" 
+		lib     = chat_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	IngameChatMessageCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "IngameChatMessageCont" 
+		lib     = chat_lib 
+
+		elements {
+			messageCont {
+				__type = "ui_chat_lib::IngameChatMessage"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	IngameChatMessagesCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "IngameChatMessagesCont" 
+		lib     = chat_lib 
+	}
+
+	IngameChatRotated = {
+		__type = "ui_widget_container"
+
+		symbol  = "IngameChatRotated" 
+		lib     = chat_lib 
+
+		elements {
+			ingameChatCont {
+				__type = "ui_chat_lib::IngameChatCont"
+				x         = -509.05
+				y         = 344.8
+				scaleX    = 1
+				scaleY    = 1
+			} 
+		}
+	}
+
+	IngameChatRotatedCopy = {
+		__type = "ui_widget_container"
+
+		symbol  = "IngameChatRotatedCopy" 
+		lib     = chat_lib 
+
+		elements {
+			ingameChatCont {
+				__type = "ui_chat_lib::IngameChatCont"
+				x         = -511.55
+				y         = 304.2
+				scaleX    = 1
+				scaleY    = 1
+			} 
+		}
+	}
+
+	IngameChatTargetTf = {
+		__type = "ui_widget_container"
+
+		symbol  = "IngameChatTargetTf" 
+		lib     = chat_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	SendMessageBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "SendMessageBtn" 
+		lib     = chat_lib 
+	}
+}
+__type = "ui_widget_lib"

@@ -1,5 +1,0 @@
-import ssl.lib.ui.ui_widget
-
-native class UiWidgetImage : UiWidget
-   native func TestCallImage()
-end

@@ -1,0 +1,24 @@
+classes = {
+	saber_ui_controls_Panel = {
+		__type = "ui_widget_container"
+
+		symbol  = "saber.ui.controls.Panel" 
+		lib     = loading_screen 
+
+		elements {
+			checkContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

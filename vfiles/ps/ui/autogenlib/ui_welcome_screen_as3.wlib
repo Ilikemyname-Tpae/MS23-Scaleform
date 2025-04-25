@@ -1,0 +1,69 @@
+classes = {
+	hf2pWelcomeScreenLog = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pWelcomeScreenLog" 
+		lib     = welcome_screen_as3 
+
+		elements {
+			wsContent {
+				__type = "ui_widget_container"
+
+				x         = 960
+				y         = 540
+
+				elements {
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							textUser = {
+								mapping = "textUser.text"
+							}
+							textField = {
+								mapping = "textField.text"
+							}
+						}
+						x         = 100
+						y         = -162.4
+
+						elements {
+							loginBtn {
+								__type = "ui_widget_container"
+
+								propMapping {
+									textField = {
+										mapping = "textField.text"
+									}
+								}
+								x         = 1
+								y         = 283.1
+							} 
+						}
+						animated  = true
+					} 
+				}
+			} 
+		}
+	}
+
+	LowerPanel_Exit_Btn = {
+		__type = "ui_widget_button"
+
+		symbol  = "LowerPanel_Exit_Btn" 
+		lib     = welcome_screen_as3 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	new_welcome_screenshade = {
+		__type = "ui_widget_container"
+
+		symbol  = "new_welcome_screenshade" 
+		lib     = welcome_screen_as3 
+	}
+}
+__type = "ui_widget_lib"

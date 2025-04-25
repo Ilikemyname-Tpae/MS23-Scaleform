@@ -1,0 +1,152 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_manager
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.hf2p.hq
+import ui.root
+import ui.ui_economy
+import ui.ui_player_info
+
+class UiClansCreate : UiSlidingScreenPageMainMenu
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end 
+
+handle OnEnterState("Hidden")
+end          
+
+handle OnEnteringState("Visible")
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_CLAN_CREATE)
+   Set("visible", true)
+end  
+
+override SwitchToScreen // ()
+end
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+end
+
+override PrepareHideSlide // ()
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Hidden")
+      SetStateName("Hidden")
+   end
+end
+
+end
+
+class UiClansCreateVM
+   var emblemList         : ObservableProperty = $OM.Calculated(this, "GetEmblemList")
+   var wgt : *
+   
+   func Init(p : params)
+     // emblemList.Invalidate()
+     wgt := p.widget
+   end
+   
+   func GetEmblemList() : vector
+      var ret : vector
+      var i : int
+      for i := 0 to 5                     
+         var listEntry:params		
+         listEntry.label         := "emblem " + (string)i		         
+         listEntry.img           := "allUpgrade"
+         ret.Push(listEntry)
+      end
+      return ret
+   end
+
+   func OnCreateClanGpOfferClick(p : params) : bool
+      var clanName : wstring = wgt.Widgets.inputFieldsContainer.clanName.wtext
+      var clanTag : wstring = wgt.Widgets.inputFieldsContainer.clanTag.wtext
+      var clanDesc : wstring = wgt.Widgets.inputFieldsContainer.clanMotto.wtext
+      
+      var par: params
+      par.mbType     := "Info"
+      par.titleTxt   := "msg_ui_warning"
+      if ($clan_service.IsValidClanName(clanName) != 0)
+         par.messageTxt := "msg_clan_invalid_name"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+         return true
+      end
+      if ($clan_service.IsValidClanTag(clanTag) != 0)
+         par.messageTxt := "msg_clan_invalid_tag"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+         return true
+      end
+      if ($clan_service.IsValidClanDescription(clanDesc) != 0)
+         par.messageTxt := "msg_clan_invalid_motto"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+         return true
+      end
+      par := new params
+      par.name := clanName
+      par.tag := clanTag
+      par.desc := clanDesc
+      $UiGlobals.async_operations.clan_create.Start(par, "onClanCreated")
+      
+      return true
+   end
+
+   func OnCreateClanCrOfferClick(p : params) : bool
+      var clanName : wstring = wgt.Widgets.inputFieldsContainer.clanName.wtext
+      var clanTag : wstring = wgt.Widgets.inputFieldsContainer.clanTag.wtext
+      var clanDesc : wstring = wgt.Widgets.inputFieldsContainer.clanMotto.wtext
+      
+      var par: params
+      par.mbType     := "Info"
+      par.titleTxt   := "msg_ui_warning"
+      if ($clan_service.IsValidClanName(clanName) != 0)
+         par.messageTxt := "msg_clan_invalid_name"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+         return true
+      end
+      if ($clan_service.IsValidClanTag(clanTag) != 0)
+         par.messageTxt := "msg_clan_invalid_tag"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+         return true
+      end
+      if ($clan_service.IsValidClanDescription(clanDesc) != 0)
+         par.messageTxt := "msg_clan_invalid_motto"
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)
+         return true
+      end
+      par := new params
+      par.name := clanName
+      par.tag := clanTag
+      par.desc := clanDesc
+      $UiGlobals.async_operations.clan_create.Start(par, "onClanCreated")
+      
+      return true
+   end
+
+   func OnClanCreated(p : params) : bool
+      wgt.GenerateEvent("closeSlidingScreens")
+      return true
+   end
+
+end
+
+class UiClansInputTf : UiWidgetContainer
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+end

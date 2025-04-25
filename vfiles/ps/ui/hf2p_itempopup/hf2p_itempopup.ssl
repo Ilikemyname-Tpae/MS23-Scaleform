@@ -1,0 +1,154 @@
+import ssl.lib.logging
+import ssl.lib.events
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_popup
+import ssl.hf2p.engine_ctrl
+import ui.ui_party_monitor
+import ui.ui_matchmaking
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+
+import ui.libs.hf2p_ItemPopup_lib.hf2p_ItemPopup_lib
+
+class Hf2pItempopup : UiWidgetPopup
+   handle OnBindingsActivate // ()
+      //GetDC().UpdateSize()
+   end
+      
+   func ActivateBindingsDelayed()
+      ActivateBindingsManual(true)
+      Props.visible := true
+      GetDC().ShowPrimary()
+   end
+      
+   func OnPopupOpened(p : params) : bool
+      Props.visible := false
+      delay kill, this, ACTIVATE_DELAY
+      ActivateBindingsDelayed() : 0.4, ACTIVATE_DELAY
+      return false
+   end
+   
+   func OnPopupClosed(p : params) : bool
+      delay kill, this, ACTIVATE_DELAY
+      return false
+   end
+end
+
+class UiItemPopupVM
+   var itemId              : ObservableProperty = $OM.Property("")
+   var itemId2             : ObservableProperty = $OM.Property("")
+   var clientAreaWidth     : ObservableProperty = $OM.Property(1)
+   var clientAreaHeight    : ObservableProperty = $OM.Property(1)
+   var itemStats           : UiItemStatsVM      = new UiItemStatsVM()
+   var itemStats2          : UiItemStatsVM      = new UiItemStatsVM()
+   var wgt                 : UiWidgetPopup      = null
+
+   func Init(p : params)
+      wgt := p.widget
+      var item1 : string = ""
+      var item2 : string = ""
+      itemStats.isVisible.Set(false)
+      itemStats2.isVisible.Set(false)
+      
+      if (!IsVoid(p.itemId))
+         item1 := p.itemId
+      end      
+      if (item1 != "")
+         itemStats.wgt := p.widget.GetWidget("content")
+         itemId.Set(item1)
+         itemStats.Init(item1)
+         itemStats.isEquipped.Set(false)
+      end      
+            
+      if (!IsVoid(p.itemId2))
+         item2 := p.itemId2
+      else
+         item2 := $uiPlayerInfo.GetDefaultComparisonItem(item1)
+         if (item2 != "" and item2 == item1)
+            itemStats.isEquipped.Set(true)
+            item2 := ""
+         end
+      end
+      
+      if (item2 != "" and item1 != item2)
+         itemStats2.wgt := p.widget.GetWidget("content2")
+         itemId2.Set(item2)
+         itemStats2.Init(item2)
+         itemStats2.isEquipped.Set(true)
+         itemStats.compareItemId.Set(item2)
+         ShowCompare() : 0.95, DELAY_COMPARE
+      end      
+      
+      if (item1 != "" and item1 == item2)
+         itemStats.isEquipped.Set(true)
+      end
+   end
+            
+   func Term()
+      itemStats.Term()
+      itemStats2.Term()
+      delay kill, this, DELAY_PRIMARY
+      delay kill, this, DELAY_COMPARE
+   end
+   
+   func ShowCompare()
+      itemStats2.isVisible.Set(true)
+      UpdateSize()
+      wgt.Widgets.content2.StartDefaultBlinking(0, 0.33)
+   end
+   
+   func ShowPrimary()
+      itemStats.isVisible.Set(true)      
+      UpdateSize()
+      wgt.Widgets.content.StartDefaultBlinking(0, 0.33)
+   end
+
+   func UpdateSize()
+      itemStats.InvalidateSize()
+      itemStats2.InvalidateSize()
+      
+      var x1 :  float = (float)wgt.Widgets.content.x
+      var y1 :  float = (float)wgt.Widgets.content.y
+      var w1 :  float = (float)itemStats.contentWidth.Get() //(float)wgt.Widgets.content.width
+      var h1 :  float = (float)itemStats.contentHeight.Get() //(float)wgt.Widgets.content.height
+      
+      var minx : float = x1
+      var miny : float = y1
+      var maxx : float = x1 + w1
+      var maxy : float = y1 + h1
+      
+      //if ((bool)itemStats2.isVisible.Get())
+         var x2 :  float = (float)wgt.Widgets.content2.x
+         var y2 :  float = (float)wgt.Widgets.content2.y
+         var w2 :  float = (float)itemStats2.contentWidth.Get() //(float)wgt.Widgets.content2.width
+         var h2 :  float = (float)itemStats2.contentHeight.Get() //(float)wgt.Widgets.content2.height
+         
+         if (x2 < minx)
+            minx := x2
+         end
+         
+         x2 := x2 + w2
+         if (x2 > maxx)
+            maxx := x2
+         end
+         
+         if (y2 < miny)
+            miny := y2
+         end
+         
+         y2 := y2 + h2
+         if (y2 > maxy)
+            maxy := y2
+         end
+      //end
+      
+      var contentWidth  : float = maxx - minx
+      var contentHeight : float = maxy - miny
+      
+      clientAreaWidth.Set(contentWidth)
+      clientAreaHeight.Set(contentHeight)
+      
+      wgt.InvalidateSize()
+   end      
+end

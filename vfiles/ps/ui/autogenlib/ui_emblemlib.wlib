@@ -1,0 +1,30 @@
+classes = {
+	cross = {
+		__type = "ui_widget_container"
+
+		symbol  = "cross" 
+		lib     = emblemLib 
+	}
+
+	quadro = {
+		__type = "ui_widget_container"
+
+		symbol  = "quadro" 
+		lib     = emblemLib 
+	}
+
+	round = {
+		__type = "ui_widget_container"
+
+		symbol  = "round" 
+		lib     = emblemLib 
+	}
+
+	triangle = {
+		__type = "ui_widget_container"
+
+		symbol  = "triangle" 
+		lib     = emblemLib 
+	}
+}
+__type = "ui_widget_lib"

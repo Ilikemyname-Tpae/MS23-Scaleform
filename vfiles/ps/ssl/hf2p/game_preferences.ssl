@@ -1,0 +1,266 @@
+import ssl.lib.ui.ui_widget_manager
+
+native class GAME_PREFERENCES_SSL
+	native func GetToggleCrouch () : bool
+	native func SetToggleCrouch (on : bool)
+	native func GetHUDShake () : bool
+	native func SetHUDShake (on : bool)
+	native func GetSwearFilter() : bool
+	native func SetSwearFilter(on : bool)
+	native func GetAltCrosshair() : bool
+	native func SetAltCrosshair(on : bool)
+	native func GetGooeyCrosshair() : bool
+	native func SetGooeyCrosshair(on : bool)
+	native func GetDisplayHints () : bool
+	native func SetDisplayHints (on : bool)
+	native func GetTeamColor () : int
+	native func SetTeamColor (on : int)
+	native func GetCameraFOV () : int
+	native func SetCameraFOV (on : int) 
+	native func ResetTutorial ()
+
+	// multiplayer settings
+	native func GetMatchmakingRegion () : int
+	native func SetMatchmakingRegion (value : int)
+
+	// video settings
+	native func GetScreenResolutionList          (pseudoFullscreen : bool) : vector
+	native func GetScreenResolution              () : params
+	native func GetDefaultVideoSettings          () : params
+   native func GetAdvancedVideoPresetParams     (preset : int) : params
+   native func CheckVideoSettingsForApply       (p : params) : int
+	native func GetDefaultControlsSettings       () : params
+	native func GetDefaultSoundSettings          () : params
+	native func GetDefaultGameplaySettings       () : params
+	native func SetScreenResolution              (width : int, height : int)
+   native func GetQualityPresetOptions          () : vector
+   native func GetQualityPreset                 (p : params) : int
+	native func GetBrightness                    () : int
+	native func SetBrightness                    (value : int)
+	native func GetBrighntessScaleAndShift       () : params
+	native func GetFullscreen                    () : bool
+	native func SetFullscreen                    (on : bool)
+	native func GetVSync                         () : bool
+	native func SetVSync                         (on : bool)
+	native func GetAntialiasing                  () : bool
+	native func SetAntialiasing                  (on : bool)
+   
+   // video settings advanced
+   native func GetTextureResolutionOptions      () : vector
+   native func GetTextureResolution             () : int
+   native func SetTextureResolution             (value : int)
+   native func GetTextureFilteringQualityOptions() : vector
+   native func GetTextureFilteringQuality       () : int
+   native func SetTextureFilteringQuality       (value : int)
+   native func GetLightingQualityOptions        () : vector
+   native func GetLightingQuality               () : int
+   native func SetLightingQuality               (value : int)
+   native func GetEffectsQualityOptions         () : vector
+   native func GetEffectsQuality                () : int
+   native func SetEffectsQuality                (value : int)
+   native func GetShadowQualityOptions          () : vector
+   native func GetShadowQuality                 () : int
+   native func SetShadowQuality                 (value : int)
+   native func GetDetailsQualityOptions         () : vector
+   native func GetDetailsQuality                () : int
+   native func SetDetailsQuality                (value : int)
+   native func GetPostprocessQualityOptions     () : vector
+   native func GetPostprocessQuality            () : int
+   native func SetPostprocessQuality            (value : int)
+   native func GetMotionBlur                    () : bool
+   native func SetMotionBlur                    (on : bool)
+
+   //video settings obsolete
+   native func GetLightVolumes                  () : bool
+   native func SetLightVolumes                  (on : bool)
+	native func GetReflections                   () : bool
+	native func SetReflections                   (on : bool)
+	native func GetDecorator                     () : bool
+	native func SetDecorator                     (on : bool)
+	native func GetParticleDetail                () : int
+	native func SetParticleDetail                (value : int)
+	native func GetContrast                      () : int
+	native func SetContrast                      (value : int)
+	native func GetSSAO                          () : bool
+	native func SetSSAO                          (on : bool)
+
+	// audio settings
+	native func GetMasterVolume () : int
+	native func SetMasterVolume (value : int, save : bool)
+	native func GetSFXVolume () : int
+	native func SetSFXVolume (value : int, save : bool)
+	native func GetMusicVolume () : int
+	native func SetMusicVolume (value : int, save : bool)
+	native func GetVoiceVolume () : int
+	native func SetVoiceVolume (value : int, save : bool)
+	native func GetVoiceChatControl () : int
+	native func SetVoiceChatControl (value : int)
+	native func GetVoiceChatVolume () : int
+	native func SetVoiceChatVolume (value : int, save : bool)
+
+	// controls settings
+	native func GetControlsMethod () : int
+	native func SetControlsMethod (value : int)
+	native func GetMouseSensitivityVert () : int
+	native func GetMouseSensitivityHor () : int
+	native func SetMouseSensitivityVert (value : int)
+	native func SetMouseSensitivityHor (value : int)
+	native func GetMouseSensitivityVehicleVert () : int
+	native func GetMouseSensitivityVehicleHor () : int
+	native func SetMouseSensitivityVehicleVert (value : int)
+	native func SetMouseSensitivityVehicleHor (value : int)
+	native func GetMouseAcceleration () : int
+	native func SetMouseAcceleration (value : int)
+	native func GetMouseFilter () : bool
+	native func SetMouseFilter (on : bool)
+	native func GetInvertMouse () : bool
+	native func SetInvertMouse (on : bool)
+
+	// controller settings
+	native func GetLookSensitivity () : int
+	native func SetLookSensitivity (value : int)
+	native func GetInvertLook () : bool
+	native func SetInvertLook (on : bool)
+	native func GetAutoCentering () : bool
+	native func SetAutoCentering (on : bool)
+	native func GetButtonLayout () : int
+	native func SetButtonLayout (value : int)
+
+	// rebind keys
+	native func GetKeyLabels () : vector
+	native func GetActionLabels (biped : bool) : vector
+	native func GetDefaultKeyBinds (biped : bool) : vector
+	native func GetKeyBinds (biped : bool) : vector
+	native func SetKeyBinds (binds : vector, biped : bool)
+   
+   // ssl-only funcs      
+   var savedVideo                         : params
+   var userAdvancedVideoSettings          : params
+   var settingsInitialized                : bool = false
+   
+   // error Codes
+   var VIDEO_CHECK_ERROR_NONE                : int  = 0
+   var VIDEO_CHECK_ERROR_UNSIFFICIENT_MEM    : int  = 1
+   var VIDEO_CHECK_ERROR_UNSIFFICIENT_MEM_XP : int  = 2
+   
+   func GetSavedAdvancedVideoParams() : params
+      if (!settingsInitialized)
+         savedVideo := GetCurrentVideoSettings()
+      end
+      return savedVideo
+   end
+   
+   func GetCurrentVideoSettings() : params
+      var ret : params
+      
+      ret.textureResolution         := $hf2pPreferences.GetTextureResolution()
+      ret.textureFilteringQuality   := $hf2pPreferences.GetTextureFilteringQuality()
+      ret.lightingQuality           := $hf2pPreferences.GetLightingQuality()
+      ret.effectsQuality            := $hf2pPreferences.GetEffectsQuality()
+      ret.shadowQuality             := $hf2pPreferences.GetShadowQuality()
+      ret.detailsQuality            := $hf2pPreferences.GetDetailsQuality()
+      ret.postprocessQuality        := $hf2pPreferences.GetPostprocessQuality()
+      ret.motionBlur                := $hf2pPreferences.GetMotionBlur()
+      
+      return ret
+   end
+   
+   func SetUserAdvancedVideoSettings(p : params)
+      userAdvancedVideoSettings := p
+   end   
+   
+   func GetUserAdvancedVideoSettings() : params
+      return userAdvancedVideoSettings
+   end   
+   
+   func SetUserQualityPreset(preset : int)
+      userAdvancedVideoSettings := GetAdvancedVideoPresetParams(preset)
+   end
+      
+   func GetUserQualityPreset() : int
+      return GetQualityPreset(userAdvancedVideoSettings)
+   end
+   
+   func ApplyAdvancedSettings(p : params)
+      $hf2pPreferences.SetTextureResolution(p.textureResolution)
+      $hf2pPreferences.SetTextureFilteringQuality(p.textureFilteringQuality)
+      $hf2pPreferences.SetLightingQuality(p.lightingQuality)
+      $hf2pPreferences.SetEffectsQuality(p.effectsQuality)
+      $hf2pPreferences.SetShadowQuality(p.shadowQuality)
+      $hf2pPreferences.SetDetailsQuality(p.detailsQuality)
+      $hf2pPreferences.SetPostprocessQuality(p.postprocessQuality)
+      $hf2pPreferences.SetMotionBlur(p.motionBlur) 
+   end   
+            
+   func CheckApplyUserAdvancedVideoSettings(_checkOnly : bool = false) : int
+      var checkResult : int = CheckVideoSettingsForApply(userAdvancedVideoSettings)
+      if (checkResult == $hf2pPreferences.VIDEO_CHECK_ERROR_NONE and !_checkOnly)
+         ApplyAdvancedSettings(userAdvancedVideoSettings)
+         SaveAdvancedVideoParams()
+      end
+      return checkResult
+   end
+   
+   func SaveAdvancedVideoParams()
+      savedVideo := GetCurrentVideoSettings()
+      userAdvancedVideoSettings := savedVideo
+      settingsInitialized := true
+      $sslWidgetMgr.GenerateEvent("UpdateRootBrightnessContrast")
+   end
+
+
+   func SaveInitialVideoSettings()
+      savedVideo := GetCurrentVideoSettings()
+   end
+   
+   func HasAdvancedVideoChanges() : bool
+      var ret : bool = false
+      ret := ret or userAdvancedVideoSettings.textureResolution         != savedVideo.textureResolution
+      ret := ret or userAdvancedVideoSettings.textureFilteringQuality   != savedVideo.textureFilteringQuality
+      ret := ret or userAdvancedVideoSettings.lightingQuality           != savedVideo.lightingQuality
+      ret := ret or userAdvancedVideoSettings.effectsQuality            != savedVideo.effectsQuality
+      ret := ret or userAdvancedVideoSettings.shadowQuality             != savedVideo.shadowQuality
+      ret := ret or userAdvancedVideoSettings.detailsQuality            != savedVideo.detailsQuality
+      ret := ret or userAdvancedVideoSettings.postprocessQuality        != savedVideo.postprocessQuality
+      ret := ret or userAdvancedVideoSettings.motionBlur                != savedVideo.motionBlur
+      return ret
+   end
+      
+   func RestoreAdvancedVideoParams()
+      ApplyAdvancedSettings(savedVideo)
+   end   
+   
+   func SetBrightnessOverride(val : int)
+      SetBrightness(val)
+      $sslWidgetMgr.GenerateEvent("UpdateRootBrightnessContrast")
+   end
+   
+   func GetKeyTextInternal(key_code:int):string
+      var key_labels : vector = GetKeyLabels()
+      if (key_code == -1)
+         return "settings_keys_none"
+      else if (key_code < key_labels.Count())
+         return key_labels.Get(key_code)
+      else if (key_code == 105)
+         return "settings_keys_left_shift"
+      else if (key_code == 106)
+         return "settings_keys_left_control"
+      else if (key_code == 256)
+         return "settings_keys_mouse_left"
+      else if (key_code == 512)
+         return "settings_keys_mouse_middle"
+      else if (key_code == 768)
+         return "settings_keys_mouse_right"
+      else if (key_code == 2048)
+         return "settings_keys_mouse_wheel"
+      else if (key_code == 2304)
+         return "settings_keys_wheel_up"
+      else if (key_code == 2560)
+         return "settings_keys_wheel_down"
+      end
+     
+      return "[ " + key_code + " ]~"
+   end
+
+end
+var $hf2pPreferences : GAME_PREFERENCES_SSL

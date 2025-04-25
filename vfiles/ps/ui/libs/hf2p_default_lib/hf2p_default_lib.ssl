@@ -1,0 +1,359 @@
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_list_item
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_data
+
+class UiDefListLIR : UiWidgetListItem
+
+override SetData
+   var text : string
+   if (! IsVoid(p.text)) 
+      text := p.text
+   end
+   Props.label := text
+end
+end
+
+class DefaultContextMenuItemVM
+   var wgt : UiWidget = null
+   var VisibleIndex : int = -1
+   var Command : ObservableProperty = $OM.Calculated(this, "GetCommand")
+   var MenuDC : DefaultContextMenuVM = null
+   
+   func Init(p : params)
+      wgt := p.widget
+      VisibleIndex := p.visibleIndex
+      MenuDC := p.MenuDC
+   end
+   
+   func CommandHandler(p : params) : bool
+      wgt.GenerateEvent(Command.Get().eventName, Command.Get().eventParams)
+      p.widget.CloseContextMenu()
+      return true
+   end
+   
+   func GetCommand() : params
+      var result : params
+      if VisibleIndex == -1
+         result := MenuDC.DefaultCommand
+      else
+         result := MenuDC.wgt.Get("Command" + VisibleIndex)
+      end
+      return result
+   end
+end
+
+class DefaultContextMenuVM
+   var wgt : UiWidget = null
+   var ButtonCount : ObservableProperty = $OM.Calculated(this, "GetButtonCount")
+   var DefaultCommand : params
+   
+   func DefaultContextMenuVM()
+      DefaultCommand.label := ""
+      DefaultCommand.isEnabled := false
+      DefaultCommand.isVisible := false
+      DefaultCommand.eventName := ""
+      DefaultCommand.eventParams := new params
+      DefaultCommand.index := -1
+   end
+   
+   func Init(p : params)
+      wgt := p.widget
+      if ((bool)wgt.Get("CanOpen"))
+         wgt.Widgets.contentAttach.contextMenuContent.btn0.SetFocus()         
+      else
+         wgt.Props.visible := false
+      end
+      CheckClose() : 0
+   end
+   
+   func CheckClose()
+      if (!(bool)wgt.Get("CanOpen"))
+         wgt.CloseContextMenu()
+      end
+   end   
+      
+   func GetSettings(idx : int) : params
+      var settings : params = wgt.Get("Command" + idx)
+      return settings
+   end
+   
+   func GetVisibleCommandIdx(idx : int) : int
+      var i : int
+      var curVisibleIdx : int = -1
+      for i := 0 to 8
+         var command : params = wgt.Get("Command" + i)
+         if command.isVisible
+            curVisibleIdx += 1
+         end
+         if curVisibleIdx == idx
+            return i
+         end
+      end
+      return -1
+   end
+
+   func GetButtonCount() : int
+      var i : int
+      var visibleCount : int = 0
+      for i := 0 to 8
+         var command : params = wgt.Get("Command" + i)
+         if command.isVisible
+            visibleCount += 1
+         end
+      end
+      return visibleCount
+   end
+
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = true
+      var keyCode       : int    = p.keyCode
+      if (p.isDown == false)
+         if (keyCode == $uiKeys.VK_ESC)
+            wgt.CloseContextMenu()
+         end
+      end
+      if (keyCode == $uiKeys.VK_ENTER)
+         isTerminated := false
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return true
+   end   
+end
+
+class UserContextMenuWidget : UiWidgetContainer
+   /*func inputEvent(p : params) : bool
+      var isTerminated  : bool   = true
+      var keyCode       : int    = p.keyCode
+      if (p.isDown == false)
+         if (keyCode == $uiKeys.VK_ESC)
+            CloseContextMenu()
+         end
+      end
+      if (keyCode != $uiKeys.VK_ENTER)
+         isTerminated := false
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end*/   
+end
+
+class UserContextMenu
+   var uid        : *      = $UserDataStorage.invalidUID.value.Get()
+   var canOpen    : bool   = true
+   
+   func GetContextMenuInfo() : GL_ComponentUserContextMenu
+      var ret : GL_ComponentUserContextMenu = (GL_ComponentUserContextMenu)$UiGlobals.componentsUserContextMenu.Get(uid)
+      return ret
+   end
+   
+   func IsOnline() : bool
+      var ret : bool = $UserDataStorage.IsOnline(uid)
+      return ret
+   end
+   
+   func GetCanOpen() : bool
+      return canOpen and $UserDataStorage.IsValidUID(uid)
+   end
+   
+   func IsValid() : bool
+      return $UserDataStorage.IsValidUID(uid)
+   end
+         
+   func IsSelectPlaylist() : bool
+      return $uiPartyMonitor.IsSelectPlaylist()
+   end
+   
+   func IsInLobby() : bool
+      return $uiPartyMonitor.IsInLobby()
+   end
+   
+   // Follow
+   func GetIsFollowEnabled() : bool
+      var ret : bool = IsValid() and (bool)GetContextMenuInfo().social_can_follow.Get()
+      return ret      
+   end
+   
+   func GetIsFollowVisible() : bool
+      var ret : bool = GetIsFollowEnabled()
+      return ret      
+   end   
+   
+   func Follow(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      $user_service.RequestFollow(uid)
+      return true
+   end      
+
+   // Unfollow
+   func GetIsUnfollowEnabled() : bool
+      var ret : bool = IsValid() and (bool)GetContextMenuInfo().social_can_unfollow.Get()
+      return ret      
+   end
+   
+   func GetIsUnfollowVisible() : bool
+      var ret : bool = GetIsUnfollowEnabled()
+      return ret      
+   end   
+   
+   func Unfollow(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      $user_service.RequestUnfollow(uid)
+      return true
+   end
+   
+   // Profile
+   func GetIsProfileEnabled() : bool
+      var ret : bool = IsValid() //and ! IsInLobby()
+      return ret      
+   end
+   
+   func GetIsProfileVisible() : bool
+      var ret : bool = true
+      return ret      
+   end   
+   
+   func ShowProfile(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      $root.GetMainMenu().ShowUserProfile(uid)
+      return true
+   end
+
+   // Invite
+   func GetIsInviteEnabled() : bool
+      var ret : bool = IsValid() and IsSelectPlaylist() and (bool)GetContextMenuInfo().party_can_invite.Get()
+      ret := ret and IsOnline()
+      return ret      
+   end
+   
+   func GetIsInviteVisible() : bool
+      var ret : bool = IsValid() and IsSelectPlaylist()
+      return ret      
+   end   
+   
+   func Invite(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      $hq.PartyInviteSend(uid)
+      return true
+   end      
+   
+   // Kick
+   func GetIsKickEnabled() : bool
+      var ret : bool = IsValid() and IsSelectPlaylist()  and (bool)GetContextMenuInfo().party_can_kick.Get()
+      return ret      
+   end
+   
+   func GetIsKickVisible() : bool
+      var ret : bool = IsValid() and IsSelectPlaylist()
+      return ret      
+   end   
+   
+   func Kick(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      $UiGlobals.async_operations.party_kick.Start(uid)
+      return true
+   end    
+   
+   // Chat
+   func GetIsChatEnabled() : bool
+      var ret : bool = IsValid() and (bool)GetContextMenuInfo().chat_can_send_private.Get()
+      return ret      
+   end
+   
+   func GetIsChatVisible() : bool
+      var ret : bool = GetIsChatEnabled()
+      return ret      
+   end   
+   
+   func Chat(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      var pp : params
+      pp.uid := uid 
+      $sslWidgetMgr.GenerateEvent("SetChatPrivateUser", pp)
+      return true
+   end      
+   
+   // Clan invite
+   func GetIsClanInviteEnabled() : bool
+      //var ret : bool = IsValid() and (bool)GetContextMenuInfo().clan_can_invite.Get()
+      //return ret
+      return false //true
+   end
+
+   func GetIsClanInviteVisible() : bool
+      var ret : bool = GetIsClanInviteEnabled()
+      return ret
+   end
+   
+   func ClanInvite(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      var pp : params
+      pp.uid := uid
+      $clan_service.ClanInviteSend(uid)
+      return true
+   end      
+   
+   // Clan kick
+   func GetIsClanKickEnabled() : bool
+      //var ret : bool = IsValid() and (bool)GetContextMenuInfo().clan_can_kick.Get()
+      //return ret
+      return false//true
+   end
+
+   func GetIsClanKickVisible() : bool
+      var ret : bool = GetIsClanKickEnabled()
+      return ret
+   end
+   
+   func ClanKick(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      var pp : params
+      pp.uid := uid
+      $UiGlobals.async_operations.clan_kick.Start(uid, "OnClanKickFinished")
+      return true
+   end      
+   
+   func GetIsFormPartyEnabled() : bool
+      var ret : bool = !$uiPartyMonitor.IsFormationOrLobby()
+      if (ret)
+         ret := IsValid() and IsOnline() and (bool)GetContextMenuInfo().party_can_invite.Get()
+      end
+      return ret      
+   end
+   
+   func GetIsFormPartyVisible() : bool
+      var ret : bool = GetIsFormPartyEnabled()
+      return ret      
+   end
+   
+   func FormParty(p : params) : bool
+      if (uid == $UserDataStorage.invalidUID.value.Get())
+         return true
+      end
+      $sslWidgetMgr.GenerateEvent("onOpenGameModeLobby")
+      $hq.PartyInviteSend(uid)
+      return true
+   end   
+end

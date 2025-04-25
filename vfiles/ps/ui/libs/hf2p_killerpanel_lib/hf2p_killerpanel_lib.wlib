@@ -1,0 +1,218 @@
+classes   =   {
+   killer_cont   =   {
+      sslClass   =   "UiKillerCont"
+      sslModule   =   "ui.libs.hf2p_KillerPanel_lib.hf2p_KillerPanel_lib"
+      mouseEnabled   =   False
+      elements   =   {
+         KillerPanelInst   =   {
+            mouseEnabled   =   False
+            elements   =   {
+               killedBy   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{'ingame_killer_killed_by'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               WpnNameDesc   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{$UiGlobals.componentsUI[killingDamage].name}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               loadoutAttach   =   {
+                  elements   =   {
+                     loadout   =   {
+                        elements   =   {
+                           btnBox   =   {
+                              elements   =   {
+                                 btn8   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementBoost"
+                                 }
+                                 btn4   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn5   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn6   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn7   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementPerk"
+                                 }
+                                 btn1   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElement"
+                                 }
+                                 btn2   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElement"
+                                 }
+                                 btn3   =   {
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElement"
+                                 }
+                                 btn0   =   {
+                                    elements   =   {
+                                       camContainer   =   {
+                                          elements   =   {
+                                             attachContainer   =   {
+                                                visible   =   False
+                                                __type   =   "ui_weaponConf_lib_slide::attachContainer"
+                                             }
+                                             render0   =   {
+                                                bindings   =   {
+                                                   visible   =   {
+                                                      binding   =   "{(:UD).customizations.character_active_index == 0}"
+                                                   }
+                                                }
+                                                __type   =   "ui_rtts_container::rtts_loadout_biped_0"
+                                             }
+                                             render1   =   {
+                                                bindings   =   {
+                                                   visible   =   {
+                                                      binding   =   "{(:UD).customizations.character_active_index == 1}"
+                                                   }
+                                                }
+                                                __type   =   "ui_rtts_container::rtts_loadout_biped_1"
+                                             }
+                                             render2   =   {
+                                                bindings   =   {
+                                                   visible   =   {
+                                                      binding   =   "{(:UD).customizations.character_active_index == 2}"
+                                                   }
+                                                }
+                                                __type   =   "ui_rtts_container::rtts_loadout_biped_2"
+                                             }
+                                          }
+                                          __type   =   "ui_widget_container"
+                                       }
+                                    }
+                                    bindings   =   {
+                                       selected   =   {
+                                          binding   =   "{true}"
+                                       }
+                                    }
+                                    __type   =   "hf2p_Loadout_lib::loadoutElementArmor"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::loadoutContNew"
+                           }
+                        }
+                        bindings   =   {
+                           DC   =   {
+                              binding   =   "{loadoutVM.userData.GetActiveCharacter()}"
+                           }
+                           selected   =   {
+                              binding   =   "{true}"
+                           }
+                           UD   =   {
+                              binding   =   "{loadoutVM.userData}"
+                           }
+                        }
+                        __type   =   "hf2p_Loadout_lib::loadoutSlot"
+                     }
+                  }
+                  __type   =   "ui_death_screen_lib::attachPoint"
+               }
+               nameplateAttach   =   {
+                  elements   =   {
+                     nameplate   =   {
+                        bindings   =   {
+                           uid   =   {
+                              binding   =   "{(#parent)killerUid}"
+                           }
+                        }
+                        __type   =   "hf2p_nameplate::DefaultNameplate"
+                     }
+                  }
+                  __type   =   "ui_death_screen_lib::attachPoint"
+               }
+               wpn_attach_point   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{$UiGlobals.componentsUI[killingDamage].icon}"
+                     }
+                     visible   =   {
+                        binding   =   "{isValidData}"
+                     }
+                  }
+                  isCentered   =   True
+                  __type   =   "ui_widget_image"
+               }
+               wpn_desc   =   {
+                  propMapping   =   {
+                     txt   =   {
+                        mapping   =   "tf.text"
+                        isNoTranslate   =   True
+                     }
+                  }
+                  bindings   =   {
+                     txt   =   {
+                        binding   =   "{true ? '' : damageTypeTxt}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_death_screen_lib::KillerPanel"
+         }
+      }
+      stateMap   =   {
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+            }
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_KillerPanel_lib.hf2p_KillerPanel_lib.UiKillerContVM'}"
+         }
+      }
+      __type   =   "ui_death_screen_lib::KillerPanelContainer"
+   }
+}
+__type   =   "ui_widget_lib"

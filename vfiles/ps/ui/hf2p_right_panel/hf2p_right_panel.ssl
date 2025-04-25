@@ -1,0 +1,111 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+
+class UiRightPanel : UiWidgetContainer
+
+var curHeader : string = ""
+var nextGridMenu: string = ""
+var curMenu: string = "sMain"  
+var menuHistory: vector
+
+func ChangeGridMenu(menuName:string)
+   if (menuName != "none" and curMenu != menuName)
+      nextGridMenu := menuName
+      SetStateName("MenuSwitch")
+   end
+end
+
+func onBackBtnClicked(p:params):bool
+   Log("ui~rightPanel", "RP::onBackBtnClicked")
+   if (menuHistory.Count() == 0)
+      Log("ui~rightPanel", "RP:: no history -> sMain")
+      ChangeGridMenu("sMain")
+   else
+      var s : string = menuHistory.Get(menuHistory.Last())
+      menuHistory.Pop()
+      Log("ui~rightPanel", "RP:: menuHistory: " + s)      
+      ChangeGridMenu(s)
+   end
+
+   return false
+end
+
+func onMenuGridItemClicked(p:params):bool 
+   Log("ui~rightPanel", "RP::onMenuGridItemClicked: menuName = " + p.nextMenuName)
+   menuHistory.Push(curMenu)
+   ChangeGridMenu(p.nextMenuName)
+   return false
+end
+
+func UpdateRightHeader(p:params): bool
+   Log("ui~rightPanel", "UpdateRightHeader: " + Params2Str(p))
+   if menuHistory.Count() > 0 
+      if (menuHistory.Get(menuHistory.Last()) == "sArmorSelection")
+         Widgets.header.text := "ARMORY" + p.addStr
+      else 
+         Widgets.header.text := curHeader + p.addStr
+      end
+   end
+   return false
+end
+  
+func onRightPanelReset():bool 
+   Log("ui~rightPanel", "RP::onRightPanelReset")
+   //menuHistory.Clear()
+   //ChangeGridMenu("sMain")
+   return false
+end   
+
+handle OnLeavingState("Initial")
+   Widgets.menu_grid_right.main.StartDefaultBlinking(0.15)
+end
+
+handle OnLeavingState("Collapsed")
+   Widgets.menu_grid_right.main.StartDefaultBlinking(0.15)
+end
+
+handle OnEnterState("Initial")
+   curMenu := "sMain"              
+   nextGridMenu := ""
+   menuHistory.Clear()
+   
+   Widgets.header.text := ""
+   Widgets.menu_grid_right.SetStateName("Initial")
+end   
+
+handle OnEnterState("MenuSwitch")
+   Log("ui~rightPanel", "MenuSwitch::OnEnter")
+   var grid: * = Widgets.menu_grid_right
+
+   curMenu := nextGridMenu
+   
+   // set up header
+   var curWidget : string = grid.GetWidgetByState(curMenu)
+   if (curWidget != "") and (! IsVoid(grid.Get(curWidget).header))
+      curHeader := grid.Get(curWidget).header
+      Widgets.header.text := grid.Get(curWidget).header
+   else
+      curHeader := ""
+      Widgets.header.text := ""
+   end
+   
+
+   grid.SetStateName(curMenu)
+   
+   SetStateName("Visible")
+end          
+
+handle OnEnteringState("Collapsed")
+   //AddTween("alpha", 0.0, 1.0, "linear")
+end
+
+handle OnEnterState("Collapsed")
+   //Set("visible", false)
+end
+
+handle OnLeavingState("Collapsed")
+   //Set("visible", true)
+   //AddTween("alpha", 1.0, 1.0, "linear")
+end
+end

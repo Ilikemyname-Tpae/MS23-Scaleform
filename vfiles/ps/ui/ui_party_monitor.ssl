@@ -1,0 +1,212 @@
+import ssl.lib.logging
+import ssl.lib.events
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.lib.ui.ui_widget_manager
+import ssl.lib.events
+import ui.ui_matchmaking
+import ssl.lib.objects
+import ssl.hf2p.user_data
+import ssl.hf2p.user_service
+import ssl.hf2p.hq
+import ui.root
+import ssl.observables
+import ssl.hf2p.user_service
+import ssl.hf2p.hq
+import ssl.hf2p.user_data
+import ssl.hf2p.ui_globals
+
+class UiPartyMonitor
+
+var   STATE_NONE           : string                = "Initial"
+var   STATE_FORMATION      : string                = "LobbySelectPlaylist"
+var   STATE_MATCHMAKING    : string                = "LobbyMatchmaking"
+
+var   PartyMonitorEnabled  :  bool                 = true //false
+var   lobbyMode            :  string               = ""
+var   isLeavedGame         :  bool                 = false
+var   isTutorialLevel      :  bool                 = false
+var   isMatchCountdown     :  ObservableProperty   = $OM.Property(false)
+var   lobbyModeObservable  :  ObservableProperty   = $OM.Property("")
+ 
+func StartMatchCountdown()
+   isMatchCountdown.Set(true)
+end
+
+func FinishMatchCountdown()
+   isMatchCountdown.Set(false)   
+end
+
+func IsMatchCountdown() : bool
+   return (bool)isMatchCountdown.Get()
+end
+
+func SetIsMatchCountdown(_val : bool)
+   isMatchCountdown.Set(_val)
+end
+
+func SetIsLeavedGame(_isLeavedGame : bool)
+   isLeavedGame := _isLeavedGame
+end
+
+func GetIsLeavedGame() : bool
+   SetLobbyMode("")
+   return isLeavedGame
+end
+
+func NeedShowPostmatch() : bool
+   return !GetIsLeavedGame() and !isTutorialLevel
+end
+
+func SetGameMode(p:params)
+   Log("ui~uiPartyMonitor", "SetGameMode " + Params2Str(p))
+   $hq.MatchmakingSetPlaylist((string)p.modeId)
+end
+
+func SetPlaylist(_playlist : string)
+   Log("ui~uiPartyMonitor", "SetPlaylist " + _playlist)
+   $hq.MatchmakingSetPlaylist(_playlist)
+end
+
+func GetPlaylistId() : string
+   var playlistId : string = (string)$UiGlobals.matchmaking.playlists_selection.Get()
+   return playlistId
+end
+
+func GetLobbyMode(): string
+   return lobbyMode
+end
+
+func IsLeaveLobbyConfirmation() : bool
+   var ret : bool = false
+   if ($UserDataStorage.local_user.IsPartyLeader())
+      var lobbyModeVal : string = GetLobbyModeObservable()
+      var partyMembers : vector = $UiGlobals.party.members.Get()
+      ret := (lobbyModeVal != "" and lobbyModeVal != STATE_FORMATION) or (partyMembers.Count() > 1)
+   else
+      ret := true
+   end
+   return ret
+end
+
+func IsInParty() : bool
+   var ret : bool = false
+   if ($UserDataStorage.local_user.IsPartyLeader())
+      var partyMembers : vector = $UiGlobals.party.members.Get()
+      ret := (partyMembers.Count() > 1)
+   else
+      ret := true
+   end
+   return ret   
+end
+
+func IsMatchmakingActive() : bool
+   var lobbyModeVal : string = GetLobbyModeObservable()
+   return lobbyModeVal == STATE_MATCHMAKING
+end
+
+func IsLeaveLobbyEnabled() : bool
+   var ret        : bool   = true
+   var partyState : int    = (int)$UiGlobals.party.state.Get()
+   if (partyState == $uiEnums.PARTY_STATE_IN_GAME or partyState == $uiEnums.PARTY_STATE_IN_QUEUE)
+      ret := (bool)$UiGlobals.matchmaking.in_queue.Get()
+   end
+   return ret
+end
+
+func GetLobbyModeObservable(): string
+   return (string)lobbyModeObservable.Get()
+end
+
+func SetLobbyMode(_lobbyMode: string)
+   if (lobbyMode == "" or _lobbyMode == "")
+      $hq.LobbyVoteReset()      
+   end
+   lobbyMode := _lobbyMode
+   lobbyModeObservable.Set(_lobbyMode)
+end
+
+func UpdateLobbyMode(_partyState : int)
+   if (_partyState == $uiEnums.PARTY_STATE_FORMATION)
+      SetLobbyMode(STATE_FORMATION)
+   elif (_partyState == $uiEnums.PARTY_STATE_IN_QUEUE or _partyState == $uiEnums.PARTY_STATE_IN_GAME)
+      SetLobbyMode(STATE_MATCHMAKING)
+   else
+      SetLobbyMode("")
+   end
+end
+
+func IsSelectPlaylist() : bool
+   return GetLobbyModeObservable() == STATE_FORMATION
+end
+
+func IsInLobby() : bool
+   return GetLobbyModeObservable() != STATE_NONE
+end
+
+func IsFormationOrLobby() : bool
+   var partyState : int    = (int)$UiGlobals.party.state.Get()
+   var ret        : bool   = partyState != $uiEnums.PARTY_STATE_NONE
+   return ret
+end
+
+func IsPartyOwner() : bool
+   return $UserDataStorage.local_user.IsPartyLeader()
+end
+
+func EnterLobby(_lobbyMode: string = "LobbyHost", _resetMaps: bool = false)
+   if (_lobbyMode != "")
+      SetLobbyMode(_lobbyMode)
+   end
+   
+   FinishMatchCountdown()
+end
+
+func LeaveParty()
+   var partyState : int = (int)$UiGlobals.party.state.Get()
+   if (partyState == $uiEnums.PARTY_STATE_FORMATION)
+      $root.UiLog("--- LeaveParty(), partyState = " + $UiGlobals.party.GetStateStr() + " ---")
+      
+      $UiGlobals.async_operations.party_leave.Start()
+      SetLobbyMode("")
+   end 
+end
+
+func LeaveLobby(p:params = null, closeWithParty: bool) : bool   
+   $uiMatchmaking.ResetIsRematch()
+   FinishMatchCountdown()
+   
+   var partyState : int = (int)$UiGlobals.party.state.Get()
+   if (partyState == $uiEnums.PARTY_STATE_FORMATION)
+      LeaveParty()
+   else if (partyState != $uiEnums.PARTY_STATE_NONE)
+      $UiGlobals.async_operations.matchmaking_dequeue.Start(closeWithParty) // async version
+   end
+   return false
+end
+
+func CreateParty()
+   var partyState : int = (int)$UiGlobals.party.state.Get()
+   if (partyState == $uiEnums.PARTY_STATE_NONE)
+      $root.UiLog("--- CreateParty() ---")
+      $hq.PartyCreate()
+   end
+end
+
+end // end of UiPartyMonitor
+
+var $uiPartyMonitor : UiPartyMonitor
+
+func ui_init_party_monitor()
+   CreateObjectByClassName("UiPartyMonitor", "uiPartyMonitor")
+end
+
+func ui_term_party_monitor()
+   DestroyObjectByName("uiPartyMonitor")
+end
+
+func ui_recreate_party_monitor()
+   ui_term_party_monitor()
+   ui_init_party_monitor()
+end

@@ -1,0 +1,6 @@
+import ssl.lib.ui.ui_widget
+
+native class UiWidgetPopup : UiWidget
+   native func Close()
+   native func InvalidateSize()
+end

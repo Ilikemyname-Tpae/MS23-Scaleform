@@ -1,0 +1,307 @@
+classes   =   {
+   DefaultNameplate   =   {
+      elements   =   {
+         separatorBg   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+               tf   =   {
+                  binding   =   "{''}"
+               }
+            }
+            __type   =   "ui_nameplate_lib::LobbyLirSeparatorBg"
+         }
+         rankIcon   =   {
+            elements   =   {
+               placeHolder   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetRankIcon()}"
+               }
+            }
+            __type   =   "ui_nameplate_lib::nameplate_attachPoint"
+         }
+         iconAttach   =   {
+            elements   =   {
+               placeHolder   =   {
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetUserEmblem()}"
+               }
+            }
+            __type   =   "ui_nameplate_lib::nameplate_attachPoint"
+         }
+         partyLeaderIcon   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         rankValue   =   {
+            elements   =   {
+               textField   =   {
+                  bindings   =   {
+                     htmlText   =   {
+                        binding   =   "{GetRankText()}"
+                     }
+                  }
+                  alignVertical   =   "UI_TEXT_VERTICAL_ALIGN_BOTTOM"
+                  __type   =   "ui_widget_text"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         partyStatus   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{false}"
+               }
+               frame   =   {
+                  binding   =   "{1}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgOver   =   {
+            elements   =   {
+               addTextfield   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{''}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{'none'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bg   =   {
+            elements   =   {
+               addTextfield   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{''}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{'none'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgHighlightCont   =   {
+            elements   =   {
+               bgHighlightAttach   =   {
+                  elements   =   {
+                     placeHolder   =   {
+                        lib   =   "icon_lib_label"
+                        visible   =   False
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{GetUserLabel()}"
+                     }
+                  }
+                  __type   =   "ui_nameplate_lib::nameplate_attachPoint"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgAttach   =   {
+            elements   =   {
+               placeHolder   =   {
+                  lib   =   "playercard_lib"
+                  visible   =   False
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetUserLabel()}"
+               }
+            }
+            __type   =   "ui_nameplate_lib::nameplate_attachPoint"
+         }
+         tfNickname   =   {
+            isNoTranslate   =   True
+            bindings   =   {
+               htmlText   =   {
+                  binding   =   "{GetNickname()}"
+               }
+            }
+            __type   =   "ui_widget_text"
+         }
+         tfClanTag   =   {
+            isNoTranslate   =   True
+            bindings   =   {
+               text   =   {
+                  binding   =   "{GetClanTag()}"
+               }
+            }
+            __type   =   "ui_widget_text"
+         }
+      }
+      bindings   =   {
+         uid   =   {
+            binding   =   "{$UserDataStorage.local_user.uid}"
+         }
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_nameplate.hf2p_nameplate.DefaultNameplateVM', uid = (:uid)}"
+         }
+         contextMenuEnabled   =   {
+            binding   =   "{HasData()}"
+         }
+      }
+      contextMenu   =   {
+         __type   =   "hf2p_Default_lib::UserContextMenu"
+      }
+      __type   =   "ui_nameplate_lib::lobby_rosterLIRright"
+   }
+   RosterNameplate   =   {
+      elements   =   {
+         separatorBg   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{(:DC2)isSeparator}"
+               }
+               tf   =   {
+                  binding   =   "{(:DC2)separatorText}"
+               }
+            }
+            __type   =   "ui_nameplate_lib::LobbyLirSeparatorBg"
+         }
+      }
+      bindings   =   {
+         uid   =   {
+            binding   =   "{(:DC2)uid.value}"
+         }
+      }
+      __type   =   "hf2p_nameplate::DefaultNameplate"
+   }
+   LobbyNameplate   =   {
+      elements   =   {
+         partyLeaderIcon   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{IsPartyLeader()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         partyStatus   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{IsInParty()}"
+               }
+               frame   =   {
+                  binding   =   "{GetPartyIndex()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgOver   =   {
+            elements   =   {
+               addTextfield   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{GetLirText()}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{GetLirState()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bg   =   {
+            elements   =   {
+               addTextfield   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{GetLirText()}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{GetLirState()}"
+               }
+               colorMult   =   {
+                  binding   =   "{GetLirTint()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         uid   =   {
+            binding   =   "{(:DC2)id.value}"
+         }
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_nameplate.hf2p_nameplate.LobbyNameplateVM', uid = (:uid), lobbyPlayer = (:DC2)}"
+         }
+      }
+      __type   =   "hf2p_nameplate::DefaultNameplate"
+   }
+   ScoreboardNameplate   =   {
+      elements   =   {
+         partyLeaderIcon   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{IsPartyLeader()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         partyStatus   =   {
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{IsInParty()}"
+               }
+               frame   =   {
+                  binding   =   "{GetPartyIndex()}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         uid   =   {
+            binding   =   "{(#parent)uid}"
+         }
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_nameplate.hf2p_nameplate.ScoreboardNameplateVM', uid = (:uid), scoreboardPlayer = this}"
+         }
+      }
+      __type   =   "hf2p_nameplate::DefaultNameplate"
+   }
+}
+__type   =   "ui_wlib"

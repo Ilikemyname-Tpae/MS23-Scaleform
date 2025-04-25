@@ -1,8 +1,0 @@
-native func Log             (category : string, message : string)
-native func LogError        (category : string, message : string)
-native func LogWarning      (category : string, message : string)
-native func LogScreenPrint  (message : string)
-native func LogScreenClear  ()
-
-native func bLog            (category : string, message : string, p1 : * = null, p2 : * = null, p3 : * = null, p4 : * = null, p5 : * = null)
-native func bLogClient      (clientId : int, message : string, p1 : * = null, p2 : * = null, p3 : * = null, p4 : * = null, p5 : * = null)

@@ -1,0 +1,382 @@
+classes = {
+	lobbyHelperText = {
+		__type = "ui_widget_container"
+
+		symbol  = "lobbyHelperText" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	LobbyStartGameBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "LobbyStartGameBtn" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			btnHighlight {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+			btnBg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	lobby_attachPoint = {
+		__type = "ui_widget_image"
+
+		symbol  = "lobby_attachPoint" 
+		lib     = lobby_lib 
+
+		elements {
+			placeHolder {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	lobby_header = {
+		__type = "ui_widget_container"
+
+		symbol  = "lobby_header" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	lobby_listPlaceholder = {
+		__type = "ui_widget_list"
+
+		symbol  = "lobby_listPlaceholder" 
+		lib     = lobby_lib 
+	}
+
+	lobby_mapBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "lobby_mapBtn" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			attach {
+				__type = "ui_lobby_lib::lobby_attachPoint"
+				x         = 210.75
+				y         = 7.25
+			} 
+			checkupElem {
+				__type = "ui_widget_container"
+
+				x         = 530
+				y         = 187
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				propMapping {
+					mapNameTxt = {
+						mapping = "mapNameTxt.text"
+					}
+					votesTxt = {
+						mapping = "votesTxt.text"
+					}
+					votesLabelTxt = {
+						mapping = "votesLabelTxt.text"
+					}
+					modeNameTxt = {
+						mapping = "modeNameTxt.text"
+					}
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					modeIcon {
+						__type = "ui_lobby_lib::lobby_attachPoint"
+						x         = 14.15
+						y         = 180.8
+						scaleX    = 0.637
+						scaleY    = 0.637
+					} 
+					mapIcon {
+						__type = "ui_lobby_lib::lobby_attachPoint"
+						x         = 1
+						y         = 0.6
+					} 
+				}
+			} 
+		}
+	}
+
+	lobby_mapBtnCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "lobby_mapBtnCont" 
+		lib     = lobby_lib 
+
+		elements {
+			mapBtn {
+				__type = "ui_lobby_lib::lobby_mapBtn"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	lobby_mapBtnNoHightlight = {
+		__type = "ui_widget_button"
+
+		symbol  = "lobby_mapBtnNoHightlight" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			attach {
+				__type = "ui_lobby_lib::lobby_attachPoint"
+				x         = 210.75
+				y         = 7.25
+			} 
+			checkupElem {
+				__type = "ui_widget_container"
+
+				x         = 529.95
+				y         = 195.95
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				propMapping {
+					mapNameTxt = {
+						mapping = "mapNameTxt.text"
+					}
+					votesTxt = {
+						mapping = "votesTxt.text"
+					}
+					votesLabelTxt = {
+						mapping = "votesLabelTxt.text"
+					}
+					modeNameTxt = {
+						mapping = "modeNameTxt.text"
+					}
+				}
+				x         = 0
+				y         = 0
+
+				elements {
+					modeIcon {
+						__type = "ui_lobby_lib::lobby_attachPoint"
+						x         = 14.15
+						y         = 180.8
+						scaleX    = 0.637
+						scaleY    = 0.637
+					} 
+					mapIcon {
+						__type = "ui_lobby_lib::lobby_attachPoint"
+						x         = 1
+						y         = 0.6
+					} 
+				}
+			} 
+		}
+	}
+
+	lobby_OptionStepper = {
+		__type = "ui_widget_stepper"
+
+		symbol  = "lobby_OptionStepper" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			nextBtn {
+				__type = "ui_lobby_lib::OptionStepper_rightArrow"
+				x         = 437.45
+				y         = 39
+				scaleX    = 1.0024
+				scaleY    = 0.9986
+			} 
+			prevBtn {
+				__type = "ui_lobby_lib::OptionStepper_leftArrow"
+				x         = 36.5
+				y         = 39
+			} 
+		}
+	}
+
+	lobby_superContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "lobby_superContainer" 
+		lib     = lobby_lib 
+		propMapping {
+			headerRedTeam = {
+				mapping = "headerRedTeam.text"
+			}
+			headerBlueTeam = {
+				mapping = "headerBlueTeam.text"
+			}
+			waitingTf = {
+				mapping = "waitingTf.text"
+			}
+			headerNoTeam = {
+				mapping = "headerNoTeam.text"
+			}
+		}
+
+		elements {
+			rightBtn {
+				__type = "ui_lobby_lib::LobbyStartGameBtn"
+				x         = 1102.1
+				y         = 791.2
+			} 
+			playlistDesc {
+				__type = "ui_lobby_lib::playlistDescTF"
+				x         = 1120.95
+				y         = 555.95
+			} 
+			redTeam {
+				__type = "ui_lobby_lib::lobby_listPlaceholder"
+				x         = 506.2
+				y         = 370.05
+			} 
+			blueTeam {
+				__type = "ui_lobby_lib::lobby_listPlaceholder"
+				x         = 791.25
+				y         = 370.05
+			} 
+			mapStepper {
+				__type = "ui_lobby_lib::mapSelectConteiner"
+				x         = 1103.1
+				y         = 605.5
+			} 
+			gameType {
+				__type = "ui_lobby_lib::mapSelectConteiner"
+				x         = 1103.1
+				y         = 662.5
+			} 
+			mapContainerElem {
+				__type = "ui_lobby_lib::votingAnim"
+				x         = 1103
+				y         = 370.5
+			} 
+		}
+	}
+
+	lobby_VotingGroup = {
+		__type = "ui_widget_container"
+
+		symbol  = "lobby_VotingGroup" 
+		lib     = lobby_lib 
+
+		elements {
+			mapElem1 {
+				__type = "ui_lobby_lib::votingAnim"
+				x         = 0
+				y         = 0
+			} 
+			mapElem2 {
+				__type = "ui_lobby_lib::votingAnim"
+				x         = 0
+				y         = 243
+			} 
+		}
+	}
+
+	mapSelectConteiner = {
+		__type = "ui_widget_container"
+
+		symbol  = "mapSelectConteiner" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			stepper {
+				__type = "ui_lobby_lib::lobby_OptionStepper"
+				x         = 285.35
+				y         = 0.5
+			} 
+		}
+	}
+
+	OptionStepper_leftArrow = {
+		__type = "ui_widget_button"
+
+		symbol  = "OptionStepper_leftArrow" 
+		lib     = lobby_lib 
+	}
+
+	OptionStepper_rightArrow = {
+		__type = "ui_widget_button"
+
+		symbol  = "OptionStepper_rightArrow" 
+		lib     = lobby_lib 
+	}
+
+	playlistDescTF = {
+		__type = "ui_widget_container"
+
+		symbol  = "playlistDescTF" 
+		lib     = lobby_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	votingAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "votingAnim" 
+		lib     = lobby_lib 
+
+		elements {
+			mapBtnCont {
+				__type = "ui_lobby_lib::lobby_mapBtnCont"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

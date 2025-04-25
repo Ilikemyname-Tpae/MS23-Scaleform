@@ -1,0 +1,459 @@
+classes   =   {
+   MainMenuTileBtn_L   =   {
+      isBlinkable   =   True
+      fixed   =   False
+      propMapping   =   {
+         desc   =   {
+            mapping   =   "tfContainer.textField2.text"
+            isNoTranslate   =   True
+         }
+         label   =   {
+            mapping   =   "tfContainer.textField.text"
+         }
+         labelNoTranslate   =   {
+            mapping   =   "tfContainer.textField.text"
+            isNoTranslate   =   True
+         }
+      }
+      elements   =   {
+         itemCont   =   {
+            fixed   =   False
+            raceTint   =   {
+               applyTint   =   True
+            }
+            __type   =   "ui_menu_lib::menu_lib_attach2"
+         }
+         ButtonBackGround   =   {
+            raceTint   =   {
+               applyTint   =   True
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "nextMenu"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_menu_lib::hf2pPanelTileBtnLong_r"
+   }
+   MainMenuTileBtn_R   =   {
+      isBlinkable   =   True
+      fixed   =   False
+      propMapping   =   {
+         label   =   {
+            mapping   =   "tfContainer.textField.text"
+         }
+      }
+      elements   =   {
+         itemCont   =   {
+            fixed   =   False
+            raceTint   =   {
+               applyTint   =   True
+            }
+            __type   =   "ui_menu_lib::menu_lib_attach2"
+         }
+         ButtonBackGround   =   {
+            raceTint   =   {
+               applyTint   =   True
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "nextMenu"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_menu_lib::hf2pPanelTileBtnLong_l"
+   }
+   PromoAdvert   =   {
+      sslClass   =   "UiPromoAdvert"
+      sslModule   =   "ui.libs.hf2p_Promo_lib.hf2p_Promo_lib"
+      x   =   -290
+      y   =   -125
+      isBlinkable   =   True
+      elements   =   {
+         adPic1   =   {
+            layer   =   "layer1"
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Promo_lib::promoPage"
+         }
+         adPic2   =   {
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Promo_lib::promoPage"
+         }
+         bgAdr   =   {
+            layer   =   "layer0"
+            customProps   =   [
+               {
+                  propName   =   "forceBind"
+                  propVal   =   {
+                     val   =   True
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::hf2pWCContainer"
+         }
+         promoBtn   =   {
+            y   =   -2
+            fixed   =   False
+            propMapping   =   {
+               text   =   {
+                  mapping   =   "textField.text"
+               }
+            }
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#clickedPromo"
+               }
+            }
+            layer   =   "layer3"
+            customProps   =   [
+               {
+                  propName   =   "label"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            label   =   "main_UI_Advertisement"
+            __type   =   "ui_menu_lib::hf2pPanelAD_r"
+         }
+         promoBtn1   =   {
+            x   =   200
+            y   =   193
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   4
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "focusable"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Promo_lib::promoBtn"
+         }
+         promoBtn2   =   {
+            x   =   230
+            y   =   193
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   3
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "focusable"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Promo_lib::promoBtn"
+         }
+         promoBtn3   =   {
+            y   =   193
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   2
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "focusable"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Promo_lib::promoBtn"
+         }
+         promoBtn4   =   {
+            x   =   290
+            y   =   193
+            customProps   =   [
+               {
+                  propName   =   "idx"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "focusable"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Promo_lib::promoBtn"
+         }
+         promoBtn5   =   {
+            x   =   320
+            y   =   193
+            __type   =   "hf2p_Promo_lib::promoBtn"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_Promo_lib.hf2p_Promo_lib.UiPromoAdvertVM'}"
+         }
+      }
+      layers   =   {
+         layer1   =   {
+            offset   =   1
+         }
+         layer2   =   {
+            offset   =   2
+         }
+         layer3   =   {
+            offset   =   3
+         }
+         layer4   =   {
+            offset   =   4
+         }
+         layer0   =   {
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            ui_widget_button   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "sub_tab_select"
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::hf2pWCContainer"
+   }
+   promoPage   =   {
+      elements   =   {
+         adContInst   =   {
+            propMapping   =   {
+               itemNameTxt   =   {
+                  isNoTranslate   =   True
+               }
+            }
+            elements   =   {
+               itemIcon   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{itemIcon}"
+                     }
+                  }
+                  __type   =   "ui_menu_lib::attachIcon"
+               }
+               bgIcon   =   {
+                  bindings   =   {
+                     pic   =   {
+                        binding   =   "{bgIcon}"
+                     }
+                  }
+                  __type   =   "ui_menu_lib::attachIcon"
+               }
+            }
+            bindings   =   {
+               itemNameTxt   =   {
+                  binding   =   "{itemNameTxt}"
+               }
+            }
+            __type   =   "ui_menu_lib::adContent"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{promoPages[(#self:idx)]}"
+         }
+      }
+      __type   =   "ui_menu_lib::adPic"
+   }
+   promoBtn   =   {
+      aliasName   =   "advertismentButton"
+      x   =   260
+      y   =   100
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#clickedPromoBtn"
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{adsCount > (#self:idx)}"
+         }
+         visible2   =   {
+            binding   =   "{true}"
+         }
+         selected   =   {
+            binding   =   "{currentAdIdx == (#self:idx)}"
+         }
+      }
+      layer   =   "layer4"
+      customProps   =   [
+         {
+            propName   =   "idx"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "focusable"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_bool"
+            }
+         }
+      ]
+      __type   =   "ui_menu_lib::hf2pAdTab"
+   }
+   QuickMatch   =   {
+      aliasName   =   "playNowButton"
+      x   =   -111
+      y   =   -131
+      isBlinkable   =   True
+      isBlink0Alpha   =   False
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "clicked"
+         }
+      }
+      elements   =   {
+         iconModeAttach   =   {
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "forceBind"
+                  propVal   =   {
+                     val   =   True
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            pic   =   "slayerMode"
+            __type   =   "ui_menu_lib::menu_lib_attach2"
+         }
+         itemCont   =   {
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "forceBind"
+                  propVal   =   {
+                     val   =   True
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            pic   =   "leftPlayNow"
+            __type   =   "ui_menu_lib::menu_lib_attach2"
+         }
+      }
+      bindings   =   {
+         enabled   =   {
+            binding   =   "{$uiMatchmaking.isMMAvailable}"
+         }
+      }
+      layers   =   {
+         layer1   =   {
+            offset   =   1
+         }
+         layer2   =   {
+            offset   =   2
+         }
+         layer3   =   {
+            offset   =   3
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "label"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "nextState"
+            propVal   =   {
+               val   =   "sMatchmaking"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "nextWidget"
+            propVal   =   {
+               val   =   "matchmaking"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "textFieldPlayNow"
+            propVal   =   {
+               val   =   "main_play_now"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "nextState"
+            propVal   =   {
+               val   =   "sMatchmaking"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "nextWidget"
+            propVal   =   {
+               val   =   "matchmaking"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "ui_menu_lib::hf2pPanelTileAD"
+   }
+}
+__type   =   "ui_widget_lib"

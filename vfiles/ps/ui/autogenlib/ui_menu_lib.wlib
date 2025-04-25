@@ -1,0 +1,2154 @@
+classes = {
+	adContent = {
+		__type = "ui_widget_container"
+
+		symbol  = "adContent" 
+		lib     = menu_lib 
+		propMapping {
+			itemNameTxt = {
+				mapping = "itemNameTxt.text"
+			}
+		}
+
+		elements {
+			itemIcon {
+				__type = "ui_menu_lib::attachIcon"
+				x         = 68
+				y         = 65.5
+			} 
+			bgIcon {
+				__type = "ui_menu_lib::attachIcon"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	adPic = {
+		__type = "ui_widget_container"
+
+		symbol  = "adPic" 
+		lib     = menu_lib 
+
+		elements {
+			adContInst {
+				__type = "ui_menu_lib::adContent"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	alianceTop = {
+		__type = "ui_widget_container"
+
+		symbol  = "alianceTop" 
+		lib     = menu_lib 
+
+		elements {
+			changeToCovenant {
+				__type = "ui_menu_lib::ChangeToCovenantBtn"
+				x         = 232
+				y         = 5
+			} 
+			changeToSpartan {
+				__type = "ui_menu_lib::changeModelBtn"
+				x         = 49
+				y         = 5
+			} 
+			part2 {
+				__type = "ui_widget_container"
+
+				x         = 22
+				y         = 0
+			} 
+		}
+	}
+
+	AnimatedButton = {
+		__type = "ui_widget_button"
+
+		symbol  = "AnimatedButton" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	attachIcon = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachIcon" 
+		lib     = menu_lib 
+	}
+
+	attachPoint = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachPoint" 
+		lib     = menu_lib 
+	}
+
+	bgGradCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgGradCont" 
+		lib     = menu_lib 
+	}
+
+	bgNewsBlack = {
+		__type = "ui_widget_container"
+
+		symbol  = "bgNewsBlack" 
+		lib     = menu_lib 
+	}
+
+	changeModelBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "changeModelBtn" 
+		lib     = menu_lib 
+
+		elements {
+			changeToSpartanTF {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 4
+				y         = 20.55
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	ChangeToCovenantBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "ChangeToCovenantBtn" 
+		lib     = menu_lib 
+
+		elements {
+			changeToCovenantTF {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 2.5
+				y         = 20.5
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	Container = {
+		__type = "ui_widget_container"
+
+		symbol  = "Container" 
+		lib     = menu_lib 
+	}
+
+	CreepingLine = {
+		__type = "ui_widget_container"
+
+		symbol  = "CreepingLine" 
+		lib     = menu_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	DBG_Frame = {
+		__type = "ui_widget_container"
+
+		symbol  = "DBG_Frame" 
+		lib     = menu_lib 
+	}
+
+	defaultDragBackground = {
+		__type = "ui_widget_container"
+
+		symbol  = "defaultDragBackground" 
+		lib     = menu_lib 
+	}
+
+	dropDown_bgServer = {
+		__type = "ui_widget_container"
+
+		symbol  = "dropDown_bgServer" 
+		lib     = menu_lib 
+	}
+
+	FlowPointButton = {
+		__type = "ui_widget_button"
+
+		symbol  = "FlowPointButton" 
+		lib     = menu_lib 
+
+		elements {
+			tfContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = -56
+				y         = 40.6
+				animated  = true
+			} 
+		}
+	}
+
+	flowSeparatorLine = {
+		__type = "ui_widget_container"
+
+		symbol  = "flowSeparatorLine" 
+		lib     = menu_lib 
+	}
+
+	forgotLoginBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "forgotLoginBtn" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	glowHGLIR = {
+		__type = "ui_widget_container"
+
+		symbol  = "glowHGLIR" 
+		lib     = menu_lib 
+	}
+
+	goldBG = {
+		__type = "ui_widget_container"
+
+		symbol  = "goldBG" 
+		lib     = menu_lib 
+	}
+
+	HaloPaletteListItem = {
+		__type = "ui_widget_button"
+
+		symbol  = "HaloPaletteListItem" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			colorPlate {
+				__type = "ui_widget_container"
+
+				x         = 0.1
+				y         = 0.1
+				scaleX    = 0.8333
+				scaleY    = 0.8333
+				animated  = true
+			} 
+		}
+	}
+
+	headCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "headCont" 
+		lib     = menu_lib 
+
+		elements {
+			icon {
+				__type = "ui_menu_lib::iconBuyGold"
+				x         = 128.5
+				y         = 0
+			} 
+			tfGold {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfGp = {
+						mapping = "tfGp.text"
+					}
+				}
+				x         = 0
+				y         = 3
+				animated  = true
+			} 
+		}
+	}
+
+	headerBig = {
+		__type = "ui_widget_container"
+
+		symbol  = "headerBig" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	headerQueue = {
+		__type = "ui_widget_container"
+
+		symbol  = "headerQueue" 
+		lib     = menu_lib 
+		propMapping {
+			header = {
+				mapping = "header.text"
+			}
+		}
+	}
+
+	hf2pAdTab = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pAdTab" 
+		lib     = menu_lib 
+	}
+
+	hf2pGoldContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pGoldContainer" 
+		lib     = menu_lib 
+
+		elements {
+			tfHeadBuyGold {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tfHead = {
+						mapping = "tfHead.text"
+					}
+				}
+				x         = 721.75
+				y         = -41
+			} 
+			goldSlot5 {
+				__type = "ui_menu_lib::hf2pSlotContainer"
+				x         = 1404
+				y         = 118.95
+			} 
+			goldSlot1 {
+				__type = "ui_menu_lib::hf2pSlotContainer"
+				x         = 120
+				y         = 118.95
+			} 
+			goldSlot2 {
+				__type = "ui_menu_lib::hf2pSlotContainer"
+				x         = 441
+				y         = 118.95
+			} 
+			goldSlot3 {
+				__type = "ui_menu_lib::hf2pSlotContainer"
+				x         = 762
+				y         = 118.95
+			} 
+			goldSlot4 {
+				__type = "ui_menu_lib::hf2pSlotContainer"
+				x         = 1083
+				y         = 118.95
+			} 
+		}
+	}
+
+	hf2pLeftBackBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pLeftBackBtn" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	hf2pLeftPanel = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pLeftPanel" 
+		lib     = menu_lib 
+
+		elements {
+			menuItems {
+				__type = "ui_menu_lib::LeftMenuGridContainer"
+				x         = -528
+				y         = -31.55
+				scaleX    = 1.0007
+				scaleY    = 1.0001
+				animated  = true
+			} 
+			header {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = -100
+				y         = -63
+				rotation  = 90
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = -533
+				y         = -140
+
+				elements {
+					bg {
+						__type = "ui_widget_container"
+
+						x         = -14
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pLowerPanelHR = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pLowerPanelHR" 
+		lib     = menu_lib 
+
+		elements {
+			motd {
+				__type = "ui_menu_lib::motdContainer"
+				x         = 32
+				y         = 105
+			} 
+			creepingLine {
+				__type = "ui_menu_lib::saber_ui_menu_CreepingLine"
+				x         = 12
+				y         = 70
+				scaleX    = 0.9249
+				scaleY    = 1
+			} 
+			fakeChat {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	hf2pPanelAD_r = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelAD_r" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			bgAdr {
+				__type = "ui_widget_container"
+
+				x         = 360
+				y         = 0
+				animated  = true
+			} 
+			itemCont {
+				__type = "ui_widget_container"
+
+				x         = 1
+				y         = 3
+				scaleX    = 0.8929
+				scaleY    = 0.9009
+
+				elements {
+					img {
+						__type = "ui_menu_lib::menu_lib_attach2"
+						x         = 0
+						y         = 0
+						animated  = true
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2pPanelFriendBtnLong_r = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelFriendBtnLong_r" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			tileOverGlow {
+				__type = "ui_widget_container"
+
+				x         = -25.45
+				y         = -2.75
+				scaleX    = 3.4726
+				scaleY    = 0.5063
+				animated  = true
+			} 
+			propertyItem {
+				__type = "ui_widget_container"
+
+				x         = 315
+				y         = 5
+			} 
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 0.5
+				y         = -2.5
+			} 
+		}
+	}
+
+	hf2pPanelRightBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelRightBtn" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	hf2pPanelTab = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pPanelTab" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 67.35
+				y         = 2
+				scaleX    = 0.7736
+				scaleY    = 0.7736
+			} 
+		}
+	}
+
+	hf2pPanelTile1x1 = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTile1x1" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_Attach"
+				x         = 53.35
+				y         = 50
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pPanelTile1x1_r = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTile1x1_r" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 1.35
+				y         = 5.95
+				scaleX    = 0.8929
+				scaleY    = 0.9009
+			} 
+		}
+	}
+
+	hf2pPanelTileAD = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTileAD" 
+		lib     = menu_lib 
+		propMapping {
+			textField2 = {
+				mapping = "textField2.text"
+			}
+			textField = {
+				mapping = "textField.text"
+			}
+			textFieldPlayNow = {
+				mapping = "textFieldPlayNow.text"
+			}
+		}
+
+		elements {
+			bg {
+				__type = "ui_widget_container"
+
+				x         = -3
+				y         = 1
+			} 
+			iconModeAttach {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 7
+				y         = 148
+				scaleX    = 0.8929
+				scaleY    = 0.9009
+			} 
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = -1
+				y         = 2
+			} 
+		}
+	}
+
+	hf2pPanelTileBtnLong = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTileBtnLong" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 299
+				y         = 2
+				animated  = true
+			} 
+			propertyItem {
+				__type = "ui_widget_container"
+
+				x         = 18
+				y         = 9
+			} 
+		}
+	}
+
+	hf2pPanelTileBtnLong_l = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTileBtnLong_l" 
+		lib     = menu_lib 
+
+		elements {
+			tfContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+					textField2 = {
+						mapping = "textField2.text"
+					}
+				}
+				x         = 4.8
+				y         = 11.25
+				animated  = true
+			} 
+			itemContOver {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 232
+				y         = -6
+				animated  = true
+			} 
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 232
+				y         = -6
+			} 
+			ButtonBackGround {
+				__type = "ui_widget_container"
+
+				x         = 363
+				y         = 0
+			} 
+		}
+	}
+
+	hf2pPanelTileBtnLong_r = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTileBtnLong_r" 
+		lib     = menu_lib 
+
+		elements {
+			tfContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+					textField2 = {
+						mapping = "textField2.text"
+					}
+				}
+				x         = 4.8
+				y         = 11.25
+				animated  = true
+			} 
+			itemContOver {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 1
+				y         = -6
+				animated  = true
+			} 
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 1
+				y         = -6
+			} 
+			ButtonBackGround {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	hf2pPanelTileBtnLong_r_lir = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "hf2pPanelTileBtnLong_r_lir" 
+		lib     = menu_lib 
+
+		elements {
+			tfContainer {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+					textField2 = {
+						mapping = "textField2.text"
+					}
+				}
+				x         = 4.8
+				y         = 11.25
+				animated  = true
+			} 
+			itemContOver {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 1
+				y         = -6
+				animated  = true
+			} 
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 1
+				y         = -6
+			} 
+			ButtonBackGround {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	hf2pPanelTileBtn_r = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTileBtn_r" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 2.5
+				y         = -2.5
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pPanelTileGold = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pPanelTileGold" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			tileOverGlow {
+				__type = "ui_widget_container"
+
+				x         = -25.45
+				y         = -2.75
+				scaleX    = 3.4726
+				scaleY    = 0.5063
+				animated  = true
+			} 
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 2.5
+				y         = 1.5
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pRightPanel = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pRightPanel" 
+		lib     = menu_lib 
+
+		elements {
+			header {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 87
+				y         = -63
+				rotation  = 89.9948
+				animated  = true
+			} 
+			menu_grid_right {
+				__type = "ui_menu_lib::LeftMenuGridContainer"
+				x         = 184
+				y         = -4.8
+				animated  = true
+			} 
+			bg {
+				__type = "ui_widget_container"
+
+				x         = 484
+				y         = -140
+
+				elements {
+					bg {
+						__type = "ui_widget_container"
+
+						x         = -2
+						y         = -1.5
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pSlotContainer = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pSlotContainer" 
+		lib     = menu_lib 
+
+		elements {
+			highlightContGold {
+				__type = "ui_widget_container"
+
+				x         = -46
+				y         = -20
+			} 
+			highlightGold {
+				__type = "ui_widget_container"
+
+				x         = -19
+				y         = -18.5
+
+				elements {
+					goldPulsing {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+			bgBoostIcon {
+				__type = "ui_menu_lib::attachPoint"
+				x         = -13
+				y         = 84
+			} 
+			tfRealMoney {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 83.5
+				y         = 459
+			} 
+			tfOldPriceOld {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 25.05
+				y         = 465.85
+
+				elements {
+					lineOldPrice {
+						__type = "ui_widget_container"
+
+						x         = 68
+						y         = 11.55
+						scaleX    = 0.9373
+						scaleY    = 1
+					} 
+				}
+			} 
+			tfHeadGold {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 21
+				y         = 11.8
+			} 
+			headerCont {
+				__type = "ui_menu_lib::headCont"
+				x         = 114
+				y         = 9.55
+			} 
+			tfBonusGold {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 0
+				y         = 58.75
+			} 
+			lineGoldBonus {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 85.5
+			} 
+			angleLeft {
+				__type = "ui_widget_container"
+
+				x         = 1.2
+				y         = 86.25
+
+				elements {
+					tfBestBuyGold {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -7.65
+						y         = 46.4
+						rotation  = -45.2378
+					} 
+				}
+			} 
+			angleRight {
+				__type = "ui_widget_container"
+
+				x         = 295.2
+				y         = 86.25
+				rotation  = 90
+
+				elements {
+					tfSaleBuyGold {
+						__type = "ui_widget_container"
+
+						propMapping {
+							tf = {
+								mapping = "tf.text"
+							}
+						}
+						x         = -15
+						y         = 48.6
+						scaleX    = 1
+						scaleY    = 1
+						rotation  = -45.0131
+					} 
+				}
+			} 
+			bgGoldLine {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	hf2pTimerCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pTimerCont" 
+		lib     = menu_lib 
+		propMapping {
+			time = {
+				mapping = "time.text"
+			}
+			caption = {
+				mapping = "caption.text"
+			}
+		}
+	}
+
+	hf2pTimerContNew = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pTimerContNew" 
+		lib     = menu_lib 
+		propMapping {
+			time = {
+				mapping = "time.text"
+			}
+			caption = {
+				mapping = "caption.text"
+			}
+			caption2 = {
+				mapping = "caption2.text"
+			}
+		}
+	}
+
+	hf2pWelcomeScreen = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pWelcomeScreen" 
+		lib     = menu_lib 
+
+		elements {
+			wsContent {
+				__type = "ui_widget_container"
+
+				x         = 970
+				y         = 550.05
+				scaleX    = 1.5062
+				scaleY    = 1.5258
+
+				elements {
+					reloginBtn {
+						__type = "ui_menu_lib::ReloginBtnCont"
+						x         = -114.85
+						y         = 489.3
+						animated  = true
+					} 
+					reloginTimer {
+						__type = "ui_menu_lib::timerRelogin"
+						x         = -72.25
+						y         = 303.1
+						animated  = true
+					} 
+					reloginText {
+						__type = "ui_menu_lib::reloginDesc"
+						x         = -237.95
+						y         = 365.1
+						animated  = true
+					} 
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							textUser = {
+								mapping = "textUser.text"
+							}
+							textError = {
+								mapping = "textError.text"
+							}
+							textPass = {
+								mapping = "textPass.text"
+							}
+						}
+						x         = 104
+						y         = -19.4
+
+						elements {
+							serviceDropDownHeader {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tf = {
+										mapping = "tf.text"
+									}
+								}
+								x         = 32.95
+								y         = 14.6
+							} 
+							serviceDropDown {
+								__type = "ui_menu_lib::loginScreenDropdown"
+								x         = 35
+								y         = 47
+							} 
+							loginBtn {
+								__type = "ui_menu_lib::welcomeLoginBtn"
+								x         = 35
+								y         = 312
+							} 
+							exitGameBtn {
+								__type = "ui_menu_lib::lowerpanelSettingsButton"
+								x         = 939.5
+								y         = 311.3
+							} 
+							bgElements {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tf2 = {
+										mapping = "tf2.text"
+									}
+									tf1 = {
+										mapping = "tf1.text"
+									}
+								}
+								x         = 35
+								y         = 109
+							} 
+							bg {
+								__type = "ui_widget_container"
+
+								x         = -2
+								y         = -4
+							} 
+						}
+						animated  = true
+					} 
+					logo {
+						__type = "ui_widget_container"
+
+						x         = 5
+						y         = 30.5
+					} 
+					welcomeTF {
+						__type = "ui_widget_container"
+
+						propMapping {
+							textUser = {
+								mapping = "textUser.text"
+							}
+							WelcomTf = {
+								mapping = "WelcomTf.text"
+							}
+						}
+						x         = 40
+						y         = 430
+
+						elements {
+							loginAnim {
+								__type = "ui_widget_container"
+
+								x         = -1003.9
+								y         = -617.6
+
+								elements {
+									spartanWaitingText {
+										__type = "ui_widget_container"
+
+										propMapping {
+											tf = {
+												mapping = "tf.text"
+											}
+										}
+										x         = 588.05
+										y         = 594.25
+										animated  = true
+									} 
+								}
+							} 
+						}
+						animated  = true
+					} 
+					quitBtnCont {
+						__type = "ui_widget_container"
+
+						x         = -185.45
+						y         = 454.95
+
+						elements {
+							quitBtn {
+								__type = "ui_menu_lib::welcomeLoginBtn"
+								x         = 0
+								y         = 0
+							} 
+						}
+						animated  = true
+					} 
+					queue {
+						__type = "ui_menu_lib::queueDesc"
+						x         = -185
+						y         = 353
+						animated  = true
+					} 
+					queueHeader {
+						__type = "ui_menu_lib::headerQueue"
+						x         = -562.25
+						y         = 299.1
+						animated  = true
+					} 
+					bg {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+			} 
+		}
+	}
+
+	hf2pWelcomeScreenLogin = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pWelcomeScreenLogin" 
+		lib     = menu_lib 
+
+		elements {
+			wsContent {
+				__type = "ui_widget_container"
+
+				x         = 960
+				y         = 538
+
+				elements {
+					reloginBtn {
+						__type = "ui_menu_lib::ReloginBtnCont"
+						x         = -114.85
+						y         = 489.3
+						animated  = true
+					} 
+					reloginTimer {
+						__type = "ui_menu_lib::timerRelogin"
+						x         = -72.25
+						y         = 303.1
+						animated  = true
+					} 
+					reloginText {
+						__type = "ui_menu_lib::reloginDesc"
+						x         = -237.95
+						y         = 365.1
+						animated  = true
+					} 
+					tfCont {
+						__type = "ui_widget_container"
+
+						propMapping {
+							textUser = {
+								mapping = "textUser.text"
+							}
+							textError = {
+								mapping = "textError.text"
+							}
+							textPass = {
+								mapping = "textPass.text"
+							}
+						}
+						x         = 104
+						y         = -19.4
+
+						elements {
+							serviceDropDownHeader {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tf = {
+										mapping = "tf.text"
+									}
+								}
+								x         = 32.95
+								y         = 14.6
+							} 
+							serviceDropDown {
+								__type = "ui_menu_lib::loginScreenDropdown"
+								x         = 35
+								y         = 47
+							} 
+							loginBtn {
+								__type = "ui_menu_lib::welcomeLoginBtn"
+								x         = 35
+								y         = 312
+							} 
+							exitGameBtn {
+								__type = "ui_menu_lib::lowerpanelSettingsButton"
+								x         = 939.5
+								y         = 311.3
+							} 
+							bgElements {
+								__type = "ui_widget_container"
+
+								propMapping {
+									tf2 = {
+										mapping = "tf2.text"
+									}
+									tf1 = {
+										mapping = "tf1.text"
+									}
+								}
+								x         = 35
+								y         = 109
+							} 
+							bg {
+								__type = "ui_widget_container"
+
+								x         = -2
+								y         = -4
+							} 
+						}
+						animated  = true
+					} 
+					logo {
+						__type = "ui_widget_container"
+
+						x         = 5
+						y         = 30.5
+					} 
+					welcomeTF {
+						__type = "ui_widget_container"
+
+						propMapping {
+							textUser = {
+								mapping = "textUser.text"
+							}
+							WelcomTf = {
+								mapping = "WelcomTf.text"
+							}
+						}
+						x         = 40
+						y         = 430
+
+						elements {
+							loginAnim {
+								__type = "ui_widget_container"
+
+								x         = -1003.9
+								y         = -617.6
+
+								elements {
+									spartanWaitingText {
+										__type = "ui_widget_container"
+
+										propMapping {
+											tf = {
+												mapping = "tf.text"
+											}
+										}
+										x         = 588.05
+										y         = 594.25
+										animated  = true
+									} 
+								}
+							} 
+						}
+						animated  = true
+					} 
+					quitBtnCont {
+						__type = "ui_widget_container"
+
+						x         = -185.45
+						y         = 454.95
+
+						elements {
+							quitBtn {
+								__type = "ui_menu_lib::welcomeLoginBtn"
+								x         = 0
+								y         = 0
+							} 
+						}
+						animated  = true
+					} 
+					queue {
+						__type = "ui_menu_lib::queueDesc"
+						x         = -185
+						y         = 353
+						animated  = true
+					} 
+					queueHeader {
+						__type = "ui_menu_lib::headerQueue"
+						x         = -562.25
+						y         = 299.1
+						animated  = true
+					} 
+					bg {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	hf2p_debugPanel = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2p_debugPanel" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	hf2p_ReLoginBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2p_ReLoginBtn" 
+		lib     = menu_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 22
+				y         = 15.55
+				animated  = true
+			} 
+		}
+	}
+
+	highlightMarker = {
+		__type = "ui_widget_container"
+
+		symbol  = "highlightMarker" 
+		lib     = menu_lib 
+
+		elements {
+			highlightArea {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+
+				elements {
+					highlightSize {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	iconBuyGold = {
+		__type = "ui_widget_container"
+
+		symbol  = "iconBuyGold" 
+		lib     = menu_lib 
+	}
+
+	LeftMenuGridContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "LeftMenuGridContainer" 
+		lib     = menu_lib 
+	}
+
+	LoginScrCheckBox = {
+		__type = "ui_widget_button"
+
+		symbol  = "LoginScrCheckBox" 
+		lib     = menu_lib 
+	}
+
+	loginScreenDropdown = {
+		__type = "ui_widget_stepper"
+
+		symbol  = "loginScreenDropdown" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			backGround {
+				__type = "ui_menu_lib::dropDown_bgServer"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	loginScreenDropdownListItemRendererSkinned = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "loginScreenDropdownListItemRendererSkinned" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	loginScreenDropdownScrollBarSkinned = {
+		__type = "ui_widget_scrollbar"
+
+		symbol  = "loginScreenDropdownScrollBarSkinned" 
+		lib     = menu_lib 
+
+		elements {
+			thumb {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 16
+			} 
+			downArrow {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 128
+			} 
+			upArrow {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			track {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 16
+				scaleX    = 1
+				scaleY    = 5.9987
+			} 
+		}
+	}
+
+	loginScreenDropdownScrollingListSkinned = {
+		__type = "ui_widget_list"
+
+		symbol  = "loginScreenDropdownScrollingListSkinned" 
+		lib     = menu_lib 
+	}
+
+	LowerPanelExitButton = {
+		__type = "ui_widget_button"
+
+		symbol  = "LowerPanelExitButton" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			img {
+				__type = "ui_widget_container"
+
+				x         = -3.45
+				y         = 1.35
+				scaleX    = 1.1181
+				scaleY    = 1.1181
+				animated  = true
+			} 
+			bg1 {
+				__type = "ui_widget_container"
+
+				x         = -4.5
+				y         = -3
+			} 
+			bg2 {
+				__type = "ui_widget_container"
+
+				x         = -4.45
+				y         = -3.05
+			} 
+		}
+	}
+
+	lowerpanelSettingsButton = {
+		__type = "ui_widget_button"
+
+		symbol  = "lowerpanelSettingsButton" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			img {
+				__type = "ui_widget_container"
+
+				x         = 120.45
+				y         = -7
+				animated  = true
+			} 
+			bg1 {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = -8
+			} 
+			bg2 {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = -8
+			} 
+		}
+	}
+
+	l_arrow = {
+		__type = "ui_widget_container"
+
+		symbol  = "l_arrow" 
+		lib     = menu_lib 
+	}
+
+	MainMenuFullscreenAttach = {
+		__type = "ui_widget_container"
+
+		symbol  = "MainMenuFullscreenAttach" 
+		lib     = menu_lib 
+	}
+
+	MainMenuFullscreenScreenCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "MainMenuFullscreenScreenCont" 
+		lib     = menu_lib 
+
+		elements {
+			screenAttach {
+				__type = "ui_menu_lib::MainMenuFullscreenAttach"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	menu_lib_Attach = {
+		__type = "ui_widget_image"
+
+		symbol  = "menu_lib_Attach" 
+		lib     = menu_lib 
+	}
+
+	menu_lib_attach2 = {
+		__type = "ui_widget_image"
+
+		symbol  = "menu_lib_attach2" 
+		lib     = menu_lib 
+	}
+
+	motdContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "motdContainer" 
+		lib     = menu_lib 
+		propMapping {
+			motdHeader = {
+				mapping = "motdHeader.text"
+			}
+			motdMessage = {
+				mapping = "motdMessage.text"
+			}
+		}
+	}
+
+	msgBoxDefault = {
+		__type = "ui_widget_container"
+
+		symbol  = "msgBoxDefault" 
+		lib     = menu_lib 
+		propMapping {
+			textFieldTitle = {
+				mapping = "textFieldTitle.text"
+			}
+			textFieldMessage = {
+				mapping = "textFieldMessage.text"
+			}
+		}
+
+		elements {
+			imgContainerC {
+				__type = "ui_widget_container"
+
+				x         = 4
+				y         = 76.5
+			} 
+			imgContainer {
+				__type = "ui_widget_container"
+
+				x         = 445
+				y         = 76.5
+			} 
+		}
+	}
+
+	msgBoxSmall = {
+		__type = "ui_widget_container"
+
+		symbol  = "msgBoxSmall" 
+		lib     = menu_lib 
+		propMapping {
+			textFieldTitle = {
+				mapping = "textFieldTitle.text"
+			}
+			textFieldMessage = {
+				mapping = "textFieldMessage.text"
+			}
+		}
+	}
+
+	NewsLargePopUp = {
+		__type = "ui_widget_container"
+
+		symbol  = "NewsLargePopUp" 
+		lib     = menu_lib 
+
+		elements {
+			tfDescNews {
+				__type = "ui_menu_lib::tfDescriptionNews"
+				x         = 1314.55
+				y         = 449.2
+			} 
+			tfHeader {
+				__type = "ui_menu_lib::tfHeaderNews"
+				x         = 1205.5
+				y         = 1108.2
+			} 
+			screenHeader {
+				__type = "ui_menu_lib::spotlightHeader"
+				x         = 1314.55
+				y         = 276.6
+			} 
+			authorTf {
+				__type = "ui_menu_lib::notifTf"
+				x         = 1315.55
+				y         = 400.65
+			} 
+			dateTf {
+				__type = "ui_menu_lib::notifTf2"
+				x         = 1646.55
+				y         = 401.5
+			} 
+			attachIconNews {
+				__type = "ui_menu_lib::attachIcon"
+				x         = 0
+				y         = 140
+			} 
+		}
+	}
+
+	notifTf = {
+		__type = "ui_widget_container"
+
+		symbol  = "notifTf" 
+		lib     = menu_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	notifTf2 = {
+		__type = "ui_widget_container"
+
+		symbol  = "notifTf2" 
+		lib     = menu_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	playCard = {
+		__type = "ui_widget_container"
+
+		symbol  = "playCard" 
+		lib     = menu_lib 
+		propMapping {
+			tf1 = {
+				mapping = "tf1.text"
+			}
+			tf2 = {
+				mapping = "tf2.text"
+			}
+			tf3 = {
+				mapping = "tf3.text"
+			}
+		}
+
+		elements {
+			icnAttach {
+				__type = "ui_menu_lib::attachIcon"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	pl_assault = {
+		__type = "ui_widget_container"
+
+		symbol  = "pl_assault" 
+		lib     = menu_lib 
+	}
+
+	pl_capture_the_flag = {
+		__type = "ui_widget_container"
+
+		symbol  = "pl_capture_the_flag" 
+		lib     = menu_lib 
+	}
+
+	pl_slayer_hover = {
+		__type = "ui_widget_container"
+
+		symbol  = "pl_slayer_hover" 
+		lib     = menu_lib 
+	}
+
+	pl_team_slayer_big = {
+		__type = "ui_widget_container"
+
+		symbol  = "pl_team_slayer_big" 
+		lib     = menu_lib 
+	}
+
+	pl_team_slayer_small = {
+		__type = "ui_widget_container"
+
+		symbol  = "pl_team_slayer_small" 
+		lib     = menu_lib 
+	}
+
+	queueDesc = {
+		__type = "ui_widget_container"
+
+		symbol  = "queueDesc" 
+		lib     = menu_lib 
+		propMapping {
+			timeTxt = {
+				mapping = "timeTxt.text"
+			}
+			numberTxt = {
+				mapping = "numberTxt.text"
+			}
+		}
+	}
+
+	registerBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "registerBtn" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	ReloginBtnCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ReloginBtnCont" 
+		lib     = menu_lib 
+
+		elements {
+			btn {
+				__type = "ui_menu_lib::hf2p_ReLoginBtn"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	reloginDesc = {
+		__type = "ui_widget_container"
+
+		symbol  = "reloginDesc" 
+		lib     = menu_lib 
+		propMapping {
+			errorTxt = {
+				mapping = "errorTxt.text"
+			}
+			numberError = {
+				mapping = "numberError.text"
+			}
+			reloginTxt = {
+				mapping = "reloginTxt.text"
+			}
+		}
+
+		elements {
+			iconError {
+				__type = "ui_menu_lib::attachPoint"
+				x         = 31.7
+				y         = 36.9
+				scaleX    = 0.4
+				scaleY    = 0.4
+			} 
+		}
+	}
+
+	saber_ui_menu_CreepingLine = {
+		__type = "ui_widget_container"
+
+		symbol  = "saber.ui.menu.CreepingLine" 
+		lib     = menu_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	spotlightHeader = {
+		__type = "ui_widget_container"
+
+		symbol  = "spotlightHeader" 
+		lib     = menu_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	tfDescriptionNews = {
+		__type = "ui_widget_container"
+
+		symbol  = "tfDescriptionNews" 
+		lib     = menu_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	tfHeaderNews = {
+		__type = "ui_widget_container"
+
+		symbol  = "tfHeaderNews" 
+		lib     = menu_lib 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+
+	timerRelogin = {
+		__type = "ui_widget_container"
+
+		symbol  = "timerRelogin" 
+		lib     = menu_lib 
+		propMapping {
+			captionTimer = {
+				mapping = "captionTimer.text"
+			}
+			timeError = {
+				mapping = "timeError.text"
+			}
+		}
+	}
+
+	toolTipContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "toolTipContainer" 
+		lib     = menu_lib 
+
+		elements {
+			toolTipPanel {
+				__type = "ui_widget_container"
+
+				propMapping {
+					bodyTF = {
+						mapping = "bodyTF.text"
+					}
+					headerTF = {
+						mapping = "headerTF.text"
+					}
+				}
+				x         = 0
+				y         = 30
+
+				elements {
+					toolTipBody {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+						scaleX    = 2.4396
+						scaleY    = 1.0531
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+
+	universalTab = {
+		__type = "ui_widget_button"
+
+		symbol  = "universalTab" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 1
+				y         = 2
+				animated  = true
+			} 
+		}
+	}
+
+	universalTabSmall = {
+		__type = "ui_widget_button"
+
+		symbol  = "universalTabSmall" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			itemCont {
+				__type = "ui_menu_lib::menu_lib_attach2"
+				x         = 1
+				y         = 2
+				animated  = true
+			} 
+		}
+	}
+
+	welcomeLoginBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "welcomeLoginBtn" 
+		lib     = menu_lib 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	welcomeReloginBtn = {
+		__type = "ui_widget_container"
+
+		symbol  = "welcomeReloginBtn" 
+		lib     = menu_lib 
+	}
+}
+__type = "ui_widget_lib"

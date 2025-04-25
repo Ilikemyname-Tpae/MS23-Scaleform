@@ -1,0 +1,161 @@
+import ssl.lib.logging
+import ssl.lib.events
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ui.ui_party_monitor
+import ssl.hf2p.user_data
+import ssl.hf2p.ui_globals
+
+class UiMenuItems : UiWidgetContainer
+
+var currentMenu : * = null
+var playlistImg: string = ""
+var playlistName: string = "" 
+var playLists : vector
+var hostMapStr: string = "[...]"
+var hostModeStr: string = "[...]"   
+
+handle OnChangeStateAny
+   if (GetStateName() == "sMain")
+      //Widgets.main.EnableBtns($uiPartyMonitor.IsPartyOwner())
+      var p: params
+      p.isOwner := $uiPartyMonitor.IsPartyOwner()
+      GenerateEvent("EnableBtns", p)
+      $UiBiLogger.LogLeftPanelState($uiEnums.UI_BI_LEFT_PANEL_MAIN)
+   end   
+end 
+
+func SendSelectItem(p: params)
+   Log("ui~menuItems", "SendSelectItem: " + Params2Str(p)) 
+   GenerateEvent("selectItem", p)      
+end
+
+func onMenuItemClicked(p:params):bool
+   Log("ui~menuItems", "onMenuItemClicked " + Params2Str(p))
+   if (! IsVoid(p.widget.nextState) and ! IsVoid(p.widget.nextWidget))
+      var pp: params
+      pp.nextState := p.widget.nextState
+      pp.nextWidget := p.widget.nextWidget         
+      SendSelectItem(pp)
+   end
+   return false
+end
+
+func onPlayWithFriendsClicked(p : params) : bool
+   GenerateEvent("onOpenGameModeLobby")
+   return false
+end
+
+func InitPlayLists()
+   Log("ui~menuItems", "InitPlayLists")
+   playLists.Clear()
+   var playListVec : vector
+   var i           : int
+   playListVec := $UiGlobals.matchmaking.playlists.Get()
+   for i := 0 to playListVec.Count() - 1
+      var playlistRec     : GL_String = (GL_String)playListVec.Get(i)
+      var playlistId      : string = (string)playlistRec.value.Get()
+      var playPar         : params
+      var playlistUiName  : string = ""
+      var playlistIcn     : string = ""
+      var playlistDesc    : string = ""
+      var playlistIcnB    : string = ""
+      var playListIdx     : int
+      if (playlistId != "")
+         playlistUiName := $UiGlobals.componentsUI.Get(playlistId).name.Get()
+         //playlistIcn    := $UiGlobals.componentsUI.Get(playlistId).icon.Get()
+         playlistIcnB   := $UiGlobals.componentsUI.Get(playlistId).icon_big.Get()
+         playlistDesc   := $UiGlobals.componentsUI.Get(playlistId).desc.Get()
+         playListIdx    := i
+      end
+      playPar.Id      := playlistId
+      playPar.Idx     := playListIdx
+      playPar.Label   := playlistUiName
+      playPar.Icon    := playlistIcn
+      playPar.IconBig := playlistIcnB
+      playPar.Desc    := playlistDesc
+      playLists.Push(playPar)
+   end
+   Widgets.playlist.Playlists.SetData(playLists)
+end
+
+func setInfoAdLeftPlayList()
+   var playlistId : string = $uiPartyMonitor.GetPlaylistId()
+   Widgets.playlist.PlaylistIcon.iconModeAttach.pic := (string)$UiGlobals.componentsUI.Get(playlistId).icon.Get()
+   Widgets.playlist.PlaylistIcon.textField2 := (string)$UiGlobals.componentsUI.Get(playlistId).name.Get()
+end
+
+func onStartGame(p: params): bool
+   Log("ui~menuItems", "LP::onStartGame: " + Params2Str(p))            
+   GenerateEvent("startGame", p)  
+   return false   
+end
+
+func onHostGameClicked(p: params): bool
+   Log("ui~menuItems", "LP::onHostGameClicked: " + Params2Str(p))
+   GenerateEvent("onHostGame", p)  
+   return false   
+end
+
+func onJoinGameClicked(p: params): bool
+   Log("ui~menuItems", "LP::onJoinGameClicked: " + Params2Str(p))
+   GenerateEvent("onMenuItemClicked", p)  
+   return false   
+end
+
+func onHostFirefightClicked(p: params): bool
+   Log("ui~menuItems", "LP::onHostFirefightClicked: " + Params2Str(p))
+   GenerateEvent("onHostGame", p)  
+   return false   
+end
+
+func onJoinFirefightClicked(p: params): bool
+   Log("ui~menuItems", "LP::onJoinFirefightClicked: " + Params2Str(p))
+   GenerateEvent("onMenuItemClicked", p)  
+   return false   
+end
+
+func onQuickMatchClicked(p: params): bool
+   Log("ui~menuItems", "LP::onQuickMatchClicked: " + Params2Str(p)) 
+   Log("ui~menuItems", "OnGameMapStepperIndexChange_SetEngine_RESET_MAPS")
+   GenerateEvent("onMatchmakeGame", p)  
+   return false   
+end
+
+func SetModeIcon(p:params):bool
+   Log("ui~menuItems", "SetModeIcon")
+   var icon:string
+   icon := p.UI_ICON
+   return false
+end
+   
+func onBack()
+   Log("ui~menuItems", "MENU_GRID:: onBack()")
+   if (GetStateName() == "sRematch") or (GetStateName() == "sHost") or (GetStateName() == "sClientLobby") or (GetStateName() == "sMatchmaking")
+   end
+end
+
+func GetPlaylistIcon(_mode:string): string
+   var ret: string = ""
+   if (_mode == "UI_BTN_SLAYER_FFA")
+      ret := "slayerMode"
+   else if (_mode == "UI_BTN_TEAM_SLAYER")
+      ret := "dominionMode"
+   else if (_mode == "UI_BTN_CTF")
+      ret := "regicideMode"
+   else if (_mode == "UI_BTN_KING_OF_THE_HILL")
+      ret := "slayerMode"
+   else if (_mode == "UI_BTN_ODDBALL")
+      ret := "dominionMode"
+   end
+   return ret      
+end
+
+handle OnEnterState("sPlaylist")
+   InitPlayLists()
+   setInfoAdLeftPlayList()
+   $UiBiLogger.LogLeftPanelState($uiEnums.UI_BI_LEFT_PANEL_PLAYLIST)
+end
+
+end

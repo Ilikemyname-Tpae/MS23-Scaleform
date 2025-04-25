@@ -1,0 +1,139 @@
+classes = {
+	BuyGoldSplashScreen = {
+		__type = "ui_widget_container"
+
+		symbol  = "BuyGoldSplashScreen" 
+		lib     = buyGoldSplash_lib 
+
+		elements {
+			content {
+				__type = "ui_widget_container"
+
+				x         = 592
+				y         = 290
+
+				elements {
+					glowAnim {
+						__type = "ui_widget_container"
+
+						x         = 5.75
+						y         = -27.65
+					} 
+					GoldAnim1 {
+						__type = "ui_widget_container"
+
+						x         = 2.9
+						y         = -28.1
+
+						elements {
+							goldValueTf {
+								__type = "ui_widget_container"
+
+								propMapping {
+									textField = {
+										mapping = "textField.text"
+									}
+								}
+								x         = 268.15
+								y         = 17
+								animated  = true
+							} 
+						}
+					} 
+					GoldAnim2 {
+						__type = "ui_widget_container"
+
+						x         = 2.9
+						y         = -28.1
+
+						elements {
+							goldValueTf {
+								__type = "ui_widget_container"
+
+								propMapping {
+									textField = {
+										mapping = "textField.text"
+									}
+								}
+								x         = 268.15
+								y         = 17
+								animated  = true
+							} 
+						}
+					} 
+					GoldAnim3 {
+						__type = "ui_widget_container"
+
+						x         = 2.9
+						y         = -28.1
+
+						elements {
+							goldValueTf {
+								__type = "ui_widget_container"
+
+								propMapping {
+									textField = {
+										mapping = "textField.text"
+									}
+								}
+								x         = 268.15
+								y         = 17
+								animated  = true
+							} 
+						}
+					} 
+					GoldAnim4 {
+						__type = "ui_widget_container"
+
+						x         = 2.9
+						y         = -28.1
+
+						elements {
+							goldValueTf {
+								__type = "ui_widget_container"
+
+								propMapping {
+									textField = {
+										mapping = "textField.text"
+									}
+								}
+								x         = 268.15
+								y         = 17
+								animated  = true
+							} 
+						}
+					} 
+					GoldAnim5 {
+						__type = "ui_widget_container"
+
+						x         = 2.9
+						y         = -28.1
+
+						elements {
+							goldValueTf {
+								__type = "ui_widget_container"
+
+								propMapping {
+									textField = {
+										mapping = "textField.text"
+									}
+								}
+								x         = 268.15
+								y         = 17
+								animated  = true
+							} 
+						}
+					} 
+					wingsAnim {
+						__type = "ui_widget_container"
+
+						x         = -152.6
+						y         = -392.1
+					} 
+				}
+				animated  = true
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

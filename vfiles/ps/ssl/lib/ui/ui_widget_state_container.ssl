@@ -1,0 +1,232 @@
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.types
+
+native class UiWidgetStateContainer : UiWidgetContainer
+   var stateStack          : vector
+   var isOpenedChilds      : ObservableProperty = $OM.Calculated(this, "GetIsOpenedChilds")
+   var isDelayedPop        : bool               = false
+   
+   func PushCurrentState(layer : int = -1) : bool
+      var curStateParams : params = SaveState()
+      curStateParams.layer := layer
+      stateStack.Push(curStateParams)
+      return true
+   end
+   
+   func GetStateContainerChilds() : vector
+      var ret : vector
+      return ret      
+   end
+      
+   func GetChildStates() : vector
+      var ret        : vector
+      var childList  : vector = GetStateContainerChilds()
+      var i          : int
+      for i := 0 to childList.Count() - 1
+         var childName     : string
+         var childRec      : params = childList.Get(i)
+         var childParams   : params
+         if (!IsVoid(childRec.name))
+            childName := childRec.name
+         end
+         if (childName != "")
+            var child : UiWidgetContainer = (UiWidgetContainer)GetWidget(childName)
+            if (child != null)
+               childParams.name        := childName
+               childParams.savedState  := child.SaveState()
+               ret.Push(childParams)
+            end      
+         end         
+      end      
+      return ret
+   end
+   
+   func SetChildStates(childStates : vector, _ignoredChild:string = "")
+      var i : int
+      for i := 0 to childStates.Count() - 1
+         var childName     : string
+         var childRec      : params = childStates.Get(i)
+         if (!IsVoid(childRec.name) and !IsVoid(childRec.savedState))
+            childName := childRec.name
+            if (childName != "" and _ignoredChild != childName)
+               var child : UiWidgetContainer = (UiWidgetContainer)GetWidget(childName)
+               if (child != null)
+                  child.LoadState(childRec.savedState)
+               end      
+            end         
+         end
+      end      
+   end
+   
+   func GetStateContainerChildRec(_childName : string) : params
+      var ret        : params
+      var childList  : vector = GetStateContainerChilds()
+      var i          : int
+      for i := 0 to childList.Count() - 1
+         var childRec      : params = childList.Get(i)
+         if (!IsVoid(childRec.name) and childRec.name == _childName)
+            ret := childRec
+            break
+         end
+      end
+      return ret      
+   end
+   
+   override SaveState //() : params
+      var ret           : params
+      var stateName     : string = GetStateName()
+      ret.stateName     := stateName
+      ret.childStates   := GetChildStates()
+      return ret
+   end
+   
+   func LoadStateInternal(p : params, _ignoredChild:string = "", _ignoredState : string = "") : bool
+      if (! IsVoid(p.childStates))
+         SetChildStates(p.childStates, _ignoredChild)
+      end
+      if (! IsVoid(p.stateName))
+         var curState : string = GetStateName()
+         var newState : string = p.stateName
+         if (curState != _ignoredState and curState != newState)
+            SetStateName(newState)
+         end
+      end
+      return true
+   end
+   
+   override LoadState //(p : params) : bool
+      if (! IsVoid(p.childStates))
+         SetChildStates(p.childStates)
+      end
+      if (! IsVoid(p.stateName))
+         var curState : string = GetStateName()
+         var newState : string = p.stateName
+         if (curState != newState)
+            SetStateName(newState)
+         end
+      end
+      return true
+   end
+   
+   func CheckDelayedStateChanges()
+      if (isDelayedPop)
+         isDelayedPop := false
+         PopCurrentState()
+      end
+   end
+         
+   func PopCurrentState() : bool
+      if (IsChangingStateInProgress())
+         isDelayedPop := true                  
+      else
+         var pState : params      
+         if (stateStack.Count() > 0)
+            pState := stateStack.Get(stateStack.Count() - 1)
+            stateStack.Pop()
+            LoadState(pState)
+            OnStateRollback(pState.stateName)
+         end
+         isOpenedChilds.Invalidate()
+      end
+      return true
+   end
+   
+   func GetDefaultState() : string
+      return ""
+   end
+   
+   func RollbackAllStates()
+      if (stateStack.Count() > 0)
+         var pState : params = stateStack.Get(0)
+         LoadState(pState)
+         stateStack.Clear()
+      else
+         var defState : string = GetDefaultState()
+         if (defState != "")
+            SetStateName(defState)
+         end
+      end
+   end
+   
+   func RollbackChildStates()
+      if (stateStack.Count() > 0)
+         var pState : params = stateStack.Get(0)
+         if (! IsVoid(pState.childStates))
+            SetChildStates(pState.childStates)
+         end
+         stateStack.Clear()
+      end
+   end
+   
+   func OnStateRollback(stateName : string)
+   end
+            
+   func RollbackState(_childLayer : int = -1, _childName : string = "")
+      if (stateStack.Count() > 0)
+         var pStateFound: params
+         var pState     : params
+         var foundState : bool = false
+         var i          : int         
+         for i := stateStack.Count() - 1 downto 0
+            pState := stateStack.Get(stateStack.Count() - 1)
+            var layer : int = -1
+            if (!IsVoid(pState.layer))
+               layer := pState.layer
+            end
+            if (layer >= _childLayer)
+               pStateFound := stateStack.Get(stateStack.Count() - 1)
+               stateStack.Pop()
+               foundState := true
+            else
+               break
+            end
+         end
+         if (foundState)
+            if (! IsVoid(pStateFound.childStates))
+               SetChildStates(pStateFound.childStates, _childName)
+            end
+            OnStateRollback(pStateFound.stateName)
+            stateStack.Push(pStateFound)
+         else
+            PushCurrentState(_childLayer)
+         end
+      else
+         PushCurrentState(_childLayer)
+      end
+      isOpenedChilds.Invalidate()      
+   end
+      
+   func PrepareOpenChild(_childName : string, _layer : int = -1)
+      var child : UiWidgetContainer = (UiWidgetContainer)GetWidget(_childName)
+      if (child != null)
+         var childLayer : int    = _layer
+         if (childLayer == -1)
+            var childRec : params = GetStateContainerChildRec(_childName)
+            if (!IsVoid(childRec.layer))
+               childLayer := childRec.layer
+            end
+         end
+         RollbackState(childLayer, _childName)
+         isOpenedChilds.Invalidate()         
+      end
+   end   
+   
+   func GetCurrentStackLayer() : int
+      var ret : int = -1
+      if (stateStack.Count() > 0)
+         var stateParams : params = stateStack.Get(stateStack.Count() - 1)
+         if (!IsVoid(stateParams.layer))
+            ret := stateParams.layer
+         end
+      end
+      return ret
+   end
+      
+   func ClearStateStack()
+      stateStack.Clear()
+   end
+            
+   func GetIsOpenedChilds() : bool
+      return false
+   end
+end

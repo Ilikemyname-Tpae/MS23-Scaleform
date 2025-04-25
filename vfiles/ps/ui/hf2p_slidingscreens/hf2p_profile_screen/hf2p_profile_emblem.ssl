@@ -1,0 +1,209 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_service
+import ui.root
+import ui.hf2p_SlidingScreens.hf2p_Lobby.hf2p_Lobby
+import ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf
+
+class ProfileEmblem : UiSlidingScreenPageMainMenu
+
+handle OnEnteringState("Initial")
+end   
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+   GenerateEvent("#CloseShop")
+end   
+
+handle OnEnteringState("Visible")
+   GenerateEvent("#ProfileEmblemOpen")
+   Set("visible", true)       
+end   
+
+handle OnEnterState("Visible")
+   Log("ui~content", "OnEnterState")         
+end
+
+func SetListSelection(p : params) : bool
+   Widgets.emblemList.SetSelectionIdx(p.idx)
+   return false
+end
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   EnableFakeBg()
+   GenerateEvent("#OpenedProfileEmblems")
+   $UiGlobals.profileEmblemOverride.Set(Get("DC").mouseOverItemId)
+end
+ 
+override PrepareHideSlide // ()
+   GenerateEvent("#HideShop")
+   $UiGlobals.profileEmblemOverride.Set(null)
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+      $UiGlobals.profileEmblemOverride.Set(null)
+   end
+end
+
+func EnableFakeBg()
+   var p: params
+   p.state := "profile_present"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+end // ProfileEmblem
+
+class ProfileEmblemVM  : ItemShopBaseVM
+   
+   var nick             : ObservableProperty = $OM.Calculated(this, "GetUserName")
+   var selectedType     : ObservableProperty = $OM.Property(0)
+   var inv              : ObservableProperty = $OM.Property(false)
+   
+   func ProfileEmblemOpen() : bool
+      descpanelVM.itemId.Set(mouseOverItemId.Get())
+      offersModuleVM.UpdateItemId((string)mouseOverItemId.Get())
+      itemList.Invalidate()
+      nick.Invalidate()
+      SetListSelection((int)selectedIdx.Get())
+      inv.Set(!(bool)inv.Get())
+      return false
+   end
+   
+   func onEmblemTabClicked(p : params) : bool
+      var idx : int = p.widget.Get("index")
+      selectedType.Set(idx)
+      return false
+   end
+   
+   func tabVisible(idx : int) : bool
+      inv.Get() // hack invalidate
+      var ret : bool = false
+      var count : int = 0
+      if (!IsVoid($UiGlobals.shop.race_shops))
+         var shop = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get($UserDataStorage.local_user.race.Get())
+         if (!IsVoid(shop.FindInternalSection("section_emblem")))
+            var section = shop.FindInternalSection("section_emblem")
+            var vec : vector := section.shelves.Get()
+            count := vec.Count()
+         end
+      end
+      if (idx < count)
+         ret := true
+      end
+      return ret 
+   end
+   
+   func tabSelected(idx : int) : bool
+      var ret : bool = false
+      if (idx == selectedType.Get())
+         ret := true
+      end
+      return ret
+   end
+   
+   func tabLabel(idx : int) : string
+      inv.Get() // hack invalidate
+      var ret :  string = ""
+      if (!IsVoid($UiGlobals.shop.race_shops))
+         var shop = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get($UserDataStorage.local_user.race.Get())
+         if (!IsVoid(shop.FindInternalSection("section_emblem")))
+            var section = shop.FindInternalSection("section_emblem")
+            if (section != null and ! IsVoid(section.FindShelfByIdx(idx)))
+               var shelf = section.FindShelfByIdx(idx)
+               var uiComp     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)shelf.shelf_id.Get())
+               ret := (string)uiComp.name.Get() 
+            end
+         end
+      end   
+      return ret
+   end
+   
+   override GetItemList
+      var   vec : vector = new vector
+      if isActive.Get() == true
+         if (!IsVoid($UiGlobals.shop.race_shops))
+            var shop = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get($UserDataStorage.local_user.race.Get())
+            if (!IsVoid(shop.FindInternalSection("section_emblem")))
+               var section = shop.FindInternalSection("section_emblem")
+               if (section != null and ! IsVoid(section.FindShelfByIdx((int)selectedType.Get())))
+                  var shelf = section.FindShelfByIdx((int)selectedType.Get())
+                  if (shelf != null and ! IsVoid(shelf.items.Get()))
+                     //emblem := (string)shelf.items.Get().Get(0).value.Get()
+                     vec := shelf.items.Get()
+                  end
+               end
+            end
+         end
+      end
+      return vec
+   end
+   
+   func OpenedProfileEmblems(p : params) : bool
+      isActive.Set(true)
+      BiLogShopState()
+      return true
+   end
+   
+   override GetBiShopName//() : string
+      return $uiEnums.UI_BI_SHOP_PROFILE_EMBLEMS
+   end
+   
+   override UpdateSelectedItem
+      descpanelVM.itemId.Set(mouseOverItemId.Get())
+      offersModuleVM.UpdateItemId((string)mouseOverItemId.Get())
+   end 
+   
+   func OnEmblemAssignBtnClicked(p : params) : bool
+      var emblemId : string = (string)selectedItemId.Get()
+      $user_service.SetEmblem(emblemId)
+      return false
+   end
+   
+   func GetDemoLirEmblemIcon() : string
+      var ret : string = "" // "iconHelmetLobby"
+      var uiComp     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(mouseOverItemId.Get())
+      ret := (string)uiComp.icon.Get()
+      return ret
+   end
+   
+   func GetDemoEmblemIconBig() : string
+      var ret : string = "" // "iconHelmetLobby"
+      var uiComp     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(mouseOverItemId.Get())
+      ret := (string)uiComp.icon_big.Get()
+      return ret
+   end
+   
+   func GetLirLabelIcon() : string
+      return $UserDataStorage.GetPlayerLabel(GetUID(), false)
+   end
+   
+   func GetCardLabelIcon() : string
+      return $UserDataStorage.GetPlayerLabel(GetUID(), true)
+   end
+   
+   func GetUID() : *
+      return $UserDataStorage.local_user.uid.Get()
+   end
+   
+   func IsLocalUser() : bool
+      return $UserDataStorage.IsLocalUID(GetUID())
+   end
+   
+   func GetUserName() : *
+      var ud   : UserData  = GetUserData()
+      var ret  : wstring    = ud.base.full_nickname.Get()
+      return ret
+   end
+
+   func GetUserData() : UserData
+      var ret : UserData = (UserData) $UserDataStorage.users.Get(GetUID())
+      return ret
+   end     
+end

@@ -1,0 +1,404 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.game_preferences
+import ssl.hf2p.hq
+import ui.libs.hf2p_SlidingScreens.hf2p_sliding_screens_lib
+
+class UiVideo : UiSlidingScreenPageSettings
+var savedParams                                 : params 
+var isUpdatingScreen                            : int    = 0
+var waiting_to_show_dialog_screen_res_changed   : bool   = false
+
+func ScreenResStr(width : int, height : int) : string
+   return (string)(width) + "x" + (string)(height)
+end
+
+func GetSelectedResolution() : params
+   var ret : params = Widgets.stepperScreenResolution.GetItemData(Widgets.stepperScreenResolution.selection)
+   return ret
+end
+
+func GetSettingsScreen(_resolutionOnly : bool = false, getAllParams : bool = false) : params
+   var ret : params
+   if (_resolutionOnly or getAllParams)
+      ret.isFullscreen     := Widgets.butFullscreen.selected
+      ret.resolution       := Widgets.stepperScreenResolution.GetItemData(Widgets.stepperScreenResolution.selection)
+   end
+   if (!_resolutionOnly or getAllParams)
+      ret.brightness       := Widgets.sliderBrightness.slider.value
+      ret.isVSync          := Widgets.butVSync.selected
+      ret.isAntiAliasing   := Widgets.butAntialiasing.selected
+   end
+   return ret   
+end
+
+func StartUpdatingScreenValues()
+   isUpdatingScreen := isUpdatingScreen + 1
+end
+
+func StopUpdatingScreenValues()
+   if (isUpdatingScreen > 0)
+      isUpdatingScreen := isUpdatingScreen - 1
+   end
+end
+
+func UpdateScreenControls()
+   Widgets.sliderBrightness.Props.tf2    := (string)((int)(Widgets.sliderBrightness.slider.value))   
+   
+   var enginePresets : vector = $hf2pPreferences.GetQualityPresetOptions()
+   var currentPreset : int    = $hf2pPreferences.GetUserQualityPreset()
+   if (currentPreset == enginePresets.Count() - 1)
+      Widgets.stepperQualityPreset.SetDataCustom(enginePresets)
+      Widgets.stepperQualityPreset.selection     := enginePresets.Count() - 1
+   else
+      var screenPresets : vector
+      var i             : int
+      for i := 0 to enginePresets.Count() - 2
+         screenPresets.Push(enginePresets.Get(i))
+      end
+      Widgets.stepperQualityPreset.SetDataCustom(screenPresets)
+      Widgets.stepperQualityPreset.selection := currentPreset
+   end
+end
+
+func ApplySettingsScreen(settings : params, updateResolutionSelection : bool = true)
+   StartUpdatingScreenValues()
+   if (!IsVoid(settings.isFullscreen))
+      Widgets.butFullscreen.selected := settings.isFullscreen
+   end
+   
+   InitResolutionList(false, updateResolutionSelection)
+   
+   if (!IsVoid(settings.resolution))
+      SetScreenResSelection(settings.resolution.width, settings.resolution.height)
+   end   
+   if (!IsVoid(settings.qualityPreset))
+      Widgets.stepperQualityPreset.selection := settings.qualityPreset
+   end
+   if (!IsVoid(settings.brightness))
+      Widgets.sliderBrightness.slider.value := settings.brightness
+      $hf2pPreferences.SetBrightnessOverride(settings.brightness)
+   end
+   if (!IsVoid(settings.isVSync))
+      Widgets.butVSync.selected := settings.isVSync
+   end
+   if (!IsVoid(settings.isAntiAliasing))
+      Widgets.butAntialiasing.selected := settings.isAntiAliasing
+   end
+   UpdateScreenControls()
+   StopUpdatingScreenValues()
+end
+
+func GetSettingsEngine(getPreset : bool = false) : params
+   var ret : params
+   ret.resolution       := $hf2pPreferences.GetScreenResolution()
+   ret.brightness       := $hf2pPreferences.GetBrightness()
+   ret.isFullscreen     := $hf2pPreferences.GetFullscreen()
+   ret.isVSync          := $hf2pPreferences.GetVSync()
+   ret.isAntiAliasing   := $hf2pPreferences.GetAntialiasing()
+   if (getPreset)
+      ret.qualityPreset := $hf2pPreferences.GetUserQualityPreset()
+   end
+   return ret
+end
+
+func ApplySettingsEngine(settings : params, saveNew : bool = true)
+   var engineSettings   : params = GetSettingsEngine(true)
+   var changeFullscreen : bool   = false
+   if (!IsVoid(settings.isFullscreen) and !IsVoid(engineSettings.isFullscreen) and settings.isFullscreen != engineSettings.isFullscreen)
+      $hf2pPreferences.SetFullscreen(settings.isFullscreen)
+      changeFullscreen := true
+   end
+   if ((!IsVoid(settings.resolution) and !IsVoid(engineSettings.resolution)) or changeFullscreen)
+      if ((settings.resolution.width != engineSettings.resolution.width) or (settings.resolution.height != engineSettings.resolution.height) or changeFullscreen)
+         $hf2pPreferences.SetScreenResolution(settings.resolution.width, settings.resolution.height)
+      end
+   end
+   if (!IsVoid(settings.qualityPreset) and !IsVoid(engineSettings.qualityPreset) and settings.qualityPreset != engineSettings.qualityPreset)
+      if (settings.qualityPreset != ($hf2pPreferences.GetQualityPresetOptions().Count() - 1))
+         $hf2pPreferences.SetUserQualityPreset(settings.qualityPreset)
+      end
+   end
+   if (!IsVoid(settings.brightness) and !IsVoid(engineSettings.brightness) and settings.brightness != engineSettings.brightness)
+      $hf2pPreferences.SetBrightnessOverride(settings.brightness)
+   end
+   if (!IsVoid(settings.isVSync) and !IsVoid(engineSettings.isVSync) and settings.isVSync != engineSettings.isVSync)
+      $hf2pPreferences.SetVSync(settings.isVSync)
+   end
+   if (!IsVoid(settings.isAntiAliasing) and !IsVoid(engineSettings.isAntiAliasing) and settings.isAntiAliasing != engineSettings.isAntiAliasing)
+      $hf2pPreferences.SetAntialiasing(settings.isAntiAliasing)
+   end
+   UpdateScreenControls()
+   if (saveNew)
+      savedParams := GetSettingsEngine()
+   end
+end
+
+func OnQualityPresetChanged(p:params) : bool
+   if (isUpdatingScreen == 0)
+      var applyParams : params
+      applyParams.qualityPreset := Widgets.stepperQualityPreset.selection
+      ApplySettingsEngine(applyParams, false)
+   end
+   return false
+end
+
+func UpdateBrightness(newParams : params) : bool
+   if (newParams.brightness != savedParams.brightness)
+      var applyParams : params
+      applyParams.brightness     := newParams.brightness
+      ApplySettingsEngine(applyParams, false)
+      return true
+   end   
+   return false
+end
+
+func OnResolutionChange(p : params) : bool
+   return false
+end
+
+func OnCheckBoxValueChange(p:params) : bool
+   return OnSomethingWasChanged(p)
+end
+
+func OnStepperIndexChange(p:params) : bool
+   return OnSomethingWasChanged(p)   
+end
+
+func OnSomethingWasChanged(p:params) : bool
+   if (isUpdatingScreen == 0)
+      if (UpdateBrightness(GetSettingsScreen(false)))
+         return false
+      end
+      InitResolutionList(true)
+   end
+   return false
+end
+
+func GetResolutionsVec() : vector
+   var ret : vector = $hf2pPreferences.GetScreenResolutionList(Widgets.butFullscreen.selected)
+   return ret
+end
+
+func InitResolutionList(_selectCurrent : bool = false, updateResolutionSelection : bool = true)
+   StartUpdatingScreenValues()
+   var resolution : params
+   if (_selectCurrent)
+      resolution  := GetSelectedResolution()
+   else
+      resolution  := $hf2pPreferences.GetScreenResolution()
+   end
+   
+   var resolutions   : vector = GetResolutionsVec()
+   var idx           : int    = resolutions.Count() - 1
+   var i             : int
+   for i := 0 to resolutions.Last()
+      var p : * = resolutions.Get(i)
+      p.label := ScreenResStr(p.width, p.height)
+      if ((int)p.width == (int)resolution.width and (int)p.height == (int)resolution.height)
+         idx := i         
+      end
+   end
+
+   var isResolutionsSelectable : bool = resolutions.Count() > 1
+   Widgets.stepperScreenResolution.SetDataCustom(resolutions)
+   if (updateResolutionSelection)
+      Widgets.stepperScreenResolution.selection := idx
+   end
+   Widgets.stepperScreenResolution.mouseEnabled  := isResolutionsSelectable
+   Widgets.stepperScreenResolution.mouseChildren := isResolutionsSelectable
+   StopUpdatingScreenValues()
+end
+
+func SetScreenResSelection(width : int, height : int)
+   StartUpdatingScreenValues()
+   var resolutions   : vector = GetResolutionsVec()
+   var index         : int    = resolutions.Count() - 1
+   var i             : int
+   for i := 0 to resolutions.Count() - 1
+      var data : params = resolutions.Get(i)
+      if (((int)(data.width) == width) and ((int)(data.height) == height))
+         index := i
+         break
+      end
+   end
+   Widgets.stepperScreenResolution.selection := index
+   StopUpdatingScreenValues()
+end
+
+override Init // ()
+   savedParams := GetSettingsEngine()
+   $hf2pPreferences.SaveAdvancedVideoParams()
+   ApplySettingsScreen(savedParams, true)
+end
+
+override Reset // ()
+   if (GetStateName() == "Visible")
+      var defSettings : params = $hf2pPreferences.GetDefaultVideoSettings()
+      ApplySettingsScreen(defSettings, false)
+   end
+end
+
+override Apply // () : bool //if true than close screens  
+   var currentParams : params = GetSettingsScreen(true) 
+   
+   if ((currentParams.resolution.width == savedParams.resolution.width) and (currentParams.resolution.height == savedParams.resolution.height) and (currentParams.isFullscreen == savedParams.isFullscreen))
+      ApplyInternal()
+      return true
+   end
+
+   // apply screen resolution change
+   waiting_to_show_dialog_screen_res_changed := true
+   Props.global_mouse := false
+   ApplySettingsEngine(currentParams, false)
+
+   return false
+end
+
+global event OnAfterRenderDeviceReset()
+   
+   if (!waiting_to_show_dialog_screen_res_changed)
+      return
+   end
+   
+   waiting_to_show_dialog_screen_res_changed := false
+   
+   var pp:params
+   pp.callbackEvent  := "OnScreenResConfirm"
+   pp.callbackTarget := Props
+   pp.titleTxt       := "msg_ui_settings_confirm"      
+   pp.messageTxt     := "msg_ui_settings_if_you"
+   pp.closeTimeout   := 15
+   pp.isOkOnTimeOut  := false
+   GenerateEvent("SlidingScreenDialogRequest", pp)
+   Props.global_mouse := true   
+end
+
+func OnScreenResConfirm(p:params):bool
+   if (p.isOK) 
+      // continue apply process
+      ApplyInternal()
+      GenerateEvent("ContinueApplyVideoSettings")
+   else
+      RevertResolution()
+      GenerateEvent("ContinueRevertVideoSettings")
+   end
+   
+   return false
+end
+
+func IsParamsDiffer(p1 : params, p2 : params) : bool
+   var ret : bool = false
+   
+   if (!IsVoid(p1.isFullscreen) and !IsVoid(p2.isFullscreen))
+      ret := ret or (p1.isFullscreen != p2.isFullscreen)      
+   end
+   if (!IsVoid(p1.resolution) and !IsVoid(p2.resolution))
+      if (!IsVoid(p1.resolution.width) and !IsVoid(p2.resolution.width))
+         ret := ret or (p1.resolution.width != p2.resolution.width)
+      end
+      if (!IsVoid(p1.resolution.height) and !IsVoid(p2.resolution.height))
+         ret := ret or (p1.resolution.height != p2.resolution.height)
+      end
+   end
+   if (!IsVoid(p1.qualityPreset) and !IsVoid(p2.qualityPreset))
+      ret := ret or (p1.qualityPreset != p2.qualityPreset)      
+   end
+   if (!IsVoid(p1.brightness) and !IsVoid(p2.brightness))
+      ret := ret or (p1.brightness != p2.brightness)      
+   end
+   if (!IsVoid(p1.isVSync) and !IsVoid(p2.isVSync))
+      ret := ret or (p1.isVSync != p2.isVSync)      
+   end
+   if (!IsVoid(p1.isAntiAliasing) and !IsVoid(p2.isAntiAliasing))
+      ret := ret or (p1.isAntiAliasing != p2.isAntiAliasing)      
+   end
+   
+   return ret
+end
+
+override HaveUnsavedChanges // () :  bool
+   var ret : bool = IsParamsDiffer(GetSettingsScreen(false, true), savedParams)
+   return ret
+end
+
+func SetCurrentEngineSettings()
+   savedParams := GetSettingsEngine()
+   ApplySettingsScreen(savedParams)   
+end
+
+override Revert // ()
+   $hf2pPreferences.RestoreAdvancedVideoParams()
+   ApplySettingsEngine(savedParams)
+   SetCurrentEngineSettings()
+end
+
+func RevertResolution()
+   var applyParams : params
+   applyParams.resolution     := savedParams.resolution
+   applyParams.isFullscreen   := savedParams.isFullscreen
+   ApplySettingsEngine(applyParams)
+   ApplySettingsScreen(applyParams)
+end
+
+func ApplyInternal()   
+   ApplySettingsEngine(GetSettingsScreen(false))   
+end
+
+func OnAdvancedVideoSelected(p : params) : bool
+   GenerateEvent("AdvancedVideoClicked")
+   return false
+end
+
+func sliderBrightnessFocusIn(p:params):bool
+   Widgets.picBrightness.visible := true
+   return false
+end
+
+func sliderBrightnessFocusOut(p:params):bool
+   Widgets.picBrightness.visible := false
+   return false
+end
+
+handle OnEnteringState("Initial")
+end          
+
+handle OnEnterState("Initial")
+   Set("visible", false)
+end  
+        
+handle OnEnteringState("Visible")
+   UpdateScreenControls()
+   Set("visible", true)
+   StartDefaultBlinking(0.5, 1.0)
+end  
+
+override SwitchToScreen // ()
+   Log("ui~content", "Video setting SwitchSlide")
+   Props.visible := true
+end
+
+override PrepareSlide // ()
+   Log("ui~content", "Video setting PrepareSlide")
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   GenerateEvent("OnEnterNewTab")
+   Props.visible := true
+   var p: params
+   p.state := "s_videoCont"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+override PrepareHideSlide // ()
+   StartDefaultBlinking(0.5, 1.0)
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      Log("ui~content", "Video setting DisableSlide")
+      Props.visible := false
+      SetStateName("Initial")
+   end
+end
+end

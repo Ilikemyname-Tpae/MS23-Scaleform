@@ -1,0 +1,89 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.game_preferences
+import ui.libs.hf2p_SlidingScreens.hf2p_sliding_screens_lib
+
+class UiMultiplayer : UiSlidingScreenPageSettings
+
+var is_inited : bool = false
+
+
+override Init // ()
+   var options :  vector
+   is_inited := true
+   options.Push("")
+   Widgets.stepperMatchmakingRegion.SetData(options)
+   Widgets.stepperMatchmakingRegion.selection := $hf2pPreferences.GetMatchmakingRegion()
+end
+
+override HaveUnsavedChanges // () :  bool
+   var result : int = 0
+   
+   if (!is_inited)
+      return false
+   end
+   
+   result := result + (int)(Widgets.stepperMatchmakingRegion.selection != $hf2pPreferences.GetMatchmakingRegion())
+   
+   return (result > 0)
+end
+
+override Reset // ()
+   Widgets.stepperMatchmakingRegion.selection := 0
+end
+
+override Apply // ()
+   if (!is_inited)
+      return true
+   end
+   
+   $hf2pPreferences.SetMatchmakingRegion(Widgets.stepperMatchmakingRegion.selection)
+   GenerateEvent("OnApplyFinished")
+   
+   return false
+end
+
+handle OnEnteringState("Initial")
+   AddTween("alpha", 0.0, Props.adelay, "linear")
+end          
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end  
+        
+handle OnEnteringState("Visible")
+   Init()
+   Set("visible", true)
+   AddTween("alpha", 1.0, Props.adelay, "linear")
+end  
+
+override SwitchToScreen // ()
+   Log("ui~content", "Audio setting SwitchSlide")
+   Props.visible := true
+end
+
+override PrepareSlide // ()
+   Log("ui~content", "Audio setting EnableSlide")
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   GenerateEvent("OnEnterNewTab")
+   Props.visible := true
+   StartDefaultBlinking(0.5, 1.0)
+   var p: params
+   p.state := "s_multiplayer"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+override PrepareHideSlide // ()
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      Log("ui~content", "Audio setting DisableSlide")
+      Props.visible := false
+      SetStateName("Initial")
+   end
+end
+
+end

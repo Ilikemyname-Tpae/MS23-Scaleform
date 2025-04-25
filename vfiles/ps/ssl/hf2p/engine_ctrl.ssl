@@ -1,0 +1,28 @@
+native class HF2P_ENGINE_CTRL
+   native func ExitGame               ()
+   native func PlaySound              (sound_index: int)
+   native func StopSound              (sound_index: int)
+   native func PlaySoundHaloUI        (sound_idx: int)
+   native func SetCredentials         (login: string, password: string, provider: string)
+   native func PerformLogin           ()
+   native func PerformRelogin         ()
+   native func SetUIMusicId           (music_id: int)
+   native func SuppressIngameInput    (_suppress:bool)
+   native func ShowFinishedPostpone   (stage: int)
+   native func GetPostgameStat 		  (): params
+   native func SetUIPlayerModelId     (model_id: int)
+   native func SetGamePlayerModelId   (model_id: int)
+   native func GetUIPlayerModelId     (): int
+   native func SetRotatePlayerModel   (angle:float)
+   native func GetRotatePlayerModel   (): float
+   native func SetJaysSpecialCamera   (is_set: bool)
+   native func InitUIScreenSounds     ()
+   native func TermUIScreenSounds     ()
+
+   // target_id - weapon target enum, 0,1,2...
+   native func OnWeaponScreenKeyDown    (target_id: int, key_code: int, is_down: bool)
+   native func OnWeaponScreenDragStart  (target_id: int)
+   native func OnWeaponScreenDragUpdate (target_id: int, delta_x: float, delta_y: float)
+   native func OnWeaponScreenDragEnd    (target_id: int)
+end
+var $hf2pEngine : HF2P_ENGINE_CTRL

@@ -1,0 +1,133 @@
+classes   =   {
+   profileContainer   =   {
+      sslClass   =   "UiProfileContainer"
+      sslModule   =   "ui.libs.hf2p_profileScreen_lib.hf2p_profileScreen_lib"
+      elements   =   {
+         playerCont   =   {
+            elements   =   {
+               plrCamera   =   {
+                  x   =   80
+                  y   =   100
+                  __type   =   "ui_activity_lib::ArmoryPreviewCamera"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         attachGun1   =   {
+            fixed   =   False
+            isCentered   =   True
+            __type   =   "ui_profile_lib::attachPointProfile"
+         }
+         attachGun2   =   {
+            fixed   =   False
+            isCentered   =   True
+            __type   =   "ui_profile_lib::attachPointProfile"
+         }
+         attachGun3   =   {
+            fixed   =   False
+            isCentered   =   True
+            __type   =   "ui_profile_lib::attachPointProfile"
+         }
+         attachEmblem   =   {
+            symbol   =   "attachPoint"
+            __type   =   "ui_profile_lib::attachPointProfile"
+         }
+         renameBtn   =   {
+            x   =   143
+            y   =   479
+            isBlinkable   =   True
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnRenamePlayerClicked"
+               }
+            }
+            propMapping   =   {
+               label   =   {
+                  mapping   =   "tf.textField.text"
+               }
+            }
+            soundMap   =   {
+               soundMaps   =   {
+                  this   =   {
+                     mapping   =   {
+                        buttonClick   =   {
+                           uiSoundEvent   =   "tab_select"
+                        }
+                     }
+                  }
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "label"
+                  propVal   =   {
+                     val   =   "profile_ui_rename_player"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "enabled"
+                  propVal   =   {
+                     val   =   True
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            label   =   "carousel_armor_loadout"
+            __type   =   "ui_weaponConf_lib_slide::hf2pLoadoutBtn"
+         }
+      }
+      propMapping   =   {
+         achievCount   =   {
+            mapping   =   "achievTf.text"
+         }
+         grenadeAccuracy   =   {
+            mapping   =   "grenadeAccTf.text"
+         }
+         grenadeKills   =   {
+            mapping   =   "grenadeKillsTf.text"
+         }
+         kd   =   {
+            mapping   =   "kdTf.text"
+         }
+         killsCount   =   {
+            mapping   =   "totalKillsTf.text"
+         }
+         lvl   =   {
+            mapping   =   "lvlTf.text"
+         }
+         matchVount   =   {
+            mapping   =   "matchTf.text"
+         }
+         primaryAccuracy   =   {
+            mapping   =   "primaryAccTf.text"
+         }
+         primaryKills   =   {
+            mapping   =   "primaryKillsTf.text"
+         }
+         rank   =   {
+            mapping   =   "rankTf.text"
+         }
+         score   =   {
+            mapping   =   "scoreTf.text"
+         }
+         secAccuracy   =   {
+            mapping   =   "secAccTf.text"
+         }
+         secKills   =   {
+            mapping   =   "secKillsTf.text"
+         }
+         time   =   {
+            mapping   =   "timeTf.text"
+         }
+         timeCount   =   {
+            mapping   =   "allTimeTf.text"
+         }
+         wl   =   {
+            mapping   =   "wlTf.text"
+         }
+      }
+      __type   =   "ui_profile_lib::profileCont"
+   }
+}
+__type   =   "ui_widget_lib"

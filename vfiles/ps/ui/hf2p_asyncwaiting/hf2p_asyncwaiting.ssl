@@ -1,0 +1,93 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_button
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ui.root
+import ui.ui_economy
+
+class UiAsyncWaiting : UiWidgetContainer
+   handle OnLeavingState("Initial")
+      Props.visible := true
+   end
+
+   handle OnEnterState("Initial")
+      GenerateEvent("#CloseWaitingScreen")
+      Props.visible := false
+   end
+
+   handle OnEnterState("InProgress")
+      //GotoAndPlay("progress")
+      GenerateEvent("#OpenedWaitingScreen")      
+   end
+end
+
+class UiAsyncWaitingVM
+   var asyncOp          :  ObservableProperty   = $OM.Property(null)
+   var header           :  ObservableProperty   = $OM.Calculated(this, "GetHeader")
+   var wgt              :  UiAsyncWaiting       = null
+   var isWaitingOpened  :  bool                 = false
+   var isCloseRequest   :  bool                 = false
+   var isOpening        :  bool                 = false
+
+   func Init(p : params)
+      wgt := p.widget
+   end
+   
+   func Term(p : params)
+      CloseWaitingScreen(new params)
+   end
+   
+   func GetAsyncOp() : UiAsyncOperation
+      var ret : UiAsyncOperation = (UiAsyncOperation)asyncOp.Get()
+      return ret
+   end
+
+   func GetHeader() : wstring
+      var ret        : wstring            = $UiGlobals.String2WString("main_async_generic_hdr")
+      var asyncOpVal : UiAsyncOperation   = GetAsyncOp()
+      if (asyncOpVal != null)
+         ret := asyncOpVal.GetWaitHeader()
+      end
+      return ret
+   end
+            
+   func CloseWaitingScreen(p : params) : bool
+      isOpening := false
+      var asyncOpVal : UiAsyncOperation   = GetAsyncOp()
+      if (asyncOpVal != null)
+         asyncOpVal.OnCloseWaitingScreen()
+      end
+      return true
+   end
+   
+   func OpenedWaitingScreen(p : params) : bool
+      isWaitingOpened   := true
+      isOpening         := false
+      if (isCloseRequest)
+         wgt.SetStateName("Initial")
+      end
+      return true
+   end
+   
+   func StartWaiting(_asyncOp : UiAsyncOperation)
+      if (wgt.GetStateName() == "Initial" and ! isOpening)
+         asyncOp.Set(_asyncOp)
+         _asyncOp.SetWaitingScreenOpened()
+         isWaitingOpened   := false
+         isCloseRequest    := false
+         isOpening         := true
+         header.Invalidate()
+         wgt.SetStateName("InProgress")         
+      end
+   end
+
+   func StopWaiting()
+      if (isWaitingOpened)
+         wgt.SetStateName("Initial")
+      else
+         isCloseRequest := true
+      end
+   end
+end

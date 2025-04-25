@@ -1,0 +1,87 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ui.root
+
+class UiLowerPanel : UiWidgetContainer
+ 
+func Init()
+end
+   
+
+func SetCreepingLine(p:params)
+   Widgets.creepingLine.tf.SetCreepingLine(p)
+end
+
+func CreepingLineTest(txt:string)
+   var creepParm: params
+   creepParm.text         := txt
+   creepParm.refreshTime  := 100
+   creepParm.delta        := -1000
+
+   SetCreepingLine(creepParm)      
+end
+
+handle OnEnteringState("Hidden")
+   Log("ui~lowerPanel", "Lower panel OnEntering HIDDEN!!!")
+   CreepingLineTest("UI_LP_INV")
+   GotoAndPlay("fadeOut")
+end   
+
+handle OnEnterState("Hidden")
+   Log("ui~lowerPanel", "Lower panel onEnter HIDDEN!!!")
+   $UiBiLogger.LogChatState($uiEnums.UI_BI_CHAT_HIDDEN, "")
+end   
+
+handle OnEnteringState("Visible")
+   Log("ui~lowerPanel", "Lower panel OnEntering VISIBLE!!!")
+   Init()
+   Set("visible", true)
+   Set("alpha", 100.0)
+   CreepingLineTest("UI_LP_VIS")
+   GotoAndPlay("fadeIn")
+   StartDefaultBlinking(15.0/35.0)
+end   
+
+handle OnEnterState("Visible")
+   Log("ui~lowerPanel", "Lower panel onEnter VISIBLE!!!")
+   $UiBiLogger.LogChatState($uiEnums.UI_BI_CHAT_VISIBLE, "")
+   CreepingLineTest("UI_LOWP_VIS")   
+end   
+end
+
+class UiLowerPanelSettings : UiWidgetContainer
+   handle OnEnteringState("Visible")
+      Set("visible", true)
+      GotoAndPlay("fadeIn")
+      StartDefaultBlinking(17.0/35.0)
+      BtnEnabled(false)
+      BtnEnabled(true) : 0.5
+   end   
+
+   handle OnEnteringState("Hidden")
+      Set("visible", true)
+      GotoAndPlay("fadeOut")
+      BtnEnabled(false)
+   end
+   
+   func BtnEnabled(enabled : bool)
+      GetParentWidget().settingsBtnEnabled := enabled
+   end
+   
+end
+
+class UiLowerPanelExit : UiWidgetContainer
+   handle OnEnteringState("Visible")
+      Set("visible", true)
+      GotoAndPlay("fadeIn")
+      //Props.label := "main_ui_exit_game"
+      //Props.textField := "main_ui_exit_game"
+      StartDefaultBlinking(17.0/35.0)
+   end
+
+   handle OnEnteringState("Hidden")
+      Set("visible", true)
+      GotoAndPlay("fadeOut")
+   end   
+end

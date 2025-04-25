@@ -1,0 +1,495 @@
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.lib.string
+import ui.libs.hf2p_MainMenu_lib.hf2p_MainMenu_lib
+
+class ClassSelectScreenContainer : UiFullscreenScreen
+   global event OnClassSelectionOpen
+      SetStateName("Visible")
+   end
+end
+
+class ClassSelectScreen : UiWidgetContainer
+   func ShowHideClassRender(showRender : bool)
+      if (showRender)
+         Widgets.renderAttach.SetStateName("Visible")
+      else
+         Widgets.renderAttach.SetStateName("Hidden")
+      end
+   end
+end
+
+class RenameScreen : UiFullscreenScreen
+   
+   handle OnEnterState("Initial")
+      Props.visible := false
+   end
+   
+   handle OnEnteringState("Visible")
+      Props.visible := true
+   end
+   
+   handle OnEnterState("Hidden")
+      Props.visible := false
+   end
+end
+
+class UiClassSelectItemRec
+   var itemId : ObservableProperty = $OM.Property("")
+   
+   func GetItemId() : string
+      var ret : string = (string)itemId.Get()
+      return ret
+   end
+end
+
+class UiClassSelectRec
+   var id            : ObservableProperty    = $OM.Property("")
+   var idx           : ObservableProperty    = $OM.Property(0)
+   var armor         : UiClassSelectItemRec  = new UiClassSelectItemRec()
+   var weapon        : UiClassSelectItemRec  = new UiClassSelectItemRec()
+   var tp            : UiClassSelectItemRec  = new UiClassSelectItemRec()
+      
+   func Init(_idx : int, _id : string)
+      id.Set(_id)
+      idx.Set(_idx)
+      armor.itemId.Set(GetArmorId())
+      weapon.itemId.Set(GetWeaponId())
+      tp.itemId.Set(GetTpId())
+   end
+      
+   func GetUiComp() : GL_ComponentUI
+      var idVal   : string          = (string)id.Get()
+      var ret     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(idVal)
+      return ret
+   end
+      
+   func GetItems() : vector
+      var idVal   : string             = (string)id.Get()
+      var shop    : GL_ComponentShop   = (GL_ComponentShop) $UiGlobals.componentsShop.Get(idVal)
+      var ret     : vector             = shop.bundled_items.Get()
+      return ret
+   end
+   
+   func GetColorFrame() : int
+      return 1 + (int)idx.Get()
+   end
+   
+   func FindItemByType(itemType : int) : string
+      var idVal   : string             = (string)id.Get()
+      var items   : vector = GetItems()
+      var ret     : string
+      var i       : int
+      
+      for i := 0 to items.Count() - 1
+         var item    : GL_String = items.Get(i)
+         var itemId  : string    = (string)item.value.Get()
+         if ($uiEconomy.GetItemType(itemId) == itemType)
+            ret := itemId
+            break
+         end
+      end
+      return ret
+   end
+         
+   func GetTechClassIcon() : string
+      var emblemName : string
+      var idxVal : int = (int)idx.Get()
+      if (idxVal == 0)
+         emblemName := "emb_standart_01"
+      elif (idxVal == 1)
+         emblemName := "emb_standart_02"
+      elif (idxVal == 2)
+         emblemName := "emb_standart_03"
+      end
+      var ret : string = (string)$UiGlobals.componentsUI.Get(emblemName).icon_big.Get()
+      return ret
+   end
+   
+   func GetArmorId() : string
+      var ret : string = FindItemByType($uiEnums.ITEM_TYPE_ARMOR)
+      var idxVal : int = (int)idx.Get()
+      if (idxVal == 0)
+         ret := "armor_scanner"
+      elif (idxVal == 1)
+         ret := "armor_chameleon"
+      elif (idxVal == 2)
+         ret := "armor_explorer"
+      end
+      return ret
+   end
+   
+   func GetWeaponId() : string
+      var ret : string = FindItemByType($uiEnums.ITEM_TYPE_WEAPON)
+      var idxVal : int = (int)idx.Get()
+      if (idxVal == 0)
+         ret := "battle_rifle_v1_type_3"
+      elif (idxVal == 1)
+         ret := "dmr_v2_type_1"
+      elif (idxVal == 2)
+         ret := "assault_rifle_v2_type_2"
+      end
+      return ret
+   end
+   
+   func GetTpId() : string
+      var ret : string = FindItemByType($uiEnums.ITEM_TYPE_TACTICAL)
+      var idxVal : int = (int)idx.Get()
+      if (idxVal == 0)
+         ret := "consumable_vision"
+      elif (idxVal == 1)
+         ret := "consumable_cover"
+      elif (idxVal == 2)
+         ret := "consumable_bomb_run"
+      end
+      return ret
+   end
+end
+
+class UiClassSelectInputTf : UiWidgetContainer
+end
+
+class ClassSelectVM
+   var isActive                  : ObservableProperty = $OM.Property(false)
+   var selectedIdx               : ObservableProperty = $OM.Property(-1)
+   var selectedRaceIdx           : ObservableProperty = $OM.Property(0)
+   var selectedSexIdx            : ObservableProperty = $OM.Property(-1)
+   var selectNicknameState       : ObservableProperty = $OM.Property("Initial")
+   var curState                  : ObservableProperty = $OM.Property("")
+   var errorText                 : ObservableProperty = $OM.Property("")
+   var acceptBtnVisible          : ObservableProperty = $OM.Property(false)
+   var canSwitchCard             : ObservableProperty = $OM.Property(true)
+   var isRenameAcceptBtnEnabled  : ObservableProperty = $OM.Calculated(this, "GetIsRenameAcceptBtnEnabled")
+   var hasRenameTokens           : ObservableProperty = $OM.Calculated(this, "GetHasRenameTokens")
+   var wgt : *
+   
+   func Init(p : params)
+      wgt := p.widget
+   end
+   
+   global event OnClassSelectionOpen
+      //wgt.Widgets.renameScreen.inputNameContainer.inputContainer.textField := ""
+      SetInitialState()
+      if !HasRenameTokens()
+         //selectNicknameState.Set("Initial")
+         GenderSelectFadeIn()
+      else
+         $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_CREATE_NAME)
+         errorText.Set("")
+         selectNicknameState.Set("Visible")
+         curState.Set("nameSelect")
+      end
+      selectedIdx.Set(-1)
+      selectedRaceIdx.Set(0)
+      selectedSexIdx.Set(-1)
+      isActive.Set(true)
+      $hq.TextureRenderBipedGenderSelection($UserDataStorage.local_user.uid.Get(), GetGenderKit(0))
+      canSwitchCard.Set(!(bool)canSwitchCard.Get())
+      canSwitchCard.Set(!(bool)canSwitchCard.Get())
+   end
+   
+   global event OnClassSelectionClose
+      isActive.Set(false)
+   end
+   
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      errorText.Set("")
+      if (p.isDown == true and keyCode == $uiKeys.VK_ENTER)
+         if (IsRenameAcceptBtnEnabled())
+            OnNicknameAcceptBtnClicked(new params)
+         end
+         isTerminated := true
+      end
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return true
+   end
+   
+   func GetHasRenameTokens() : bool
+      return (int)$UserDataStorage.local_user.token_renames.Get() > 0
+   end
+   
+   func GetIsRenameAcceptBtnEnabled() : bool
+      return curState.Get() == "nameSelect" and HasRenameTokens() and $UiGlobals.backend_requests.change_nickname.CanStart()
+   end
+   
+   func IsRenameAcceptBtnEnabled() : bool
+      return (bool)isRenameAcceptBtnEnabled.Get()
+   end
+   
+   func HasRenameTokens() : bool
+      return (bool)hasRenameTokens.Get()
+   end
+
+   func OnNicknameAcceptBtnClicked(p : params) : bool
+      var pp : params
+      if (!IsRenameAcceptBtnEnabled())
+         return true
+      end
+      
+      pp.newNick := wgt.Widgets.renameScreen.inputNameContainer.inputContainer.textFieldW
+      if (pp.newNick == $UiGlobals.String2WString(""))
+         errorText.Set("msg_empty_nickname")
+         return true
+      end
+      var nickCheckRet  : int       = $user_service.IsValidNickname(pp.newNick)
+      if (nickCheckRet != 0)
+         errorText.Set("msg_nick_err_" + (string)nickCheckRet)
+      else
+         $UiGlobals.backend_requests.change_nickname.Start(pp.newNick, "OnSelectNicknameComplete", "OnSelectNicknameError", false)
+      end
+      return true
+   end
+    
+   func SetInitialState()
+      wgt.GotoAndStop(1)
+      EnableAcceptBtn(false)
+   end
+   
+   func EnableAcceptBtn(enable : bool)
+      acceptBtnVisible.Set(enable)
+   end
+      
+   func PlayFadeInAnimClassSelect()
+      //wgt.GotoAndPlay(2)
+      wgt.ShowHideClassRender(false)
+      PlayFadeInClassCards()
+      EnableAcceptBtn(true) : 1.25 
+   end
+   
+   func PlayFadeInAnimGender()
+      wgt.GotoAndPlay(2)
+      wgt.ShowHideClassRender(false)
+      PlayFadeInGenderCards()
+      EnableAcceptBtn(true) : 1.25
+   end   
+   
+   func PlayFadeInClassCards()
+      wgt.Widgets.classCard.GotoAndPlay("fadeIn")
+      wgt.Widgets.classCard.mouseEnabled := true
+      wgt.Widgets.classCard.mouseChildren := true
+   end
+   
+   func PlayFadeInGenderCards()
+      wgt.Widgets.genderCard.GotoAndPlay("fadeIn")
+      wgt.Widgets.genderCard.mouseEnabled := true
+      wgt.Widgets.genderCard.mouseChildren := true
+   end
+   
+   func PlayFadeOutGenderCards()
+      wgt.Widgets.genderCard.GotoAndPlay("fadeOut")
+      wgt.Widgets.genderCard.mouseEnabled := false
+      wgt.Widgets.genderCard.mouseChildren := false
+   end
+      
+   func GenderSelectFadeIn()
+      $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_RACE_SELECT)
+      curState.Set("genderSelect")
+      PlayFadeInAnimGender() : 1.25
+   end
+   
+   func GenderSelectFadeOut()
+      PlayFadeOutGenderCards()
+      EnableAcceptBtn(false)
+      ClassSelectFadeIn() : 1.25
+   end
+   
+   func ClassSelectFadeIn()
+      $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_CLASS_SELECT)
+      curState.Set("classSelect")
+      PlayFadeInAnimClassSelect()
+   end
+   
+   func OnSelectNicknameComplete(p : params) : bool
+      selectNicknameState.Set("Hidden")   
+      GenderSelectFadeIn()
+      return true
+   end
+   
+   func OnSelectNicknameError(p : params) : bool
+      errorText.Set(p.messageTxt2)
+      return true
+   end
+   
+   func OnAcceptBtnClicked(p : params) : bool
+      if ((string)curState.Get() == "classSelect")
+         if selectedIdx.Get() == -1
+            return true
+         end
+         
+         var id : string = GetClassKit((int)selectedIdx.Get())
+                  
+         if id != ""
+            var compShop : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(id)
+            if compShop.offers.Get().Count() > 0
+               var compOffer : GL_ComponentShopOffer = compShop.offers.Get().Get(0)
+               var price : GL_ComponentShopOfferPricing = compOffer.pricing.Get().Get(0)
+               var offer : string = (string)price.offer.Get()
+               var pp : params
+               pp.offer := offer
+               $UiGlobals.backend_requests.apply_offer.Start(pp, "OnApplyStarterKitOfferComplete")
+            end
+         end
+      elif ((string)curState.Get() == "genderSelect")  
+         if ((int)selectedSexIdx.Get() == -1)
+            return true
+         end
+         GenderSelectFadeOut()
+      end
+      return true
+   end
+   
+   func AcceptBtnEnabled() : bool
+      var ret : bool = false
+      if ((string)curState.Get() == "classSelect")
+         if ((int)selectedIdx.Get() != -1)
+            ret := true
+         end
+      elif ((string)curState.Get() == "genderSelect")
+         if ((int)selectedSexIdx.Get() != -1)
+            ret := true
+         end
+      else
+         ret := true   
+      end   
+      return ret
+   end
+   
+   func OnApplyStarterKitOfferComplete(p : params) : bool
+      Fire("OnClassSelectionClose")
+      return true
+   end
+   
+   func GetClassKit(idx: int) : string
+      var ret : string
+      if ((bool)isActive.Get())
+         if (! IsVoid($UiGlobals.shop.race_shops.Get()) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+            var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+            var section : GL_ShopSection = shop.FindInternalSection("section_career")
+            if section != null               
+               var shelf :  GL_ShopShelf = null
+               if (IsFemale())
+                  shelf := section.FindShelf("shelf_bundles_start_f_kits")
+               else
+                  shelf := section.FindShelf("shelf_bundles_start_kits")
+               end
+               if shelf != null
+                  if shelf.items.Get().Count() > idx
+                     ret := (string)shelf.items.Get().Get(idx).value.Get()
+                  end
+               end
+            end
+         end
+      end
+      return ret
+   end
+   
+   func GetGenderKit(idx: int) : string
+      var ret : string
+      if ((bool)isActive.Get())
+         if (! IsVoid($UiGlobals.shop.race_shops.Get()) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+            var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+            var section : GL_ShopSection = shop.FindInternalSection("section_gender")
+            if section != null
+               var shelf :  GL_ShopShelf = section.FindShelf("shelf_gender")
+               if shelf != null
+                  if shelf.items.Get().Count() > idx
+                     ret := (string)shelf.items.Get().Get(idx).value.Get()
+                  end
+               end
+            end
+         end
+      end
+      return ret
+   end
+   
+   func GetClassSelectRec(idx: int) : UiClassSelectRec
+      //hack (isActive)
+      var ret : UiClassSelectRec = new UiClassSelectRec()
+      ret.Init(idx, GetClassKit(idx))
+      return ret
+   end
+
+   func OnClassCardClicked(p : params) : bool
+      if ((bool)canSwitchCard.Get())
+         var idx     : int = p.widget.Get("idx")
+         var curIdx  : int = (int)selectedIdx.Get()
+         if (curIdx != idx)
+            selectedIdx.Set(idx)
+            canSwitchCard.Set(false)
+            wgt.ShowHideClassRender(false)         
+         end      
+      end
+      return true
+   end
+   
+   func OnRaceCardClicked(p : params) : bool
+      var raceIndex   : int = p.widget.Get("raceIdx")
+      var curRaceIdx  : int = (int)selectedRaceIdx.Get()
+      if (curRaceIdx != raceIndex)
+         selectedRaceIdx.Set(raceIndex)
+         wgt.ShowHideClassRender(false)         
+      end
+      return true
+   end
+   
+   func OnGenderCardClicked(p : params) : bool
+      if ((bool)canSwitchCard.Get())
+         var genderIdx : int = p.widget.Get("idx")
+         if (genderIdx != (int)selectedSexIdx.Get())
+            selectedSexIdx.Set(genderIdx)
+            canSwitchCard.Set(false)
+            wgt.ShowHideClassRender(false)
+         end
+      end
+      return true
+   end
+   
+   func OnClassSelectRenderVisible(p : params) : bool
+      canSwitchCard.Set(true)
+      return true
+   end
+   
+   func OnClassSelectRenderHidden(p : params) : bool
+      if ((string)curState.Get() == "classSelect")
+         var curIdx : int = (int)selectedIdx.Get()
+         if (curIdx == -1)
+            curIdx := 0
+         end
+         $hq.TextureRenderBipedClassSelection($UserDataStorage.local_user.uid.Get(), GetClassKit(curIdx))
+      elif ((string)curState.Get() == "genderSelect")
+         var curIdx : int = (int)selectedSexIdx.Get()
+         if (curIdx == -1)
+            curIdx := 0
+         end
+         $hq.TextureRenderBipedGenderSelection($UserDataStorage.local_user.uid.Get(), GetGenderKit(curIdx))
+      end
+      wgt.ShowHideClassRender(true)
+      return true      
+   end
+   
+   func IsFemale() : bool
+      var ret : bool = (int)selectedSexIdx.Get() == 1
+      return ret
+   end
+   
+end
+
+class ClassSelectRenderAttach : UiWidgetContainer   
+   handle OnEnterState("Initial")
+   end
+
+   handle OnEnterState("Visible")
+      GenerateEvent("ClassSelectRenderVisible")
+   end   
+   
+   handle OnEnterState("Hidden")
+      GenerateEvent("ClassSelectRenderHidden")
+   end   
+end

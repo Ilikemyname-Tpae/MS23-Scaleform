@@ -1,0 +1,573 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_button
+import ssl.lib.ui.ui_widget_text
+import ui.root
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_data
+import ui.libs.hf2p_Default_lib.hf2p_Default_lib
+import ui.hf2p_SlidingScreens.hf2p_Lobby.hf2p_Lobby
+import ui.libs.hf2p_Chat_lib.hf2p_Chat_lib
+
+/*************************************************************
+* UiIngameChatMessageCont
+* 
+*************************************************************/
+class UiIngameChatMessageCont : UiWidgetContainer
+   var MESSAGE_PHASE_INITIAL        : int    = 0
+   var MESSAGE_PHASE_VISIBLE        : int    = 1
+   var MESSAGE_PHASE_FORCE_VISIBLE  : int    = 2
+   var MESSAGE_PHASE_HIDDEN         : int    = 3
+   
+   var phase                        : int    = MESSAGE_PHASE_INITIAL   
+   var suspendTimeOff               : float  = 0
+   
+   
+   func UiIngameChatMessageCont()
+      phase := MESSAGE_PHASE_INITIAL   
+   end
+   
+   func StartFadeIn(_fadeOutDelay : float)
+      if (phase != MESSAGE_PHASE_VISIBLE and phase != MESSAGE_PHASE_HIDDEN)
+         var fadeoutDelay : float = _fadeOutDelay
+         if (phase == MESSAGE_PHASE_INITIAL)
+            DoFadeIn()
+         elif (phase == MESSAGE_PHASE_FORCE_VISIBLE)
+            fadeoutDelay := suspendTimeOff
+         end
+         KillDelays()
+         phase := MESSAGE_PHASE_VISIBLE            
+         StartFadeOut() : fadeoutDelay, FADE_IN_DELAY
+      end
+   end
+   
+   func HideMessage()
+      RemTweens()
+      KillDelays()     
+      SetInitial()
+   end
+      
+   func SetInitial()
+      KillDelays()
+      GotoAndStop("hidden")
+      phase := MESSAGE_PHASE_INITIAL
+   end
+         
+   func StartFadeOut()
+      if (phase != MESSAGE_PHASE_HIDDEN and phase != MESSAGE_PHASE_INITIAL)
+         DoFadeOut()
+         KillDelays()
+         phase := MESSAGE_PHASE_HIDDEN
+      end
+   end
+   
+   func SetVisible(_suspendTimeOff : float)
+      KillDelays()
+      if (phase != MESSAGE_PHASE_FORCE_VISIBLE)
+         if (phase != MESSAGE_PHASE_VISIBLE)
+            DoFadeIn()            
+         end
+         phase := MESSAGE_PHASE_FORCE_VISIBLE
+      end
+      suspendTimeOff := _suspendTimeOff
+   end
+   
+   func StartPosTween(_varName : string, _from : float, _to : float, _time: float, _isNew : bool)
+      //Set(_varName, _to)
+      //return
+      
+      RemTweens()
+      if (_isNew)
+         Set(_varName, _to)
+      else
+         var curVal : float = (float)Get(_varName)
+         if (curVal != _to)
+            var tweenParm : params
+            tweenParm.propName   := _varName
+            tweenParm.startVal   := curVal
+            tweenParm.endVal     := _to
+            tweenParm.duration   := _time
+            tweenParm.fadeType   := "linear"
+
+            AddTweenCb("TweenFunc", tweenParm) 
+         end
+      end
+      
+   end
+   
+   func KillDelays()
+      delay kill, this, FADE_IN_DELAY
+      delay kill, this, FADE_OUT_DELAY
+   end
+   
+   func DoFadeOut()
+      GotoAndPlay("fadeOut")
+   end
+   
+   func DoFadeIn()
+      GotoAndPlay("fadeIn")
+   end
+end
+
+/*************************************************************
+* UiIngameChat
+* 
+*************************************************************/
+class UiIngameChat : UiWidgetContainer
+   
+   func CheckFocus()
+      FocusInputText()
+   end
+   
+   func FocusInputText()
+      Widgets.ingameChatCont.inputCont.inputTf.raw_textField.SetFocus()
+   end
+   
+   func ClearInputText()
+      Widgets.ingameChatCont.inputCont.inputTf.text := ""
+   end
+   
+   handle OnEnterState("Hidden")
+      Props.visible := false
+      GenerateEvent("#IngameChatClosed")
+   end
+   
+   handle OnEnterState("Visible")
+      Props.visible := true
+      GenerateEvent("#IngameChatVisible")
+   end
+   
+   handle OnEnterState("Active")
+      Props.visible := true
+      ClearInputText()
+      FocusInputText()
+      GenerateEvent("#IngameChatActive")
+   end
+      
+   func GetMessageById(_mesId : string) : UiIngameChatMessageCont
+      var ret : UiIngameChatMessageCont = (UiIngameChatMessageCont)Widgets.ingameChatCont.messagesCont.GetWidget(_mesId)
+      return ret
+   end
+   
+   func DoSendMessage()
+      GenerateEvent("#SendMessage")
+   end   
+   
+   handle OnBindingsActivate
+      GetDC().InitMessages()
+   end
+end
+
+/*************************************************************
+* UiIngameChatMessageVM
+* 
+*************************************************************/
+class UiIngameChatMessageVM   
+   var mes           :  ObservableProperty      = $OM.Property(null)
+   var ypos          :  ObservableProperty      = $OM.Property(0.0)
+   var xpos          :  ObservableProperty      = $OM.Property(0.0)
+   var xrot          :  ObservableProperty      = $OM.Property(0.0)
+   var yrot          :  ObservableProperty      = $OM.Property(0.0)  
+   var zrot          :  ObservableProperty      = $OM.Property(0.0)  
+   var mesObservable :  ObservableProperty      = $OM.Calculated(this, "GetMessageText")
+   var wgt           :  UiIngameChatMessageCont = null
+   var slotIdx       :  int                     = 0
+   var isNew         :  bool                    = false
+      
+   func GetMessageText() : wstring
+      var ret     : wstring
+      var mesVal  :  GL_ChatStreamMessage = (GL_ChatStreamMessage)mes.Get()
+      if (mesVal != null)
+         var p             : params
+         p.lb     := $UiGlobals.String2WString("[")
+         p.rb     := $UiGlobals.String2WString("] ")
+         p.stream := $UiGlobals.TranslateText($UiGlobals.GetChatStreamName(mesVal.originalChannel))
+         p.msg   := mesVal.GetFormattedText($uiEnums.CHAT_CHANNEL_GAME_COMBINED, false, true)
+         ret := ret + p.lb
+         ret := ret + p.stream
+         ret := ret + p.rb
+         ret := ret + p.msg
+      end
+      return ret
+   end
+   
+   func Invalidate()
+      mesObservable.Invalidate()
+   end      
+end
+
+/*************************************************************
+* UiIngameChatVM
+* 
+*************************************************************/
+class UiIngameChatVM
+   var wgt                    : UiIngameChat       = null
+   var messagesMap            : ObservableMap      = $OM.Map()
+   var currentChannel         : int                = -1
+   var messagesMapObservable  : ObservableProperty = $OM.Calculated(this, "GetChatMessages")
+   var isSubscribedToStream   : bool               = false
+   var isInteractive          : ObservableProperty = $OM.Property(false)
+   var uiStyleSheet           : UiSSIngameChat     = new UiSSIngameChat()
+   var isMouseEnabled         : ObservableProperty = $OM.Property(false)
+   var maxMessages            : int                = 15
+   var messagesVec            : vector
+   var freeMessagesSlots      : vector
+   var currentMessages        : vector
+   var needMessagesUpdate     : bool               = false
+
+   func Init(p : params)
+      wgt := p.widget
+   end
+      
+   func Term()
+      UnsubscribeFromChannel()
+   end
+         
+   func UiIngameChatVM()
+   end
+   
+   func GetStyleSheet() : vector
+      return uiStyleSheet.GetStyleSheet()
+   end
+   
+   func GetChatInputChannel() : int         
+      var chatState  : int = $UiIngame.chat.GetState()
+      var ret        : int = $uiEnums.CHAT_CHANNEL_GAME_ALL
+      if ($UiIngame.IsTeamMode())
+         if (chatState == $uiEnums.INGAME_CHAT_STATE_INPUT_ALL)
+            ret := $uiEnums.CHAT_CHANNEL_GAME_ALL
+         elif (chatState == $uiEnums.INGAME_CHAT_STATE_INPUT_TEAM)
+            ret := $uiEnums.CHAT_CHANNEL_GAME_TEAM
+         end
+      end
+      return ret
+   end   
+   
+   func GetChatChannel() : int      
+      return $uiEnums.CHAT_CHANNEL_GAME_COMBINED
+   end   
+   
+   func GetMessagesVector() : vector
+      return $UiGlobals.GetChatMessages(GetChatChannel())
+   end
+   
+   func GetInputDefaultText() : wstring
+      var ret : wstring
+      return ret
+   end
+      
+   func SubscribeToChannel(_channel : int)
+      UnsubscribeFromChannel()
+      currentChannel := _channel
+      var stream : GL_ChatStream = $UiGlobals.GetChatMessagesStream(currentChannel)
+      if (stream != null)
+         stream.messages.Subscribe(this, "UpdateChatMessages")
+      end
+      InvalidateChatMessages()
+   end
+   
+   func UnsubscribeFromChannel()
+      var stream : GL_ChatStream = $UiGlobals.GetChatMessagesStream(currentChannel)
+      if (stream != null)
+         stream.messages.Unsubscribe(this, "UpdateChatMessages")
+      end
+      currentChannel := -1
+   end
+   
+   func SetChannel(_channel : int)
+      if (currentChannel != _channel)
+         SubscribeToChannel(_channel)
+      end
+   end   
+   
+   func GetChatMessages() : ObservableMap
+      return messagesMap
+   end   
+   
+   func IsInteractive() : bool
+      return (bool)isInteractive.Get()
+   end
+   
+   func InitMessages()
+      var i : int
+      for i := 0 to maxMessages - 1
+         var mesId   : string = "message_" + (string)i
+         var mesVM   : UiIngameChatMessageVM = new UiIngameChatMessageVM()
+         messagesMap.Insert(mesId, mesVM)
+         var mesWgt  : UiIngameChatMessageCont = wgt.GetMessageById(mesId)
+         mesVM.wgt   := mesWgt
+         messagesVec.Push(mesVM)
+         freeMessagesSlots.Push(i)
+      end
+      for i := 0 to maxMessages - 1
+         var mesId   : string = "message_" + (string)i
+         var mesVM   : UiIngameChatMessageVM = messagesVec.Get(i)
+         var mesWgt  : UiIngameChatMessageCont = wgt.GetMessageById(mesId)
+         mesVM.wgt   := mesWgt
+      end
+   end
+   
+   func PushMessage() : int
+      var ret : int = -1
+      if (freeMessagesSlots.Count() > 0)
+         ret := freeMessagesSlots.Get(freeMessagesSlots.Count() - 1)
+         freeMessagesSlots.Erase(freeMessagesSlots.Count() - 1, 1)
+         currentMessages.Push(ret)
+      end
+      return ret
+   end
+   
+   func PopMessage() : int
+      var ret : int = -1
+      if (currentMessages.Count() > 0)
+         ret := currentMessages.Get(0)
+         currentMessages.Erase(0, 1)
+         freeMessagesSlots.Push(ret)
+         var mesVM : UiIngameChatMessageVM = messagesVec.Get(ret)
+         mesVM.wgt.HideMessage()
+      end
+      return ret
+   end
+      
+   func AddMessage(mes : GL_ChatStreamMessage)
+      mes.ingameSlotIdx := PushMessage()
+      var mesVM : UiIngameChatMessageVM = messagesVec.Get(mes.ingameSlotIdx)
+      mesVM.isNew := true
+      mesVM.mes.Set(mes)
+      mesVM.Invalidate()
+      needMessagesUpdate := true
+   end
+   
+   func UpdateMessagesLayout()
+      if (!needMessagesUpdate)
+         return
+      end
+      
+      var i             : int
+      var isFull        : bool   = false
+      var totalHeight   : float  = 0
+      var maxHeight     : float  = 350
+      var idx           : int    = 0
+      
+      for i := currentMessages.Count() - 1 downto 0
+         var mesVM      : UiIngameChatMessageVM    = messagesVec.Get(currentMessages.Get(i))
+         var mesWgt     : UiIngameChatMessageCont  = mesVM.wgt
+         var textHeight : float                    = mesWgt.Widgets.messageCont.Props.textFieldHeight
+         totalHeight := totalHeight + textHeight + 3
+         if (totalHeight > maxHeight)
+            isFull := true
+         end
+         var factor01   : float = totalHeight / maxHeight
+         var factor10   : float = 1 - factor01
+         if (factor10 < 0) 
+            factor10 := 0
+         end
+         var factor     : float = 10 * factor01
+         var ypos       : float = 200 - totalHeight
+         var xpos       : float =   factor * 0.5
+         var animTime   : float = 0.20
+         
+         mesWgt.StartPosTween("y",           (float)mesVM.ypos.Get(), ypos, animTime, mesVM.isNew)
+         //mesWgt.StartPosTween("x",           (float)mesVM.xpos.Get(), xpos, animTime, isNew)
+         mesVM.isNew := false
+         
+         if (IsInteractive())
+            mesWgt.SetVisible(factor10 * 6)
+         else
+            var isFullClose : bool = totalHeight > (maxHeight * 0.75)
+            if (isFullClose)
+               mesWgt.StartFadeOut()
+            else
+               mesWgt.StartFadeIn(7.0)
+            end
+         end
+         if (isFull)
+            break
+         end
+      end
+      
+      while (i >= 0)
+         PopMessage()
+         i := i - 1
+      end    
+      
+      needMessagesUpdate := false
+   end
+         
+   func UpdateChatMessages()
+      var chatStream       : GL_ChatStream   = $UiGlobals.GetChatMessagesStream(currentChannel)
+      var messagesList     : vector          = GetMessagesVector()
+      var i                : int
+      var newMessagesCount : int = 0
+      
+      for i := messagesList.Count() - 1 downto 0    
+         var mes     : GL_ChatStreamMessage  = messagesList.Get(i)
+                  
+         if $UserDataStorage.IsLocalUID(mes.sender_user_id.Get()) and !mes.directMsg
+            continue
+         end
+         
+         newMessagesCount := newMessagesCount + 1
+         
+         if (mes.ingameSlotIdx != -1)
+            break
+         end
+      end
+      
+      i := i + 1
+
+      var needUpdate : bool = false
+      
+      while (i < messagesList.Count())
+         var mes : GL_ChatStreamMessage = messagesList.Get(i)
+         
+         if $UserDataStorage.IsLocalUID(mes.sender_user_id.Get()) and !mes.directMsg
+            i := i + 1
+            continue
+         end
+         
+         // skip messages that won't fit anyway
+         newMessagesCount := newMessagesCount - 1
+         if (newMessagesCount > maxMessages)
+            mes.ingameSlotIdx := maxMessages
+            continue
+         end
+         
+         AddMessage(mes)
+         i := i + 1
+         if (currentMessages.Count() > maxMessages / 2)
+            UpdateMessagesLayout()
+         end
+      end
+      
+      UpdateMessagesLayout()
+   end
+   
+   func GetChatTarget() : string      
+      var ret           : string = ""
+      var channelDesc   : string = $UiGlobals.GetChatStreamName(GetChatInputChannel())
+      if (channelDesc != "")
+         ret := "[{STRING}]:~" + channelDesc
+      end
+      return ret
+   end
+   
+   func SendMessage(p : params) : bool
+      var txt  : string    = wgt.Widgets.ingameChatCont.inputCont.inputTf.text
+      var wtxt : wstring   = wgt.Widgets.ingameChatCont.inputCont.inputTf.wtext
+      wgt.Widgets.ingameChatCont.inputCont.inputTf.text := ""
+      if (txt != "")
+         // send message
+         //wtxt := $UiGlobals.EscapeString(wtxt)
+         var stream : GL_ChatStream = null
+         var msg = new GL_ChatStreamMessage()
+         msg.sender_user_id := $OM.Property($UserDataStorage.local_user.uid.Get())
+         msg.addressee_user_id := $OM.Property($UserDataStorage.GetInvalidUID())
+         msg.timestamp := $OM.Property($UiGlobals.GetCurrentTimeStamp())
+         msg.text := $OM.Property(wtxt)
+         msg.directMsg := true
+
+         var selectedChannel : int = GetChatInputChannel()
+         if (selectedChannel == $uiEnums.CHAT_CHANNEL_GAME_ALL)
+            $hq.ChatSendGameAll(wtxt)
+            stream := $UiGlobals.chat.game_all_channel
+            msg.originalChannel := $uiEnums.CHAT_CHANNEL_GAME_ALL
+         elif (selectedChannel == $uiEnums.CHAT_CHANNEL_GAME_TEAM)
+            $hq.ChatSendGameTeam(wtxt)
+            stream := $UiGlobals.chat.game_team_channel
+            msg.originalChannel := $uiEnums.CHAT_CHANNEL_GAME_TEAM
+         end
+         stream.messages.Get().Push(msg)
+         stream.messages.OnChanged()
+      end
+      $UiIngame.DeactivateChat()
+      return true
+   end
+   
+   func InvalidateChatMessages()
+      needMessagesUpdate := true
+      UpdateChatMessages()
+   end
+   
+   func IngameChatClosed(p : params) : bool
+      isInteractive.Set(false)
+      UnsubscribeFromChannel()
+      InvalidateChatMessages()
+      isMouseEnabled.Set(false)
+      return true
+   end
+   
+   func IngameChatActive(p : params) : bool
+      isInteractive.Set(true)
+      SetChannel(GetChatChannel())
+      InvalidateChatMessages()
+      isMouseEnabled.Set(true)
+      return true      
+   end   
+   
+   func IngameChatVisible(p : params) : bool
+      isInteractive.Set(false)
+      SetChannel(GetChatChannel())
+      InvalidateChatMessages()
+      isMouseEnabled.Set(false)
+      return true      
+   end  
+   
+   func ToggleInputChannel(p : params) : bool
+      var inputChannel : int = (int)$UiIngame.chat.state.Get()
+      if (inputChannel == $uiEnums.INGAME_CHAT_STATE_INPUT_ALL)
+         $UiIngame.chat.state.Set($uiEnums.INGAME_CHAT_STATE_INPUT_TEAM)
+      elif (inputChannel == $uiEnums.INGAME_CHAT_STATE_INPUT_TEAM)
+         $UiIngame.chat.state.Set($uiEnums.INGAME_CHAT_STATE_INPUT_ALL)
+      end      
+      return true
+   end
+   
+   func IngameChatLostFocus(p : params) : bool
+      var inputChannel : int = (int)$UiIngame.chat.state.Get()
+      if (inputChannel == $uiEnums.INGAME_CHAT_STATE_INPUT_ALL or inputChannel == $uiEnums.INGAME_CHAT_STATE_INPUT_TEAM)
+         wgt.FocusInputText()
+      end
+      return true
+   end
+end
+
+/*************************************************************
+* UiIngameChatMessage
+* 
+*************************************************************/
+class UiIngameChatMessage : UiWidgetContainer
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+            
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB)
+         isTerminated := true
+      end
+      
+      if (p.isDown and keyCode == $uiKeys.VK_TAB)
+         GenerateEvent("#ToggleInputChannel")
+      end
+      
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      
+      return !isTerminated
+   end
+   
+   func focusIn(p : params) : bool
+      return false
+   end
+end
+
+/*************************************************************
+* UiIngameChatInputField
+* 
+*************************************************************/
+class UiIngameChatInputField : UiWidgetText  
+   func focusOut(p : params) : bool
+      GenerateEvent("#IngameChatLostFocus")
+      return false
+   end
+end

@@ -1,0 +1,743 @@
+classes   =   {
+   ChallengePopupRank   =   {
+      elements   =   {
+         tfDscChallengeReward   =   {
+            elements   =   {
+               tf   =   {
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{desc}"
+                     }
+                  }
+                  alignVertical   =   "UI_TEXT_VERTICAL_ALIGN_CENTER"
+                  __type   =   "ui_widget_text"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         challengeStar   =   {
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{rankFrame}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::medalChallenge"
+         }
+         tfChallengeRP   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{rewardPoints}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         progressIndicator   =   {
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{challengeStateFrame}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::iconCheckmark"
+         }
+         points   =   {
+            bindings   =   {
+               frame   =   {
+                  binding   =   "{rewardFrame}"
+               }
+               visible   =   {
+                  binding   =   "{challengeState > 0}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::iconTechPoints"
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{(#parent)challengesVecCount > 0}"
+         }
+         DC   =   {
+            binding   =   "{challengesVec[0]}"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::ChallengesTooltipRank"
+   }
+   ChallengePopupProgress   =   {
+      elements   =   {
+         progressTooltip   =   {
+            elements   =   {
+               bar   =   {
+                  sslClass   =   "ChallengeProgress"
+                  sslModule   =   "ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib"
+                  isBlinkable   =   True
+                  fixed   =   False
+                  bindings   =   {
+                     x   =   {
+                        binding   =   "{-365 + progress * 364}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfProgress   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{curCounterTxt}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfProgressChallenges   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{totalCounterTxt}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         tfDsc   =   {
+            bindings   =   {
+               tf   =   {
+                  binding   =   "{desc}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         visible   =   {
+            binding   =   "{(#parent)progressVecCount > 0}"
+         }
+         DC   =   {
+            binding   =   "{progressVec[0]}"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::ChallengesTooltipProgressBar"
+   }
+   ChallengesPopupContent   =   {
+      elements   =   {
+         content   =   {
+            elements   =   {
+               heading   =   {
+                  isBlinkable   =   True
+                  fixed   =   False
+                  elements   =   {
+                     iconReward   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{tpFrame}"
+                           }
+                           visible   =   {
+                              binding   =   "{!challengeComplete}"
+                           }
+                        }
+                        __type   =   "ui_challengesScreen_lib::iconTechPoints"
+                     }
+                     attachIconMedal   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{nextIcon}"
+                           }
+                        }
+                        __type   =   "ui_challengesScreen_lib::challengeAttachPoint"
+                     }
+                     tfChallengeName   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{name}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfTooltipDsc   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{desc}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfNumberChallenge   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{progressTxt}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfNumberReward   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{totalReward}"
+                           }
+                           visible   =   {
+                              binding   =   "{!challengeComplete}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfSubHead   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{'carousel_tech_reward'}"
+                           }
+                           visible   =   {
+                              binding   =   "{!challengeComplete}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     progressTooltip   =   {
+                        elements   =   {
+                           bar   =   {
+                              sslClass   =   "ChallengeProgress"
+                              sslModule   =   "ui.libs.hf2p_ChallengesScreen_lib.hf2p_ChallengesScreen_lib"
+                              isBlinkable   =   True
+                              fixed   =   False
+                              bindings   =   {
+                                 x   =   {
+                                    binding   =   "{-365 + progress * 364}"
+                                 }
+                                 tint   =   {
+                                    binding   =   "{BarTint()}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     completeGold   =   {
+                        bindings   =   {
+                           anim   =   {
+                              binding   =   "{goldAnim}"
+                           }
+                        }
+                        __type   =   "ui_challengesScreen_lib::goldComplete"
+                     }
+                  }
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{headingYPos}"
+                     }
+                     mouseEnabled   =   {
+                        binding   =   "{false}"
+                     }
+                     mouseChildren   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipHeading"
+               }
+               ranks   =   {
+                  isBlinkable   =   True
+                  fixed   =   False
+                  elements   =   {
+                     rank0   =   {
+                        __type   =   "hf2p_ChallengesPopup_lib::ChallengePopupRank"
+                     }
+                     rank1   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{(#parent)challengesVecCount > 1}"
+                           }
+                           DC   =   {
+                              binding   =   "{challengesVec[1]}"
+                           }
+                        }
+                        __type   =   "hf2p_ChallengesPopup_lib::ChallengePopupRank"
+                     }
+                     rank2   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{(#parent)challengesVecCount > 2}"
+                           }
+                           DC   =   {
+                              binding   =   "{challengesVec[2]}"
+                           }
+                        }
+                        __type   =   "hf2p_ChallengesPopup_lib::ChallengePopupRank"
+                     }
+                     tfTiersChallenge   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{'carousel_challenge_popup_tiers'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{ranksYPos}"
+                     }
+                     visible   =   {
+                        binding   =   "{isRanksVisible}"
+                     }
+                     mouseEnabled   =   {
+                        binding   =   "{false}"
+                     }
+                     mouseChildren   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipRanks"
+               }
+               progress   =   {
+                  isBlinkable   =   True
+                  fixed   =   False
+                  elements   =   {
+                     progress0   =   {
+                        __type   =   "hf2p_ChallengesPopup_lib::ChallengePopupProgress"
+                     }
+                     progress1   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{(#parent)progressVecCount > 1}"
+                           }
+                           DC   =   {
+                              binding   =   "{progressVec[1]}"
+                           }
+                        }
+                        __type   =   "hf2p_ChallengesPopup_lib::ChallengePopupProgress"
+                     }
+                     progress2   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{(#parent)progressVecCount > 2}"
+                           }
+                           DC   =   {
+                              binding   =   "{progressVec[2]}"
+                           }
+                        }
+                        __type   =   "hf2p_ChallengesPopup_lib::ChallengePopupProgress"
+                     }
+                     progress3   =   {
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{(#parent)progressVecCount > 3}"
+                           }
+                           DC   =   {
+                              binding   =   "{progressVec[3]}"
+                           }
+                        }
+                        __type   =   "hf2p_ChallengesPopup_lib::ChallengePopupProgress"
+                     }
+                  }
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{progressYPos}"
+                     }
+                     visible   =   {
+                        binding   =   "{isProgressVisible}"
+                     }
+                     mouseEnabled   =   {
+                        binding   =   "{false}"
+                     }
+                     mouseChildren   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipProgress"
+               }
+               items   =   {
+                  isBlinkable   =   True
+                  fixed   =   False
+                  elements   =   {
+                     weapon   =   {
+                        isBlinkable   =   True
+                        elements   =   {
+                           iconAttach   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{followingItemIcon}"
+                                 }
+                              }
+                              isCentered   =   True
+                              __type   =   "ui_challengesScreen_lib::iconAttachChallenge"
+                           }
+                           tfNameWeapon   =   {
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{followingItemName}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{!IsFollowingItemSuit() and !IsFollowingItemArmor()}"
+                           }
+                           frame   =   {
+                              binding   =   "{equipFrame}"
+                           }
+                        }
+                        __type   =   "ui_challengesScreen_lib::challengesTooltipItemWeapon"
+                     }
+                     armorSlot0   =   {
+                        isBlinkable   =   True
+                        elements   =   {
+                           iconArmor   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{GetFollowingArmorPartsIcon((:idx))}"
+                                 }
+                              }
+                              isCentered   =   True
+                              __type   =   "ui_challengesScreen_lib::iconAttachChallenge"
+                           }
+                           tfNameEquipment   =   {
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{GetArmorPartsLabel((:idx))}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{IsFollowingItemSuit() or IsFollowingItemArmor()}"
+                           }
+                           frame   =   {
+                              binding   =   "{GetArmorPartsFrame((:idx))}"
+                           }
+                        }
+                        customProps   =   [
+                           {
+                              propName   =   "idx"
+                              propVal   =   {
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           }
+                        ]
+                        __type   =   "ui_challengesScreen_lib::ChallengesTooltipItem"
+                     }
+                     armorSlot1   =   {
+                        isBlinkable   =   True
+                        elements   =   {
+                           iconArmor   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{GetFollowingArmorPartsIcon((:idx))}"
+                                 }
+                              }
+                              isCentered   =   True
+                              __type   =   "ui_challengesScreen_lib::iconAttachChallenge"
+                           }
+                           tfNameEquipment   =   {
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{GetArmorPartsLabel((:idx))}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{IsFollowingItemSuit() or IsFollowingItemArmor()}"
+                           }
+                           frame   =   {
+                              binding   =   "{GetArmorPartsFrame((:idx))}"
+                           }
+                        }
+                        customProps   =   [
+                           {
+                              propName   =   "idx"
+                              propVal   =   {
+                                 val   =   1
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           }
+                        ]
+                        __type   =   "ui_challengesScreen_lib::ChallengesTooltipItem"
+                     }
+                     armorSlot2   =   {
+                        isBlinkable   =   True
+                        elements   =   {
+                           iconArmor   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{GetFollowingArmorPartsIcon((:idx))}"
+                                 }
+                              }
+                              isCentered   =   True
+                              __type   =   "ui_challengesScreen_lib::iconAttachChallenge"
+                           }
+                           tfNameEquipment   =   {
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{GetArmorPartsLabel((:idx))}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{IsFollowingItemSuit() or IsFollowingItemArmor()}"
+                           }
+                           frame   =   {
+                              binding   =   "{GetArmorPartsFrame((:idx))}"
+                           }
+                        }
+                        customProps   =   [
+                           {
+                              propName   =   "idx"
+                              propVal   =   {
+                                 val   =   2
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           }
+                        ]
+                        __type   =   "ui_challengesScreen_lib::ChallengesTooltipItem"
+                     }
+                     armorSlot4   =   {
+                        isBlinkable   =   True
+                        elements   =   {
+                           iconArmor   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{GetFollowingArmorPartsIcon((:idx))}"
+                                 }
+                              }
+                              isCentered   =   True
+                              __type   =   "ui_challengesScreen_lib::iconAttachChallenge"
+                           }
+                           tfNameEquipment   =   {
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{GetArmorPartsLabel((:idx))}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{IsFollowingItemSuit() or IsFollowingItemArmor()}"
+                           }
+                           frame   =   {
+                              binding   =   "{GetArmorPartsFrame((:idx))}"
+                           }
+                        }
+                        customProps   =   [
+                           {
+                              propName   =   "idx"
+                              propVal   =   {
+                                 val   =   4
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           }
+                        ]
+                        __type   =   "ui_challengesScreen_lib::ChallengesTooltipItem"
+                     }
+                     armorSlot3   =   {
+                        isBlinkable   =   True
+                        elements   =   {
+                           iconArmor   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{GetFollowingArmorPartsIcon((:idx))}"
+                                 }
+                              }
+                              isCentered   =   True
+                              __type   =   "ui_challengesScreen_lib::iconAttachChallenge"
+                           }
+                           tfNameEquipment   =   {
+                              bindings   =   {
+                                 tf   =   {
+                                    binding   =   "{GetArmorPartsLabel((:idx))}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        bindings   =   {
+                           visible   =   {
+                              binding   =   "{IsFollowingItemSuit() or IsFollowingItemArmor()}"
+                           }
+                           frame   =   {
+                              binding   =   "{GetArmorPartsFrame((:idx))}"
+                           }
+                        }
+                        customProps   =   [
+                           {
+                              propName   =   "idx"
+                              propVal   =   {
+                                 val   =   3
+                                 __type   =   "ui_widget_desc_prop_int"
+                              }
+                           }
+                        ]
+                        __type   =   "ui_challengesScreen_lib::ChallengesTooltipItem"
+                     }
+                     tfEquipped   =   {
+                        isBlinkable   =   True
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{'carousel_equip_follow_item'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{itemsYPos}"
+                     }
+                     visible   =   {
+                        binding   =   "{isItemsVisible}"
+                     }
+                     mouseEnabled   =   {
+                        binding   =   "{false}"
+                     }
+                     mouseChildren   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipItems"
+               }
+               closeButton   =   {
+                  isBlinkable   =   True
+                  fixed   =   False
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "CloseItemChallengesPopup"
+                     }
+                  }
+                  elements   =   {
+                     tfCancelCardBig   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{'main_cancel'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{closeButtonYPos}"
+                     }
+                  }
+                  soundMap   =   {
+                     soundMaps   =   {
+                        ui_widget_button   =   {
+                           mapping   =   {
+                              buttonClick   =   {
+                                 uiSoundEvent   =   "item_cancel"
+                              }
+                           }
+                        }
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipCloseButton"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::ChallengesTooltipContentInternal"
+         }
+         bgGold   =   {
+            elements   =   {
+               bgBorderGold   =   {
+                  bindings   =   {
+                     _width   =   {
+                        binding   =   "{contentWidth +30}"
+                     }
+                     _height   =   {
+                        binding   =   "{contentHeight +30}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipBGBorderGold"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{challengeComplete}"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::ChallengesTooltipBGGold"
+         }
+         bg   =   {
+            isBlinkable   =   True
+            elements   =   {
+               bgBorder   =   {
+                  bindings   =   {
+                     _height   =   {
+                        binding   =   "{contentHeight +30}"
+                     }
+                     _width   =   {
+                        binding   =   "{contentWidth +30}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipBGBorder"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::ChallengesTooltipBG"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{challengeStats}"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::ChallengesTooltipContent"
+   }
+   ChallengesPopup   =   {
+      sslClass   =   "UiChallengesPopup"
+      sslModule   =   "ui.libs.hf2p_ChallengesPopup_lib.hf2p_ChallengesPopup_lib"
+      fixed   =   False
+      elements   =   {
+         content   =   {
+            elements   =   {
+               content   =   {
+                  fixed   =   False
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{540 - contentHeight*0.5}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipContentInternal"
+               }
+               bgGold   =   {
+                  fixed   =   False
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{623 - contentHeight*0.5}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipBGGold"
+               }
+               bg   =   {
+                  fixed   =   False
+                  bindings   =   {
+                     y   =   {
+                        binding   =   "{623 - contentHeight*0.5}"
+                     }
+                  }
+                  __type   =   "ui_challengesScreen_lib::ChallengesTooltipBG"
+               }
+            }
+            __type   =   "hf2p_ChallengesPopup_lib::ChallengesPopupContent"
+         }
+         bgMask   =   {
+            events   =   {
+               click   =   {
+                  eventRemap   =   "CloseItemChallengesPopup"
+               }
+            }
+            __type   =   "ui_challengesScreen_lib::cardMaskBg"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_ChallengesPopup_lib.hf2p_ChallengesPopup_lib.UiChallengesPopupVM', challengeItemId = challengeItemId}"
+         }
+      }
+      __type   =   "ui_challengesScreen_lib::ChallengesTooltip"
+   }
+}
+__type   =   "ui_widget_lib"

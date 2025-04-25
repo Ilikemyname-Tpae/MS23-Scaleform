@@ -1,0 +1,65 @@
+
+projects = [
+	"hf2p_sfx",
+]
+
+maxMpegs = 255
+maxAdpcm = 32
+maxXma   = 32
+maxPcm   = 16
+
+localized_projects = [
+]
+
+localizations {
+	en      = [ "en", "default" ]
+	//french  = "fr"
+	//spanish = "es"
+	//italian = "it"
+	//german  = "de"
+	//chinese = "zh"
+	//japan   = "ja"
+	//korean  = "ko"
+}
+
+platforms = [
+	"pc",
+]
+
+project_groups {
+	all = [
+		"hf2p_sfx",
+	]
+}
+
+sound_categories = {
+	all		= [ "sfx" ]
+	foley	= [ "foley" ]
+}
+
+sound_category_volumes = {
+	all		= 0.275
+	foley 	= 1.0
+}
+
+minListenerSpeed = 0
+maxListenerSpeed = 50
+
+PC {
+	autoloadBanks = [
+		"auto_*"
+	]
+}
+
+X360 {
+	autoloadBanks = [
+		"auto_*",
+		"music_loading_screen"
+	]
+}
+
+PS3 {
+	autoloadBanks = [
+		"auto_*"
+	]
+}

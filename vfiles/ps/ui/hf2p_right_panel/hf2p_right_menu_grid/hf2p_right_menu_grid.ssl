@@ -1,0 +1,41 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+
+class UiMenuGridRight : UiWidgetContainer
+
+func SendSelectItem(_nextMenuName:string)
+   Log("ui~menu_grid_right", "RP::GRID::SendSelectItem: menuName = " + _nextMenuName) 
+   var p:params
+   p.nextMenuName := _nextMenuName
+   GenerateEvent("selectItem", p)
+end
+
+func onMenuItemClicked(p:params):bool
+   Log("ui~menu_grid_right", "RP::GRID::onMenuItemClicked " + Params2Str(p))
+   if (! IsVoid(p.widget.nextMenu))
+      SendSelectItem(p.widget.nextMenu)
+   end
+   return false
+end
+
+func onMenuItemClickedArmor(p:params):bool
+   Log("ui~menu_grid_right", "RP::GRID::onMenuItemClickedArmor " + Params2Str(p))
+   if (!IsVoid(p.widget.nextMenu) and !IsVoid(p.widget.armorSet))
+      SendSelectItem(p.widget.nextMenu)
+   end
+   return false
+end
+
+func GetWidgetByState(curMenu: string): string
+   if (curMenu == "sMain")
+      return "main"         
+   end   
+   return ""      
+end
+
+handle OnEnterState("sMain")
+   Widgets.main.OnShowGrid()
+end
+
+end

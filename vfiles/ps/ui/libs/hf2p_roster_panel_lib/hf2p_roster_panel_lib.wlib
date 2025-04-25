@@ -1,0 +1,93 @@
+classes   =   {
+   rosterPanelLir   =   {
+      sslClass   =   "UiRosterPanelLir"
+      sslModule   =   "ui.libs.hf2p_roster_panel_lib.hf2p_roster_panel_lib"
+      elements   =   {
+         disconnectButton   =   {
+            fixed   =   False
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "onDisconnectBtnClick"
+               }
+            }
+            scaleX   =   0.9
+            scaleY   =   0.9
+            visible   =   False
+            __type   =   "ui_widget_container"
+         }
+      }
+      propMapping   =   {
+         btnTxt   =   {
+            mapping   =   "disconnectButton.tfContainer.tf.text"
+         }
+         text   =   {
+            mapping   =   "textField1.text"
+         }
+         text2   =   {
+            mapping   =   "textField2.text"
+         }
+      }
+      visible   =   False
+      customProps   =   [
+         {
+            propName   =   "text"
+            propVal   =   {
+               val   =   "TestLir1"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "text2"
+            propVal   =   {
+               val   =   "TestLir2"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         },
+         {
+            propName   =   "btnTxt"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+                        ]
+      __type   =   "ui_activity_lib::hf2pRosterTestLir"
+   }
+   rosterPanelList   =   {
+      events   =   {
+         itemClick   =   {
+            eventRemap   =   "itemClick"
+         }
+         itemRollOut   =   {
+            eventRemap   =   "itemRollOut"
+         }
+         itemRollOver   =   {
+            eventRemap   =   "itemRollOver"
+         }
+      }
+      x   =    -100      y   =    -20      visible   =   False
+      customProps   =   [
+         {
+            propName   =   "_width"
+            propVal   =   {
+               val   =   330
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "_height"
+            propVal   =   {
+               val   =   600
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      lir   =   {
+         __type   =   "hf2p_roster_panel_lib::rosterPanelLir"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_map_grid_list_lib::mapGridListScrollBar"
+      }
+      __type   =   "ui_activity_lib::hf2pRosterListInt"
+   }
+}
+__type   =   "ui_widget_lib"

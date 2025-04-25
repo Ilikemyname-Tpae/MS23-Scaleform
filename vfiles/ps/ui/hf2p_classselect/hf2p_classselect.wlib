@@ -1,0 +1,924 @@
+classes   =   {
+   SelectClassScreenContainer   =   {
+      sslClass   =   "ClassSelectScreenContainer"
+      sslModule   =   "ui.hf2p_ClassSelect.hf2p_ClassSelect"
+      elements   =   {
+         screenAttach   =   {
+            elements   =   {
+               fullScreenBack   =   {
+                  visible   =   False
+                  __type   =   "ui_subMenuLib::subm_background"
+               }
+               SelectClassScreen   =   {
+                  __type   =   "hf2p_ClassSelect::SelectClassScreen"
+               }
+            }
+            __type   =   "ui_menu_lib::MainMenuFullscreenAttach"
+         }
+      }
+      __type   =   "hf2p_MainMenu_lib::FullScreenCont"
+   }
+   SelectClassScreen   =   {
+      sslClass   =   "ClassSelectScreen"
+      sslModule   =   "ui.hf2p_ClassSelect.hf2p_ClassSelect"
+      handlers   =   {
+         OnApplyStarterKitOfferComplete   =   {
+            handlerName   =   "#OnApplyStarterKitOfferComplete"
+         }
+         ClassSelectRenderVisible   =   {
+            handlerName   =   "#OnClassSelectRenderVisible"
+         }
+         ClassSelectRenderHidden   =   {
+            handlerName   =   "#OnClassSelectRenderHidden"
+         }
+      }
+      elements   =   {
+         renameScreen   =   {
+            sslClass   =   "RenameScreen"
+            sslModule   =   "ui.hf2p_ClassSelect.hf2p_ClassSelect"
+            elements   =   {
+               inputNameContainer   =   {
+                  handlers   =   {
+                     OnSelectNicknameComplete   =   {
+                        handlerName   =   "#OnSelectNicknameComplete"
+                     }
+                     OnSelectNicknameError   =   {
+                        handlerName   =   "#OnSelectNicknameError"
+                     }
+                  }
+                  elements   =   {
+                     heading   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{'main_select_name_header'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     headingUnderline   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{'main_select_name_subheader'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     inputContainer   =   {
+                        propMapping   =   {
+                           textFieldW   =   {
+                              mapping   =   "textField.wtext"
+                           }
+                        }
+                        handlers   =   {
+                           inputEvent   =   {
+                              handlerName   =   "#inputEvent"
+                           }
+                        }
+                        bindings   =   {
+                           defaultText   =   {
+                              binding   =   "{'main_select_name_default_text'}"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::inputFieldContainer"
+                     }
+                     errorText   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{errorText}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     rulersTextContainer   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{'main_select_name_desc'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     hf2pTreeBtn   =   {
+                        x   =   845
+                        y   =   620
+                        events   =   {
+                           buttonClick   =   {
+                              eventRemap   =   "#OnNicknameAcceptBtnClicked"
+                           }
+                        }
+                        elements   =   {
+                           tf   =   {
+                              bindings   =   {
+                                 textField   =   {
+                                    binding   =   "{'carousel_btn_accept'}"
+                                 }
+                              }
+                              __type   =   "ui_widget_container"
+                           }
+                        }
+                        bindings   =   {
+                           enabled   =   {
+                              binding   =   "{isRenameAcceptBtnEnabled}"
+                           }
+                        }
+                        soundMap   =   {
+                           soundMaps   =   {
+                              this   =   {
+                                 mapping   =   {
+                                    buttonClick   =   {
+                                       uiSoundEvent   =   "tab_select"
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib_slide::hf2pTreeBtn"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Hidden   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+                  Initial   =   {
+                  }
+               }
+            }
+            bindings   =   {
+               state   =   {
+                  binding   =   "{selectNicknameState}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::selectNicknameScreen"
+         }
+         genderCard   =   {
+            mouseEnabled   =   False
+            mouseChildren   =   False
+            elements   =   {
+               header   =   {
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'main_gender_select_header'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               gender1   =   {
+                  elements   =   {
+                     content   =   {
+                        elements   =   {
+                           card   =   {
+                              elements   =   {
+                                 spartanLabelMid   =   {
+                                    bindings   =   {
+                                       tf   =   {
+                                          binding   =   "{'main_gender_female_lbl_mid'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 spartanLabelUp   =   {
+                                    bindings   =   {
+                                       tf   =   {
+                                          binding   =   "{'main_gender_female_lbl_up'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 description   =   {
+                                    bindings   =   {
+                                       textField   =   {
+                                          binding   =   "{'main_gender_female_desc'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 genderName   =   {
+                                    bindings   =   {
+                                       textField   =   {
+                                          binding   =   "{'main_gender_female_name'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 genderBg   =   {
+                                    bindings   =   {
+                                       frame   =   {
+                                          binding   =   "{2}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                              }
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{1}"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::SelectGenderCard"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::SelectGenderCardContainerContent"
+                     }
+                  }
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{1}"
+                     }
+                  }
+                  __type   =   "hf2p_ClassSelect::GenderSelectCardCont"
+               }
+               gender0   =   {
+                  elements   =   {
+                     content   =   {
+                        elements   =   {
+                           card   =   {
+                              elements   =   {
+                                 spartanLabelMid   =   {
+                                    bindings   =   {
+                                       tf   =   {
+                                          binding   =   "{'main_gender_male_lbl_mid'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 spartanLabelUp   =   {
+                                    bindings   =   {
+                                       tf   =   {
+                                          binding   =   "{'main_gender_male_lbl_up'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 description   =   {
+                                    bindings   =   {
+                                       textField   =   {
+                                          binding   =   "{'main_gender_male_desc'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 genderName   =   {
+                                    bindings   =   {
+                                       textField   =   {
+                                          binding   =   "{'main_gender_male_name'}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                                 genderBg   =   {
+                                    bindings   =   {
+                                       frame   =   {
+                                          binding   =   "{1}"
+                                       }
+                                    }
+                                    __type   =   "ui_widget_container"
+                                 }
+                              }
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{0}"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::SelectGenderCard"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::SelectGenderCardContainerContent"
+                     }
+                  }
+                  __type   =   "hf2p_ClassSelect::GenderSelectCardCont"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::SelectGenderCardCont"
+         }
+         classCard   =   {
+            mouseEnabled   =   False
+            mouseChildren   =   False
+            elements   =   {
+               description   =   {
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'carousel_class_select_desc'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               header   =   {
+                  bindings   =   {
+                     textField   =   {
+                        binding   =   "{'carousel_class_select_header'}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               class2   =   {
+                  elements   =   {
+                     content   =   {
+                        elements   =   {
+                           card   =   {
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{2}"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::selectClassCardNew"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::selectClassCardNewContainerContent"
+                     }
+                  }
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{2}"
+                     }
+                  }
+                  __type   =   "hf2p_ClassSelect::ClassSelectCardCont"
+               }
+               class1   =   {
+                  elements   =   {
+                     content   =   {
+                        elements   =   {
+                           card   =   {
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{1}"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::selectClassCardNew"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::selectClassCardNewContainerContent"
+                     }
+                  }
+                  bindings   =   {
+                     idx   =   {
+                        binding   =   "{1}"
+                     }
+                  }
+                  __type   =   "hf2p_ClassSelect::ClassSelectCardCont"
+               }
+               class0   =   {
+                  elements   =   {
+                     content   =   {
+                        elements   =   {
+                           card   =   {
+                              bindings   =   {
+                                 idx   =   {
+                                    binding   =   "{0}"
+                                 }
+                              }
+                              __type   =   "ui_weaponConf_lib::selectClassCardNew"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::selectClassCardNewContainerContent"
+                     }
+                  }
+                  __type   =   "hf2p_ClassSelect::ClassSelectCardCont"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::selectClassCardCont"
+         }
+         renderAttach   =   {
+            sslClass   =   "ClassSelectRenderAttach"
+            sslModule   =   "ui.hf2p_ClassSelect.hf2p_ClassSelect"
+            elements   =   {
+               content   =   {
+                  elements   =   {
+                     RenderTextureGender   =   {
+                        y   =   -100
+                        fixed   =   False
+                        bindings   =   {
+                           alpha   =   {
+                              binding   =   "{curState == 'genderSelect' ? 100.0 : 0.0}"
+                           }
+                        }
+                        layer   =   "layer2"
+                        __type   =   "ui_rtts_container::rtts_gender_selection"
+                     }
+                     RenderTextureClass   =   {
+                        y   =   -100
+                        fixed   =   False
+                        bindings   =   {
+                           alpha   =   {
+                              binding   =   "{curState == 'classSelect' ? 100.0 : 0.0}"
+                           }
+                        }
+                        layer   =   "layer2"
+                        __type   =   "ui_rtts_container::rtts_class_selection"
+                     }
+                  }
+                  layers   =   {
+                     layer1   =   {
+                        offset   =   1
+                     }
+                     layer2   =   {
+                        offset   =   2
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            stateMap   =   {
+               startState   =   "Initial"
+               states   =   {
+                  Initial   =   {
+                  }
+                  Visible   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeIn"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+                  Hidden   =   {
+                     transitionsIn   =   {
+                        any   =   {
+                           action   =   {
+                              anim   =   "fadeOut"
+                              __type   =   "ui_widget_action_anim"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         description   =   {
+            isBlink0Alpha   =   False
+            bindings   =   {
+               textField   =   {
+                  binding   =   "{'carousel_class_select_desc'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         header   =   {
+            bindings   =   {
+               textField   =   {
+                  binding   =   "{'carousel_class_select_header'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         AccepBtn   =   {
+            x   =   941
+            y   =   989
+            fixed   =   False
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "#OnAcceptBtnClicked"
+               }
+            }
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{AcceptBtnEnabled()}"
+               }
+               visible   =   {
+                  binding   =   "{acceptBtnVisible}"
+               }
+               label   =   {
+                  binding   =   "{'carousel_btn_accept'}"
+               }
+            }
+            soundMap   =   {
+               soundMaps   =   {
+                  this   =   {
+                     mapping   =   {
+                        buttonClick   =   {
+                           uiSoundEvent   =   "tab_select"
+                        }
+                     }
+                  }
+               }
+            }
+            __type   =   "ui_msgBox::msgBtnGreen"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.hf2p_ClassSelect.hf2p_ClassSelect.ClassSelectVM'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::SelectClassScreen"
+   }
+   ClassSelectCardCont   =   {
+      elements   =   {
+         content   =   {
+            elements   =   {
+               card   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "#OnClassCardClicked"
+                     }
+                  }
+                  elements   =   {
+                     tfKitArmor   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{$UiGlobals.componentsUI[itemId].name}"
+                           }
+                           DC   =   {
+                              binding   =   "{(:classComp).armor}"
+                           }
+                        }
+                        tooltipWidget   =   {
+                           __type   =   "hf2p_ItemPopup"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfKitWeapons   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{$UiGlobals.componentsUI[itemId].name}"
+                           }
+                           DC   =   {
+                              binding   =   "{(:classComp).weapon}"
+                           }
+                        }
+                        tooltipWidget   =   {
+                           __type   =   "hf2p_ItemPopup"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfKitTp   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{$UiGlobals.componentsUI[itemId].name}"
+                           }
+                           DC   =   {
+                              binding   =   "{(:classComp).tp}"
+                           }
+                        }
+                        tooltipWidget   =   {
+                           __type   =   "hf2p_ItemPopup"
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     description   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{(:compUI).desc}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     tfItems   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{'main_class_select_items'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     classNameNew   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{(:compUI).name}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     kitIconArmor   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{$UiGlobals.componentsUI[itemId].icon_med}"
+                           }
+                           DC   =   {
+                              binding   =   "{(:classComp).armor}"
+                           }
+                        }
+                        tooltipWidget   =   {
+                           __type   =   "hf2p_ItemPopup"
+                        }
+                        isCentered   =   True
+                        __type   =   "ui_weaponConf_lib::attachPoint"
+                     }
+                     kitIconWeapons   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{$UiGlobals.componentsUI[itemId].icon_med}"
+                           }
+                           DC   =   {
+                              binding   =   "{(:classComp).weapon}"
+                           }
+                        }
+                        tooltipWidget   =   {
+                           __type   =   "hf2p_ItemPopup"
+                        }
+                        isCentered   =   True
+                        __type   =   "ui_weaponConf_lib::attachPoint"
+                     }
+                     kitIconTp   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{$UiGlobals.componentsUI[itemId].icon_med}"
+                           }
+                           DC   =   {
+                              binding   =   "{(:classComp).tp}"
+                           }
+                        }
+                        tooltipWidget   =   {
+                           __type   =   "hf2p_ItemPopup"
+                        }
+                        isCentered   =   True
+                        __type   =   "ui_weaponConf_lib::attachPoint"
+                     }
+                     iconContNew   =   {
+                        elements   =   {
+                           icon   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{(:classComp).GetTechClassIcon()}"
+                                 }
+                              }
+                              isCentered   =   True
+                              __type   =   "ui_weaponConf_lib::attachPoint"
+                           }
+                        }
+                        __type   =   "ui_weaponConf_lib::starterKitIconAttach"
+                     }
+                     bgClassHead   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{(:classComp).GetColorFrame()}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     bgTextItems   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{(:classComp).GetColorFrame()}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     imageBgCont   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{(:classComp).GetColorFrame()}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     bgTextItems2   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{(:classComp).GetColorFrame()}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     glowClassOver   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{(:classComp).GetColorFrame()}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     glowColor   =   {
+                        bindings   =   {
+                           frame   =   {
+                              binding   =   "{(:classComp).GetColorFrame()}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     compUI   =   {
+                        binding   =   "{(:classComp).GetUiComp()}"
+                     }
+                     classComp   =   {
+                        binding   =   "{GetClassSelectRec((:idx))}"
+                     }
+                     selected   =   {
+                        binding   =   "{selectedIdx == (:idx)}"
+                     }
+                     mouseEnabled   =   {
+                        binding   =   "{canSwitchCard or selectedIdx == (:idx)}"
+                     }
+                     mouseChildren   =   {
+                        binding   =   "{canSwitchCard or selectedIdx == (:idx)}"
+                     }
+                  }
+                  soundMap   =   {
+                     soundMaps   =   {
+                        this   =   {
+                           mapping   =   {
+                              buttonClick   =   {
+                                 uiSoundEvent   =   "tab_select"
+                              }
+                           }
+                        }
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::selectClassCardNew"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::selectClassCardNewContainerContent"
+         }
+      }
+      bindings   =   {
+         idx   =   {
+            binding   =   "{0}"
+         }
+         anim   =   {
+            binding   =   "{selectedIdx == (:idx) ? 'slideUp' : 'slideDown'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::selectClassCardContainer"
+   }
+   GenderSelectCardCont   =   {
+      elements   =   {
+         content   =   {
+            elements   =   {
+               card   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "#OnGenderCardClicked"
+                     }
+                  }
+                  elements   =   {
+                     spartanLabelMid   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{''}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     spartanLabelUp   =   {
+                        bindings   =   {
+                           tf   =   {
+                              binding   =   "{'main_class_select_items'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     description   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{''}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     genderName   =   {
+                        bindings   =   {
+                           textField   =   {
+                              binding   =   "{'main_class_select_items'}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     blink   =   {
+                        bindings   =   {
+                           mouseEnabled   =   {
+                              binding   =   "{false}"
+                           }
+                           mouseChildren   =   {
+                              binding   =   "{false}"
+                           }
+                           visible   =   {
+                              binding   =   "{selectedSexIdx == (:idx)}"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                  }
+                  bindings   =   {
+                     selected   =   {
+                        binding   =   "{selectedSexIdx == (:idx)}"
+                     }
+                     mouseEnabled   =   {
+                        binding   =   "{canSwitchCard or selectedSexIdx == (:idx)}"
+                     }
+                     mouseChildren   =   {
+                        binding   =   "{canSwitchCard or selectedSexIdx == (:idx)}"
+                     }
+                  }
+                  soundMap   =   {
+                     soundMaps   =   {
+                        this   =   {
+                           mapping   =   {
+                              buttonClick   =   {
+                                 uiSoundEvent   =   "tab_select"
+                              }
+                           }
+                        }
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::SelectGenderCard"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::SelectGenderCardContainerContent"
+         }
+      }
+      bindings   =   {
+         idx   =   {
+            binding   =   "{0}"
+         }
+         anim   =   {
+            binding   =   "{selectedSexIdx == (:idx) ? 'slideUp' : 'slideDown'}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::SelectGenderCardContainer"
+   }
+   RaceCard   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#OnRaceCardClicked"
+         }
+      }
+      elements   =   {
+         description   =   {
+            bindings   =   {
+               textField   =   {
+                  binding   =   "{'spartan_race_desc'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         raceName   =   {
+            bindings   =   {
+               textField   =   {
+                  binding   =   "{'main_race'}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         blink   =   {
+            bindings   =   {
+               mouseEnabled   =   {
+                  binding   =   "{false}"
+               }
+               mouseChildren   =   {
+                  binding   =   "{false}"
+               }
+               visible   =   {
+                  binding   =   "{selectedRaceIdx == (:idx)}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         iconRace   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{''}"
+               }
+               mouseEnabled   =   {
+                  binding   =   "{false}"
+               }
+               mouseChildren   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::attachPoint"
+         }
+      }
+      bindings   =   {
+         enabled   =   {
+            binding   =   "{true}"
+         }
+         selected   =   {
+            binding   =   "{selectedRaceIdx == (:raceIdx)}"
+         }
+      }
+      customProps   =   [
+         {
+            propName   =   "raceIdx"
+            propVal   =   {
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         }
+      ]
+      __type   =   "ui_weaponConf_lib::selectRaceCard"
+   }
+}
+__type   =   "ui_wlib"

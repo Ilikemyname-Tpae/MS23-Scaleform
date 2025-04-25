@@ -1,0 +1,34 @@
+native class UiBiLogger
+   native func LogClick                (widget : string, x : float, y : float, buttonIdx : int)
+   native func LogStateChange          (widget : string, newState : string)
+
+   native func LogGlobalState          (name : string)
+   native func LogDialogEvent          (name : string, type : string, eventName : string)
+   native func LogLeftPanelState       (name : string)
+   native func LogChatState            (name : string, tab : string)
+   native func LogShopState            (shopType : string, shopState : string, section : string, subsection : string)
+   native func LogPurchaseEvent        (eventName : string, itemId : string, offerId : string)
+   native func LogSettingsState        (section : string, subsection : string)
+   native func LogSkilTreeState        (treeName : string, viewType : string)
+   native func LogSkilTreeDetailsEvent (eventName : string, techId : string, techState : string, techItemState : string)
+   native func LogNotificationState    (state : string, contentType : string, contentFilter : string)
+   native func LogNotificationEvent    (type : string, action : string)
+   native func LogArmorLoadoutEvent    (type : string, idx : int, itemId : string)
+   native func LogWeaponLoadoutEvent   (type : string, idx : int, itemId : string, slotIdx : int)
+   native func LogLobbyState           (isLeader: bool, type: string, state : string)
+   native func LogButtonClick          (buttonId : string)
+   native func LogRematchState         (isRematch: bool)
+   
+   
+   var lastGlobalState : string
+   func LogGlobalStateChange(name : string)
+      if (lastGlobalState != name)
+         lastGlobalState := name
+         LogGlobalState(name)
+      end
+   end
+end
+var $UiBiLogger : UiBiLogger
+
+
+

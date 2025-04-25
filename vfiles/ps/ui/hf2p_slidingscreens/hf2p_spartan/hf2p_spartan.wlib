@@ -1,0 +1,470 @@
+classes   =   {
+   SpartanScreen   =   {
+      sslClass   =   "UiSpartanScreen"
+      sslModule   =   "ui.hf2p_SlidingScreens.hf2p_Spartan.hf2p_Spartan"
+      x   =   -78
+      y   =   34
+      visible   =   False
+      handlers   =   {
+         onPaletteBtnClicked   =   {
+            handlerName   =   "onPaintBtnClicked"
+         }
+         paletteListItemClick   =   {
+            handlerName   =   "onColorListItemClick"
+         }
+         paletteListItemRollOut   =   {
+            handlerName   =   "onPaletteListItemRollOut"
+         }
+         paletteListItemRollOver   =   {
+            handlerName   =   "onPaletteListItemRollOver"
+         }
+         unsavedPaintConfirmationClosed   =   {
+            handlerName   =   "OnUnsavedPaintConfirmationClosed"
+         }
+         unsavedPaintConfirmationClosed2   =   {
+            handlerName   =   "OnUnsavedPaintConfirmationClosed2"
+         }
+         unsavedPaintConfirmationClosed3   =   {
+            handlerName   =   "#OnUnsavedPaintConfirmationClosed3"
+         }
+      }
+      elements   =   {
+         colorAssignBtn   =   {
+            x   =   1005
+            y   =   555
+            visible   =   False
+            layer   =   "layer2"
+            __type   =   "hf2p_Spartan_lib::paletteAssignBtn"
+         }
+         colorList   =   {
+            x   =   1115
+            y   =   127
+            isBlinkable   =   True
+            layer   =   "layer4"
+            customProps   =   [
+               {
+                  propName   =   "_width"
+                  propVal   =   {
+                     val   =   280
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "_height"
+                  propVal   =   {
+                     val   =   400
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "minThumbSize"
+                  propVal   =   {
+                     val   =   48
+                     __type   =   "ui_widget_desc_prop_float"
+                  }
+               }
+            ]
+            lir   =   {
+               isBlinkable   =   True
+               __type   =   "hf2p_Spartan_lib::colorLir"
+            }
+            scrollbar   =   {
+               __type   =   "hf2p_Spartan_lib::paletteScrollBar"
+            }
+            __type   =   "hf2p_Spartan_lib::paletteList"
+         }
+         icnHeader   =   {
+            x   =   109
+            y   =   2
+            elements   =   {
+               playerIcon   =   {
+                  scaleX   =   1.1
+                  scaleY   =   1.1
+                  fixed   =   False
+                  __type   =   "ui_weaponConf_lib_slide::attachPointArmrStat"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{ShoppingState != 1}"
+               }
+            }
+            customProps   =   [
+               {
+                  propName   =   "textField"
+                  propVal   =   {
+                     val   =   "main_armory"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "selectableTxt"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_bool"
+                  }
+               }
+            ]
+            __type   =   "ui_weaponConf_lib_slide::superHeader"
+         }
+         lineImg   =   {
+            x   =   1131
+            y   =   232
+            layer   =   "layer2"
+            __type   =   "hf2p_Spartan_lib::stripe"
+         }
+         listMask   =   {
+            x   =   761
+            y   =   500
+            mouseEnabled   =   False
+            layer   =   "layer5"
+            __type   =   "hf2p_Spartan_lib::listCloud"
+         }
+         listSubHead   =   {
+            x   =   1158
+            y   =   83
+            mouseEnabled   =   False
+            layer   =   "layer2"
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "UI_SUB_HEAD"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Spartan_lib::subHead"
+         }
+         paintBtn1   =   {
+            x   =   82
+            y   =   133
+            isBlinkable   =   True
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{customizationFlags.isPrimaryPaint}"
+               }
+            }
+            layer   =   "layer4"
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_paint_primary"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "paintTag"
+                  propVal   =   {
+                     val   =   "primary"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "numTag"
+                  propVal   =   {
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Spartan_lib::paletteBtn"
+         }
+         paintBtn2   =   {
+            x   =   82
+            y   =   213
+            isBlinkable   =   True
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{customizationFlags.isSecondaryPaint}"
+               }
+            }
+            layer   =   "layer4"
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_paint_secondary"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "paintTag"
+                  propVal   =   {
+                     val   =   "secondary"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "numTag"
+                  propVal   =   {
+                     val   =   1
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Spartan_lib::paletteBtn"
+         }
+         paintBtn3   =   {
+            x   =   82
+            y   =   293
+            isBlinkable   =   True
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{customizationFlags.isLightsPaint}"
+               }
+            }
+            layer   =   "layer4"
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_paint_lights"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "paintTag"
+                  propVal   =   {
+                     val   =   "lights"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "numTag"
+                  propVal   =   {
+                     val   =   3
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Spartan_lib::paletteBtn"
+         }
+         paintBtn4   =   {
+            x   =   82
+            y   =   373
+            isBlinkable   =   True
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{customizationFlags.isVisorPaint}"
+               }
+            }
+            layer   =   "layer4"
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_paint_visor"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "paintTag"
+                  propVal   =   {
+                     val   =   "visor"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "numTag"
+                  propVal   =   {
+                     val   =   2
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Spartan_lib::paletteBtn"
+         }
+         paintBtn5   =   {
+            x   =   82
+            y   =   453
+            isBlinkable   =   True
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{customizationFlags.IsHoloPaint}"
+               }
+            }
+            layer   =   "layer4"
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_paint_holo"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "paintTag"
+                  propVal   =   {
+                     val   =   "holo"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               },
+               {
+                  propName   =   "numTag"
+                  propVal   =   {
+                     val   =   4
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Spartan_lib::paletteBtn"
+         }
+         plrCam   =   {
+            x   =   330
+            y   =   -30
+            scaleX   =   1.1
+            scaleY   =   1.1
+            dragEnabled   =   True
+            layer   =   "layer3"
+            customProps   =   [
+               {
+                  propName   =   "_width"
+                  propVal   =   {
+                     val   =   625
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               },
+               {
+                  propName   =   "_height"
+                  propVal   =   {
+                     val   =   625
+                     __type   =   "ui_widget_desc_prop_int"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Armory_lib::armoryPreviewCamera"
+         }
+         rotateImg   =   {
+            x   =   491
+            y   =   347
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{ShoppingState != 1}"
+               }
+            }
+            layer   =   "layer4"
+            customProps   =   [
+               {
+                  propName   =   "text"
+                  propVal   =   {
+                     val   =   "carousel_click_and_drag"
+                     __type   =   "ui_widget_desc_prop_string"
+                  }
+               }
+            ]
+            __type   =   "hf2p_Armory_lib::rotateImg"
+         }
+         assignColorsBtn   =   {
+            isBlinkable   =   True
+            events   =   {
+               buttonClick   =   {
+                  eventRemap   =   "OnApplyColorsClick"
+               }
+            }
+            bindings   =   {
+               x   =   {
+                  binding   =   "{1079}"
+               }
+               y   =   {
+                  binding   =   "{558}"
+               }
+               visible   =   {
+                  binding   =   "{false}"
+               }
+               enabled   =   {
+                  binding   =   "{false}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib_slide::offersAssignBtn"
+         }
+      }
+      stateMap   =   {
+         startState   =   "Initial"
+         states   =   {
+            Initial   =   {
+            }
+            Visible   =   {
+            }
+            SpartanVisible   =   {
+            }
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new:'ui.hf2p_SlidingScreens.hf2p_Spartan.hf2p_Spartan.SpartanScreenViewModel'}"
+         }
+      }
+      layers   =   {
+         layer1   =   {
+            offset   =   10
+         }
+         layer2   =   {
+            offset   =   20
+         }
+         layer3   =   {
+            offset   =   30
+         }
+         layer4   =   {
+            offset   =   40
+         }
+         layer5   =   {
+            offset   =   50
+         }
+         layer0   =   {
+            offset   =   9
+         }
+      }
+      defLayer   =   "layer1"
+      customProps   =   [
+         {
+            propName   =   "width"
+            propVal   =   {
+               val   =   1920
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "height"
+            propVal   =   {
+               val   =   1080
+               __type   =   "ui_widget_desc_prop_int"
+            }
+         },
+         {
+            propName   =   "defLayer"
+            propVal   =   {
+               val   =   "layer1"
+               __type   =   "ui_widget_desc_prop_string"
+            }
+         }
+      ]
+      __type   =   "hf2p_Loadout_lib::wc_container"
+   }
+   LoadoutSelectorButton   =   {
+      isBlinkable   =   True
+      propMapping   =   {
+         textField   =   {
+            mapping   =   "tfCont.textField.text"
+            isNoTranslate   =   True
+         }
+      }
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#LoadoutSelectButtonClicked"
+         }
+      }
+      bindings   =   {
+         textField   =   {
+            binding   =   "{'' + ((#self:idx) + 1)}"
+         }
+         selected   =   {
+            binding   =   "{$UserDataStorage.local_user.currentArmorLoadoutIdx == (#self:idx)}"
+         }
+         enabled   =   {
+            binding   =   "{(:idx) < $UserDataStorage.local_user.weapon_loadouts_unlocked}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib_slide::pageNumberMark"
+   }
+}
+__type   =   "ui_wlib"

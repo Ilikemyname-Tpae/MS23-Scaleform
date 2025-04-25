@@ -1,0 +1,865 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_button
+import ssl.hf2p.engine_ctrl
+import ui.root
+import ssl.observables
+import ssl.hf2p.user_service
+import ssl.hf2p.hq
+import ssl.hf2p.user_data
+import ssl.hf2p.ui_globals
+import ssl.hf2p.options_sys
+
+class UiWelcomeScreen : UiWidgetContainer
+   
+var   providerFlg       : bool
+var   userName          : string
+var   userPass          : string
+var   authTimeStart     : int = 0 
+
+func OnExitGameClick(p:params):bool
+   $hf2pEngine.ExitGame()
+   return false
+end
+
+func IsAutoLogin() : bool
+   return (bool)$UiGlobals.backend_session.is_auto_login.Get()   
+end
+
+func SetMusic()
+   $hf2pEngine.InitUIScreenSounds()   
+   //$hf2pEngine.TermUIScreenSounds()
+   $hf2pEngine.SetUIMusicId(0)
+end
+
+func FocusLoginBtn(_isEnabled : bool)
+   //if (GetStateName() == "Visible")
+   //   if (_isEnabled)
+   //      Widgets.wsContent.tfCont.loginBtn.SetFocus()
+   //   else
+   //      Widgets.wsContent.tfCont.textUser.SetFocus()
+   //   end
+   //end
+end
+
+handle OnEnteringState("Initial") // (name : string)
+   Log("ui~hf2p_welcome_screen", "Initial")
+   EnableControls("Initial")
+end
+
+func InitialInit()
+   $root.SubscribeToSessionState()
+   
+   Log("ui~hf2p_welcome_screen", "Enter Initial")
+   if (! IsAutoLogin())
+      userName := (string)($sslOptionsSys.GetVariable("CONFIG.userName"))
+      userPass := (string)($sslOptionsSys.GetVariable("CONFIG.userPassword"))
+      providerFlg := (bool)($sslOptionsSys.GetVariable("CONFIG.providerFlag"))
+      Widgets.wsContent.tfCont.textUser.text            := userName
+      Widgets.wsContent.tfCont.textPass.text            := userPass
+   end
+end
+
+handle OnEnterState("Initial") // (name : string)   
+   InitialInit()
+   GotoAndStop(1)
+   Props.visible := false   
+end
+
+handle OnEnterState("InitialVisible") // (name : string)   
+   InitialInit()
+   GotoAndStop(1)
+   Props.visible := true
+end
+
+func IsNonNullPass() : bool
+   userPass := Widgets.wsContent.tfCont.textPass.Get("text")
+   return userPass != ""
+end
+
+func FadeInScreen()
+   Log("ui~hf2p_welcome_screen", "fadeIn")
+   if (GetStateName() == "Initial" or GetStateName() == "InitialVisible")
+      if (GetStateName() == "Initial")
+         GotoAndPlay("fadeInAlpha")
+      else
+         GotoAndPlay("fadeIn")
+      end
+      $root.playSound("logo_animation")
+      Widgets.wsContent.logo.GotoAndPlay("begin")
+      Widgets.wsContent.bg.GotoAndPlay("fadeIn")
+   end
+end
+
+func FadeOutScreen()
+   Log("ui~hf2p_welcome_screen", "fadeOut")
+   if (GetStateName() != "IN")
+      GotoAndPlay("fadeOut")
+   end
+end
+
+func EnableControls(forState : string)
+   var isLoginCont   : bool   = forState == "Visible"
+   var isReloginCont : bool   = forState == "Relogin"
+   var isQueueCont   : bool   = forState == "Queue"
+   
+   Widgets.wsContent.tfCont.mouseEnabled         := isLoginCont
+   Widgets.wsContent.tfCont.mouseChildren        := isLoginCont
+   Widgets.wsContent.reloginBtn.mouseEnabled     := isReloginCont
+   Widgets.wsContent.reloginBtn.mouseChildren    := isReloginCont
+   Widgets.wsContent.quitBtnCont.mouseEnabled    := isQueueCont
+   Widgets.wsContent.quitBtnCont.mouseChildren   := isQueueCont
+end
+
+handle OnEnteringState("Visible") // (name : string)
+   SetMusic()
+   EnableControls("Visible")
+   FadeInScreen()  
+   Props.visible := true
+   if (!IsAutoLogin())
+      BlinkLogin(1.25) : 0.75
+   end
+end
+
+handle OnEnterState("Visible") // (name : string)
+   
+   // autoset env
+   //if ($UiGlobals.backend_environments.environments.Get().Count() > 0)
+   //   $hq.BackendEnvironmentSet(0)
+   //end
+   
+   GenerateEvent("#OnLoginInitial")
+   if (IsAutoLogin())
+      StartLogin()
+   else
+      var isAutoLogin : bool = false
+      if (! IsVoid($sslOptionsSys.GetVariable("Debug.autoLogin")))
+         isAutoLogin := (bool)($sslOptionsSys.GetVariable("Debug.autoLogin"))
+      end
+      if (isAutoLogin)
+         loginBtnClick(null)    
+      else
+         if (userName == "")
+            SelectUserName()
+         elif (userPass == "")
+            SelectUserPassword()
+         else 
+            SelectUserName()
+         end
+      end
+   end
+end
+
+func BlinkLogin(t0 : float)
+   var wgt : UiWidget = Widgets.wsContent.tfCont.object
+   wgt.Widgets.serviceDropDownHeader.StartDefaultBlinking(t0 + 0.1)
+   wgt.Widgets.serviceDropDown.StartDefaultBlinking(t0 + 0.2)
+   wgt.Widgets.bgElements.StartDefaultBlinking(t0 + 0.3)
+   wgt.Widgets.textPass.StartDefaultBlinking(t0 + 0.3)
+   wgt.Widgets.textUser.StartDefaultBlinking(t0 + 0.4)
+   wgt.Widgets.loginBtn.StartDefaultBlinking(t0 + 0.6)   
+end
+
+handle OnEnteringState("LoggedIn") // (name : string)
+   EnableControls("LoggedIn")
+end
+
+handle OnEnterState("LoggedIn") // (name : string)
+end
+
+handle OnEnteringState("Connection")
+   EnableControls("Connection")
+   Widgets.wsContent.welcomeTF.loginAnim.GotoAndPlay("fadeIn")
+end
+
+handle OnEnterState("Connection")
+   if (! IsAutoLogin())
+      $sslOptionsSys.SetVariable("CONFIG.userName", userName)
+      $sslOptionsSys.SetVariable("CONFIG.userPassword", userPass)
+      $sslOptionsSys.SetVariable("CONFIG.providerFlag", providerFlg)
+      $sslOptionsSys.SaveConfig()
+   end
+   $UiGlobals.UpdateArmorSuits()
+   GetParentWidget().SetStateName("WelcomeLoggedIn")
+end
+
+handle OnLeavingState("Connection")
+   FadeOutScreen()
+   Widgets.wsContent.welcomeTF.loginAnim.GotoAndPlay("fadeOut")
+end
+
+handle OnEnteringState("Relogin")
+   $root.StopAcceptingErrors()
+   SetMusic()
+   EnableControls("Relogin")
+   FadeInScreen()  
+   Props.visible := true
+end
+
+handle OnEnterState("Relogin")
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_RELOGIN_SCREEN)
+end
+
+func StartRelogin()
+   SetStateName("WaitingRelogin")
+end
+
+func PerformRelogin()   
+   authTimeStart := (int)$UiGlobals.timer.Get()
+   $root.StartAcceptingErrors()
+   $hf2pEngine.PerformRelogin()      
+end
+
+func CanLogin() : bool
+   userName       := Widgets.wsContent.tfCont.textUser.text
+   userPass       := Widgets.wsContent.tfCont.textPass.Get("text")
+   var isValid    : bool   = false
+   if (IsAutoLogin())
+      isValid := true
+   else
+      if (providerFlg)
+         if ((userName != "") and (userPass != ""))
+            isValid := true
+         end       
+      else
+         if (userName != "")
+            isValid := true
+         end   
+      end   
+   end
+   return isValid
+end
+
+func StartLogin()
+   if (CanLogin())
+      SetStateName("Waiting")
+   else
+      LoginErrMsg()
+   end
+end
+
+func PerformLogin(doLogin : bool = false)
+   userName       := Widgets.wsContent.tfCont.textUser.text
+   userPass       := Widgets.wsContent.tfCont.textPass.Get("text")
+   var provider   : string = GetProviderStr(providerFlg)
+   
+   if (doLogin)
+      Log("ui~hf2p_main_menu", "loginBtnClick " + userName + " " + userPass + " " + provider)   
+   end
+
+   if (CanLogin())
+      authTimeStart := (int)$UiGlobals.timer.Get()
+      if (!IsAutoLogin())
+         GenerateEvent("#DoSelectService")         
+         $hf2pEngine.SetCredentials(userName, userPass, provider)
+      end
+      $root.StartAcceptingErrors()
+      $hf2pEngine.PerformLogin()
+      GenerateEvent("#OnLoginButtonClicked")
+   else
+      LoginErrMsg()
+   end
+end
+
+handle OnEnteringState("Waiting")
+   EnableControls("Waiting")
+   PerformLogin() : 0.2
+end
+
+handle OnEnterState("Waiting")
+   UpdateBackendSessionState()
+end
+
+handle OnEnteringState("WaitingRelogin")
+   EnableControls("WaitingRelogin")
+   PerformRelogin() : 0.2
+end
+
+handle OnEnterState("WaitingRelogin")
+   UpdateBackendSessionState()
+end
+
+handle OnEnteringState("Establishing")
+   EnableControls("Establishing")
+end
+
+handle OnEnterState("Establishing")
+   UpdateBackendSessionState()
+end
+
+handle OnEnteringState("Queue")
+   EnableControls("Queue")
+end
+
+handle OnEnterState("Queue")
+   UpdateBackendSessionState()
+end
+
+func loginBtnClick(p:params):bool
+   StartLogin()
+   return false		 
+end
+
+func reloginBtnClick() : bool
+   var timeLeft   : int = (int)$UiGlobals.backend_session.state_timer.Get() - (int)$UiGlobals.timer.Get()
+   if timeLeft <= 0
+      $hf2pEngine.ExitGame()
+   else
+      StartRelogin()
+   end
+   return false
+end
+
+func LoginErrMsg()
+   Log("ui~hf2p_main_menu", "LoginErrMsg")
+   var   pp          : params 
+   pp.messageTxt     := "msg_ui_name_or_pass_null"
+   pp.titleTxt       := "msg_ui_login_error"
+   //pp.callbackEvent  := "OnLoginErrMsgClosed"
+   pp.mbType         := "Info"
+   pp.closeTimeout   := 3 
+   GenerateEvent("MainMenuDialogRequest", pp)   
+end
+
+func GetProviderStr(_flg: bool):string  
+   var ret:string
+   if (_flg)
+      ret := "innova"
+   else
+      ret := "internal"
+   end   
+   return ret
+end
+
+func onloginCheckBoxChange(p:params):bool
+   Log("ui~hf2p_main_menu", "onloginCheckBoxChange")
+   if (providerFlg)
+      providerFlg := false
+   else 
+      providerFlg := true
+   end   
+   return false
+end
+
+func UpdateBackendSessionState(p : params = null) : bool
+   var sessionState  : int = (int)$UiGlobals.backend_session.state.Get()
+   var errCode       : int = (int)$UiGlobals.backend_session.error_code.Get()
+   if (sessionState == $uiEnums.BACKEND_SESSION_OFFLINE and errCode != 0)
+      var errorCodel10n : int = (int)$UiGlobals.backend_session.error_code_l10n.Get()
+      Log("ui", "welcomeScreen OnSessionDisconnect: " + errCode + ", " + errorCodel10n)
+      OnSessionDisconnect(0, errCode, errorCodel10n)
+   else
+      Log("ui", "welcomeScreen OnClientSessionState: " + sessionState)
+      SetSessionState(sessionState)
+   end
+   return true
+end
+
+func KillUpdateSessionDelay()
+   delay kill, this, UPDATE_SESSION_STATE_DELAY
+end
+
+func StartUpdateSessionDelay()
+   KillUpdateSessionDelay()
+   UpdateBackendSessionState() : 1, UPDATE_SESSION_STATE_DELAY   
+end
+
+func SetSessionState(sessionState: int)
+   if (GetStateName() != "Initial" and GetStateName() != "InitialVisible")
+      var queuePosition    : int = (int)$UiGlobals.backend_session.authorization_queue.position.Get()
+      var eta              : int = (int)$UiGlobals.backend_session.authorization_queue.estimated_wait_time_sec.Get()
+      var authTimeElapsed  : int = (int)$UiGlobals.timer.Get() - authTimeStart
+      Log("ui", "welcomeScreen OnClientSessionState: " + sessionState + " queue: " + queuePosition + " ETA: " + eta)
+      var s = GetStateName()
+      if (sessionState == $uiEnums.BACKEND_SESSION_AUTHENTICATING and queuePosition != 0)
+         if (s == "Waiting" or s == "WaitingRelogin" or s == "Queue" or s == "Establishing")
+            if ((eta == 0 and queuePosition >= 50) or eta >= 10)
+               Log("ui", "welcomeScreen ENTERING QUEUE!")
+               SetStateNameSafe("Queue")
+            elif (authTimeElapsed > 20)
+               Log("ui", "welcomeScreen ENTERING QUEUE (due to long waiting time)!")
+               SetStateNameSafe("Queue")
+            else
+               Log("ui", "welcomeScreen ENTERING HIDDEN QUEUE!")
+               SetStateNameSafe("Establishing")
+            end
+         else
+            Log("ui", "welcomeScreen vsyo propalo 1")
+         end
+      end
+      if (sessionState == $uiEnums.BACKEND_SESSION_AUTHENTICATING)
+         StartUpdateSessionDelay()
+      else
+         KillUpdateSessionDelay()
+      end
+      if (sessionState == $uiEnums.BACKEND_SESSION_ESTABLISHING)
+         if (s == "Waiting" or s == "WaitingRelogin" or s == "Queue" or s == "Establishing")
+            Log("ui", "welcomeScreen CONNECTING!")
+            //ForceFinishStateChange()
+            SetStateNameSafe("Establishing")
+         else
+            Log("ui", "welcomeScreen vsyo propalo 2")
+         end
+      end
+      if (sessionState == $uiEnums.BACKEND_SESSION_ONLINE)
+         if (s == "Waiting" or s == "WaitingRelogin" or s == "Queue" or s == "Establishing")
+            Log("ui", "welcomeScreen LOGGED IN!")
+            //ForceFinishStateChange()
+            SetStateNameSafe("Connection")
+         else
+            Log("ui", "welcomeScreen vsyo propalo 3")
+         end
+      end
+   end
+end
+
+func OnSessionDisconnect(disconnectReason: int, errorCode: int, errorCode_l10n: int)
+   Log("ui~welcomeScreen", "OnSessionDisconnect")
+   //factLog("UI/WELCOME_SCREEN", "OnSessionDisconnect disconnectReason: " + (string)disconnectReason + ", errorCode: " + (string)errorCode)
+   var s = GetStateName()
+   if (s == "Visible" or s == "Waiting" or s == "WaitingRelogin" or s == "Connection" or s == "Queue" or s == "Establishing")
+      GenerateEvent("#OnLoginFailed")
+      LoginErrorMsgBox(disconnectReason, errorCode, errorCode_l10n)
+   end
+end
+
+func LoginErrorMsgBox(_disconnectReason: int, _errorCode: int, _errorCode_l10n: int) 
+   Log("ui~welcomeScreen", "LoginErrorMsgBox")
+   
+   if ($root.IsAcceptingErrors())
+      //ForceFinishStateChange()
+      SetStateName("Relogin")
+   end
+end
+
+func SelectLoginBtn(p : params = null) : bool
+   Widgets.wsContent.tfCont.loginBtn.SetFocus()
+   return false
+end
+
+func SelectUserName(p : params = null) : bool
+   Widgets.wsContent.tfCont.textUser.SetFocus()
+   var pp : params
+   var len : int = Widgets.wsContent.tfCont.textUser.length
+   pp.Set("begin", len)
+   pp.Set("end", len)
+   Widgets.wsContent.tfCont.textUser.selection := pp
+   return false
+end
+
+func SelectUserPassword(p : params = null) : bool
+   Widgets.wsContent.tfCont.textPass.SetFocus()
+   var pp : params
+   var len : int = Widgets.wsContent.tfCont.textPass.length
+   pp.Set("begin", 0)
+   pp.Set("end", len)
+   Widgets.wsContent.tfCont.textPass.selection := pp
+   return false
+end
+
+func SelectService(serviceIdx : int)
+   Widgets.wsContent.tfCont.serviceDropDown.selection := serviceIdx
+end
+
+func GetSelectedService() : int
+   return Widgets.wsContent.tfCont.serviceDropDown.selection
+end
+
+func OnBanMsgClosed(p : params) : bool
+   $hf2pEngine.ExitGame()
+   return false
+end
+
+end
+
+class UiWelcomeScreenVM
+   var loginServicesList            : ObservableProperty = $OM.Calculated(this, "GetLoginServicesList")
+   var isLoginServicesListEnabled   : ObservableProperty = $OM.Calculated(this, "GetIsLoginServicesListEnabled")
+   var loginServicesListAlpha       : ObservableProperty = $OM.Calculated(this, "GetLoginServicesListAlpha")
+   var loginServicesVec             : vector
+   var loginServicesTint            : ObservableProperty = $OM.Calculated(this, "GetLoginServicesTint")
+   var isLoginEnabled               : ObservableProperty = $OM.Calculated(this, "GetIsLoginEnabled")
+   var isLoginBtnEnabled            : ObservableProperty = $OM.Calculated(this, "GetIsLoginBtnEnabled")
+   var loginAlpha                   : ObservableProperty = $OM.Calculated(this, "GetLoginAlpha")
+   var isWaitingServicesList        : ObservableProperty = $OM.Calculated(this, "GetIsWaitingServicesList")
+   var isAutoLogin                  : ObservableProperty = $OM.Calculated(this, "GetIsAutoLogin")
+   var isLoginFieldsVisible         : ObservableProperty = $OM.Calculated(this, "GetIsLoginFieldsVisible")
+   var isWelcomeNameVisible         : ObservableProperty = $OM.Calculated(this, "IsWelcomeNameVisible")
+   var connectPhaseTxt              : ObservableProperty = $OM.Calculated(this, "GetConnectPhaseTxt")
+   var isNonNullPass                : ObservableProperty = $OM.Property(false)
+   var isServiceSelected            : bool               = false
+   var wgt                          : UiWelcomeScreen    = null
+   
+   func Init(p : params)
+      wgt := p.widget
+      $UiGlobals.backend_environments.environment_active_index.Get()
+      $UiGlobals.backend_environments.environment_active_index.Subscribe(this, "OnServiceIndexChange")      
+      UpdateIsNonNullPass()
+   end
+   
+   func Term()
+      $UiGlobals.backend_environments.environment_active_index.Unsubscribe(this, "OnServiceIndexChange")      
+   end
+   
+   func OnServiceIndexChange(_val : *)
+      if (! isServiceSelected or wgt.GetSelectedService() == -1)
+         isServiceSelected := true
+         wgt.SelectService(GetLoginServiceIdx())
+      end
+   end
+   
+   func GetLoginServiceIdx() : int
+      var sel : int = 0
+      sel := (int)$UiGlobals.backend_environments.environment_active_index.Get()
+      return sel
+   end
+   
+   func GetLoginServicesList() : vector
+      var ret : vector
+      
+      $UiGlobals.backend_environments.environments_version.Get()
+      var i : int   
+      for i := 0 to $UiGlobals.backend_environments.environments.Get().Count() - 1
+         var rec : params
+         var env : GL_String = (GL_String)$UiGlobals.backend_environments.environments.Get().Get(i)
+         rec.id      := (string)i
+         rec.label   := " " + (string)env.value.Get()
+         ret.Push(rec)
+      end
+      var sel : int = (int)$UiGlobals.backend_environments.environment_active_index.Get()
+      $UiGlobals.backend_environments.environment_active_index.Invalidate()
+      
+      return ret
+   end
+   
+   func DoSelectService(p : params) : bool
+      isServiceSelected := true
+      $hq.BackendEnvironmentSet(wgt.GetSelectedService())
+      return true
+   end
+   
+   func GetWelcomeState() : string
+      var ret : string
+      ret := wgt.GetStateName()
+      return ret
+   end
+   
+   func OnLoginButtonClicked(p : params) : bool
+      return false
+   end
+   
+   func OnLoginComplete(p : params) : bool
+      return false
+   end
+      
+   func OnEnableLoginBtn(p : params) : bool
+      return false
+   end
+   
+   func OnLoginFailed(p : params) : bool
+      return false
+   end
+   
+   func OnLoginInitial(p : params) : bool
+      wgt.SelectService(GetLoginServiceIdx())
+      isServiceSelected := true
+      return false
+   end
+   
+   func loginServiceIndexChanged(p : params) : bool
+      var idx : int = p.index
+      if (idx >= 0 and idx < GetLoginServicesList().Count())
+         isServiceSelected := true
+         $hq.BackendEnvironmentSet(idx)
+      end
+      return true
+   end
+   
+   func GetIsLoginServicesListEnabled() : bool
+      var state : string = GetWelcomeState()
+      return GetLoginServicesList().Count() > 0 and ! IsLoggingIn() and state != "Relogin"
+   end
+   
+   func GetLoginServicesListAlpha() : float
+      var ret : float = 100.0
+      if (! GetIsLoginServicesListEnabled())
+         ret := 50.0
+      end
+      return ret
+   end
+   
+   func GetLoginServicesTint() : params
+      var ret : params
+      ret.a := 192
+      ret.v := 192
+      ret.r := 192
+      ret.g := 192
+      ret.b := 192
+      return ret
+   end
+   
+   func GetIsLoginBtnEnabled() : bool
+      return GetIsLoginEnabled() and (bool)isNonNullPass.Get()
+   end
+   
+   func GetIsLoginEnabled() : bool
+      var ret : bool = GetLoginServicesList().Count() > 0 and ! IsLoggingIn() and ! GetIsAutoLogin()
+      if (wgt != null)
+         wgt.FocusLoginBtn(ret)
+      end
+      return ret
+   end      
+   
+   func UpdateIsNonNullPass()
+      if (wgt != null)
+         isNonNullPass.Set(wgt.IsNonNullPass())
+      else
+         isNonNullPass.Set(false)
+      end
+   end
+   
+   func GetIsWaitingServicesList() : bool
+      return GetLoginServicesList().Count() <= 0
+   end
+   
+   func GetLoginAlpha() : float
+      var ret : float = 50.0
+      if ((bool)isLoginEnabled.Get())
+         ret := 100.0
+      end
+      return ret
+   end
+   
+   func GetLoginPhase() : int
+      return (int)$UiGlobals.backend_session.state.Get()
+   end
+   
+   func IsLoggingIn() : bool
+      return GetLoginPhase() != $uiEnums.BACKEND_SESSION_OFFLINE
+   end
+      
+   func GetIsAutoLogin() : bool
+      return (bool)$UiGlobals.backend_session.is_auto_login.Get()
+   end
+   
+   func GetIsLoginFieldsVisible() : bool
+      return ! GetIsAutoLogin()
+   end
+   
+   func IsWelcomeNameVisible() : bool
+      return GetLoginPhase() == $uiEnums.BACKEND_SESSION_ONLINE
+   end
+   
+   func GetConnectPhaseTxt() : string
+      var ret : string = "" 
+      if (IsWelcomeNameVisible())
+         ret := ""//"main_welcome"
+      else
+         if (GetLoginPhase() == $uiEnums.BACKEND_SESSION_OFFLINE)
+            ret := (string)$UiGlobals.backend_session.stateStr.Get()
+         else
+            ret := "main_backend_session_state_header," + (string)$UiGlobals.backend_session.stateStr.Get() + "," + (string)$UiGlobals.animatedDots.Get()
+         end
+      end
+      return ret
+   end
+   
+   func TryLogin(p : params) : bool
+      if (GetIsLoginEnabled())
+         wgt.SelectLoginBtn()
+         wgt.loginBtnClick(null)
+      end
+      return true
+   end
+   
+   func IsReloginPossible() : bool
+      if (bool)$UiGlobals.backend_session.is_reconnect_possible.Get()
+         return true
+      end
+      if IsReloginExpired()
+         return true
+      end
+      return false
+   end
+   
+   func IsReloginAvailable() : bool
+      if (bool)$UiGlobals.backend_session.is_reconnect_available.Get()
+         return true
+      end
+      if IsReloginExpired()
+         return true
+      end
+      return false
+   end
+   
+   func GetReloginText() : string
+      if IsReloginExpired()
+         return "main_exit_game"
+      else
+         return "main_relogin_btn"
+      end
+   end
+   
+   func GetReloginErrorDesc() : string
+      var ret : string = "msg_error_code_" + (string)(int)$UiGlobals.backend_session.error_code_l10n.Get()
+      return ret
+   end
+   
+   func GetReloginErrorLabel() : string
+      var ret : string = "main_relogin_err_label"
+      return ret
+   end
+   
+   func GetReloginErrorCode() : string
+      var ret : string = " " + (string)(int)$UiGlobals.backend_session.error_code.Get()
+      return ret
+   end
+   
+   func GetReloginTimerCaption() : string
+      var ret : string = ""
+      if (IsReloginPossible())
+         ret := "main_relogin_disconnect"
+      else
+         ret := "main_relogin_shutdown"
+      end
+      return ret
+   end
+   
+   func GetReloginTimer() : string
+      var timeLeft   : int = (int)$UiGlobals.backend_session.state_timer.Get() - (int)$UiGlobals.timer.Get()
+      var minutes    : int = timeLeft / 60
+      var seconds    : int = timeLeft - minutes * 60
+      var secStr     : string
+      if (seconds > 9)
+         secStr := (string)(seconds)
+      else
+         secStr := "0" + (string)(seconds)
+      end
+      return (string)(minutes) + ":" + secStr
+   end
+   
+   func IsReloginExpired() : bool
+      var timeLeft   : int = (int)$UiGlobals.backend_session.state_timer.Get() - (int)$UiGlobals.timer.Get()
+      if timeLeft <= 0
+         return true
+      end
+      return false
+   end
+   
+   func GetQueuePositionText() : wstring
+      var p : params
+      p.label := $UiGlobals.TranslateText("main_login_queue_position")
+      p.label := $root.MakeColorCodedWText(p.label, "#ADFCFE")
+      p.value := $UiGlobals.String2WString((string)$UiGlobals.backend_session.authorization_queue.position.Get())
+      p.value := $root.MakeColorCodedWText(p.value, "#FFFFFF")
+      p.space := $UiGlobals.String2WString(" ")
+      p.ret := p.label + p.space + p.value
+      return p.ret
+   end
+   
+   func GetQueueEtaText() : wstring
+      var p : params
+      p.label := $UiGlobals.TranslateText("main_login_queue_eta")
+      p.label := $root.MakeColorCodedWText(p.label, "#ADFCFE")
+      var sec = (int)$UiGlobals.backend_session.authorization_queue.estimated_wait_time_sec.Get()
+      if sec == 0
+         p.value := $UiGlobals.String2WString("main_login_queue_calculating")
+      elif sec < 60
+         p.value := $UiGlobals.String2WString("main_login_queue_less_1min")
+      elif sec < 120
+         p.value := $UiGlobals.String2WString("main_login_queue_less_2min")
+      elif sec < 300
+         p.value := $UiGlobals.String2WString("main_login_queue_less_5min")
+      else
+         p.value := $UiGlobals.String2WString("main_login_queue_more_5min")
+      end
+      p.value := $UiGlobals.TranslateWText(p.value)
+      p.value := $root.MakeColorCodedWText(p.value, "#FFFFFF")
+      p.space := $UiGlobals.String2WString(" ")
+      p.ret := p.label + p.space + p.value
+      return p.ret
+   end
+   
+   func OnQuitBtnClick(p : params) : bool
+      $sslWidgetMgr.GenerateEvent("OnLowerPanelExitClick", new params)
+      return true
+   end
+   
+end
+
+class UiWelcomeScreenTextUser : UiWidgetContainer
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (p.isDown == true)
+         if (keyCode == $uiKeys.VK_UP or (keyCode == $uiKeys.VK_TAB and p.isShiftPressed))
+            GenerateEvent("SelectLoginBtn")
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_DOWN or (keyCode == $uiKeys.VK_TAB and ! p.isShiftPressed))
+            GenerateEvent("SelectUserPassword")
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_ENTER)
+            GenerateEvent("#TryLogin")
+            isTerminated := true
+         end
+      end
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+end
+
+class UiWelcomeScreenTextPass : UiWidgetContainer
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (p.isDown == true)
+         if (keyCode == $uiKeys.VK_UP or (keyCode == $uiKeys.VK_TAB and p.isShiftPressed))
+            GenerateEvent("SelectUserName")
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_DOWN or (keyCode == $uiKeys.VK_TAB and ! p.isShiftPressed))
+            GenerateEvent("SelectLoginBtn")
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_ENTER)
+            GenerateEvent("#TryLogin")
+            isTerminated := true
+         end
+      end
+      if (keyCode == $uiKeys.VK_DOWN or keyCode == $uiKeys.VK_UP or keyCode == $uiKeys.VK_TAB or keyCode == $uiKeys.VK_ENTER)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      elif (! p.isDown)
+         GenerateEvent("#UpdateIsNonNullPass")
+      end
+      return false
+   end
+end
+
+class UiWelcomeScreenLoginBtn: UiWidgetButton
+   func inputEvent(p : params) : bool
+      var isTerminated  : bool   = false
+      var keyCode       : int    = p.keyCode
+      if (p.isDown == true)
+         if (keyCode == $uiKeys.VK_UP or (keyCode == $uiKeys.VK_TAB and p.isShiftPressed))
+            GenerateEvent("SelectUserPassword")
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_DOWN or (keyCode == $uiKeys.VK_TAB and ! p.isShiftPressed))
+            GenerateEvent("SelectUserName")
+            isTerminated := true
+         end
+      end
+      if (keyCode != $uiKeys.VK_ENTER and keyCode != $uiKeys.VK_SPACE)
+         isTerminated := true
+      end
+      if (isTerminated)
+         p.eventState.SetIsTerminated(isTerminated)
+      end
+      return false
+   end
+end

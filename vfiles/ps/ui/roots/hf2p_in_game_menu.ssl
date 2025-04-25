@@ -1,0 +1,388 @@
+import ssl.lib.logging
+import ssl.lib.events
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ui.root
+import ui.ui_party_monitor
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+import ssl.hf2p.game_preferences
+import ssl.hf2p.ui_globals
+import ssl.hf2p.ui_ingame
+import ui.hf2p_pregame_screen.hf2p_pregame_screen
+
+class UiHf2pInGameMenuVM
+   var upcomingChallenges : UpcomingChallengesVM = null
+   
+   func Init()
+      upcomingChallenges := new UpcomingChallengesVM()
+      $UiIngame.upcomingChallenges.state.Subscribe(this, "UpdateChallengesState")
+      UpdateChallengesState(null)
+   end
+   
+   func Term()
+      $UiIngame.upcomingChallenges.state.Unsubscribe(this, "UpdateChallengesState")
+      upcomingChallenges := null      
+   end
+   
+   func UpdateChallengesState(_val : * = null)
+      upcomingChallenges.challengesState.Set($UiIngame.upcomingChallenges.state.Get())
+   end
+end
+
+class UiHf2pInGameMenu : UiWidgetContainer
+
+var isSubscribed                 : bool   = false
+var tick_sounds_start_time       : int    = 3
+var tick_final_sound             : int    = 0
+var isVictory                    : bool   = false
+var inpLock                      : bool   = false
+var isMouse                      : bool   = false
+   
+handle OnBindingsActivate
+   Subscribe()
+   isVictory := false
+   UpdateIngameState() : 1.0
+   OnUpdateRootBrightnessContrast(null)
+   $uiPartyMonitor.isTutorialLevel := $UiIngame.IsTutorialLevel()
+end   
+
+handle OnDeactivate
+   Unsubscribe()
+end
+
+func Subscribe()
+   if (! isSubscribed)
+      $UiIngame.state.Subscribe(this, "UpdateIngameState")
+      $UiIngame.system_menu.state.Subscribe(this, "UpdateIngameState")
+      $UiIngame.scoreboard.state.Subscribe(this, "UpdateIngameState")
+      $UiIngame.chat.state.Subscribe(this, "UpdateIngameState")
+      $UiIngame.mouse_inversion.state.Subscribe(this, "UpdateMouseInversionDlg")
+      $UiIngame.system_menu_close_request.Subscribe(this, "SystemMenuCloseRequest")
+      isSubscribed := true
+   end
+end
+
+func Unsubscribe()
+   if (isSubscribed)
+      $UiIngame.system_menu_close_request.Unsubscribe(this, "SystemMenuCloseRequest")
+      $UiIngame.mouse_inversion.state.Unsubscribe(this, "UpdateMouseInversionDlg")
+      $UiIngame.system_menu.state.Unsubscribe(this, "UpdateIngameState")
+      $UiIngame.scoreboard.state.Unsubscribe(this, "UpdateIngameState")
+      $UiIngame.chat.state.Unsubscribe(this, "UpdateIngameState")
+      $UiIngame.state.Unsubscribe(this, "UpdateIngameState")
+      isSubscribed := false
+   end   
+end
+
+func OnUpdateRootBrightnessContrast(p : params) : bool 
+   $root.UpdateRootBrightnessContrast(this)
+   return false
+end
+
+func UpdateMouseInversionDlg(_val : * = null)
+   var dlgState : int = (int)$UiIngame.mouse_inversion.state.Get()
+   if (dlgState == $uiEnums.INGAME_MOUSE_DLG_STATE_SHOW_REQUEST)
+      SwitchMouseInvertDialog()
+   end
+end
+
+func SystemMenuCloseRequest(_val : bool)
+   if (_val)
+      Widgets.startMenu.GenerateEvent("OnSystemMenuCloseRequest")
+      $UiIngame.system_menu_close_request.Set(false)
+   end
+end
+
+func UpdateIngameState(_val : * = null)
+   inpLock := true
+   isMouse := true
+      
+   var ingameState   : int    = (int) $UiIngame.state.Get()
+   var isScoreboard  : bool   = $UiIngame.scoreboard.IsVisible()
+   var isChatActive  : bool   = $UiIngame.chat.GetState() == $uiEnums.INGAME_CHAT_STATE_INPUT_ALL or $UiIngame.chat.GetState() == $uiEnums.INGAME_CHAT_STATE_INPUT_TEAM
+   var isChatVisible : bool   = $UiIngame.chat.GetState() != $uiEnums.INGAME_CHAT_STATE_NONE
+   var isSystemMenu  : bool   = $UiIngame.system_menu.IsVisible()
+   var newState      : string = GetStateName()
+   var isEnterVictory: bool   = false
+   
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_INGAME)
+   
+   if (isScoreboard and ! isChatActive)
+      Log("ui~hf2p_pregame", "ingame_state_SCOREBOARD")
+      $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_SCOREBOARD)
+      isChatActive   := false
+      inpLock        := false
+      isMouse        := false
+      newState       := "Scoreboard"
+   elif (isSystemMenu)
+      Log("ui~hf2p_pregame", "ingame_state_SYSTEMMENU")
+      $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_INGAME_MENU)
+      isChatActive   := false
+      newState       := "StartMenu"
+   else
+      if (ingameState == $uiEnums.INGAME_STATE_NONE)
+         Log("ui~hf2p_pregame", "ingame_state_NONE")
+         inpLock        := false
+         isMouse        := false
+         newState       := "Initial"
+      elif (ingameState == $uiEnums.INGAME_STATE_HUD)
+         Log("ui~hf2p_pregame", "ingame_state_HUD")
+         inpLock        := false
+         isMouse        := false
+         newState       := "HUD"
+      elif (ingameState == $uiEnums.INGAME_STATE_WAITING_FOR_PLAYERS or ingameState == $uiEnums.INGAME_STATE_MATCH_INTRODUCTION or ingameState == $uiEnums.INGAME_STATE_LOADOUT_SELECTION_INITIAL)
+         Log("ui~hf2p_pregame", "ingame_state_PREGAME")
+         newState       := "Pregame"
+      elif (ingameState == $uiEnums.INGAME_STATE_MATCH_RESULT)
+         Log("ui~hf2p_pregame", "ingame_state_RESULTS")
+         $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_MATCH_RESULT)
+         isMouse        := false
+         isEnterVictory := true
+         newState       := "Victory"
+      elif (ingameState == $uiEnums.INGAME_STATE_RESPAWN)
+         Log("ui~hf2p_pregame", "ingame_state_RESPAWN")
+         newState       := "Loadout"
+      else
+         Log("ui~hf2p_pregame", "ingame_state_INITIAL")
+         newState       := "Initial"
+      end
+   end
+   
+   if (isChatVisible)
+      if (isChatActive)
+         Log("ui~hf2p_pregame", "ingame_state_CHAT_ACTIVE")
+         inpLock        := true
+         isMouse        := ingameState == $uiEnums.INGAME_STATE_RESPAWN
+         if (Widgets.ingameChat.GetStateName() != "Active")
+            Widgets.ingameChat.SetStateName("Active")
+         else
+            Widgets.ingameChat.CheckFocus()
+         end
+      else
+         Log("ui~hf2p_pregame", "ingame_state_CHAT_VISIBLE")
+         $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_INGAME_CHAT)
+         Widgets.ingameChat.SetStateName("Visible")
+      end
+   else
+      Log("ui~hf2p_pregame", "ingame_state_CHAT_HIDDEN")
+      Widgets.ingameChat.SetStateName("Hidden")
+   end
+      
+   if (!isVictory)
+      if (isEnterVictory)
+         isVictory := true
+      end
+      SetStateName(newState)
+      $hf2pEngine.SuppressIngameInput(inpLock)
+      Props.global_mouse := isMouse
+   end
+end
+
+func inputEvent(p : params) : bool
+   var isTerminated  : bool   = false
+   var keyCode       : int    = p.keyCode
+   
+   if (p.keyCode == $uiKeys.VK_DOWN or p.keyCode == $uiKeys.VK_UP or p.keyCode == $uiKeys.VK_TAB)
+      isTerminated := true
+   end
+      
+   if (Widgets.ingameChat.GetStateName() == "Active")
+      if (p.isDown == false)
+         if (keyCode == $uiKeys.VK_ENTER)
+            Widgets.ingameChat.DoSendMessage()
+            isTerminated := true
+         elif (keyCode == $uiKeys.VK_ESC)
+            $UiIngame.DeactivateChat()
+            isTerminated := true
+         end
+      end
+   end
+   
+   if (isTerminated)
+      p.eventState.SetIsTerminated(isTerminated)
+   end
+   
+   return !isTerminated
+end
+
+func OnUIPlaySound(p:params): bool
+   if ((! IsVoid(p.soundName)) and (GetStateName() != "Scoreboard"))
+      $root.playSound(p.soundName)
+   end
+   return false
+end
+
+handle OnEnteringState("Victory")
+   $UiIngame.HideChat()
+end
+
+handle OnEnterState("Victory")
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_VICTORY_SCREEN)
+   SetStateName("VictoryRunnerState")
+end
+
+handle OnEnteringState("StartMenu")
+   $root.playSound("window_prompt")
+end
+
+handle OnLeavingState("StartMenu")
+   $root.playSound("item_cancel")
+end
+
+handle OnEnterState("StartMenu")
+   $UiIngame.DeactivateChat()
+end
+
+handle OnEnterState("HUD")
+   Widgets.challengePopupProgress.GetDC().EnablePopups(true)
+end
+
+handle OnLeavingState("HUD")
+   Widgets.challengePopupProgress.GetDC().EnablePopups(false)
+end
+
+handle OnEnteringState("Loadout")
+end
+
+handle OnEnteringState("Scoreboard")
+   //$UiIngame.upcomingChallenges.state.Set("visible")
+end
+
+handle OnLeavingState("Scoreboard")
+   //$UiIngame.upcomingChallenges.state.Set("hidden")
+end
+
+handle OnEnteringState("Pregame")
+   var pregameState : string = Widgets.preGameScreen.GetStateName()
+   if (pregameState == "Initial")
+      Widgets.preGameScreen.SetStateName("Visible")
+   end
+end
+
+handle OnLeavingState("Pregame")
+   var pregameState : string = Widgets.preGameScreen.GetStateName()
+   if (pregameState != "Initial")
+      Widgets.preGameScreen.SetStateName("Initial")
+   end
+end
+
+handle OnEnterState("VictoryFadeout")
+   //zero stage for check that podium is exist next 3, 2, 1 is a plases stages on podium
+   $hf2pEngine.ShowFinishedPostpone(0)
+   // Delay exit from state
+   ContinueToNextState() : 1.5
+end
+
+func ContinueToNextState()
+   Log("ui~hf2p_in_game_menu", "Postpone: Victory screen")
+   SetStateName("Postpone")
+end
+
+handle OnEnteringState("Postpone")
+   Widgets.podiumPlaceScreen.visible := true		
+end
+
+handle OnEnterState("Postpone")
+   Log("ui~hf2p_in_game_menu", "Postpone: OnEnter")
+end
+
+func OnPodiumEnded(p : params) : bool
+   Log("ui~hf2p_in_game_menu", "Postpone: Fade podium")
+   factLog("UI/INGAME", "OnPodiumEnded")
+   SetStateName("PostgameScoreboard")
+return false
+end
+
+handle OnEnterState("PostgameScoreboard")
+   factLog("UI/INGAME", "PostgameScoreboard")
+   $root.playSound("results_show")
+   SetStateName("ScoreboardWaitBeforeEnd") : 10
+end
+
+handle OnEnterState("ScoreboardWaitBeforeEnd")
+   factLog("UI/INGAME", "ScoreboardWaitBeforeEnd")
+   SetStateName("Initial")
+end
+
+global event OnKeyDown(p:params)
+   if ((Widgets.loadoutScreen.GetStateName() != "ChoiceLoadoutBtn") and (GetStateName() != "Loadout"))
+      return
+   end
+
+   if (p.key == 768) // DELETE key
+      Props.global_mouse := false
+      $hf2pEngine.SuppressIngameInput(false)
+   end
+end
+
+global event OnKeyUp(p:params)
+   if ((Widgets.loadoutScreen.GetStateName() != "ChoiceLoadoutBtn") and (GetStateName() != "Loadout"))
+      return
+   end
+
+   if (p.key == 768) // DELETE key
+      Props.global_mouse := true
+      $hf2pEngine.SuppressIngameInput(true)
+   end
+end
+
+
+func onSettingsDialogRequest(p:params): bool
+   Widgets.messageBox.OpenDialog(p)
+   return false
+end
+
+func SwitchMouseInvertDialog(): bool
+   var pp:params
+   Log("ui~hf2p_ingame_menu", "SwitchMouseInvertDialog")
+   
+   Props.global_mouse := true
+   $hf2pEngine.SuppressIngameInput(true)
+   
+   pp.callbackEvent  := "SwitchMouseInvert"
+   pp.titleTxt       := "ingame_ui_confirm_mouse_inv_hdr"
+   pp.messageTxt     := "ingame_ui_confirm_mouse_invert" //"Do you want to " + p.widget.text + "?"
+   pp.mbType         := $uiEnums.MB_TYPE_NO_YES
+   GenerateEvent("onSettingsDialogRequest", pp)
+   return false
+end
+
+func SwitchMouseInvert(p:params): bool
+   Props.global_mouse := isMouse
+   $hf2pEngine.SuppressIngameInput(inpLock)
+   if (p.isOK) 
+      $UiIngame.mouse_inversion.state.Set($uiEnums.INGAME_MOUSE_DLG_STATE_CLOSED_YES)
+      Log("ui~hf2p_ingame_menu", "SwitchMouseInvert Ok")
+   else
+      $UiIngame.mouse_inversion.state.Set($uiEnums.INGAME_MOUSE_DLG_STATE_CLOSED_NO)
+      Log("ui~hf2p_ingame_menu", "SwitchMouseInvert NO")
+   end   
+   return false
+end
+
+var loadoutDebug : bool = false
+//comment for safety
+global event uiDbgKey52()
+   var i          : int
+   var isVisible  : bool = ! loadoutDebug
+   var isMouse    : bool = false
+   
+   for i := 0 to Widgets.loadoutScreen.GetChildCount() - 1
+      Widgets.loadoutScreen.GetChild(i).Props.visible := false
+   end
+   if (isVisible)
+      Widgets.loadoutScreen.KillerInfo.ShowKillerInfo(-2)
+   end
+   Widgets.loadoutScreen.KillerInfo.visible := isVisible
+   Widgets.loadoutScreen.visible := isVisible
+
+   Props.global_mouse := isMouse
+   $hf2pEngine.SuppressIngameInput(isMouse)
+   
+   loadoutDebug := ! loadoutDebug
+end
+
+end

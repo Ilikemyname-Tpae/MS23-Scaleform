@@ -1,0 +1,217 @@
+classes = {
+	attachPointProfile = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachPointProfile" 
+		lib     = profile_lib 
+
+		elements {
+			placeHolder {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	goldIcon = {
+		__type = "ui_widget_container"
+
+		symbol  = "goldIcon" 
+		lib     = profile_lib 
+	}
+
+	gpCostRename = {
+		__type = "ui_widget_container"
+
+		symbol  = "gpCostRename" 
+		lib     = profile_lib 
+		propMapping {
+			goldTfRename = {
+				mapping = "goldTfRename.text"
+			}
+		}
+	}
+
+	hf2pLoadoutBtn = {
+		__type = "ui_widget_container"
+
+		symbol  = "hf2pLoadoutBtn" 
+		lib     = profile_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 24.75
+				y         = 12.55
+				animated  = true
+			} 
+		}
+	}
+
+	hf2pRenameBtn = {
+		__type = "ui_widget_button"
+
+		symbol  = "hf2pRenameBtn" 
+		lib     = profile_lib 
+
+		elements {
+			tf {
+				__type = "ui_widget_container"
+
+				propMapping {
+					textField = {
+						mapping = "textField.text"
+					}
+				}
+				x         = 0.25
+				y         = 7.5
+				animated  = true
+			} 
+			purchaseBg {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 43.65
+
+				elements {
+					prisRename {
+						__type = "ui_profile_lib::gpCostRename"
+						x         = 3.2
+						y         = 1.5
+					} 
+				}
+			} 
+		}
+	}
+
+	profileCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "profileCont" 
+		lib     = profile_lib 
+		propMapping {
+			achievTf = {
+				mapping = "achievTf.text"
+			}
+			matchTf = {
+				mapping = "matchTf.text"
+			}
+			totalKillsTf = {
+				mapping = "totalKillsTf.text"
+			}
+			allTimeTf = {
+				mapping = "allTimeTf.text"
+			}
+			rankTf = {
+				mapping = "rankTf.text"
+			}
+			lvlTf = {
+				mapping = "lvlTf.text"
+			}
+			timeTf = {
+				mapping = "timeTf.text"
+			}
+			kdTf = {
+				mapping = "kdTf.text"
+			}
+			wlTf = {
+				mapping = "wlTf.text"
+			}
+			scoreTf = {
+				mapping = "scoreTf.text"
+			}
+			subHead2 = {
+				mapping = "subHead2.text"
+			}
+			primaryKillsTf = {
+				mapping = "primaryKillsTf.text"
+			}
+			primaryAccTf = {
+				mapping = "primaryAccTf.text"
+			}
+			secKillsTf = {
+				mapping = "secKillsTf.text"
+			}
+			secAccTf = {
+				mapping = "secAccTf.text"
+			}
+			grenadeKillsTf = {
+				mapping = "grenadeKillsTf.text"
+			}
+			grenadeAccTf = {
+				mapping = "grenadeAccTf.text"
+			}
+			subHead1 = {
+				mapping = "subHead1.text"
+			}
+			userName = {
+				mapping = "userName.text"
+			}
+			totalTf = {
+				mapping = "totalTf.text"
+			}
+		}
+
+		elements {
+			playerCont {
+				__type = "ui_widget_container"
+
+				x         = 504.5
+				y         = 157.5
+			} 
+			attachGun1 {
+				__type = "ui_profile_lib::attachPointProfile"
+				x         = 175
+				y         = 195.5
+			} 
+			attachGun2 {
+				__type = "ui_profile_lib::attachPointProfile"
+				x         = 175
+				y         = 299.5
+			} 
+			attachGun3 {
+				__type = "ui_profile_lib::attachPointProfile"
+				x         = 175
+				y         = 403.5
+			} 
+			renameButton {
+				__type = "ui_profile_lib::hf2pRenameBtn"
+				x         = 94.5
+				y         = 487
+			} 
+			sexChangeButton {
+				__type = "ui_profile_lib::hf2pRenameBtn"
+				x         = 287.55
+				y         = 487
+			} 
+			renameCountCont {
+				__type = "ui_widget_container"
+
+				propMapping {
+					renamesLblTf = {
+						mapping = "renamesLblTf.text"
+					}
+					renamesCountTf = {
+						mapping = "renamesCountTf.text"
+					}
+				}
+				x         = 92
+				y         = 566.95
+			} 
+			attachEmblem {
+				__type = "ui_profile_lib::attachPointProfile"
+				x         = 515.5
+				y         = 169.5
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

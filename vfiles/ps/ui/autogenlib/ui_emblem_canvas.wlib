@@ -1,0 +1,23 @@
+classes = {
+	EE_Container = {
+		__type = "ui_widget_container"
+
+		symbol  = "EE_Container" 
+		lib     = emblem_canvas 
+	}
+
+	EE_ContainerCenter = {
+		__type = "ui_widget_container"
+
+		symbol  = "EE_ContainerCenter" 
+		lib     = emblem_canvas 
+	}
+
+	saber_ui_menu_LibraryManager = {
+		__type = "ui_widget_container"
+
+		symbol  = "saber.ui.menu.LibraryManager" 
+		lib     = emblem_canvas 
+	}
+}
+__type = "ui_widget_lib"

@@ -1,0 +1,440 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.emblem_editor
+
+class UiEmblemEditor : UiWidgetContainer
+ 
+var color_id : int = -1                     
+
+// If we layers have been changed we should rebuild canvas
+func OnUndo() : void
+   if ($hf2pEmblemEditor.CanUndo())
+      $hf2pEmblemEditor.Undo()
+   end
+end
+
+func OnRedo() : void
+   if ($hf2pEmblemEditor.CanRedo())
+      $hf2pEmblemEditor.Redo()
+   end
+end
+
+func OnFlipX() : void
+   Widgets.canvasContainer.Props.layerGismo.Flip(-1, 1)
+end
+
+func OnFlipY() : void
+   Widgets.canvasContainer.Props.layerGismo.Flip(1, -1)   
+end
+
+
+func OnLoad() : void
+   var type : int = 0
+   $hf2pEmblemEditor.LoadEmblemFromPlayerProfiler(type)
+end
+
+func OnSave() : void
+   var type : int = 0
+   $hf2pEmblemEditor.SaveEmblemToPlayerProfiler(type)
+end
+
+func OnHelp() : void
+   Widgets.helpContainer.Props.visible := true
+end
+
+func OnNewColorSelected(p : params) : bool 
+   var current_layer_id : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+   Log("ui~emblemEditor", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ New Color Index = " + (string)(p.index))
+   if (current_layer_id >= 0)
+      $hf2pEmblemEditor.ChangeLayerColor(current_layer_id, (int)(p.index))
+   end
+
+   return false
+end
+
+func OnNewSymbol(p : params) : bool
+   Log("ui~emblemEditor", "OnNewSymbol: p  " + Params2Str(p))
+   if (color_id < 0)
+      color_id := 0
+   end
+   $hf2pEmblemEditor.AddLayer((int)(p.index), (float)(p.x), (float)(p.y), color_id)
+   return false
+end      
+
+func OnMoveLeft(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+  
+   if (currentLayer != -1)
+      var layer : params = $hf2pEmblemEditor.GetCurrentLayer()
+
+      if Widgets.canvasContainer.CanMoveSymbol((int)(layer.x - 5), (int)(layer.y))
+         $hf2pEmblemEditor.MoveLayer(currentLayer, (int)(layer.x - 5), (int)(layer.y))
+      end
+   end
+   
+   return false
+end
+
+func OnMoveRight(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+  
+   if (currentLayer != -1)
+      var layer : params = $hf2pEmblemEditor.GetCurrentLayer()
+
+      if Widgets.canvasContainer.CanMoveSymbol((int)(layer.x + 5), (int)(layer.y))
+         $hf2pEmblemEditor.MoveLayer(currentLayer, (int)(layer.x + 5), (int)(layer.y))
+      end
+   end
+   
+   return false
+end
+
+
+func OnMoveUp(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+  
+   if (currentLayer != -1)
+      var layer : params = $hf2pEmblemEditor.GetCurrentLayer()
+
+      if Widgets.canvasContainer.CanMoveSymbol((int)(layer.x), (int)(layer.y - 5))
+         $hf2pEmblemEditor.MoveLayer(currentLayer, (int)(layer.x), (int)(layer.y - 5))
+      end
+   end
+   
+   return false
+end
+       
+func OnMoveDown(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+  
+   if (currentLayer != -1)
+      var layer : params = $hf2pEmblemEditor.GetCurrentLayer()
+
+      if Widgets.canvasContainer.CanMoveSymbol((int)(layer.x), (int)(layer.y + 5))
+         $hf2pEmblemEditor.MoveLayer(currentLayer, (int)(layer.x), (int)(layer.y + 5))
+      end
+   end
+   
+   return false
+end
+
+func OnRotateLeft(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+  
+   if (currentLayer != -1)
+      var layer : params = $hf2pEmblemEditor.GetCurrentLayer()
+
+      if Widgets.canvasContainer.CanMoveSymbol((int)(layer.x), (int)(layer.y))
+         $hf2pEmblemEditor.RotateLayer(currentLayer, (int)(layer.angle - 1))
+      end
+   end
+   
+   return false
+end
+       
+func OnRotateRight(p : params) : bool
+   var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+  
+   if (currentLayer != -1)
+      var layer : params = $hf2pEmblemEditor.GetCurrentLayer()
+
+      if Widgets.canvasContainer.CanMoveSymbol((int)(layer.x), (int)(layer.y))
+         $hf2pEmblemEditor.RotateLayer(currentLayer, (int)(layer.angle + 1))
+      end
+   end
+   
+   return false
+end
+
+func Setup()
+   var val : int = 1
+   
+   Widgets.rightContainer.SetGridItemsByTabIndex(val)
+   Widgets.leftContainer.Init()
+   Widgets.helpContainer.Init()
+   Widgets.paliteContainer.SetPaliteData()
+   Widgets.canvasContainer.SetNormalMode()
+end
+
+func LeaveEmblemEditorDialog(p:params): bool
+   var pp:params
+   pp.callbackEvent  := "LeaveEmblemEditorApply"
+   pp.titleTxt       := "eeditor_leave_emblem_editor"
+   pp.messageTxt     := "eeditor_do_you_really_exit"
+   Widgets.messageBoxExit.OpenDialog(pp)
+   return false
+end
+
+func SaveEmblemEditorDialog(p:params): bool
+   var pp:params
+   pp.callbackEvent  := "SaveEmblemEditorApply"
+   pp.titleTxt       := "eeditor_leave_emblem_editor"
+   pp.messageTxt     := "eeditor_save_emblem"
+   Widgets.messageBoxSave.OpenDialog(pp)
+   return false
+end
+
+func LeaveEmblemEditorApply(p:params): bool
+   if (p.isOK) 
+      SaveEmblemEditorDialog(p)
+   end
+   return false
+end
+
+func SaveEmblemEditorApply(p:params): bool
+   if (p.isOK)
+Log("ui~emblemEditor", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EMBLEM SAVED") 
+      OnSave()
+   end
+Log("ui~emblemEditor", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EVENT CREATED")
+   GenerateEvent("closeEmblemEditor")
+   return false
+end
+
+
+func OnCloseEmblemEditor(p:params): bool
+   return LeaveEmblemEditorDialog(p)
+end
+
+func OnStartEmblemDrag(p: params) : bool
+   var mousePos            : params = GetMousePos()
+   var defColor            : params   
+   var emblemLayerDrag     : * = Widgets.canvasContainer.Props.emblemLayerDrag
+   var emblemItemCont      : * = emblemLayerDrag.itemCont
+   
+   defColor.r              := 128
+   defColor.g              := 128
+   defColor.b              := 128
+
+   color_id := color_id + 1
+   if (color_id >=30)
+      color_id := color_id - 30
+   end
+      
+   emblemItemCont.pic      := Widgets.canvasContainer.GetSymbolNameById(p.id)
+   emblemItemCont.color    := $hf2pEmblemEditor.GetColorById(color_id)
+   emblemItemCont.scaleX   := 0.5
+   emblemItemCont.scaleY   := 0.5
+   emblemItemCont.x   := -emblemItemCont.Props.width / 2
+   emblemItemCont.y   := -emblemItemCont.Props.height / 2
+      
+   var newMousePos : params = Widgets.canvasContainer.GetLocalMouseCoordsByGlobalPos(mousePos.x, mousePos.y) 
+   emblemLayerDrag.x       := newMousePos.x
+   emblemLayerDrag.y       := newMousePos.y
+   emblemLayerDrag.layer   := 1000
+   
+   Widgets.canvasContainer.GetWidget("emblemLayerDrag").canvasToDrop := Widgets.canvasContainer.GetWidget("emblemCanvas")
+   Widgets.canvasContainer.GetWidget("emblemLayerDrag").index        := p.id
+   emblemLayerDrag.StartDragManual()
+   return false
+end
+
+func OnStartLayerDrag(p: params) : bool
+   Widgets.leftContainer.GetWidget("elementLayerDrag").current_index    := p.id
+   Widgets.leftContainer.GetWidget("elementLayerDrag").element_height   := p.height 
+   
+   var scroll_pos : int = (int)(Widgets.leftContainer.GetWidget("leftList").Props.scrollPosition)
+   Widgets.leftContainer.GetWidget("elementLayerDrag").start_y          := p.startY - scroll_pos * p.height
+   Widgets.leftContainer.GetWidget("elementLayerDrag").Props.y        := p.startY + Widgets.leftContainer.GetWidget("leftList").Props.y - p.height / 2 - scroll_pos * p.height 
+   Widgets.leftContainer.GetWidget("elementLayerDrag").Props.x        := 8
+
+   var elementLayerDrag     : * = Widgets.leftContainer.Props.elementLayerDrag
+   var elementItemCont      : * = elementLayerDrag.itemCont
+
+   elementItemCont.pic     := p.pic
+   elementItemCont.scaleX  := p.scaleX
+   elementItemCont.scaleY  := p.scaleY
+   elementItemCont.visible := true
+   elementItemCont.color   := p.color
+   elementLayerDrag.Props.labelText.tf.text := p.text
+   elementLayerDrag.visibleCheckbox.selected  := p.check
+
+   Widgets.leftContainer.GetWidget("elementLayerDrag").StartDragManual()
+   return false
+end
+
+handle OnEnteringState("Initial")
+   Log("ui~emblemEditor", "Emblem Editor OnEntering Initial!!!")
+end
+
+handle OnEnterState("Initial")
+   Log("ui~emblemEditor", "Emblem Editor onEnter Initial!!!")
+   Set("visible", false)            
+end
+
+handle OnEnteringState("Visible")
+   Log("ui~emblemEditor", "Emblem Editor OnEntering VISIBLE!!!")         
+   Setup()         
+   Set("visible", true)
+   OnLoad()
+end
+
+handle OnEnterState("Visible")
+   Log("ui~emblemEditor", "Emblem Editor onEnter VISIBLE!!!")         
+end
+
+global event OnHotKeyPress(p : params)
+   if (Props.visible == false)
+      return
+   end
+   
+   var hot_action : string = $hf2pEmblemEditor.HotKeyActionRemap(p.hot_combine)
+
+   if (hot_action == "Move right")
+      OnMoveRight()
+      return
+   end
+
+   if (hot_action == "Move left")
+      OnMoveLeft()
+      return
+   end
+
+   if (hot_action == "Move up")
+      OnMoveUp()
+      return
+   end
+
+   if (hot_action == "Move down")
+      OnMoveDown()
+      return
+   end  
+
+   if (hot_action == "Rotate right")
+      OnRotateRight()
+      return
+   end
+
+   if (hot_action == "Rotate left")
+      OnRotateLeft()
+      return
+   end     
+
+   if (hot_action == "Flip x")
+      OnFlipX()
+      return
+   end
+
+   if (hot_action == "Flip y")
+      OnFlipY()
+      return
+   end
+
+   if (hot_action == "Undo")
+      OnUndo()
+      return
+   end
+
+   if (hot_action == "Redo")
+      OnRedo()
+      return
+   end
+
+   if (hot_action == "Duplicate layer")
+      $hf2pEmblemEditor.CloneCurrentLayer()
+      return
+   end
+
+   if (hot_action == "Clear all layers")
+      $hf2pEmblemEditor.RemoveAllLayers()
+      return
+   end
+
+   if (hot_action == "Delete layer")
+      $hf2pEmblemEditor.RemoveCurrentLayer()
+      return
+   end
+
+   if (hot_action == "Move layer up")
+      Widgets.leftContainer.OnUpButtonClicked()
+      return
+   end
+
+   if (hot_action == "Move layer down")
+      Widgets.leftContainer.OnDownButtonClicked()
+      return
+   end
+
+   if (hot_action == "Hide")
+      var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+      var layer : params = $hf2pEmblemEditor.GetCurrentLayer()
+      $hf2pEmblemEditor.SetLayerVisible(currentLayer, !(layer.visible)) 
+      return
+   end 
+
+   if (hot_action == "Save and assign")
+      var type : int = 0
+      $hf2pEmblemEditor.SaveEmblemToPlayerProfiler(type)
+      return
+   end
+
+   if (hot_action == "Load")
+      var type : int = 0
+      $hf2pEmblemEditor.LoadEmblemFromPlayerProfiler(type)  
+      return
+   end  
+
+   if (hot_action == "Exit")
+      OnCloseEmblemEditor()
+      return
+   end
+
+   if (hot_action == "Add layer")
+      var pp : params
+      pp.index := 0
+      pp.x := Widgets.canvasContainer.Props.width / 2
+      pp.y := Widgets.canvasContainer.Props.height / 2
+      OnNewSymbol(pp)
+      return
+   end
+
+   if (hot_action == "Grid on/off")
+      if (Widgets.canvasContainer.GetWidget("emblemBckg").Props.visible)
+         Widgets.canvasContainer.GetWidget("emblemBckg").Props.visible := false
+         Widgets.canvasContainer.GetWidget("emblemBckgWhite").Props.visible := true
+      else
+         Widgets.canvasContainer.GetWidget("emblemBckg").Props.visible := true
+         Widgets.canvasContainer.GetWidget("emblemBckgWhite").Props.visible := false
+      end
+
+      return
+   end
+
+   if (hot_action == "Layer selection up")
+      var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+
+      if (currentLayer != -1) and ((currentLayer+1) < $hf2pEmblemEditor.GetNumLayers())
+         $hf2pEmblemEditor.SetCurrentLayerIndex(currentLayer + 1)
+      end
+      return
+   end
+
+   if (hot_action == "Layer selection down")
+      var currentLayer : int = $hf2pEmblemEditor.GetCurrentLayerIndex()
+
+      if (currentLayer > 0)
+         $hf2pEmblemEditor.SetCurrentLayerIndex(currentLayer - 1)
+      end
+      return
+   end
+
+   if (hot_action == "Select tab right")
+      if (Widgets.rightContainer.tabsRightStepper.selection + 1 < 4)
+         Widgets.rightContainer.tabsRightStepper.selection := Widgets.rightContainer.tabsRightStepper.selection + 1
+      else
+         Widgets.rightContainer.tabsRightStepper.selection := 0
+      end
+      return
+   end
+
+   if (hot_action == "Select tab left")
+      if (Widgets.rightContainer.tabsRightStepper.selection - 1 >= 0)
+         Widgets.rightContainer.tabsRightStepper.selection := Widgets.rightContainer.tabsRightStepper.selection - 1
+      else
+         Widgets.rightContainer.tabsRightStepper.selection := 3
+      end
+      return
+   end
+end
+end

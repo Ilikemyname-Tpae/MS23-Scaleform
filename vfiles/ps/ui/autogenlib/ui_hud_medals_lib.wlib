@@ -1,0 +1,294 @@
+classes = {
+	FragListItem = {
+		__type = "ui_widget_container"
+
+		symbol  = "FragListItem" 
+		lib     = hud_medals_lib 
+
+		elements {
+			content {
+				__type = "ui_hud_medals_lib::FragListItemTextContainer"
+				x         = 0
+				y         = 10
+				animated  = true
+			} 
+		}
+	}
+
+	FragListItemMove = {
+		__type = "ui_widget_container"
+
+		symbol  = "FragListItemMove" 
+		lib     = hud_medals_lib 
+
+		elements {
+			item {
+				__type = "ui_hud_medals_lib::FragListItem"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	FragListItemTextContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "FragListItemTextContainer" 
+		lib     = hud_medals_lib 
+		propMapping {
+			tfText = {
+				mapping = "tfText.text"
+			}
+		}
+	}
+
+	HudMedalsContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "HudMedalsContainer" 
+		lib     = hud_medals_lib 
+
+		elements {
+			scoreEventsList {
+				__type = "ui_hud_medals_lib::hudMedalsEventsList"
+				x         = 92
+				y         = 300
+			} 
+			medalsContainer {
+				__type = "ui_widget_container"
+
+				x         = 90
+				y         = 88
+
+				elements {
+					medalsContent {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+
+						elements {
+							medal3 {
+								__type = "ui_hud_medals_lib::medal_container"
+								x         = 0
+								y         = 0
+								animated  = true
+							} 
+							medal2 {
+								__type = "ui_hud_medals_lib::medal_container"
+								x         = 0
+								y         = 0
+								animated  = true
+							} 
+							medal1 {
+								__type = "ui_hud_medals_lib::medal_container"
+								x         = 0
+								y         = 98
+								animated  = true
+							} 
+						}
+						animated  = true
+					} 
+				}
+			} 
+			scoringEventTotals {
+				__type = "ui_hud_medals_lib::ScoringEventsTotal"
+				x         = -140.55
+				y         = 288.5
+			} 
+		}
+	}
+
+	hudMedalsEventsList = {
+		__type = "ui_widget_container"
+
+		symbol  = "hudMedalsEventsList" 
+		lib     = hud_medals_lib 
+
+		elements {
+			item0 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 0
+			} 
+			item1 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 26
+			} 
+			item2 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 52
+			} 
+			item3 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 78
+			} 
+			item6 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 156
+			} 
+			item4 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 104
+			} 
+			item5 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 130
+			} 
+			item7 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 182
+			} 
+			item8 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 208
+			} 
+			item9 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 234
+			} 
+			item10 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 260
+			} 
+			item11 {
+				__type = "ui_hud_medals_lib::FragListItemMove"
+				x         = 0
+				y         = 286
+			} 
+		}
+	}
+
+	medal_attach = {
+		__type = "ui_widget_image"
+
+		symbol  = "medal_attach" 
+		lib     = hud_medals_lib 
+		propMapping {
+			medalTxt = {
+				mapping = "medalTxt.text"
+			}
+		}
+	}
+
+	medal_container = {
+		__type = "ui_widget_container"
+
+		symbol  = "medal_container" 
+		lib     = hud_medals_lib 
+		propMapping {
+			medalName = {
+				mapping = "medalName.text"
+			}
+		}
+
+		elements {
+			medalPic {
+				__type = "ui_hud_medals_lib::medal_attach"
+				x         = 46
+				y         = 46
+			} 
+		}
+	}
+
+	OrangeGlow = {
+		__type = "ui_widget_container"
+
+		symbol  = "OrangeGlow" 
+		lib     = hud_medals_lib 
+	}
+
+	OrangeGlowCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "OrangeGlowCont" 
+		lib     = hud_medals_lib 
+
+		elements {
+			orangeGlow {
+				__type = "ui_hud_medals_lib::OrangeGlow"
+				x         = -242
+				y         = 122
+			} 
+		}
+	}
+
+	ScoringEventsTotal = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScoringEventsTotal" 
+		lib     = hud_medals_lib 
+
+		elements {
+			scoringTotalAnimCont {
+				__type = "ui_hud_medals_lib::ScoringEventsTotalAnim"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	ScoringEventsTotalAnim = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScoringEventsTotalAnim" 
+		lib     = hud_medals_lib 
+
+		elements {
+			totalsAnimCont {
+				__type = "ui_hud_medals_lib::ScoringEventTotalAnimInCont"
+				x         = -2.05
+				y         = -1
+				animated  = true
+			} 
+		}
+	}
+
+	ScoringEventsTotalAnimTxt = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScoringEventsTotalAnimTxt" 
+		lib     = hud_medals_lib 
+		propMapping {
+			txt = {
+				mapping = "txt.text"
+			}
+		}
+
+		elements {
+			orangeGlow {
+				__type = "ui_hud_medals_lib::OrangeGlowCont"
+				x         = 225
+				y         = -115
+			} 
+		}
+	}
+
+	ScoringEventTotalAnimInCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "ScoringEventTotalAnimInCont" 
+		lib     = hud_medals_lib 
+
+		elements {
+			scoreTxt {
+				__type = "ui_hud_medals_lib::ScoringEventsTotalAnimTxt"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+}
+__type = "ui_widget_lib"

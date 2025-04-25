@@ -1,0 +1,182 @@
+import ssl.observables
+import ssl.lib.ui.ui_bi_logger
+
+class UiEventState
+   var isTerminated : bool = false
+   
+   func UiEventState()
+   end
+   
+   func IsTerminated() : bool
+      return isTerminated
+   end
+   
+   func SetIsTerminated()
+      isTerminated := true
+   end
+end
+
+native class UiWidget
+   event OnChangeState(name: string)
+   event OnChangeStateAny()
+   event OnEnteringState(name: string)
+   event OnEnteringStateAny(name: string)
+   event OnEnterState(name: string)
+   event OnExitState(name: string)
+   event OnExitStateAny(name: string)
+   event OnLeavingState(name: string)
+   event OnLeavingStateAny(name: string)
+   event OnBClick()
+   event OnInit()
+   event OnTerm()
+   event OnActivate()
+   event OnDeactivate()
+   event OnBindingsActivate()
+   event OnAdvance(dt:float)
+   native func ActivateBindingsManual(recursive : bool = true)
+   native func DeactivateBindingsManual(recursive : bool = true)
+   native func IsBindingsActivated() : bool
+   native func Breakpoint(comment: string)
+   native func IsChangingState(): bool
+   native func SetModal()
+   native func GetName(): string
+   native func GetWidget(name: string): *
+   native func GotoAndPlay(frameId: *): bool
+   native func GotoAndStop(frameId: *): bool
+   native func GetStateName(): string
+   native func SetStateName(stateName: string): bool
+   native func ForceFinishStateChange(): bool
+   native func SetParm(parmName: string, propVal: *)
+   native func Set(propName: string, propVal: *): bool
+   native func Get(propName: string, subscribe: bool = false): *
+   native func Activate(isInitial: bool = false, isForce: bool = false, level: int = 0): bool
+   native func Deactivate(): bool
+   native func Detach(deactivate: bool): bool
+   native func AttachInstanceToSSL(pWidget: object, name: string, activated: bool): bool
+   native func AttachToSSL(pWidget: object, activated: bool): bool
+   native func AddTween(propName: string, propVal: float, duration: float, fadeType: string, tweenId:int = 1)
+   native func AddTweenCb(callbackFuncName: string, p:params, tweenId:int = 1)
+   native func RemTweens()
+   native func CreateObject(type: string, name: string): object
+   native func GenerateEvent(eventId: string, p: params = null) : bool
+   native func GenerateEventTargeted(eventId: string, p: params, target:*) : bool
+   native func GetChildCount(): int
+   native func GetChild(idx:int): *
+   native func GetChildName(idx:int): string
+   native func GetLayer(): string
+   native func SetLayer(layerId:string): bool
+   native func GetLayerOffset(layerId:string): int
+   native func SetLayerOffset(layerId:string, offset:int): bool
+   native func GetMaxLayerOffset(): int
+   native func GetMinLayerOffset(): int
+   native func IsUnputLocked(): bool
+   native func LockInput(isLocked: bool): bool
+   native func SetFocus()
+   native func GetFocus(): bool
+   native func SaveFocus()
+   native func RestoreFocus()
+   native func ClearFocus()
+   native func ProcessHotKey(p:params): bool
+	native func RemoveChild(childIdx : int)
+   native func FindAlias(alias: string): *
+	native func EnableInput(isInputEnabled: bool): bool
+	native func StartDragManual(): bool
+	native func EndDragManual(isSuccess:bool): bool
+	native func StartDrag(): *
+	native func EndDrag(isSuccess:bool)
+	native func CanDrop(w: object, x: float, y: float):bool
+	native func AcceptDrop(w: object, x: float, y: float)
+	native func HitTestPoint(x:float, y: float, useBbox: bool = true): bool
+	native func HitTestObject(pWidget:object, useBbox: bool = true): bool
+	native func GetMousePos(): params
+   native func GetMousePosLocal(): params
+   native func StartDefaultBlinking(startTime:float = 0, blinkSpeed:float = 1)
+   native func StopBlinking()
+   native func CloseContextMenu() : bool
+   native func GetCurrentPopup() : *
+   native func IsChildOf(_parent : object) : bool
+
+   var isChangingState : ObservableProperty = $OM.Property(false)
+   
+   // ssl-only
+   func IsChangingStateInProgress() : bool
+      return (bool)isChangingState.Get()
+   end
+   var Widgets : params
+   var Props   : *
+   
+   func GetBoundingRect(includeInvisible : bool = false) : params
+      var childBound : params      
+      var bound      : params
+      var isFilled   : bool = false
+            
+      var i : int
+      for i := 0 to GetChildCount() - 1
+         if (includeInvisible or GetChild(i).Props.visible)
+            childBound := GetChild(i).GetBoundingRect(includeInvisible)
+            var cx : float = GetChild(i).Props.x
+            var cy : float = GetChild(i).Props.y
+            childBound.x1 := childBound.x1 + cx
+            childBound.y1 := childBound.y1 + cy
+            childBound.x2 := childBound.x2 + cx
+            childBound.y2 := childBound.y2 + cy
+            if (isFilled == false)
+               isFilled := true
+               bound.x1 := childBound.x1
+               bound.x2 := childBound.y1
+               bound.y1 := childBound.x2
+               bound.y2 := childBound.y2
+            else
+               if (childBound.x1 < bound.x1)
+                  bound.x1 := childBound.x1
+               end
+               if (childBound.x2 > bound.x2)
+                  bound.x2 := childBound.x2
+               end
+               if (childBound.y1 < bound.y1)
+                  bound.y1 := childBound.y1
+               end
+               if (childBound.y2 > bound.y2)
+                  bound.y2 := childBound.y2
+               end
+            end
+         end
+      end
+      
+      if (isFilled == false)
+         bound.x1 := 0
+         bound.y1 := 0
+         bound.x2 := bound.x1 + Props.width
+         bound.y2 := bound.y1 + Props.height
+         if (bound.x1 > bound.x2)
+            var t : float = bound.x1
+            bound.x1 := bound.x2
+            bound.x2 := t
+         end
+         if (bound.y1 > bound.y2)
+            var t : float = bound.y1
+            bound.y1 := bound.y2
+            bound.y2 := t
+         end
+      end
+      
+      return bound
+   end
+   
+   func GetDC() : *
+      return Get("DC")
+   end
+   
+   func GetParentWidget() : *
+      return GetWidget("_parent")
+   end
+   
+   func SetStateNameSafe(stateName : string) : bool
+      var ret : bool = false
+      if (GetStateName() != stateName and !IsChangingStateInProgress())
+         ret := true
+         SetStateName(stateName)
+      end
+      return ret
+   end
+end

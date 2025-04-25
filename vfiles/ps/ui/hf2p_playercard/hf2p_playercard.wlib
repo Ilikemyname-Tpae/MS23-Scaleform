@@ -1,0 +1,332 @@
+classes   =   {
+   playerCard   =   {
+      elements   =   {
+         nameplateAttach   =   {
+            elements   =   {
+               DefaultNameplate   =   {
+                  mouseEnabled   =   False
+                  mouseChildren   =   False
+                  bindings   =   {
+                     uid   =   {
+                        binding   =   "{(#parent).uid.value}"
+                     }
+                  }
+                  __type   =   "hf2p_nameplate::DefaultNameplate"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         stats   =   {
+            elements   =   {
+               name1   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'profile_ui_rank'}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               name2   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{''}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               name3   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'profile_ui_kills'}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               name4   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'profile_ui_wins'}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               name5   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'profile_ui_time_all'}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               name6   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'profile_ui_score'}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               name7   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'lobby_roster_card_total_score'}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               value1   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'' + $UiGlobals.componentsUI[userData.base.level_id].name}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               value2   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{''}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               value3   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'' + userData.stats.kills}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               value4   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'' + userData.stats.games_won}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               value5   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'' + userData.stats.onlineTimeStr}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               value6   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{format : '%.1f', a0 = userData.stats.wp_per_game}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+               value7   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     text   =   {
+                        binding   =   "{'' + userData.stats.wp}"
+                     }
+                  }
+                  __type   =   "ui_widget_text"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!isWaitingStats}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         renderAttach   =   {
+            x   =   12
+            y   =   12
+            isBlinkable   =   True
+            fixed   =   False
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{canRender and !isWaitingStats}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         waitingCont   =   {
+            elements   =   {
+               statsAnim   =   {
+                  elements   =   {
+                     waitingInfo   =   {
+                        isBlinkable   =   True
+                        __type   =   "ui_activity_lib::rotatingWaitingCombined"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               visible   =   {
+                  binding   =   "{!canRender or isWaitingStats}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         flagCont   =   {
+            elements   =   {
+               flag   =   {
+                  isBlinkable   =   True
+                  bindings   =   {
+                     frame   =   {
+                        binding   =   "{teamStripeFrame}"
+                     }
+                     fullTint   =   {
+                        binding   =   "{flagTint}"
+                     }
+                     visible   =   {
+                        binding   =   "{false}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgAttach   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{GetRosterCardLabel()}"
+               }
+            }
+            __type   =   "ui_playercard_lib::playerCard_imageAttach"
+         }
+      }
+      __type   =   "ui_playercard_lib::playerCard"
+   }
+   playerCard_left   =   {
+      elements   =   {
+         renderAttach   =   {
+            elements   =   {
+               biped_render   =   {
+                  __type   =   "ui_rtts_container::rtts_user_card_biped_0"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         frame   =   {
+            binding   =   "{'left'}"
+         }
+      }
+      __type   =   "hf2p_playerCard::playerCard"
+   }
+   playerCard_right   =   {
+      elements   =   {
+         renderAttach   =   {
+            elements   =   {
+               biped_render   =   {
+                  __type   =   "ui_rtts_container::rtts_user_card_biped_1"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         frame   =   {
+            binding   =   "{'right'}"
+         }
+      }
+      __type   =   "hf2p_playerCard::playerCard"
+   }
+   ProfilePlayerCard   =   {
+      elements   =   {
+         nameplateAttach   =   {
+            elements   =   {
+               DefaultNameplate   =   {
+                  elements   =   {
+                     iconAttach   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{(:DC2).GetUserEmblemOverride()}"
+                           }
+                        }
+                        __type   =   "ui_nameplate_lib::nameplate_attachPoint"
+                     }
+                     bgHighlightCont   =   {
+                        elements   =   {
+                           bgHighlightAttach   =   {
+                              bindings   =   {
+                                 pic   =   {
+                                    binding   =   "{(:DC2).GetUserLabelOverride()}"
+                                 }
+                              }
+                              __type   =   "ui_nameplate_lib::nameplate_attachPoint"
+                           }
+                        }
+                        __type   =   "ui_widget_container"
+                     }
+                     bgAttach   =   {
+                        bindings   =   {
+                           pic   =   {
+                              binding   =   "{(:DC2).GetUserLabelOverride()}"
+                           }
+                        }
+                        __type   =   "ui_nameplate_lib::nameplate_attachPoint"
+                     }
+                  }
+                  __type   =   "hf2p_nameplate::DefaultNameplate"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         flagCont   =   {
+            elements   =   {
+               flag   =   {
+                  bindings   =   {
+                     fullTint   =   {
+                        binding   =   "{(:DC2).GetFlagColorOverride()}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         bgAttach   =   {
+            bindings   =   {
+               pic   =   {
+                  binding   =   "{(:DC2).GetUserBigLabelOverride()}"
+               }
+            }
+            __type   =   "ui_playercard_lib::playerCard_imageAttach"
+         }
+         renderAttach   =   {
+            elements   =   {
+               biped_render   =   {
+                  __type   =   "ui_rtts_container::rtts_user_card_biped_2"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         DC2   =   {
+            binding   =   "{new: 'ui.hf2p_playerCard.hf2p_playerCard.ProfilePlayerCardVM'}"
+         }
+      }
+      __type   =   "hf2p_playerCard::playerCard_right"
+   }
+}
+__type   =   "ui_wlib"

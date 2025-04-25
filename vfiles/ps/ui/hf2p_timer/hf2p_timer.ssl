@@ -1,0 +1,353 @@
+import ssl.lib.logging
+import ssl.lib.events
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ui.ui_party_monitor
+import ui.ui_matchmaking
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+
+class UiTimer : UiWidgetContainer
+
+var   dotsText       :  string   = ""
+var   baseText       :  string   = ""
+var   isDotsLoop     :  bool     = false
+
+func ResetDots(_startVal: string = "")
+   dotsText := _startVal
+end
+
+func UpdateDots()
+   if (dotsText == "")
+      dotsText := "."
+   else if (dotsText == ".")
+      dotsText := ".."
+   else if (dotsText == "..")
+      dotsText := "..."
+   else if (dotsText == "...")
+      dotsText := ""
+   end
+end
+
+func SetBaseText(_baseText: string = "")
+   baseText := _baseText
+   ResetDots("")
+   UpdateText()
+end
+
+func SetCaption1(_baseText: string = "")
+   Props.caption   := _baseText
+   Props.caption2  := ""
+   CenterTexts()
+end
+
+func CenterTexts()
+   var zeroX   : int = 72
+   var space   : int = 5
+   var textW1  : int = Props.captionW
+   var textW2  : int = Props.caption2W
+   var totalW  : int = textW1 + space
+   Props.captionX  := zeroX - totalW / 2
+   Props.caption2X := zeroX - totalW / 2 + textW1 + space
+end
+
+func UpdateText()
+   if (baseText != "")
+      Set("caption", baseText)
+      Set("caption2", dotsText)
+      Props.captionY  := 0
+      Props.caption2Y := 0
+      
+      CenterTexts()      
+   else
+      Set("caption", baseText)
+      Set("caption2", baseText)
+   end
+   
+   
+   if (isDotsLoop)
+      UpdateDots()
+      UpdateText() : 0.333, DOTS_LOOP
+   end
+end
+
+func StartDotsLoop()
+   StopDotsLoop()
+   isDotsLoop := true
+   UpdateText()
+end
+
+func StopDotsLoop()
+   isDotsLoop := false
+   delay kill, this, DOTS_LOOP
+   ResetDots("")
+   UpdateText()
+end
+
+func InitMatch()
+   SetCaption1("lobby_game_starts_in")
+   Set("time", "")
+   SetStateName("Active") 
+end
+
+handle OnEnterState("Active")
+   GenerateEvent("#TimerActive")
+end
+
+handle OnEnterState("Inactive")
+   StopDotsLoop()
+end
+
+func EnterLobby()
+   SetStateName("Active")  
+end
+   
+func IsActive(): bool
+   return GetStateName() == "Active"
+end
+
+func Reset()      
+   SetStateName("Inactive")
+   Set("caption", "")
+   StopDotsLoop()
+end
+
+func OnUpdateTimerCaption(p : params) : bool
+   StopDotsLoop()
+   SetBaseText(p.text)
+   if (!IsVoid(p.isDots) and p.isDots)
+      StartDotsLoop()
+   else
+      StopDotsLoop()
+   end
+   return false   
+end
+
+func SlidingScreenBlink(p : params) : bool
+   Widgets.flowButtons.StartDefaultBlinking(0.0)
+   return false
+end
+
+end
+
+class UiTimerVM
+   var   currentTime    : ObservableProperty = $OM.Property(0)
+   var   currentTimeStr : ObservableProperty = $OM.Property("")
+   var   isTimeVisible  : ObservableProperty = $OM.Calculated(this, "GetIsTimeVisible")
+   var   timerHeader    : ObservableProperty = $OM.Property("")
+   var   isVotingPhase  : ObservableProperty = $OM.Calculated(this, "GetIsVotingPhase")
+   var   timerState     : ObservableProperty = $OM.Property(0)
+   var   isShowTime     : ObservableProperty = $OM.Property(false)
+      
+   func Init()
+      $UiGlobals.lobby.state_timer.Subscribe(this, "UpdateTimerValue")
+      $UiGlobals.matchmaking.state_timer.Subscribe(this, "UpdateTimerValue")
+      $UiGlobals.lobby.state.Subscribe(this, "UpdateTimerStateVal")
+      $UiGlobals.matchmaking.state.Subscribe(this, "UpdateTimerStateVal")
+      $UiGlobals.timer.Subscribe(this, "UpdateTimerValue")
+      timerHeader.Subscribe(this, "UpdateTimerCaption")
+      timerState.Subscribe(this, "UpdateTimerState")
+   end
+   
+   func Term()
+      timerState.Unsubscribe(this, "UpdateTimerState")
+      timerHeader.Unsubscribe(this, "UpdateTimerCaption")
+      $UiGlobals.timer.Unsubscribe(this, "UpdateTimerValue")
+      $UiGlobals.matchmaking.state.Unsubscribe(this, "UpdateTimerStateVal")
+      $UiGlobals.matchmaking.state_timer.Unsubscribe(this, "UpdateTimerValue")
+      $UiGlobals.lobby.state.Unsubscribe(this, "UpdateTimerStateVal")
+      $UiGlobals.lobby.state_timer.Unsubscribe(this, "UpdateTimerValue")
+   end
+   
+   func TimerActive(p : params) : bool
+      UpdateTimerStateVal()
+      UpdateTimerValue()
+      return true
+   end
+   
+   func UpdateTimerCaption(val : *)
+      var p : params      
+      p.text   := (string)timerHeader.Get()
+      p.isDots := ! (bool)isShowTime.Get()
+      $sslWidgetMgr.GenerateEvent("UpdateTimerTexts", p)
+   end
+   
+   func UpdateTimerState(val : *)
+      var p : params
+      var state :  int = (int)timerState.Get()
+      state := 1
+   end
+   
+   func GetTimerState() : int
+      return (int)$UiGlobals.lobby.state.Get()
+   end
+   
+   func GetIsVotingPhase() : bool
+      var ret           : bool = false
+      var lobbyStateIdx : int = (int)$UiGlobals.lobby.state.Get()
+      var mmStateIdx    : int = (int)$UiGlobals.matchmaking.state.Get()
+      var voteVersion   : int = (int)$UiGlobals.lobby.vote_set_version.Get()
+      ret := lobbyStateIdx == $uiEnums.LOBBY_STATE_VOTING
+      if (lobbyStateIdx == $uiEnums.LOBBY_STATE_VOTING)
+         ret := true
+      end
+      
+      var pp : params
+      pp.isDots      := true
+      if (lobbyStateIdx == $uiEnums.LOBBY_STATE_NONE or lobbyStateIdx == $uiEnums.LOBBY_STATE_VOTING or lobbyStateIdx == $uiEnums.LOBBY_STATE_GAME_START_COUNTDOWN)
+         pp.isDots := false
+      end
+      if (mmStateIdx == $uiEnums.MATCHMAKING_STATE_NONE or mmStateIdx == $uiEnums.MATCHMAKING_STATE_WAITING_FOR_ENQUEUE or mmStateIdx == $uiEnums.MATCHMAKING_STATE_IN_QUEUE)
+         pp.isDots := false
+      end      
+      $UiGlobals.lobby.UpdateVoteSetLength()      
+      //$sslWidgetMgr.GenerateEvent("UpdateVotingMode", pp)      
+      
+      return ret
+   end   
+   
+   func GetCurrentTime() : int
+      var ret           : int = -1
+      var mmStateIdx    : int = (int)$UiGlobals.matchmaking.state.Get()
+      var lobbyStateIdx : int = (int)$UiGlobals.lobby.state.Get()
+      var currentTime   : int = (int)$UiGlobals.timer.Get()
+      var refTimer      : int = 0
+      
+      if (mmStateIdx != $uiEnums.MATCHMAKING_STATE_NONE)
+         if (mmStateIdx == $uiEnums.MATCHMAKING_STATE_IN_SESSION and lobbyStateIdx != $uiEnums.LOBBY_STATE_NONE)
+            if (lobbyStateIdx == $uiEnums.LOBBY_STATE_VOTING or lobbyStateIdx == $uiEnums.LOBBY_STATE_GAME_START_COUNTDOWN)
+               refTimer := (int)$UiGlobals.lobby.state_timer.Get()
+               ret      := refTimer
+            end            
+         else
+            refTimer := (int)$UiGlobals.matchmaking.state_timer.Get()
+            if (mmStateIdx == $uiEnums.MATCHMAKING_STATE_WAITING_FOR_ENQUEUE)
+               ret := refTimer - currentTime
+            elif (mmStateIdx == $uiEnums.MATCHMAKING_STATE_IN_QUEUE)
+               ret := currentTime - refTimer
+            end
+         end
+      end      
+      
+      if (ret == 0)
+         ret := -1
+      end
+
+      if (! ((bool)isShowTime.Get()))
+         ret := -1
+      end
+      
+      return ret
+   end
+   
+   func MakeTimerString(t: int): string
+      var minutes: int = t / 60
+      var seconds: int = t - minutes*60
+      var secStr: string
+      if (seconds > 9)
+         secStr := (string)(seconds)
+      else
+         secStr := "0" + (string)(seconds)
+      end
+      return (string)(minutes) + ":" + secStr
+   end
+
+
+   var lastTimerBeeped : int = -1
+   func GetCurrentTimeStr() : string
+      var ret : string = ""
+      var timeInt : int = GetCurrentTime()
+      if (timeInt < 0)      
+         ret := ""
+         timeInt := 0
+      else
+         if (lastTimerBeeped != timeInt)
+            lastTimerBeeped := timeInt
+            if (timeInt > 0 and timeInt <= 3 and IsBeepCounter())
+               $root.playSound("mp_timer")
+            elif (timeInt == 0)
+               var beepSound : string = GetZeroBeepSound()
+               if (beepSound != "")
+                  $root.playSound(beepSound)
+               end
+            end         
+         end
+         ret := MakeTimerString(timeInt)
+      end
+      return ret
+   end
+   
+   func GetIsTimeVisible() : bool
+      var ret : bool = false
+      ret := GetTimerHeader() != ""
+      //var stateIdx   : int = (int)$UiGlobals.lobby.state.Get()
+      //ret := (stateIdx == 1) or (stateIdx == 2)
+      return ret
+   end
+   
+   func GetTimerHeader() : string
+      var ret           : string = ""
+      var isShowTimeVal : bool   = false
+      
+      var mmStateIdx    : int = (int)$UiGlobals.matchmaking.state.Get()
+      var lobbyStateIdx : int = (int)$UiGlobals.lobby.state.Get()
+      if (mmStateIdx != $uiEnums.MATCHMAKING_STATE_NONE)
+         if (mmStateIdx == $uiEnums.MATCHMAKING_STATE_IN_SESSION and lobbyStateIdx != $uiEnums.LOBBY_STATE_NONE)
+            if (lobbyStateIdx == $uiEnums.LOBBY_STATE_JOINING_SESSION)
+               ret := "lobby_state_joining_session"
+            elif (lobbyStateIdx == $uiEnums.LOBBY_STATE_WAITING_FOR_PLAYERS)
+               ret := "lobby_state_waiting_for_players"
+            elif (lobbyStateIdx == $uiEnums.LOBBY_STATE_VOTING)
+               isShowTimeVal := true
+               ret := "lobby_state_voting"
+            elif (lobbyStateIdx == $uiEnums.LOBBY_STATE_GAME_START_COUNTDOWN)
+               isShowTimeVal := true
+               ret := "lobby_state_game_start_countdown"
+            end            
+         else
+            if (mmStateIdx == $uiEnums.MATCHMAKING_STATE_WAITING_FOR_ENQUEUE)
+               isShowTimeVal := true
+               ret := "lobby_mm_state_waiting_for_enqueue"
+            elif (mmStateIdx == $uiEnums.MATCHMAKING_STATE_IN_QUEUE)
+               ret := "lobby_mm_state_in_queue"
+            elif (mmStateIdx == $uiEnums.MATCHMAKING_STATE_IN_SESSION)
+               ret := "lobby_mm_state_in_session"
+            end
+         end
+      end
+      isShowTime.Set(isShowTimeVal)
+      return ret
+   end
+   
+   func UpdateTimerValue(_val : * = null)
+      var ret : string = GetCurrentTimeStr()
+      currentTimeStr.Set(ret)
+   end
+
+   func UpdateTimerStateVal(_val : * = null)
+      var ret : string = GetTimerHeader()
+      $sslWidgetMgr.GenerateEvent("ChangeLobbyState")
+      timerHeader.Set(ret)      
+   end
+   
+   func IsBeepCounter() : bool
+      var ret           : bool   = false      
+      var lobbyStateIdx : int    = (int)$UiGlobals.lobby.state.Get()
+      if (lobbyStateIdx == $uiEnums.LOBBY_STATE_GAME_START_COUNTDOWN)
+         ret := true
+      end
+      return ret
+   end
+      
+   func GetZeroBeepSound() : string
+      var ret           : string = ""
+      var lobbyStateIdx : int    = (int)$UiGlobals.lobby.state.Get()
+      if (lobbyStateIdx == $uiEnums.LOBBY_STATE_VOTING)
+         ret := "menu_game_start"
+      elif (lobbyStateIdx == $uiEnums.LOBBY_STATE_GAME_START_COUNTDOWN)
+         ret := "mp_timer_end"
+      end
+      return ret      
+   end
+end

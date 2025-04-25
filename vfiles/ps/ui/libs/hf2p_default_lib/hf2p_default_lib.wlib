@@ -1,0 +1,249 @@
+classes   =   {
+   def_Button   =   {
+      __type   =   "ui_default_lib::def_ToggleButtonSkinned"
+   }
+   def_ListLIR   =   {
+      sslClass   =   "UiDefListLIR"
+      sslModule   =   "ui.libs.hf2p_Default_lib.hf2p_Default_lib"
+      propMapping   =   {
+         text   =   {
+            mapping   =   "textField.text"
+         }
+      }
+      __type   =   "ui_default_lib::def_ListItemRendererSkinned"
+   }
+   def_ListScrollBar   =   {
+      __type   =   "ui_default_lib::def_ScrollBarSkinned"
+   }
+   def_ScrollingList   =   {
+      lir   =   {
+         __type   =   "hf2p_Default_lib::def_ListLIR"
+      }
+      scrollbar   =   {
+         __type   =   "hf2p_Default_lib::def_ListScrollBar"
+      }
+      __type   =   "ui_default_lib::def_ScrollingListSkinned"
+   }
+   def_ContextMenu   =   {
+      elements   =   {
+         contentAttach   =   {
+            elements   =   {
+               contextMenuContent   =   {
+                  mouseEnabled   =   False
+                  elements   =   {
+                     btn0   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{0}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn1   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{1}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn2   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{2}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn3   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{3}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn4   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{4}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn5   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{5}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn6   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{6}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn7   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{7}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                     btn8   =   {
+                        bindings   =   {
+                           idx   =   {
+                              binding   =   "{8}"
+                           }
+                        }
+                        __type   =   "hf2p_Default_lib::def_ContextMenuItem"
+                     }
+                  }
+                  bindings   =   {
+                     anim   =   {
+                        binding   =   "{'c' + (:MenuDC)ButtonCount}"
+                     }
+                  }
+                  __type   =   "ui_weaponConf_lib::stdContextMenuContent"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+         clientArea   =   {
+            bindings   =   {
+               anim   =   {
+                  binding   =   "{'c' + (:MenuDC)ButtonCount}"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      bindings   =   {
+         MenuDC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_Default_lib.hf2p_Default_lib.DefaultContextMenuVM'}"
+         }
+         Command0   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command1   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command2   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command3   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command4   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command5   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command6   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command7   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         Command8   =   {
+            binding   =   "{new {label: '', isEnabled: false, isVisible: false, eventName: '', eventParams: new {}}}"
+         }
+         CanOpen   =   {
+            binding   =   "{true}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::stdContextMenu"
+   }
+   def_ContextMenuItem   =   {
+      animated   =   True
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "#CommandHandler"
+         }
+      }
+      elements   =   {
+         btn   =   {
+            elements   =   {
+               btnLabel   =   {
+                  bindings   =   {
+                     tf   =   {
+                        binding   =   "{Command.label}"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+            }
+            bindings   =   {
+               enabled   =   {
+                  binding   =   "{Command.isEnabled}"
+               }
+            }
+            __type   =   "ui_weaponConf_lib::stdContextMenuBtn"
+         }
+      }
+      bindings   =   {
+         DC   =   {
+            binding   =   "{new: 'ui.libs.hf2p_Default_lib.hf2p_Default_lib.DefaultContextMenuItemVM', visibleIndex = (:MenuDC).GetVisibleCommandIdx((:idx)), MenuDC = (:MenuDC)}"
+         }
+         mouseEnabled   =   {
+            binding   =   "{(:MenuDC)ButtonCount > (:idx)}"
+         }
+         mouseChildren   =   {
+            binding   =   "{(:MenuDC)ButtonCount > (:idx)}"
+         }
+      }
+      __type   =   "ui_weaponConf_lib::stdContextMenuBtnContainer"
+   }
+   UserContextMenu   =   {
+      sslClass   =   "UserContextMenuWidget"
+      sslModule   =   "ui.libs.hf2p_Default_lib.hf2p_Default_lib"
+      handlers   =   {
+         inputEvent   =   {
+            handlerName   =   "#MenuDC.inputEvent"
+         }
+      }
+      bindings   =   {
+         Command0   =   {
+            binding   =   "{new {label: 'main_user_show_profile', isEnabled: GetIsProfileEnabled(), isVisible: GetIsProfileVisible(), eventName: '#ShowProfile', eventParams: new {}}}"
+         }
+         Command1   =   {
+            binding   =   "{new {label: 'main_user_invite', isEnabled: GetIsInviteEnabled(), isVisible: GetIsInviteVisible(), eventName: '#Invite', eventParams: new {}}}"
+         }
+         Command2   =   {
+            binding   =   "{new {label: 'main_user_kick', isEnabled: GetIsKickEnabled(), isVisible: GetIsKickVisible(), eventName: '#Kick', eventParams: new {}}}"
+         }
+         Command3   =   {
+            binding   =   "{new {label: 'main_user_follow', isEnabled: GetIsFollowEnabled(), isVisible: GetIsFollowVisible(), eventName: '#Follow', eventParams: new {}}}"
+         }
+         Command4   =   {
+            binding   =   "{new {label: 'main_user_unfollow', isEnabled: GetIsUnfollowEnabled(), isVisible: GetIsUnfollowVisible(), eventName: '#Unfollow', eventParams: new {}}}"
+         }
+         Command5   =   {
+            binding   =   "{new {label: 'main_user_chat', isEnabled: GetIsChatEnabled(), isVisible: GetIsChatVisible(), eventName: '#Chat', eventParams: new {}}}"
+         }
+         Command6   =   {
+            binding   =   "{new {label: 'main_user_clan_invite', isEnabled: GetIsClanInviteEnabled(), isVisible: GetIsClanInviteVisible(), eventName: '#ClanInvite', eventParams: new {}}}"
+         }
+         Command7   =   {
+            binding   =   "{new {label: 'main_user_clan_expel', isEnabled: GetIsClanKickEnabled(), isVisible: GetIsClanKickVisible(), eventName: '#ClanKick', eventParams: new {}}}"
+         }
+         Command8   =   {
+            binding   =   "{new {label: 'main_user_form_party', isEnabled: GetIsFormPartyEnabled(), isVisible: GetIsFormPartyVisible(), eventName: '#FormParty', eventParams: new {}}}"
+         }
+         CanOpen   =   {
+            binding   =   "{GetCanOpen()}"
+         }
+         DC   =   {
+            binding   =   "{userContext}"
+         }
+      }
+      __type   =   "hf2p_Default_lib::def_ContextMenu"
+   }
+}
+__type   =   "ui_widget_lib"

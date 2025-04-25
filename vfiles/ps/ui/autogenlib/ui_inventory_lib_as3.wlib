@@ -1,0 +1,310 @@
+classes = {
+	attachContainer = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachContainer" 
+		lib     = inventory_lib_as3 
+
+		elements {
+			picAttachPoint {
+				__type = "ui_inventory_lib_as3::attachPointArmrStat"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	attachIconInventory = {
+		__type = "ui_widget_container"
+
+		symbol  = "attachIconInventory" 
+		lib     = inventory_lib_as3 
+
+		elements {
+			attachContainerInt {
+				__type = "ui_inventory_lib_as3::attachContainer"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	attachPointArmrStat = {
+		__type = "ui_widget_image"
+
+		symbol  = "attachPointArmrStat" 
+		lib     = inventory_lib_as3 
+
+		elements {
+			placeHolder {
+				__type = "ui_inventory_lib_as3::placeHolderContent"
+				x         = 0
+				y         = 0
+			} 
+		}
+	}
+
+	dropDownInventory = {
+		__type = "ui_widget_container"
+
+		symbol  = "dropDownInventory" 
+		lib     = inventory_lib_as3 
+
+		elements {
+			dropFilter {
+				__type = "ui_inventory_lib_as3::inventoryDropdown"
+				x         = 0
+				y         = 27.25
+			} 
+			tfHeadDD {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 14
+				y         = 0
+			} 
+		}
+	}
+
+	dropDown_bgServer = {
+		__type = "ui_widget_container"
+
+		symbol  = "dropDown_bgServer" 
+		lib     = inventory_lib_as3 
+	}
+
+	gradBg = {
+		__type = "ui_widget_container"
+
+		symbol  = "gradBg" 
+		lib     = inventory_lib_as3 
+	}
+
+	hf2p_inventoryList = {
+		__type = "ui_widget_list"
+
+		symbol  = "hf2p_inventoryList" 
+		lib     = inventory_lib_as3 
+	}
+
+	hf2p_InventoryListLIR_S = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "hf2p_InventoryListLIR_S" 
+		lib     = inventory_lib_as3 
+
+		elements {
+			greyOverInst {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			timerInventory {
+				__type = "ui_inventory_lib_as3::timeContainer"
+				x         = 225.9
+				y         = 50.5
+			} 
+			textFieldUp {
+				__type = "ui_inventory_lib_as3::nameTextCont"
+				x         = 56.5
+				y         = 21
+				animated  = true
+			} 
+			wpnIndicator {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 73.5
+			} 
+			bgGrad {
+				__type = "ui_inventory_lib_as3::gradBg"
+				x         = 0
+				y         = 0
+			} 
+			itemQualityCont {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			attachContainerIcon {
+				__type = "ui_inventory_lib_as3::attachIconInventory"
+				x         = 26
+				y         = 19
+				animated  = true
+			} 
+		}
+	}
+
+	inventoryDDLir = {
+		__type = "ui_widget_list_item"
+
+		symbol  = "inventoryDDLir" 
+		lib     = inventory_lib_as3 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+	}
+
+	inventoryDDScrollBar = {
+		__type = "ui_widget_scrollbar"
+
+		symbol  = "inventoryDDScrollBar" 
+		lib     = inventory_lib_as3 
+
+		elements {
+			thumb {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 16
+			} 
+			downArrow {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 128
+			} 
+			upArrow {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 0
+			} 
+			track {
+				__type = "ui_widget_container"
+
+				x         = 0
+				y         = 16
+				scaleX    = 1
+				scaleY    = 5.9987
+			} 
+		}
+	}
+
+	inventoryDDScrollingList = {
+		__type = "ui_widget_list"
+
+		symbol  = "inventoryDDScrollingList" 
+		lib     = inventory_lib_as3 
+	}
+
+	inventoryDropdown = {
+		__type = "ui_widget_stepper"
+
+		symbol  = "inventoryDropdown" 
+		lib     = inventory_lib_as3 
+		propMapping {
+			textField = {
+				mapping = "textField.text"
+			}
+		}
+
+		elements {
+			backGround {
+				__type = "ui_inventory_lib_as3::dropDown_bgServer"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	inventoryHitArea = {
+		__type = "ui_widget_container"
+
+		symbol  = "inventoryHitArea" 
+		lib     = inventory_lib_as3 
+	}
+
+	nameTextCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "nameTextCont" 
+		lib     = inventory_lib_as3 
+		propMapping {
+			textFieldUp = {
+				mapping = "textFieldUp.text"
+			}
+		}
+	}
+
+	placeHolderContent = {
+		__type = "ui_widget_container"
+
+		symbol  = "placeHolderContent" 
+		lib     = inventory_lib_as3 
+	}
+
+	subMenuInventory = {
+		__type = "ui_widget_container"
+
+		symbol  = "subMenuInventory" 
+		lib     = inventory_lib_as3 
+
+		elements {
+			inventoryDrop1 {
+				__type = "ui_inventory_lib_as3::dropDownInventory"
+				x         = 58
+				y         = 84
+			} 
+			inventoryDrop2 {
+				__type = "ui_inventory_lib_as3::dropDownInventory"
+				x         = 361
+				y         = 84
+			} 
+			inventoryDrop3 {
+				__type = "ui_inventory_lib_as3::dropDownInventory"
+				x         = 664
+				y         = 84
+			} 
+			inventoryDrop4 {
+				__type = "ui_inventory_lib_as3::dropDownInventory"
+				x         = 967
+				y         = 84
+			} 
+			tfHeadInventory {
+				__type = "ui_widget_container"
+
+				propMapping {
+					tf = {
+						mapping = "tf.text"
+					}
+				}
+				x         = 54.6
+				y         = 22.5
+			} 
+			inventoryList {
+				__type = "ui_inventory_lib_as3::hf2p_inventoryList"
+				x         = 58
+				y         = 186
+			} 
+			inventoryBackGround {
+				__type = "ui_widget_container"
+
+				x         = -19
+				y         = -57
+			} 
+		}
+	}
+
+	timeContainer = {
+		__type = "ui_widget_container"
+
+		symbol  = "timeContainer" 
+		lib     = inventory_lib_as3 
+		propMapping {
+			tf = {
+				mapping = "tf.text"
+			}
+		}
+	}
+}
+__type = "ui_widget_lib"

@@ -1,0 +1,266 @@
+import ssl.hf2p.user_data
+
+/*************************************************************
+* UiSSMainChat
+* 
+*************************************************************/
+class UiSSMainChat
+   func GetStyleSheet() : vector
+      var result : vector
+      var styleDesc : params
+      var style : params
+      
+      styleDesc.name  := "span"
+      style.color     := "#FFFFFF"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".news_heading"
+      style.color     := "#0066CC"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".news_text"
+      style.color     := "#CCCCCC"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".me"
+      style.color     := $UserDataStorage.GetColorLocal()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      styleDesc.name  := ".clanmate"
+      style.color     := $UserDataStorage.GetColorClanmate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".defuser"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      // chat channels colors
+      styleDesc.name  := ".channel_all"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_private"
+      style.color     := $UserDataStorage.GetColorPrivate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team_0"
+      style.color     := $UserDataStorage.GetColorTeamRed()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team_1"
+      style.color     := $UserDataStorage.GetColorTeamBlue()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team"
+      style.color     := $UserDataStorage.GetColorTeam()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_party"
+      style.color     := $UserDataStorage.GetColorParty()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      styleDesc.name  := "a:link"
+      
+      style.color     := "inherit"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := "a:hover"
+      style.color     := $UserDataStorage.GetColorSelected()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      return result
+   end   
+end
+   
+/*************************************************************
+* UiSSIngameChat
+* 
+*************************************************************/
+class UiSSIngameChat
+   func GetStyleSheet() : vector
+      var result : vector
+      var styleDesc : params
+      var style : params
+      
+      styleDesc.name  := "span"
+      style.color     := "#00FFFF"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".me"
+      style.color     := $UserDataStorage.GetColorLocal()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".clanmate"
+      style.color     := $UserDataStorage.GetColorClanmate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".defuser"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      // chat channels colors
+      styleDesc.name  := ".channel_all"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_private"
+      style.color     := $UserDataStorage.GetColorPrivate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team_0"
+      style.color     := $UserDataStorage.GetColorTeamRed()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team_1"
+      style.color     := $UserDataStorage.GetColorTeamBlue()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team"
+      style.color     := $UserDataStorage.GetColorTeam()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+                  
+      styleDesc.name  := ".channel_friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_party"
+      style.color     := $UserDataStorage.GetColorParty()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := "a:link"
+      style.color     := "inherit"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := "a:hover"
+      style.color     := $UserDataStorage.GetColorSelected()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      return result
+   end
+end
+
+/*************************************************************
+* UiSSScoreboard
+* 
+*************************************************************/
+class UiSSScoreboard
+   func GetStyleSheet() : vector
+      var result : vector
+      var styleDesc : params
+      var style : params
+      
+      styleDesc.name  := "span"
+      style.color     := "#FFFFFF"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".me"
+      style.color     := $UserDataStorage.GetColorLocal()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      styleDesc.name  := ".clanmate"
+      style.color     := $UserDataStorage.GetColorClanmate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+
+      styleDesc.name  := ".defuser"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+            
+      // chat channels colors
+      styleDesc.name  := ".channel_all"
+      style.color     := $UserDataStorage.GetColorDefault()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_private"
+      style.color     := $UserDataStorage.GetColorPrivate()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team_0"
+      style.color     := $UserDataStorage.GetColorTeamRed()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team_1"
+      style.color     := $UserDataStorage.GetColorTeamBlue()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_team"
+      style.color     := $UserDataStorage.GetColorTeam()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_friend"
+      style.color     := $UserDataStorage.GetColorFriend()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := ".channel_party"
+      style.color     := $UserDataStorage.GetColorParty()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      styleDesc.name  := "a:link"
+      
+      style.color     := "inherit"
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      styleDesc.name  := "a:hover"
+      style.color     := $UserDataStorage.GetColorSelected()
+      styleDesc.style := style.Clone()
+      result.Push(styleDesc.Clone())
+      
+      return result
+   end   
+end

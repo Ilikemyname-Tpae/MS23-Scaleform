@@ -1,0 +1,7 @@
+native func Log             (category : string, message : string)
+native func LogError        (category : string, message : string)
+native func LogWarning      (category : string, message : string)
+native func LogScreenPrint  (message : string)
+native func LogScreenClear  ()
+
+native func factLog         (category : string, message : string)

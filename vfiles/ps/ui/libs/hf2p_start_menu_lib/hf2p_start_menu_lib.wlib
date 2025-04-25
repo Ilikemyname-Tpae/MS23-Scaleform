@@ -1,0 +1,121 @@
+classes   =   {
+   sc_button_a   =   {
+      __type   =   "ui_ingameSettings_lib::aButtonCont"
+   }
+   sc_button_b   =   {
+      __type   =   "ui_ingameSettings_lib::bButtonCont"
+   }
+   sc_ownScreen   =   {
+      elements   =   {
+         ContainerBG   =   {
+            elements   =   {
+               Header   =   {
+                  propMapping   =   {
+                     text   =   {
+                        mapping   =   "HeaderTFCont.tf.text"
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               Player   =   {
+                  isNoTranslate   =   True
+                  propMapping   =   {
+                     text   =   {
+                        mapping   =   "tf.text"
+                        isNoTranslate   =   True
+                     }
+                  }
+                  __type   =   "ui_widget_container"
+               }
+               Slider0   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "onSlider0Clicked"
+                     }
+                  }
+                  propMapping   =   {
+                     text   =   {
+                        mapping   =   "itemTF.tf.text"
+                     }
+                  }
+                  __type   =   "ui_widget_button"
+               }
+               Slider1   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "onSlider1Clicked"
+                     }
+                  }
+                  propMapping   =   {
+                     text   =   {
+                        mapping   =   "itemTF.tf.text"
+                     }
+                  }
+                  __type   =   "ui_widget_button"
+               }
+               Slider2   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "onSlider2Clicked"
+                     }
+                  }
+                  propMapping   =   {
+                     text   =   {
+                        mapping   =   "itemTF.tf.text"
+                     }
+                  }
+                  __type   =   "ui_widget_button"
+               }
+               Slider3   =   {
+                  events   =   {
+                     buttonClick   =   {
+                        eventRemap   =   "onSlider3Clicked"
+                     }
+                  }
+                  propMapping   =   {
+                     text   =   {
+                        mapping   =   "itemTF.tf.text"
+                     }
+                  }
+                  __type   =   "ui_widget_button"
+               }
+            }
+            __type   =   "ui_widget_container"
+         }
+      }
+      soundMap   =   {
+         soundMaps   =   {
+            ui_widget_button   =   {
+               mapping   =   {
+                  buttonClick   =   {
+                     uiSoundEvent   =   "tab_select"
+                  }
+               }
+            }
+         }
+      }
+      __type   =   "ui_ingameSettings_lib::hf2p_ScreenSettings"
+   }
+   sc_player_name   =   {
+      propMapping   =   {
+         text   =   {
+            mapping   =   "tf.text"
+         }
+      }
+      __type   =   "ui_ingameSettings_lib::hf2p_PlayerName"
+   }
+   sc_slider   =   {
+      events   =   {
+         buttonClick   =   {
+            eventRemap   =   "onSliderClicked"
+         }
+      }
+      propMapping   =   {
+         text   =   {
+            mapping   =   "itemTF.tf.text"
+         }
+      }
+      __type   =   "ui_ingameSettings_lib::hf2p_ItemLabel"
+   }
+}
+__type   =   "ui_widget_lib"

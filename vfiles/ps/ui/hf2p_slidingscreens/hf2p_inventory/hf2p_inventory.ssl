@@ -1,0 +1,1510 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.hf2p.hq
+import ui.root
+import ui.ui_economy
+import ui.ui_player_info
+import ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf
+import ui.hf2p_SlidingScreens.hf2p_Spartan.hf2p_Spartan
+
+class InventoryScreen : UiSlidingScreenPageMainMenu          
+
+func InitInventory()
+   Widgets.inventoryList.Set("focusable", false)
+   Widgets.inventoryList.Set("direction", "vertical")
+end
+
+func SetInventorySelection(p : params) : bool
+   Widgets.inventoryList.SetSelectionIdx(p.idx)
+   return false
+end
+
+func GetInventorySelection() : int
+   return (int)(GetWidget("inventoryList").selectionIdx.Get())
+end
+
+func InventoryBlink(p : params) : bool
+   Widgets.inventoryList.StartDefaultBlinking(0.1)
+   return false
+end
+
+func InventoryBlinkFull(p : params) : bool
+   Widgets.inventoryList.StartDefaultBlinking(0.1)
+   //Widgets.loadoutNavigation.StartDefaultBlinking(0.1)
+   //Widgets.armorLoadoutCurrent.StartDefaultBlinking(0.1)
+   //Widgets.weaponLoadoutCurrent.StartDefaultBlinking(0.1)
+   return false
+end
+
+handle OnEnteringState("Visible")
+   InitInventory()
+   Set("visible", true)  
+end  
+
+handle OnChangeState("Hidden")
+end
+
+handle OnEnterState("Hidden")
+   $hq.ShowroomEnd()
+   Set("visible", false)
+   CloseContextMenu()
+end
+
+override SwitchToScreen // ()
+   $hq.ShowroomBegin()
+end
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   GenerateEvent("#OnInventoryScreenOpened")
+   InventoryBlinkFull(null) : 0.35
+end
+
+override PrepareHideSlide // ()
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Hidden")
+      $hq.ShowroomEnd()
+      SetStateName("Hidden")
+      ClearFocus()
+   end
+end
+
+end
+
+class UiInventoryLir : UiWidgetListItem
+end
+
+class InventoryLirVM
+   
+   var wgt           : UiWidget = null
+   var itemId        : ObservableProperty = $OM.Property("")
+   var ownedType     : ObservableProperty = $OM.Calculated(this, "GetOwnType")
+   
+   func Init(p : params)
+      wgt := p.widget
+      if (! IsVoid(p.itemId))
+         itemId.Set(p.itemId)
+      end
+      wgt.Props.mouseChildren := true
+   end
+   
+   func IsItemValid() : bool
+      return (string)itemId.Get() != ""
+   end
+   
+   func OnInventoryLirClicked(p : params) : bool
+      if (IsItemValid())
+         var item : string = (string)itemId.Get()
+      end   
+      return false
+   end   
+   
+   func GetInvItemLabel() : string
+      var ret : string
+      if (IsItemValid())
+         var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)itemId.Get())
+         ret := (string)compUI.name.Get() 
+      end
+      return ret
+   end
+   
+   func GetInvItemIcon() : string
+      var ret : string
+      if (IsItemValid())
+         var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)itemId.Get())
+         ret := (string)compUI.icon.Get() 
+      end
+      return ret
+   end
+   
+   func GetItemQuality() : string
+      var ret : string = "common"
+      var item : string = (string)itemId.Get()
+      if (item != "")
+         ret := (string)$UiGlobals.componentsUI.Get(item).quality.Get()
+      end
+      return ret  
+   end
+   
+   func GetOwnType() : int
+      return $uiEconomy.GetItemOwnType((string)itemId.Get())
+   end
+   
+   func ShowTimer() : bool
+      var ret : bool = false
+      var ownType : int = (int)ownedType.Get()
+      if (ownType == $uiEnums.ITEM_OWN_TYPE_PURCHASED or ownType == $uiEnums.ITEM_OWN_TYPE_RENTED)
+         ret := true
+      end
+      return ret
+   end
+   
+   func GetRentStatusColor() : int
+      return $uiEconomy.GetItemRentTintColor((string)itemId.Get())
+   end
+   
+   func GetRentStatus() : string
+      var ret        : string      
+      var ownType : int = (int)ownedType.Get()
+      if (ownType == $uiEnums.ITEM_OWN_TYPE_PURCHASED)
+         ret := "carousel_rent_time_purchased"
+      elif (ownType == $uiEnums.ITEM_OWN_TYPE_RENTED)
+         var ownTime : int = GetRentTime()
+         if (ownTime > 0)
+            ret := $root.MakeUiTimerStringMinutes(ownTime, true)
+         else
+            ret := "carousel_rent_time_expiring"
+         end
+      end
+      return ret
+   end
+   
+   func GetRentTime() : int
+      var ret        : int = 0
+      var ownType : int = (int)ownedType.Get()
+      if (ownType == $uiEnums.ITEM_OWN_TYPE_RENTED)
+         var uiInventoryItem : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get((string)itemId.Get())
+         var ownTime : int = (int)uiInventoryItem.ownership_time.Get() - (int)$UiGlobals.timer.Get()
+         ret := ownTime
+      end
+      return ret      
+   end
+   
+   func IsTacticalPackage() : bool
+      var ret : bool = false
+      if ($uiEconomy.GetItemType((string)itemId.Get()) == $uiEnums.ITEM_TYPE_TACTICAL)
+         ret := true
+      end
+      return ret
+   end
+   
+   func IsArmor() : bool
+      var ret : bool = false
+      if ($uiEconomy.GetItemType((string)itemId.Get()) == $uiEnums.ITEM_TYPE_ARMOR)
+         ret := true
+      end
+      return ret
+   end
+   
+   func VisibleRenewContext(isGp : bool) : bool
+      var ret : bool = false
+      var ownType : int = (int)ownedType.Get()
+      if (ownType != $uiEnums.ITEM_OWN_TYPE_PURCHASED)
+         var offer: GL_ComponentShopOffer = GetItemOffer(isGp)
+         if (offer != null)
+            var pricing : GL_ComponentShopOfferPricing = null
+            if (isGp)
+               pricing := offer.GetGlPrice()
+            else
+               pricing := offer.GetCrPrice()
+            end
+            if (pricing != null)
+               ret := true
+            end
+         end
+      end   
+      return ret
+   end
+
+   func VisibleRenewContextCr() : bool
+      return VisibleRenewContext(false)
+   end
+   
+   func VisibleRenewContextGp() : bool
+      return VisibleRenewContext(true)
+   end
+   
+   func GetItemOffer(isGp : bool) : GL_ComponentShopOffer
+      var itemId     : string                = (string)itemId.Get()
+      var offerComp  : GL_ComponentShopOffer = null
+      var shopComp   : GL_ComponentShop      = (GL_ComponentShop)$UiGlobals.componentsShop.Get(itemId)
+      offerComp := shopComp.GetMinimalCrGpOffer(isGp)
+      return offerComp
+   end
+   
+   func MakeRenewString(baseString : string, duration : params, cost : int) : string
+      var ret        : string
+      ret := baseString
+      ret := ret + "," + (string)duration.daysCount
+      ret := ret + "," + duration.daysLabel
+      ret := ret + "," + (string)cost
+      return ret      
+   end
+   
+   func RenewByCrLabel() : string
+      var ret  : string
+      var offer: GL_ComponentShopOffer = GetItemOffer(false)
+      if (offer != null)
+         var pricing : GL_ComponentShopOfferPricing = offer.GetCrPrice()
+         if (pricing != null)
+            ret := MakeRenewString("carousel_renew_item_cr", offer.DurationToStrings(true), (int)pricing.cost.Get())
+         end
+      end
+      return ret
+   end
+      
+   func RenewByGpLabel() : string
+      var ret  : string
+      var offer: GL_ComponentShopOffer = GetItemOffer(true)
+      if (offer != null)
+         var pricing : GL_ComponentShopOfferPricing = offer.GetGlPrice()
+         if (pricing != null)
+            ret := MakeRenewString("carousel_renew_item_gp", offer.DurationToStrings(true), (int)pricing.cost.Get())
+         end
+      end
+      return ret
+   end
+   
+   func CanOpenContext() : bool
+      var ret : bool = false
+      if (IsItemValid())
+         ret := true
+      end
+      return ret
+   end
+   
+end
+
+
+class InventoryDropVM
+   
+   var parentVM              : InventoryScreenVM = null
+   var filterId              : ObservableProperty  = $OM.Property("")
+   var dropSelection         : ObservableProperty  = $OM.Property(0)
+   var filterList            : ObservableProperty  = null
+   var wgt                   : UiWidget            = null
+   
+   func Init(pWgt : UiWidget, parentVM : InventoryScreenVM ,  list : ObservableProperty)
+      wgt := pWgt
+      wgt.Widgets.dropFilter.SetSelectionIdx((int)dropSelection.Get())
+      filterList := list
+      filterId.Set((string)filterList.Get().Get((int)dropSelection.Get()).filterId)
+      this.parentVM := parentVM
+   end
+   
+   func GetFilterId() : string
+      return (string)filterId.Get()
+   end
+   
+   func SetFilterId(filterValue : string)
+      if (filterValue != GetFilterId() and filterList != null)
+         var idx : int = FindFilterIdIdx(GetList(), filterValue)
+         if (idx != -1)
+            SetSelectionIdx(idx, true)
+         end
+      end
+   end
+   
+   func GetList() : vector
+      return filterList.Get()
+   end
+   
+   func FindFilterIdIdx(filterListVec : vector, filterValue : string) : int
+      var ret  : int = -1
+      var i    : int
+      for i := 0 to filterListVec.Count() - 1
+         if (filterListVec.Get(i).filterId == filterValue)
+            ret := i
+            break
+         end
+      end
+      return ret
+   end
+   
+   func IsFilterIdInList(filterListVec : vector, filterValue : string) : bool
+      return FindFilterIdIdx(filterListVec, filterValue) != -1
+   end
+   
+   func CheckFilterValue()
+      if (filterList != null and GetList().Count() > 0)
+         var idx : int = FindFilterIdIdx(GetList(), GetFilterId())
+         if (idx == -1)
+            SetSelectionIdx(0, true)
+         elif (idx != wgt.Widgets.dropFilter.GetSelectionIdx())
+            SetSelectionIdx(idx, true)
+         end
+      end
+   end
+   
+   func SetSelectionIdx(idx : int, updateDropDown : bool = false)
+      var dropData : params = wgt.Widgets.dropFilter.GetItemData(idx)
+      dropSelection.Set(idx)
+      filterId.Set(dropData.filterId)
+      if (updateDropDown)
+         wgt.Widgets.dropFilter.SetSelectionIdx(idx)
+      end
+      parentVM.CheckFilters()
+      parentVM.SetListSelection(0)
+      wgt.GenerateEvent("InventoryBlink")
+   end
+   
+   func dropIndexChange(p : params) : bool
+      var idx : int = (int)p.index
+      SetSelectionIdx(idx, false)
+      return false
+   end
+end
+
+class InventoryRec
+   var itemId           : ObservableProperty  = $OM.Property("")
+   var sortingType      : ObservableProperty  = $OM.Calculated(this, "GetSortingType")
+   var sortingName      : ObservableProperty  = $OM.Calculated(this, "GetSortingName")
+   var sortingQuality   : ObservableProperty  = $OM.Calculated(this, "GetSortingQuality")
+   var sortingRent      : ObservableProperty  = $OM.Calculated(this, "GetSortingRent")
+   var itemType         : ObservableProperty  = $OM.Calculated(this, "GetItemType")
+   var itemSubType      : ObservableProperty  = $OM.Calculated(this, "GetItemSubType")
+   var invType          : ObservableProperty  = $OM.Calculated(this, "GetInvType")
+   
+   func ItemId() : string
+      return (string)itemId.Get()
+   end
+   
+   func GetItemType() : int
+      return $uiEconomy.GetItemType(ItemId())
+   end
+   
+   func ItemType() : int
+      return (int)itemType.Get()
+   end
+   
+   func GetItemSubType() : int
+      return $uiEconomy.GetItemSubType(ItemId())
+   end
+   
+   func ItemSubType() : int
+      return (int)itemSubType.Get()
+   end
+   
+   func GetInvType() : string
+      var ret     : string = $uiEnums.INV_TYPE_UNKNOWN
+      var type    : int    = ItemType()
+      var subType : int    = ItemSubType()
+      
+      if (subType == $uiEnums.ITEM_SUB_TYPE_WPN_PRIMARY)
+         ret := $uiEnums.INV_TYPE_WEAPON_PRIMARY
+      elif (subType == $uiEnums.ITEM_SUB_TYPE_WPN_SECONDARY)
+         ret := $uiEnums.INV_TYPE_WEAPON_SECONDARY
+      elif (subType == $uiEnums.ITEM_SUB_TYPE_WPN_GRENADE)
+         ret := $uiEnums.INV_TYPE_WEAPON_GRENADES
+      elif (subType == $uiEnums.ITEM_SUB_TYPE_TP_PERK)
+         ret := $uiEnums.INV_TYPE_TACTICAL
+      elif (subType == $uiEnums.ITEM_SUB_TYPE_TP_BOOST)
+         ret := $uiEnums.INV_TYPE_BOOST
+      elif (type == $uiEnums.ITEM_TYPE_ARMOR)
+         ret := $uiEnums.INV_TYPE_ARMOR
+      elif (type == $uiEnums.ITEM_TYPE_ARMOR_SUIT)
+         ret := $uiEnums.INV_TYPE_SUIT
+      end
+      
+      return ret
+   end
+   
+   func InvType() : string
+      return (string)invType.Get()
+   end
+   
+   var default_sort_primary     = 10
+   var default_sort_secondary   = 9
+   var default_sort_grenades    = 8
+   var default_sort_tactical    = 7
+   var default_sort_booster     = 6
+   var default_sort_armorsuits  = 5
+   var default_sort_helmet      = 4
+   var default_sort_shoulder    = 3
+   var default_sort_chest       = 2
+   var default_sort_arms        = 1
+   var default_sort_legs        = 0
+   
+   func GetItemTypeSortIdx(itemId : string) : int
+      var ret : int
+      if ($UiGlobals.PassesAsWeaponFilter(itemId))
+         if ($UiGlobals.PassesAsPrimaryWeaponFilter(itemId))
+            ret := default_sort_primary
+         elif ($UiGlobals.PassesAsSecondaryWeaponFilter(itemId))
+            ret := default_sort_secondary
+         else
+            ret := default_sort_grenades
+         end
+      elif ($UiGlobals.PassesAsArmorFilter(itemId))
+         var subType : int = $UiGlobals.GetArmorPartType(itemId)
+         if (subType == $uiEnums.ARMOR_PART_HELMET)
+            ret := default_sort_armorsuits
+         elif (subType == $uiEnums.ARMOR_PART_SHOULDER)
+            ret := default_sort_shoulder
+         elif (subType == $uiEnums.ARMOR_PART_CHEST)
+            ret := default_sort_chest
+         elif (subType == $uiEnums.ARMOR_PART_ARMS)
+            ret := default_sort_arms
+         elif (subType == $uiEnums.ARMOR_PART_LEGS)
+            ret := default_sort_arms
+         end
+      elif ($uiEconomy.GetItemType(itemId) == $uiEnums.ITEM_TYPE_ARMOR_SUIT)
+         ret := default_sort_armorsuits
+      elif ($UiGlobals.PassesAsTacticalPackageFilter(itemId))
+         ret := default_sort_tactical
+      elif ($UiGlobals.PassesAsSupportPackageFilter(itemId))
+         ret := default_sort_booster
+      end
+      
+      return ret
+   end
+   
+   func GetSortingType() : int
+      return GetItemTypeSortIdx(ItemId())
+   end
+   
+   func SortingType() : int
+      return (int)sortingType.Get()
+   end
+   
+   func GetSortingName() : wstring
+      return $UiGlobals.TranslateText($UiGlobals.componentsUI.Get(ItemId()).name.Get())
+   end
+   
+   func SortingName() : wstring
+      return sortingName.Get()
+   end
+   
+   func GetSortingQuality() : int
+      var compUi : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(ItemId())      
+      return compUi.GetQualityIntVal()
+   end
+   
+   func SortingQuality() : int
+      return (int)sortingQuality.Get()
+   end
+
+   func GetSortingRent() : int
+      var shopComp         : GL_ComponentShop      = (GL_ComponentShop)$UiGlobals.componentsShop.Get(ItemId())
+      var uiInventoryItem  : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(ItemId())
+      var ownType          : int                   = $uiEconomy.GetItemOwnType(ItemId())
+      var ret              : int                   = 0
+      
+      if (ownType == $uiEnums.ITEM_OWN_TYPE_RENTED)
+         ret := (int)uiInventoryItem.ownership_time.Get()
+      end
+      
+      return ret
+   end
+   
+   func SortingRent() : int
+      return (int)sortingRent.Get()
+   end
+end
+
+
+class InventoryScreenVM : UiSlidingScreenMainMenuPageVM
+   
+   var wgt                    : InventoryScreen    = null
+   var inventoryListAll       : ObservableProperty = $OM.Calculated(this, "GetInventoryListAll")
+   var inventoryListAllCats   : ObservableProperty = $OM.Calculated(this, "GetInventoryListAllCats")
+   var inventoryList          : ObservableProperty = $OM.Calculated(this, "GetInventoryList")
+   var categoriesList         : ObservableProperty = $OM.Calculated(this, "GetCategoriesList")
+   var selectedIdx            : ObservableProperty = $OM.Property(0)
+   var highlightedIdx         : ObservableProperty = $OM.Property(-1)
+   
+   var typeFilterList         : ObservableProperty = $OM.Calculated(this, "GetTypeFilterList")
+   var categoryFilterList     : ObservableProperty = $OM.Calculated(this, "GetCategoryFilterList")
+   var qualityFilterList      : ObservableProperty = $OM.Calculated(this, "GetQualityFilterList")
+   var rentFilterList         : ObservableProperty = $OM.Calculated(this, "GetRentFilterList")
+   
+   var highlightedItem        : ObservableProperty = $OM.Calculated(this, "GetHighlightedItem")
+   
+   var typeDrop               : InventoryDropVM    = new InventoryDropVM()
+   var categoryDrop           : InventoryDropVM    = new InventoryDropVM()
+   var qualityDrop            : InventoryDropVM    = new InventoryDropVM()
+   var rentDrop               : InventoryDropVM    = new InventoryDropVM()
+   
+   //var loadoutsPanelVM        : LoadoutsPanelVM    = new LoadoutsPanelVM()
+   
+   override InitOverride //(p : params)
+      wgt := p.widget
+      //loadoutsPanelVM.SetWidget((UiWidget)wgt.GetWidget("LoadoutsPanel"))
+      //loadoutsPanelVM.Init(highlightedItem, typeDrop.filterId)
+      
+      typeDrop.Init((UiWidget)wgt.GetWidget("inventoryDrop1"), this, typeFilterList)
+      categoryDrop.Init((UiWidget)wgt.GetWidget("inventoryDrop2"), this, categoryFilterList)
+      qualityDrop.Init((UiWidget)wgt.GetWidget("inventoryDrop3"), this, qualityFilterList)
+      rentDrop.Init((UiWidget)wgt.GetWidget("inventoryDrop4"), this, rentFilterList)
+      
+      highlightedItem.Subscribe(this, "UpdateLoadoutSelectedSlot")
+      typeDrop.filterId.Subscribe(this, "UpdateLoadoutSelectedSlot")
+   end
+   
+   override TermOverride // ()
+      typeDrop.filterId.Unsubscribe(this, "UpdateLoadoutSelectedSlot")
+      highlightedItem.Unsubscribe(this, "UpdateLoadoutSelectedSlot")
+   end
+   
+   func UpdateLoadoutSelectedSlot(val : *)
+      var filter : string = (string)typeDrop.filterId.Get()
+      var itemId : string = (string)highlightedItem.Get()
+      var slotIndex : int = (int)parentVM.loadoutSelectedSlotIndex.Get()
+      
+      if filter == $uiEnums.INV_TYPE_ALL or filter == $uiEnums.INV_TYPE_WEAPON
+         if $UiGlobals.PassesAsArmorFilter(itemId)
+            parentVM.loadoutSelectedSlotIndex.Set(0)
+         elif $UiGlobals.PassesAsPrimaryWeaponFilter(itemId)
+            parentVM.loadoutSelectedSlotIndex.Set(1)
+         elif $UiGlobals.PassesAsSecondaryWeaponFilter(itemId)
+            parentVM.loadoutSelectedSlotIndex.Set(2)
+         elif $UiGlobals.PassesAsGrenadeWeaponFilter(itemId)
+            parentVM.loadoutSelectedSlotIndex.Set(3)
+         elif $UiGlobals.PassesAsTacticalPackageFilter(itemId)
+            if slotIndex < 4 or slotIndex > 7
+               var newSlotIdx = 4
+               var char : UD_Character = $UserDataStorage.GetLocalUserData().GetActiveCharacter()
+               if char.tactical_package_first.Get() == ""
+                  newSlotIdx := 4
+               elif char.tactical_package_second.Get() == ""
+                  newSlotIdx := 5
+               elif char.tactical_package_third.Get() == ""
+                  newSlotIdx := 6
+               elif char.tactical_package_fourth.Get() == ""
+                  newSlotIdx := 7
+               end
+               parentVM.loadoutSelectedSlotIndex.Set(newSlotIdx)
+            end
+         elif $UiGlobals.PassesAsSupportPackageFilter(itemId)
+            parentVM.loadoutSelectedSlotIndex.Set(8)
+         end
+      elif filter == $uiEnums.INV_TYPE_ARMOR
+         parentVM.loadoutSelectedSlotIndex.Set(0)
+      elif filter == $uiEnums.INV_TYPE_WEAPON_PRIMARY
+         parentVM.loadoutSelectedSlotIndex.Set(1)
+      elif filter == $uiEnums.INV_TYPE_WEAPON_SECONDARY
+         parentVM.loadoutSelectedSlotIndex.Set(2)
+      elif filter == $uiEnums.INV_TYPE_WEAPON_GRENADES
+         parentVM.loadoutSelectedSlotIndex.Set(3)
+      elif filter == $uiEnums.INV_TYPE_TACTICAL
+         if slotIndex < 4 or slotIndex > 7
+            var newSlotIdx = 4
+            var char : UD_Character = $UserDataStorage.GetLocalUserData().GetActiveCharacter()
+            if char.tactical_package_first.Get() == ""
+               newSlotIdx := 4
+            elif char.tactical_package_second.Get() == ""
+               newSlotIdx := 5
+            elif char.tactical_package_third.Get() == ""
+               newSlotIdx := 6
+            elif char.tactical_package_fourth.Get() == ""
+               newSlotIdx := 7
+            end
+            parentVM.loadoutSelectedSlotIndex.Set(newSlotIdx)
+         end
+      elif filter == $uiEnums.INV_TYPE_BOOST
+         parentVM.loadoutSelectedSlotIndex.Set(8)
+      end
+   end
+
+   func FindItemIdx(itemId : string) : int
+      var itemsVec   : vector = inventoryList.Get()
+      var i          : int
+      var ret        : int = -1
+      
+      for i := 0 to itemsVec.Count() - 1
+         var rec : InventoryRec = itemsVec.Get(i)
+         if (rec.ItemId() == itemId)
+            ret := i
+            break
+         end
+      end
+      return ret
+   end
+
+   func OnInventoryScreenOpened(p : params) : bool      
+      if ($UiGlobals.shop.inventoryParams.isValid)         
+         $UiGlobals.shop.inventoryParams.isValid := false
+         typeDrop.SetFilterId($UiGlobals.shop.inventoryParams.invType)
+         inventoryListAll.Invalidate()
+         var itemIdx : int = FindItemIdx($UiGlobals.shop.inventoryParams.itemId)
+         if (itemIdx == - 1)
+            itemIdx := 0
+         end
+         SetListSelection(itemIdx) : 0
+      else
+         inventoryListAll.Invalidate()
+         SetListSelection(0)
+      end
+      $hq.RenderLocalLoadouts()
+      
+      return true
+   end
+         
+   func GetClassFilterList(p : params) : vector
+      var ret : vector
+      return ret
+   end
+   
+   func CheckFilters()
+      categoryDrop.CheckFilterValue()
+      rentDrop.CheckFilterValue()
+   end
+      
+   func GetTypeFilterList(p : params) : vector
+      var ret : vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop  :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         var listElem   : params
+         
+         listElem.label    := "main_all"
+         listElem.filterId := $uiEnums.INV_TYPE_ALL
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "main_weapon"
+         listElem.filterId := $uiEnums.INV_TYPE_WEAPON
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "carousel_weapon_primary"
+         listElem.filterId := $uiEnums.INV_TYPE_WEAPON_PRIMARY
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "carousel_weapon_secondary"
+         listElem.filterId := $uiEnums.INV_TYPE_WEAPON_SECONDARY
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "carousel_weapon_grenades"
+         listElem.filterId := $uiEnums.INV_TYPE_WEAPON_GRENADES
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "main_tactical"
+         listElem.filterId := $uiEnums.INV_TYPE_TACTICAL
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "main_boost"
+         listElem.filterId := $uiEnums.INV_TYPE_BOOST
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "main_suits"
+         listElem.filterId := $uiEnums.INV_TYPE_ARMOR
+         ret.Push(listElem.Clone())
+         /*
+         listElem.label    := "main_armor"
+         listElem.filterId := $uiEnums.INV_TYPE_SUIT
+         ret.Push(listElem.Clone())
+         */
+      end   
+      return ret 
+   end
+   
+   func GetQualityFilterList(p : params) : vector
+      var ret : vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop  :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         var listElem   : params
+         
+         listElem.label    := "quality1"
+         listElem.filterId := "quality1"
+         ret.Push(listElem.Clone())
+         
+      end   
+      return ret 
+   end
+   
+   func GetClassLabelByClassType(classType : string) : string
+      var label : string
+      if (classType == $uiEnums.INV_CLASS_ALL)
+         label := "main_class_all"
+      elif (classType == $uiEnums.INV_CLASS_STANDARD)
+         label := "main_class_standard"
+      elif (classType == $uiEnums.INV_CLASS_RANGER)
+         label := "main_class_ranger"
+      elif (classType == $uiEnums.INV_CLASS_SNIPER)
+         label := "main_class_sniper"
+      elif (classType == $uiEnums.INV_CLASS_TACTIC)
+         label := "main_class_tactic"
+      elif (classType == $uiEnums.INV_CLASS_ADVANCED)
+         label := "main_class_advanced"
+      else
+         label := " UNKNOWN"
+      end
+      return label
+   end
+   
+   func GetCategoryFilterList(p : params) : vector
+      var ret : vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var catsVec    : vector = categoriesList.Get()
+         var i          : int
+         
+         for i := 0 to catsVec.Count() - 1
+            var listElem : params         
+            listElem.filterId := catsVec.Get(i)
+            listElem.label    := GetClassLabelByClassType(listElem.filterId)
+            ret.Push(listElem.Clone())
+         end  
+         
+      end   
+      return ret 
+   end
+   
+   func GetRentFilterList(p : params) : vector
+      var ret : vector
+      if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop  :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         var listElem   : params
+         
+         listElem.label    := "main_rent_filter_default"
+         listElem.filterId := $uiEnums.INV_RENT_SORT_DEFAULT
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "main_rent_filter_name_a"
+         listElem.filterId := $uiEnums.INV_RENT_SORT_NAME_A
+         ret.Push(listElem.Clone())
+         
+         listElem.label    := "main_rent_filter_name_z"
+         listElem.filterId := $uiEnums.INV_RENT_SORT_NAME_Z
+         ret.Push(listElem.Clone())
+         
+         var typeDrop : string = (string)typeDrop.filterId.Get()
+         if (typeDrop != $uiEnums.INV_TYPE_ARMOR and typeDrop != $uiEnums.INV_TYPE_SUIT)            
+            listElem.label    := "main_rent_filter_min"
+            listElem.filterId := $uiEnums.INV_RENT_SORT_MIN
+            ret.Push(listElem.Clone())
+            
+            listElem.label    := "main_rent_filter_max"
+            listElem.filterId := $uiEnums.INV_RENT_SORT_MAX
+            ret.Push(listElem.Clone())
+         end
+         
+         listElem.label    := "main_rent_filter_quality"
+         listElem.filterId := $uiEnums.INV_RENT_SORT_QUALITY
+         ret.Push(listElem.Clone())
+         
+      end   
+      return ret 
+   end
+      
+   func GetInventoryListAll() : vector
+      var itemIds          : vector = $UiGlobals.componentsInventory.GetKeys()
+      var ret              : vector
+      var i                : int
+      
+      for i := 0 to itemIds.Count() - 1
+         var itemId     : string                = itemIds.Get(i)
+         
+         var isInventoryItem : bool = (bool)$UiGlobals.componentsItem.Get(itemId).show_in_inventory.Get()
+         if (!isInventoryItem)
+            continue
+         end
+         
+         var invComp    : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(itemId)
+         if (invComp.ownership_type.Get() == $uiEnums.ITEM_OWN_TYPE_NONE)
+            continue
+         end
+                  
+         var rec : InventoryRec = new InventoryRec()
+         rec.itemId.Set(itemId)
+         if (rec.InvType() != $uiEnums.INV_TYPE_UNKNOWN)
+            ret.Push(rec)
+         end         
+      end  
+            
+      return ret         
+   end
+   
+   func GetInventoryListAllCats() : vector
+      var itemsVecAll      : vector = inventoryListAll.Get()
+      var itemIds          : vector = $UiGlobals.componentsInventory.GetKeys()
+      var filterType       : string = (string)typeDrop.filterId.Get()
+      var ret              : vector
+      var i                : int
+      
+      for i := 0 to itemsVecAll.Count() - 1
+         var rec        : InventoryRec = itemsVecAll.Get(i)
+         var addItem    : bool         = false
+         var invType    : string       = rec.InvType()
+         
+         if (filterType == $uiEnums.INV_TYPE_ALL or filterType == invType)
+            ret.Push(rec)
+         elif (filterType == $uiEnums.INV_TYPE_WEAPON)
+            if (invType == $uiEnums.INV_TYPE_WEAPON_PRIMARY or invType == $uiEnums.INV_TYPE_WEAPON_SECONDARY or invType == $uiEnums.INV_TYPE_WEAPON_GRENADES)
+               ret.Push(rec)
+            end
+         end
+      end  
+            
+      return ret   
+   end
+
+   func GetInventoryList() : vector
+      var allCatsList      : vector = inventoryListAllCats.Get()
+      var categoryFilter   : string = (string)categoryDrop.filterId.Get()
+      var ret              : vector = new vector()
+      var i                : int      
+      
+      for i := 0 to allCatsList.Count() - 1
+         var rec  : InventoryRec = allCatsList.Get(i)         
+         var item : string       = rec.ItemId()
+         
+         if (categoryFilter == $uiEnums.INV_CLASS_ALL)
+            ret.Push(rec)
+         else
+            var itemClass = (string)$UiGlobals.componentsItem.Get(item).career_tree.Get()
+            if (categoryFilter == itemClass)   
+               ret.Push(rec)
+            end   
+         end   
+      end
+      
+      ret := SortInventoryItems(ret)
+      
+      if ret.Count() < 15
+         for i := ret.Count() to 15
+            ret.Push(new InventoryRec())
+         end
+      else
+         var count : int = 4 - ret.Count() + (4 * (int)(ret.Count() / 4))         
+         if (count != 4)
+            for i := 0 to count - 1
+               ret.Push(new InventoryRec())
+            end            
+         end         
+      end
+      
+      return ret      
+   end
+   
+   func GetCategoriesList() : vector
+      var allCatsList      : vector = inventoryListAllCats.Get()
+      var ret              : vector
+      var retTmp           : vector
+      var i                : int      
+         var j                : int      
+      
+      for i := 0 to allCatsList.Count() - 1
+         var rec  : InventoryRec = allCatsList.Get(i)     
+         var item : string       = rec.ItemId()
+         if (item != "")
+            var itemClass  : string = (string)$UiGlobals.componentsItem.Get(item).career_tree.Get()         
+            var idx        : int    = -1
+            if (itemClass != "" and itemClass != "_EMPTY_" and itemClass != "unknown")
+               for j := 0 to retTmp.Count() - 1
+                  if (retTmp.Get(j) == itemClass)
+                     idx := j
+                     break
+                  end
+               end
+               
+               if (idx == -1)
+                  retTmp.Push(itemClass)   
+               end         
+            end
+         end
+      end
+      
+      //if (retTmp.Count() > 1)
+         ret.Push($uiEnums.INV_CLASS_ALL)
+      //end   
+      //for i := 0 to retTmp.Count() - 1
+         //ret.Push(retTmp.Get(i))
+      //end
+            
+      return ret
+   end
+
+   func CompareByRentTime(itemIdA : InventoryRec, itemIdB : InventoryRec) : int
+      var availA  : int = itemIdA.SortingRent()
+      var availB  : int = itemIdB.SortingRent()      
+      var ret     : int = 0      
+      
+      if (availA == 0 and availB != 0)
+         ret := 1
+      elif (availA != 0 and availB == 0)
+         ret := -1 
+      elif (availA == 0 and availB == 0)
+         ret := 0
+      else   
+         if (availA > availB)
+            ret := 1
+         elif (availA < availB)
+            ret := -1
+         end
+      end
+      
+      if (rentDrop.GetFilterId() == $uiEnums.INV_RENT_SORT_MIN)
+         ret := 1 * ret
+      else
+         ret := -1 * ret
+      end
+      
+      return ret      
+   end
+   
+   func CompareByName(itemIdA : InventoryRec, itemIdB : InventoryRec) : int
+      var ret   : int = 0
+      var nameA : wstring = itemIdA.SortingName()
+      var nameB : wstring = itemIdB.SortingName()
+      
+      ret := $UiGlobals.CmpWStrings(nameA, nameB)
+      
+      if ((string)rentDrop.filterId.Get() == $uiEnums.INV_RENT_SORT_NAME_A)
+         ret := 1 * ret
+      else
+         ret := -1 * ret
+      end
+      
+      return ret
+   end
+   
+   func CompareByQuality(itemIdA : InventoryRec, itemIdB : InventoryRec) : int
+      var ret        : int = 0
+      var qualityA   : int = itemIdA.SortingQuality()
+      var qualityB   : int = itemIdB.SortingQuality()
+      
+      if (qualityA > qualityB)
+         ret := -1
+      elif (qualityA < qualityB)
+         ret := 1
+      end
+      
+      return ret
+   end
+   
+   
+   var sortByType       : bool = false
+   var sortByTypeFirst  : bool = false
+   var sortByTime       : bool = false
+   var sortByQuality    : bool = false
+   var sortByName       : bool = false
+   
+   func SortCompareItems(itemIdA : InventoryRec, itemIdB : InventoryRec) : int
+      var ret : int = 0
+      
+      if (sortByType and sortByTypeFirst)
+         ret:= CompareByType(itemIdA, itemIdB)
+      end
+            
+      if (ret== 0 and sortByTime)
+         ret := CompareByRentTime(itemIdA, itemIdB)
+      end
+      
+      if (ret == 0 and sortByName)
+         ret := CompareByName(itemIdA, itemIdB)
+      end
+      
+      if (ret == 0 and sortByQuality)
+         ret := CompareByQuality(itemIdA, itemIdB)
+      end
+      
+      if (ret == 0 and sortByType and !sortByTypeFirst)
+         ret:= CompareByType(itemIdA, itemIdB)
+      end
+      
+      return ret      
+   end
+   
+   
+   func CompareByType(itemIdA : InventoryRec, itemIdB : InventoryRec) : int
+      var ret  : int = 0      
+      var idxa : int = itemIdA.GetSortingType()
+      var idxb : int = itemIdB.GetSortingType()
+      
+      if (idxa > idxb)
+         ret := -1
+      elif (idxa < idxb)
+         ret := 1
+      end
+      
+      return ret
+   end
+   
+   func ResetSortFlags(_sortByType : bool, _sortByTypeFirst : bool)
+      sortByType        := _sortByType
+      sortByTypeFirst   := _sortByTypeFirst
+      sortByTime        := false
+      sortByQuality     := false
+      sortByName        := false
+   end
+   
+   func SortInventoryItems(items : vector) : vector
+      var ret        : vector = items
+      var rentFilter : string = rentDrop.GetFilterId()
+      var typeFilter : string = typeDrop.GetFilterId()
+      var isTypeSort : bool   = typeFilter == $uiEnums.INV_TYPE_ALL or typeFilter == $uiEnums.INV_TYPE_WEAPON
+      
+      ResetSortFlags(isTypeSort, rentFilter == $uiEnums.INV_RENT_SORT_DEFAULT)
+      
+      if (rentFilter == $uiEnums.INV_RENT_SORT_DEFAULT)
+         sortByTime     := true
+      elif (rentFilter == $uiEnums.INV_RENT_SORT_MIN or rentFilter == $uiEnums.INV_RENT_SORT_MAX)
+         sortByTime     := true
+      elif (rentFilter == $uiEnums.INV_RENT_SORT_NAME_A or rentFilter == $uiEnums.INV_RENT_SORT_NAME_Z)
+         sortByName     := true
+      elif (rentFilter == $uiEnums.INV_RENT_SORT_QUALITY)
+         sortByQuality  := true
+      end
+      
+      ret.Sort(this, "SortCompareItems")
+      
+      return ret
+   end
+   
+   func onInventoryListClick(p : params) : bool
+      var idx : int = p.index
+      SetListSelection(idx)
+      return false
+   end
+   
+   func onInventoryListDoubleClick(p : params) : bool
+      AssignInventoryItem()
+      return true
+   end
+
+   func onInventoryListOver(p : params) : bool
+      var idx : int = p.index
+      highlightedIdx.Set(idx)
+      return false
+   end
+   
+   func onInventoryListOut(p : params) : bool
+      highlightedIdx.Set(-1)
+      return false
+   end
+   
+   func GetSelectedItem() : string
+      var selectedIndex   : int = (int)selectedIdx.Get()
+      var itemsList       : vector = inventoryList.Get()
+      if (selectedIndex >= 0 and selectedIndex < itemsList.Count())
+         return itemsList.Get(selectedIndex).ItemId()
+      end
+      return ""
+   end
+   
+   func HighlightedItem() : string
+      return (string)highlightedItem.Get()
+   end
+   
+   func GetHighlightedItem() : string
+      var highlightedIndex    : int    = (int)highlightedIdx.Get()
+      var itemsList           : vector = inventoryList.Get()
+      
+      if (highlightedIndex < 0 or highlightedIndex >= itemsList.Count())
+         highlightedIndex := wgt.GetInventorySelection()
+      end
+      
+      if (highlightedIndex >= 0 and highlightedIndex < itemsList.Count())
+         return itemsList.Get(highlightedIndex).ItemId()
+      end
+      
+      return ""
+   end
+   
+   func GetHighlightedItemObservable() : ObservableProperty
+      return highlightedItem
+   end
+   
+   func SetListSelection(_idx : int)
+      var idx := _idx
+      if (wgt != null)
+         var itemsList : vector = inventoryList.Get()
+         if (itemsList.Get(0).ItemId() == "")
+            idx := -1
+         end
+         selectedIdx.Set(idx)
+         var p : params
+         p.idx := idx
+         wgt.GenerateEvent("SetInventorySelection", p)
+      end
+   end
+   
+   // loadout view & assign //
+   
+   var SelectedLoadoutIdx      : ObservableProperty = $OM.Calculated(this, "GetActiveLoadoutIdx")
+   var SelectedArmorLoadoutIdx : ObservableProperty = $OM.Calculated(this, "GetActiveArmorLoadoutIdx")
+   
+   func GetActiveLoadoutIdx() : int
+      return (int)$UserDataStorage.GetLocalUserData().customizations.character_active_index.Get()
+   end
+   
+   func GetActiveArmorLoadoutIdx() : int
+      return (int)$UserDataStorage.local_user.currentArmorLoadoutIdx.Get()
+   end
+   
+   func AssignInventoryItem() : bool
+      var item : string = GetSelectedItem()
+      var p : params
+      p.itemId := item
+      AssignItem(p)
+      return true
+   end
+      
+   func AssignItem(p : params)
+      var filterType : string = (string)typeDrop.filterId.Get()
+      if (p.itemId != "")
+         var itemType   : int = $uiEconomy.GetItemType(p.itemId)
+         var itemSubType: int = $uiEconomy.GetItemSubType(p.itemId)
+         if (itemType == $uiEnums.ITEM_TYPE_WEAPON)
+            AssignWeapon(p.itemId)
+         elif (itemSubType == $uiEnums.ITEM_SUB_TYPE_TP_PERK)
+            AssignTacticalPackage(p.itemId)
+         elif (itemSubType == $uiEnums.ITEM_SUB_TYPE_TP_BOOST)
+            AssignBooster(p.itemId)
+         elif (itemSubType == $uiEnums.ITEM_SUB_TYPE_WPN_GRENADE)
+            AssignWeapon(p.itemId)
+         elif (itemType == $uiEnums.ITEM_TYPE_ARMOR)
+            AssignArmor(p.itemId)
+            $hq.RenderLocalLoadouts()
+         end
+      end
+   end
+   
+   func ViewItemInShop(p : params)
+      $root.GotoShopItem(p.itemId)
+   end
+   
+   func RenewInventoryItemByCr(p : params) : bool
+      var itemId       : string = p.itemId
+      var shopComp     : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(itemId)
+      var offerComp    : GL_ComponentShopOffer = shopComp.GetMinimalCrGpOffer(false)
+      if (offerComp == null)
+         return false
+      end
+      var offerId      : string = (string)offerComp.cr_offer.Get()
+      var offerCr      : int = (int)offerComp.cr_cost.Get()
+      if (offerId != "")
+         var par: params
+         par.itemID        := itemId
+         par.offer         := offerId
+         par.priceAmount   := offerCr
+         par.priceUnit     := $uiEnums.TOKEN_CREDITS
+         if (offerCr <= (int)$UserDataStorage.local_user.cr.Get())
+            par.mbType         := "ConfirmBuy"
+            par.callbackEvent  := "InventoryUpdate"
+         else
+            par.mbType     := "Info"
+            par.titleTxt   := "msg_ui_warning"
+            par.messageTxt := "msg_ui_not_enough_cr"
+         end
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)         
+      end
+      return false
+   end
+   
+   func RenewInventoryItemByGp(p : params) : bool
+      var itemId       : string = p.itemId
+      var shopComp     : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(itemId)
+      var offerComp    : GL_ComponentShopOffer = shopComp.GetMinimalCrGpOffer(true)
+      if (offerComp == null)
+         return false
+      end
+      var offerId      : string = (string)offerComp.gl_offer.Get()
+      var offerGl      : int = (int)offerComp.gl_cost.Get()
+      if (offerId != "")
+         var par: params
+         par.itemID        := itemId
+         par.offer         := offerId
+         par.priceAmount   := offerGl
+         par.priceUnit     := $uiEnums.TOKEN_GOLD
+         if (offerGl <= (int)$UserDataStorage.local_user.gold.Get())
+            par.mbType         := "ConfirmBuy"
+            par.callbackEvent  := "InventoryUpdate"
+         else
+            par.mbType     := "Info"
+            par.titleTxt   := "msg_ui_warning"
+            par.messageTxt := "msg_ui_not_enough_gp"
+         end
+         $sslWidgetMgr.GenerateEvent("MainMenuDialogRequest", par)         
+      end
+      return false
+   end
+   
+   func InventoryUpdate(p : params) : bool
+      inventoryList.Invalidate()
+      return true
+   end
+   
+   func AssignWeapon(itemId : string)
+      $user_service.EquipCharacter(itemId)
+   end
+   
+   func AssignTacticalPackage(itemId : string)
+      var character : UD_Character = $UserDataStorage.GetLocalUserData().GetActiveCharacter()
+      
+      if (itemId == (string)character.tactical_package_first.Get() or itemId == (string)character.tactical_package_second.Get())
+         return
+      end
+      if (itemId == (string)character.tactical_package_third.Get() or itemId == (string)character.tactical_package_fourth.Get())
+         return
+      end
+      
+      var index : int = 3
+      if ((string)character.tactical_package_first.Get() == "")
+         index := 0
+      elif ((string)character.tactical_package_second.Get() == "")
+         index := 1
+      elif ((string)character.tactical_package_third.Get() == "")
+         index := 2
+      end
+            
+      $user_service.EquipCharacterWithSlot(itemId, index)
+   end
+   
+   func AssignTacticalPackageInSlot(p : params)
+      $user_service.EquipCharacterWithSlot(p.itemId, p.index)
+   end
+   
+   func AssignBooster(itemId : string)
+      $user_service.EquipCharacter(itemId)
+   end
+   
+   func AssignArmor(itemId : string)
+      $user_service.EquipCharacter(itemId)
+      $hq.RenderLocalLoadouts()
+   end
+   
+   func GetRaceIdx() : int
+      var idx: int = (int)$UserDataStorage.local_user.race.Get()
+      return idx
+   end
+   
+   func EnableAssignBtn() : bool
+      var ret : bool = false
+      if ((int)selectedIdx.Get() != -1)
+         ret := true
+      end
+      return ret
+   end
+   
+   func LoadoutSelectorClicked(p : params) : bool
+      var index : int = (int)p.widget.Get("idx")
+      if (!IsArmorLoadout())
+         if index != SelectedLoadoutIdx.Get()
+            $user_service.SetWeaponLoadoutActive(0, index)
+         end
+      else    
+         if index != SelectedArmorLoadoutIdx.Get()
+            $user_service.SetArmorLoadoutActive(0, index)
+         end
+      end
+      return true
+   end
+   
+   func IsArmorLoadout() : bool
+      var ret : bool = false
+      
+      if ((string)typeDrop.filterId.Get() == $uiEnums.INV_TYPE_ARMOR or (string)typeDrop.filterId.Get() == $uiEnums.INV_TYPE_SUIT)
+         ret := true
+      end
+      return ret
+   end   
+   
+   override LoadoutPanelSlotClicked // (p : params) : bool
+      var itemType      : int = p.itemType
+      var itemSubType   : int = p.itemSubType            
+      typeDrop.SetFilterId($root.GetInvTypeFromItemType(itemType, itemSubType))
+      return true
+   end
+   
+   override GetLoadoutsHighlightedItem // () : string
+      return (string)highlightedItem.Get()
+   end
+   
+   override GetLoadoutsFilterId // () : string
+      return typeDrop.GetFilterId()
+   end
+end
+
+class LoadoutsPanelVM
+   var SelectedLoadoutIdx        : ObservableProperty = $OM.Calculated(this, "GetActiveLoadoutIdx")
+   var SelectedArmorLoadoutIdx   : ObservableProperty = $OM.Calculated(this, "GetActiveArmorLoadoutIdx")
+   var itemIdObservable          : ObservableProperty = $OM.Property(null)
+   var itemId                    : ObservableProperty = $OM.Calculated(this, "GetItemId")
+   var filterObservable          : ObservableProperty = $OM.Property(null)
+   var filter                    : ObservableProperty = $OM.Calculated(this, "GetFilter")
+   var selectedSlotIndex         : ObservableProperty = $OM.Property(null)
+   var isArmorLoadout            : ObservableProperty = $OM.Calculated(this, "GetIsArmorLoadout")
+   var wgt                       : UiWidget           = null
+   
+   func SetWidget(_wgt : UiWidget)
+      wgt := _wgt
+   end
+
+
+   func Init(_itemId : ObservableProperty, _filter: ObservableProperty, _selectedSlotIndex : ObservableProperty)
+      itemIdObservable.Set(_itemId)
+      filterObservable.Set(_filter)
+      selectedSlotIndex.Set(_selectedSlotIndex)
+      
+      EnableSlots():0 //mouseChildren hack
+      
+      $UserDataStorage.local_user.isWaitingLoadout.Subscribe(this, "OnIsWaitingLoadoutChanged")
+   end
+   
+   func Term()
+      $UserDataStorage.local_user.isWaitingLoadout.Unsubscribe(this, "OnIsWaitingLoadoutChanged")
+   end
+   
+   func OnIsWaitingLoadoutChanged(val : bool)
+      if !val
+         $hq.RenderLocalLoadouts()
+      end
+   end
+
+   func GetItemId() : string
+      var ret        : string
+      var itemIdObs  : ObservableProperty = (ObservableProperty)itemIdObservable.Get()
+      if (itemIdObs != null)
+         ret := (string)itemIdObs.Get()
+      end
+      return ret
+   end
+   
+   func ItemId() : string
+      return (string)itemId.Get()
+   end
+         
+   func GetFilter() : string
+      var ret        : string
+      var filterObs  : ObservableProperty = (ObservableProperty)filterObservable.Get()
+      if (filterObs != null)
+         ret := (string)filterObs.Get()
+      end
+      return ret
+   end
+   
+   func Filter() : string
+      return (string)filter.Get()
+   end
+
+   func GetIsArmorLoadout() : bool
+      var ret        : bool   = false
+      var itemIdVal  : string = ItemId()
+      var filterId   : string = Filter()
+      if (filterId == $uiEnums.INV_TYPE_ARMOR or filterId == $uiEnums.INV_TYPE_SUIT)
+         ret := true
+      elif (itemIdVal != "")
+         var itemType : int = $uiEconomy.GetItemType(itemIdVal)
+         if (itemType == $uiEnums.ITEM_TYPE_ARMOR_SUIT or itemType == $uiEnums.ITEM_TYPE_ARMOR)
+            ret := true
+         end
+      end
+      
+      // HACK
+      // to enable inner elements
+      EnableSlots()
+      
+      return ret
+   end
+   
+   func IsArmorLoadout() : bool
+      return (bool)isArmorLoadout.Get()
+   end
+   
+   func GetSelectedSlot() : string
+      var ret : string = ""
+      if selectedSlotIndex.Get() != null
+         ret := selectedSlotIndex.Get().Get()
+      end
+      return ret
+   end
+   
+   func ArrowVisible() : bool
+      var ret        : bool   = false
+      var itemIdVal  : string = ItemId()
+      var filterId   : string = Filter()
+      if (filterId == $uiEnums.INV_TYPE_ARMOR)
+         ret := true
+      elif (itemIdVal != "")
+         if ($uiEconomy.GetItemType(itemIdVal) == $uiEnums.ITEM_TYPE_ARMOR_SUIT)
+            ret := false
+         else
+            ret := true
+         end
+      end
+      return ret 
+   end
+   
+   func GetArrowFrame() : string
+      var ret        : string = ""
+      var itemIdVal  : string = ItemId()
+      if (itemIdVal!= "")
+         var itemType : int = $uiEconomy.GetItemType(itemIdVal)
+         if (itemType != $uiEnums.ITEM_TYPE_ARMOR)
+            var itemSubType : int = $uiEconomy.GetItemSubType(itemIdVal)
+            if (itemSubType != $uiEnums.ITEM_SUB_TYPE_NONE)
+               ret := "type" + itemSubType
+            end
+         else
+            var armorType : int = $UiGlobals.GetArmorPartType(itemIdVal)      
+            if (armorType == $uiEnums.ARMOR_PART_HELMET)
+               ret := "armor0"
+            elif (armorType == $uiEnums.ARMOR_PART_CHEST)
+               ret := "armor1"
+            elif (armorType == $uiEnums.ARMOR_PART_SHOULDER)
+               ret := "armor2"   
+            elif (armorType == $uiEnums.ARMOR_PART_ARMS)
+               ret := "armor3"   
+            elif (armorType == $uiEnums.ARMOR_PART_LEGS)
+               ret := "armor4"   
+            end
+         end
+      end   
+      return ret
+   end   
+   
+   func GetActiveLoadoutIdx() : int
+      return (int)$UserDataStorage.GetLocalUserData().customizations.character_active_index.Get()
+   end
+   
+   func GetActiveArmorLoadoutIdx() : int
+      return (int)$UserDataStorage.local_user.currentArmorLoadoutIdx.Get()
+   end
+   
+   func TabSelected(idx : int) : bool
+      var ret : bool = false
+      if ((int)SelectedLoadoutIdx.Get() == idx)
+         ret := true
+      end
+      return ret
+   end
+   
+   func EnableSelector(idx : int) : bool
+      var ret : bool = false
+      if (!IsArmorLoadout())
+         var udLocal : UserDataLocal = $UserDataStorage.local_user
+         var counter :  int = (int)udLocal.weapon_loadouts_unlocked.Get()
+         if (idx < counter)
+            ret := true
+         end
+      else
+         var udLocal : UserDataLocal = $UserDataStorage.local_user
+         var counter :  int = (int)udLocal.armor_loadouts_unlocked.Get()
+         if (idx < counter)
+            ret := true
+         end
+      end
+      return ret
+   end   
+
+   func LoadoutSelectorClicked(p : params) : bool
+      var index : int = (int)p.widget.Get("idx")
+      $user_service.SetCharacterActive(index)
+      return true
+   end
+   
+   func loadoutPanelSlotClicked(p : params) : bool
+      var pp : params
+      pp.itemId      := p.widget.itemId
+      pp.itemType    := p.widget.itemType
+      pp.itemSubType := p.widget.itemSubType
+      pp.slotIndex   := p.widget.slotIndex
+      wgt.GenerateEvent("#LoadoutPanelSlotClicked", pp)
+      return false
+   end
+   
+   func EnableSlots()  
+      if (wgt == null)
+         return
+      end
+      
+      wgt.Widgets.weaponLoadoutCurrent.mouseChildren  := true
+      wgt.Widgets.weaponLoadoutCurrent.mouseEnabled   := false      
+   end   
+end

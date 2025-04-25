@@ -1,0 +1,331 @@
+classes = {
+	basic1Nameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "basic1Nameplate" 
+		lib     = playercard_lib 
+	}
+
+	basic1PlayerCard = {
+		__type = "ui_widget_container"
+
+		symbol  = "basic1PlayerCard" 
+		lib     = playercard_lib 
+	}
+
+	Basic1Shopnameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "Basic1Shopnameplate" 
+		lib     = playercard_lib 
+	}
+
+	basic2Nameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "basic2Nameplate" 
+		lib     = playercard_lib 
+	}
+
+	basic2PlayerCard = {
+		__type = "ui_widget_container"
+
+		symbol  = "basic2PlayerCard" 
+		lib     = playercard_lib 
+	}
+
+	Basic2Shopnameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "Basic2Shopnameplate" 
+		lib     = playercard_lib 
+	}
+
+	basic3Nameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "basic3Nameplate" 
+		lib     = playercard_lib 
+	}
+
+	basic3PlayerCard = {
+		__type = "ui_widget_container"
+
+		symbol  = "basic3PlayerCard" 
+		lib     = playercard_lib 
+	}
+
+	Basic3Shopnameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "Basic3Shopnameplate" 
+		lib     = playercard_lib 
+	}
+
+	BronzeNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "BronzeNameplate" 
+		lib     = playercard_lib 
+	}
+
+	BronzePlayercard = {
+		__type = "ui_widget_container"
+
+		symbol  = "BronzePlayercard" 
+		lib     = playercard_lib 
+	}
+
+	BronzeShopNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "BronzeShopNameplate" 
+		lib     = playercard_lib 
+	}
+
+	defaultPlayerNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "defaultPlayerNameplate" 
+		lib     = playercard_lib 
+	}
+
+	GoldNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "GoldNameplate" 
+		lib     = playercard_lib 
+	}
+
+	GoldPlayercard = {
+		__type = "ui_widget_container"
+
+		symbol  = "GoldPlayercard" 
+		lib     = playercard_lib 
+	}
+
+	GoldShopNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "GoldShopNameplate" 
+		lib     = playercard_lib 
+	}
+
+	playerCard = {
+		__type = "ui_widget_container"
+
+		symbol  = "playerCard" 
+		lib     = playercard_lib 
+
+		elements {
+			nameplateAttach {
+				__type = "ui_widget_container"
+
+				x         = 8
+				y         = 360
+			} 
+			stats {
+				__type = "ui_widget_container"
+
+				propMapping {
+					value1 = {
+						mapping = "value1.text"
+					}
+					value2 = {
+						mapping = "value2.text"
+					}
+					value3 = {
+						mapping = "value3.text"
+					}
+					value4 = {
+						mapping = "value4.text"
+					}
+					value5 = {
+						mapping = "value5.text"
+					}
+					value6 = {
+						mapping = "value6.text"
+					}
+					value7 = {
+						mapping = "value7.text"
+					}
+					name1 = {
+						mapping = "name1.text"
+					}
+					name2 = {
+						mapping = "name2.text"
+					}
+					name3 = {
+						mapping = "name3.text"
+					}
+					name4 = {
+						mapping = "name4.text"
+					}
+					name5 = {
+						mapping = "name5.text"
+					}
+					name6 = {
+						mapping = "name6.text"
+					}
+					name7 = {
+						mapping = "name7.text"
+					}
+				}
+				x         = 61.95
+				y         = 423.85
+			} 
+			renderAttach {
+				__type = "ui_widget_container"
+
+				x         = 11
+				y         = 11
+			} 
+			waitingCont {
+				__type = "ui_widget_container"
+
+				x         = 31.45
+				y         = 16.9
+
+				elements {
+					statsAnim {
+						__type = "ui_widget_container"
+
+						x         = 94.55
+						y         = 480
+					} 
+					renderAnim {
+						__type = "ui_widget_container"
+
+						x         = 0
+						y         = 0
+						scaleX    = 0.8938
+						scaleY    = 0.8939
+					} 
+				}
+			} 
+			flagCont {
+				__type = "ui_widget_container"
+
+				x         = 20.8
+				y         = 11.15
+
+				elements {
+					flag {
+						__type = "ui_widget_container"
+
+						x         = -36.8
+						y         = 2.85
+						scaleX    = 1.401
+						scaleY    = 1.4215
+					} 
+				}
+				animated  = true
+			} 
+			videoAttach {
+				__type = "ui_widget_container"
+
+				x         = 11
+				y         = 11
+				animated  = true
+			} 
+			bgAttach {
+				__type = "ui_playercard_lib::playerCard_imageAttach"
+				x         = 0
+				y         = 0
+				animated  = true
+			} 
+		}
+	}
+
+	playerCardDefault = {
+		__type = "ui_widget_container"
+
+		symbol  = "playerCardDefault" 
+		lib     = playercard_lib 
+	}
+
+	playerCardDefault_old = {
+		__type = "ui_widget_container"
+
+		symbol  = "playerCardDefault_old" 
+		lib     = playercard_lib 
+	}
+
+	playerCard_imageAttach = {
+		__type = "ui_widget_image"
+
+		symbol  = "playerCard_imageAttach" 
+		lib     = playercard_lib 
+	}
+
+	premium1Nameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "premium1Nameplate" 
+		lib     = playercard_lib 
+	}
+
+	premium1Playercard = {
+		__type = "ui_widget_container"
+
+		symbol  = "premium1Playercard" 
+		lib     = playercard_lib 
+	}
+
+	premium1ShopNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "premium1ShopNameplate" 
+		lib     = playercard_lib 
+	}
+
+	premium2Nameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "premium2Nameplate" 
+		lib     = playercard_lib 
+	}
+
+	premium2Playercard = {
+		__type = "ui_widget_container"
+
+		symbol  = "premium2Playercard" 
+		lib     = playercard_lib 
+	}
+
+	premium2ShopNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "premium2ShopNameplate" 
+		lib     = playercard_lib 
+	}
+
+	SilverNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "SilverNameplate" 
+		lib     = playercard_lib 
+	}
+
+	SilverPlayercard = {
+		__type = "ui_widget_container"
+
+		symbol  = "SilverPlayercard" 
+		lib     = playercard_lib 
+	}
+
+	SilverShopNameplate = {
+		__type = "ui_widget_container"
+
+		symbol  = "SilverShopNameplate" 
+		lib     = playercard_lib 
+	}
+
+	StandartShopNamePlate = {
+		__type = "ui_widget_container"
+
+		symbol  = "StandartShopNamePlate" 
+		lib     = playercard_lib 
+	}
+}
+__type = "ui_widget_lib"

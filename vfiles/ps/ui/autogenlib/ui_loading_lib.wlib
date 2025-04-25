@@ -1,0 +1,227 @@
+classes = {
+	Container = {
+		__type = "ui_widget_container"
+
+		symbol  = "Container" 
+		lib     = loading_lib 
+	}
+
+	ContainerCenter = {
+		__type = "ui_widget_container"
+
+		symbol  = "ContainerCenter" 
+		lib     = loading_lib 
+	}
+
+	LoadingScreenAttach = {
+		__type = "ui_widget_image"
+
+		symbol  = "LoadingScreenAttach" 
+		lib     = loading_lib 
+	}
+
+	LoadingScreenCont = {
+		__type = "ui_widget_container"
+
+		symbol  = "LoadingScreenCont" 
+		lib     = loading_lib 
+		propMapping {
+			tfHeader = {
+				mapping = "tfHeader.text"
+			}
+			gamemodeTf = {
+				mapping = "gamemodeTf.text"
+			}
+			playersTf = {
+				mapping = "playersTf.text"
+			}
+			descContTf = {
+				mapping = "descContTf.text"
+			}
+		}
+
+		elements {
+			fakeProgress {
+				__type = "ui_widget_container"
+
+				x         = -147
+				y         = 883.6
+				scaleX    = 1
+				scaleY    = 0.781
+
+				elements {
+					maskedProgress {
+						__type = "ui_widget_container"
+
+						x         = 5
+						y         = -3
+
+						elements {
+							progressOver {
+								__type = "ui_loading_lib::LoadingScreen_progressOver"
+								x         = 128.9
+								y         = 15
+								scaleX    = 2.351
+								scaleY    = 0.5495
+							} 
+						}
+					} 
+				}
+			} 
+			mapLoadAttach {
+				__type = "ui_loading_lib::LoadingScreenAttach"
+				x         = -12
+				y         = 169.5
+			} 
+		}
+	}
+
+	LoadingScreenContMainMenu = {
+		__type = "ui_widget_container"
+
+		symbol  = "LoadingScreenContMainMenu" 
+		lib     = loading_lib 
+		propMapping {
+			loadingTf = {
+				mapping = "loadingTf.text"
+			}
+		}
+
+		elements {
+			fakeProgress {
+				__type = "ui_widget_container"
+
+				x         = -134.5
+				y         = 985.8
+
+				elements {
+					maskedProgress {
+						__type = "ui_widget_container"
+
+						x         = 5
+						y         = -3
+
+						elements {
+							progressOver {
+								__type = "ui_loading_lib::LoadingScreen_progressOver"
+								x         = 128.9
+								y         = 15
+								scaleX    = 2.351
+								scaleY    = 0.5495
+							} 
+						}
+					} 
+				}
+			} 
+		}
+	}
+
+	LoadingScreenMapSmall = {
+		__type = "ui_widget_container"
+
+		symbol  = "LoadingScreenMapSmall" 
+		lib     = loading_lib 
+
+		elements {
+			attachMap {
+				__type = "ui_loading_lib::LoadingScreenAttach"
+				x         = 1.35
+				y         = 9.25
+				scaleX    = 1.26
+				scaleY    = 1.26
+			} 
+		}
+	}
+
+	LoadingScreen_progressOver = {
+		__type = "ui_widget_container"
+
+		symbol  = "LoadingScreen_progressOver" 
+		lib     = loading_lib 
+	}
+
+	MapBig_avalanche = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_avalanche" 
+		lib     = loading_lib 
+	}
+
+	MapBig_edge = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_edge" 
+		lib     = loading_lib 
+	}
+
+	MapBig_guardian = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_guardian" 
+		lib     = loading_lib 
+	}
+
+	MapBig_narrows = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_narrows" 
+		lib     = loading_lib 
+	}
+
+	MapBig_pit = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_pit" 
+		lib     = loading_lib 
+	}
+
+	MapBig_reactor = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_reactor" 
+		lib     = loading_lib 
+	}
+
+	MapBig_standoff = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_standoff" 
+		lib     = loading_lib 
+	}
+
+	MapBig_turf = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_turf" 
+		lib     = loading_lib 
+	}
+
+	MapBig_valhala = {
+		__type = "ui_widget_container"
+
+		symbol  = "MapBig_valhala" 
+		lib     = loading_lib 
+	}
+
+	MouseCursor = {
+		__type = "ui_widget_container"
+
+		symbol  = "MouseCursor" 
+		lib     = loading_lib 
+	}
+
+	saber_ui_menu_LibraryManager = {
+		__type = "ui_widget_container"
+
+		symbol  = "saber.ui.menu.LibraryManager" 
+		lib     = loading_lib 
+	}
+
+	tutorialLVL = {
+		__type = "ui_widget_container"
+
+		symbol  = "tutorialLVL" 
+		lib     = loading_lib 
+	}
+}
+__type = "ui_widget_lib"

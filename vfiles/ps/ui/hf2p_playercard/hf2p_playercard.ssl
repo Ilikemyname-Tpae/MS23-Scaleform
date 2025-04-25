@@ -1,0 +1,228 @@
+import ssl.observables
+import ssl.hf2p.user_data
+
+class PlayerCardVM
+   var uid                 : ObservableProperty = $OM.Property($UserDataStorage.invalidUID)
+   var userData            : ObservableProperty = $OM.Calculated(this, "GetUserData")
+   var isVisible           : ObservableProperty = $OM.Property(false)
+   var teamStripeFrame     : ObservableProperty = $OM.Property("neutral")
+   var rank                : ObservableProperty = $OM.Calculated(this, "GetRank")
+   var nickName            : ObservableProperty = $OM.Calculated(this, "GetNickname")
+   var emblemIcon          : ObservableProperty = $OM.Calculated(this, "GetEmblemIcon")
+   var isActive            : ObservableProperty = $OM.Property(false)
+   var isLeft              : ObservableProperty = $OM.Property(false)
+   var isProfile           : ObservableProperty = $OM.Property(false)
+   var canRender           : ObservableProperty = $OM.Calculated(this, "GetCanRender")
+   var isWaitingStats      : ObservableProperty = $OM.Calculated(this, "GetIsWaitingStats")
+   var flagTint            : ObservableProperty = $OM.Calculated(this, "GetFlagTint")
+   var flagTintParams      : params
+   var teamIdx             : ObservableProperty = $OM.Property(0)
+   var isTeamMode          : ObservableProperty = $OM.Property(false)
+   
+   func GetFlagAlpha() : float
+      return 100.0
+   end
+   
+   func PlayerCardVM()
+      flagTintParams.rMult    := 100.0
+      flagTintParams.gMult    := 100.0
+      flagTintParams.bMult    := 100.0
+      flagTintParams.aMult    := GetFlagAlpha()
+      flagTintParams.rShift   := 0.0
+      flagTintParams.gShift   := 0.0
+      flagTintParams.bShift   := 0.0
+      flagTintParams.aShift   := 0.0
+   end
+   
+   func GetRank() : string
+      var ud   : UserData  = GetUserData()
+      var ret  : string    = ""
+      var levelId : string = (string)ud.base.level_id.Get()
+      var uiComp     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(levelId)
+      ret := (string)uiComp.name.Get()
+      return ret
+   end
+   
+   func GetNickname() : wstring
+      var ud   : UserData  = GetUserData()
+      var ret  : wstring    = $UiGlobals.String2WString("???")
+      if (! GetIsWaitingStats())
+         ret := ud.base.full_nickname.Get()
+      end
+      return ret
+   end
+   
+   func GetEmblemIcon() : string
+      var uidVal  : GL_UID = (GL_UID)uid.Get()
+      var ret     : string = $UserDataStorage.GetPlayerEmblemIcon(uidVal.value.Get())
+      return ret
+   end   
+   
+   func GetUserData() : UserData
+      var ret           : UserData  = null
+      var isActiveVal   : bool      = (bool)isActive.Get()
+      var uidVal        : GL_UID    = (GL_UID)uid.Get()
+      ret := (UserData)$UserDataStorage.users.Get(uidVal.GetVal())
+      if (isActiveVal and ret.CanRenderBiped())
+         if ((bool)isProfile.Get())
+               $hq.TextureRenderBipedUserCard2(uidVal.value.Get())
+         else
+            if ((bool)isLeft.Get())
+               $hq.TextureRenderBipedUserCard0(uidVal.value.Get())
+            else
+               $hq.TextureRenderBipedUserCard1(uidVal.value.Get())
+            end
+         end
+      end
+      return ret
+   end
+   
+   func GetCanRender() : bool
+      var ret  : bool      = GetUserData().CanRenderBiped()
+      return ret      
+   end
+   
+   func GetIsWaitingStats() : bool
+      var ret  : bool      = false
+      var ud   : UserData  = GetUserData()
+      ret := ! ((bool)ud.has_customizations.Get() and ud.GetHasActiveCharacter())
+      return ret            
+   end
+   
+   func SetUID(_uid : GL_UID)
+      uid.Set(_uid)
+      if (_uid.IsValidVal())
+         $user_service.RequestAllUiUserData(_uid.GetVal())
+         isVisible.Set(true)
+      else
+         isVisible.Set(false)
+      end
+      isVisible.OnChanged()
+   end
+   
+   func GetFlagTint() : params            
+      var teamModeVal   : bool   = (bool)isTeamMode.Get()
+      var teamIdxVal    : int    = (int)teamIdx.Get()
+      if (teamModeVal)
+         flagTintParams.rMult    := 100.0
+         flagTintParams.gMult    := 100.0
+         flagTintParams.bMult    := 100.0
+         flagTintParams.aMult    := GetFlagAlpha()
+      else
+         flagTintParams.rMult    := 0.0
+         flagTintParams.gMult    := 0.0
+         flagTintParams.bMult    := 0.0
+         flagTintParams.aMult    := 0.0
+         var ud : UserData = (UserData)userData.Get()
+         if (ud != null or !(bool)ud.has_armor_loadouts.Get())
+            var colors  : vector = ud.customizations.colors.Get()
+            if (colors.Count() > 0)
+               var clrName : string = (string)colors.Get(0).value.Get()
+               if (clrName != "")
+                  var colorComp : GL_ComponentColor = (GL_ComponentColor)$UiGlobals.componentsColor.Get(clrName)
+                  flagTintParams.rMult    := (float)(colorComp.r.Get()) / 255.0 * 100.0 * 0.75
+                  flagTintParams.gMult    := (float)(colorComp.g.Get()) / 255.0 * 100.0 * 0.75
+                  flagTintParams.bMult    := (float)(colorComp.b.Get()) / 255.0 * 100.0 * 0.75
+                  flagTintParams.aMult    := GetFlagAlpha()
+               end
+            end
+         end         
+      end
+      return flagTintParams
+   end      
+   
+   func SetTeam(_isTeamMode : bool, _teamIdx : int)
+      if (_isTeamMode)
+         if (_teamIdx == 0)         
+            teamStripeFrame.Set("red")
+         else
+            teamStripeFrame.Set("blue")
+         end
+      else
+         teamStripeFrame.Set("neutral")
+      end
+      isTeamMode.Set(_isTeamMode)
+      teamIdx.Set(_teamIdx)
+   end
+   
+   func GetLabel() : string
+      var uidVal : GL_UID = (GL_UID)uid.Get()
+      return $UserDataStorage.GetPlayerLabel(uidVal.GetVal(), false)
+   end
+   
+   func GetRosterCardLabel() : string
+      var uidVal : GL_UID = (GL_UID)uid.Get()
+      return $UserDataStorage.GetPlayerLabel(uidVal.GetVal(), true)
+   end
+   
+end
+
+class ProfilePlayerCardVM
+   var wgt : * = null
+   
+   func Init(p : params)
+      wgt := p.widget
+   end
+   
+   func GetUserEmblemOverride() : string
+      var obs : * = $UiGlobals.profileEmblemOverride.Get()
+      if obs == null
+         return $UserDataStorage.GetPlayerEmblemIcon($UserDataStorage.local_user.uid.Get())
+      else
+         var compUi : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(obs.Get())
+         var ret := (string)compUi.icon.Get()
+         if (ret == "") // tmp
+            ret := "emb_standart1"
+         end
+         return ret
+      end
+   end
+   
+   func GetUserLabelOverride() : string
+      var obs : * = $UiGlobals.profileLabelOverride.Get()
+      if obs == null
+         return $UserDataStorage.GetPlayerLabel($UserDataStorage.local_user.uid.Get(), false)
+      else
+         var uiComp : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(obs.Get())
+         var ret := (string)uiComp.icon.Get()
+         if (ret == "" or ret == "unknown" or ret == "no_icon")
+            ret := "defaultPlayerNameplate"
+         end
+         return ret
+      end
+   end
+   
+   func GetUserBigLabelOverride() : string
+      var obs : * = $UiGlobals.profileLabelOverride.Get()
+      if obs == null
+         return $UserDataStorage.GetPlayerLabel($UserDataStorage.local_user.uid.Get(), true)
+      else
+         var uiComp : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(obs.Get())
+         var ret := (string)uiComp.icon_big.Get()
+         if (ret == "" or ret == "unknown" or ret == "no_icon")
+            ret := "playerCardDefault"
+         end
+         return ret
+      end
+   end
+   
+   func GetFlagColorOverride() : params
+      var obs : * = $UiGlobals.profileColorOverride.Get()
+      if obs == null or obs.Get() == ""
+         return wgt.Get("DC").flagTint.Get()
+      else
+         var obsVal : string = obs.Get()
+         var comp : GL_ComponentColor = (GL_ComponentColor)$UiGlobals.componentsColor.Get(obsVal)
+         var ret : params
+         ret.rMult    := (float)(comp.r.Get()) / 255.0 * 100.0 * 0.75
+         ret.gMult    := (float)(comp.g.Get()) / 255.0 * 100.0 * 0.75
+         ret.bMult    := (float)(comp.b.Get()) / 255.0 * 100.0 * 0.75
+         ret.aMult    := 100.0
+         ret.rShift   := 0.0
+         ret.gShift   := 0.0
+         ret.bShift   := 0.0
+         ret.aShift   := 0.0
+         return ret
+      end
+   end
+end

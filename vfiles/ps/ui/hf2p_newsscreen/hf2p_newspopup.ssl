@@ -1,0 +1,161 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.lib.ui.ui_widget_manager
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_data
+import ssl.hf2p.hq
+import ui.root
+import ui.ui_economy
+import ui.ui_player_info
+import ui.libs.hf2p_MainMenu_lib.hf2p_MainMenu_lib
+
+class UiNewsPopup : UiFullscreenScreen
+
+handle OnEnteringState("Visible")
+   Log("ui~UiTechTreeScr", "NewsPopup_Visible")
+   StartDefaultBlinking(0.3, 1.6)
+end
+
+func PrepareNews(p : params)
+   $UiBiLogger.LogGlobalStateChange($uiEnums.UI_BI_NEWS_SCREEN)
+   SetStateName("Visible")
+   GenerateEvent("#SetNews", p)
+   Widgets.screenAttach.newsContent.backBtn.SetFocus()
+end
+
+end
+
+class UiNewsPopupVM
+   
+   var newsId       : ObservableProperty = $OM.Property("")
+   var newsIndex    : ObservableProperty = $OM.Calculated(this, "GetNewsIndex")
+   var newsName     : ObservableProperty = $OM.Calculated(this, "GetNewsName")
+   var newsHeader   : ObservableProperty = $OM.Calculated(this, "GetNewsHeader")
+   var newsDesc     : ObservableProperty = $OM.Calculated(this, "GetNewsDesc")
+   var newsIcon     : ObservableProperty = $OM.Calculated(this, "GetNewsIcon")
+   var newsText     : ObservableProperty = $OM.Calculated(this, "GetNewsText")
+   var newsAuthor   : ObservableProperty = $OM.Calculated(this, "GetNewsAuthor")
+   var newsDate     : ObservableProperty = $OM.Calculated(this, "GetNewsDate")
+   var newsVector   : ObservableProperty = $OM.Calculated(this, "GetNewsVec")
+   
+   func SetNews(p : params) : bool
+      newsId.Set(p.newsId)
+      newsIndex.Invalidate()
+      newsVector.Invalidate()
+      newsName.Invalidate()
+      newsHeader.Invalidate()
+      newsText.Invalidate()
+      newsDesc.Invalidate()
+      newsAuthor.Invalidate()
+      newsDate.Invalidate()
+      
+      var newsGl  : GL_News = GetNewsRec()
+      if (newsGl != null)
+         if (!(bool)newsGl.is_read.Get())
+            $hq.NewsMarkAsRead((string)newsGl.id.Get())
+            newsGl.is_read.Set(true)
+         end         
+      end
+      return false   
+   end
+   
+   func GetNewsRec() : GL_News
+      var ret     : GL_News   = null
+      var newsVec : vector    = GetNewsVec()
+      var newsIdx : int       = (int)newsIndex.Get()
+      if (newsVec.Count() > 0 and newsIdx < newsVec.Count())
+         ret := (GL_News)newsVec.Get(newsIdx)
+      end
+      return ret
+   end
+   
+   func GetNewsVec() : vector
+      var ret : vector = $UiGlobals.news.Get()
+      return ret
+   end
+   
+   func GetNewsIndex() : int
+      var ret : int
+      var i : int
+      var newsVec : vector = newsVector.Get()
+      for i := 0 to newsVec.Count() - 1
+         var newsGl : GL_News = (GL_News)newsVec.Get(i)
+         if ((string)newsId.Get() == (string)newsGl.id.Get())
+            ret := i
+            break
+         end
+      end
+      return ret
+   end
+   
+   func GetNewsHeader() : string
+      var ret : string
+      var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(newsName.Get())
+      ret := (string)compUI.name.Get()
+      return ret
+   end
+   
+   func GetNewsDesc() : string
+      var ret : string
+      var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(newsName.Get())
+      ret := (string)compUI.desc.Get()
+      return ret
+   end
+   
+   func GetNewsIcon() : string
+      var ret : string = ""
+      var compUI  : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(newsName.Get())
+      ret := (string)compUI.icon.Get()
+      return ret
+   end
+   
+   func GetIsReadNews() : bool
+      var ret     : bool
+      var newsGl  : GL_News = GetNewsRec()
+      if (newsGl != null)
+         ret := (bool)newsGl.is_read.Get()
+      end
+      return ret
+   end
+   
+   func GetNewsName() : string
+      var ret     : string
+      var newsGl  : GL_News = GetNewsRec()
+      if (newsGl != null)
+         ret := (string)newsGl.id.Get()
+      end
+      return ret
+   end
+   
+   func GetNewsAuthor() : string
+      var ret : string
+      var newsGl  : GL_News = GetNewsRec()
+      if (newsGl != null)
+         ret := (string)newsGl.author.Get()
+      end
+      return ret
+   end
+   
+   func GetNewsDate() : string
+      var ret     : string
+      var newsGl  : GL_News = GetNewsRec()
+      if (newsGl != null)
+         ret := (string)newsGl.date.Get()
+      end
+      return ret
+   end
+   
+   func GetNewsText() : string
+      var ret     : string
+      var newsGl  : GL_News = GetNewsRec()
+      if (newsGl != null)
+         ret := (string)newsGl.text.Get()
+      end
+      return ret
+   end
+   
+end

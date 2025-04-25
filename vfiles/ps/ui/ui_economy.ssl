@@ -1,0 +1,407 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.items_mgr
+import ssl.lib.objects
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_data
+
+class UiEconomy
+
+func IsItemArmor(_itemID: string): bool
+   var ret : bool = $UiGlobals.componentsArmor.Exist(_itemID)
+   return ret   
+end
+
+func IsItemBundle(_itemID: string): bool
+   var   ret      : bool   = false
+   var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemID)
+   if (shopComp.bundled_items.Get().Count() > 0)         
+      ret := true
+   end
+   return ret   
+end
+
+func IsItemWeapon(_itemID: string): bool
+   var   ret      : bool   = true   
+   var compWeapon : GL_ComponentWeapon = (GL_ComponentWeapon)$UiGlobals.componentsWeapon.Get(_itemID)
+   ret := ((float)compWeapon.damage.Get()) > 0
+   return ret
+end
+
+func GetWeaponPrimaryArrtibuteColor(_attrib: string): params
+   var attribColor: params
+   if (_attrib == "damage")
+      attribColor.r  := 225
+      attribColor.g  := 64
+      attribColor.b  := 108
+   else if (_attrib == "accuracy")
+      attribColor.r  := 139
+      attribColor.g  := 255
+      attribColor.b  := 90
+   else if (_attrib == "rof")
+      attribColor.r  := 223
+      attribColor.g  := 146
+      attribColor.b  := 40
+   else if (_attrib == "ammo")
+      attribColor.r  := 85
+      attribColor.g  := 177
+      attribColor.b  := 250
+   else if (_attrib == "range")
+      attribColor.r  := 213
+      attribColor.g  := 126
+      attribColor.b  := 255
+   else if (_attrib == "power") 
+      attribColor.r  := 255
+      attribColor.g  := 255
+      attribColor.b  := 21
+   else
+      attribColor.r  := 81 //128
+      attribColor.g  := 156 //128
+      attribColor.b  := 221 //128
+   end
+   attribColor.a  := 255
+   attribColor.v  := 255
+   return attribColor
+end
+
+func HasItem(_itemID: string): bool
+   if (_itemID == "")
+      return false
+   end
+
+   var uiInventoryItem : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(_itemID)
+   if (!IsVoid(uiInventoryItem))
+      var curOwnershipType : int
+      curOwnershipType := (int)(uiInventoryItem.ownership_type.Get())
+      if (curOwnershipType > $uiEnums.ITEM_OWN_TYPE_NONE)
+         return true
+      end
+   end
+   return false
+end
+
+func GetItemCount(_itemID: string): int
+   var ret: int = 0
+   if (_itemID == "")
+      return ret
+   end
+   return ret
+end
+
+func GetItemLevel(_itemId: string): int
+   var ret: int = 0
+   return ret
+end
+
+
+func GetItemOwnType(_itemId : string) : int
+   if !$root.IsLoggedIn()
+      return $uiEnums.ITEM_OWN_TYPE_NONE
+   end
+   var ret : int = 0
+   var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemId)
+   if (shopComp.bundled_items.Get().Count() > 0)        
+      ret := $uiEnums.ITEM_OWN_TYPE_PURCHASED
+      var i : int
+      for i := 0 to shopComp.bundled_items.Get().Count() - 1
+         var item :  GL_ComponentShopBundledItem = (GL_ComponentShopBundledItem)shopComp.bundled_items.Get().Get(i)
+         var inventItem : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get((string)item.item_id.Get())
+         var itemStatus : int = (int)inventItem.ownership_type.Get()
+         if (itemStatus == $uiEnums.ITEM_OWN_TYPE_NONE)
+            ret := $uiEnums.ITEM_OWN_TYPE_NONE
+         elif (itemStatus == $uiEnums.ITEM_OWN_TYPE_RENTED)
+            ret := $uiEnums.ITEM_OWN_TYPE_RENTED
+         end
+      end         
+   else
+      var inventItem : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(_itemId)
+      ret := (int)inventItem.ownership_type.Get()
+   end
+   return ret
+end
+
+func IsItemLocked(_itemId : string) : bool
+   var ret : bool = false
+   ret := IsItemLockedCr(_itemId) and IsItemLockedGl(_itemId)
+   return ret
+end
+
+func GetItemLockedCrLvl(_itemId : string) : int
+   var ret : int = 0
+   if (GetItemOwnType(_itemId) == $uiEnums.ITEM_OWN_TYPE_PURCHASED)
+      ret := 0
+   else
+      var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemId)
+      ret := (int)shopComp.unlock_level.Get()
+   end
+   return ret
+end
+
+func GetItemLockedGlLvl(_itemId : string) : int
+   var ret : int = 0
+   if (GetItemOwnType(_itemId) == $uiEnums.ITEM_OWN_TYPE_PURCHASED)
+      ret := 0
+   else
+      var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemId)
+      ret := (int)shopComp.unlock_level.Get()
+   end
+   return ret
+end
+
+func IsItemLockedCr(_itemId : string) : bool
+   var shopComp   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemId)
+   var ret        : bool               = shopComp.IsLocked()
+   return ret
+end
+
+func IsItemLockedGl(_itemId : string) : bool
+   var shopComp   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemId)
+   var ret        : bool               = shopComp.IsLocked()
+   return ret
+end
+
+func IsItemPurchasable(_itemId : string) : bool
+   var ret        : bool               = false
+   var shopComp   : GL_ComponentShop   = (GL_ComponentShop)$UiGlobals.componentsShop.Get(_itemId)
+   var offers     : vector             = shopComp.offers.Get()
+   var i          : int
+   if (offers.Count() > 0)
+      for i := 0 to offers.Count() - 1 
+         var offer         : GL_ComponentShopOffer = (GL_ComponentShopOffer)offers.Get(i)
+         var rentDuration  : int = (int)offer.rent_duration.Get()
+         if (rentDuration <= 0)
+            ret := true
+            break
+         end
+      end   
+   else
+      ret := true
+   end
+   return ret
+end
+
+func GetItemRentTime(_itemId : string) : int
+   var ret        : int = 0
+   var ownTypeVal : int = GetItemOwnType(_itemId)
+   if (ownTypeVal == $uiEnums.ITEM_OWN_TYPE_RENTED)
+      var uiInventoryItem : GL_ComponentInventory = (GL_ComponentInventory)$UiGlobals.componentsInventory.Get(_itemId)
+      var ownTime : int = (int)uiInventoryItem.ownership_time.Get() - (int)$UiGlobals.timer.Get()
+      ret := ownTime
+   end
+   return ret
+end
+
+func GetItemRentTint(_itemId : string) : params
+   var ret : params
+   ret.a := 255
+   ret.v := 255
+   var ownTypeVal : int = GetItemOwnType(_itemId)
+   if (ownTypeVal == $uiEnums.ITEM_OWN_TYPE_PURCHASED)
+      ret.r := 0
+      ret.g := 255
+      ret.b := 0
+   else
+      var ownTime : int = GetItemRentTime(_itemId)
+      if (ownTime <= 0)
+         ret.r := 255
+         ret.g := 0
+         ret.b := 0
+      elif (ownTime < $uiEnums.ITEM_RENT_ALERT_SECONDS)
+         ret.r := 255
+         ret.g := 0
+         ret.b := 0
+      else
+         ret.r := 0
+         ret.g := 255
+         ret.b := 0
+      end
+   end
+   return ret
+end
+
+func GetItemRentTintColor(_itemId : string) : int
+   var tintParams : params = GetItemRentTint(_itemId)
+   var ret        : int
+   ret := $root.RGB2Clr(tintParams.r, tintParams.g, tintParams.b, tintParams.a)
+   return ret
+end
+
+func IsItemRented(_itemId : string) : bool
+   var ret        : bool               = false
+   ret := GetItemOwnType(_itemId) == $uiEnums.ITEM_OWN_TYPE_RENTED
+   return ret
+end
+
+func FindSubShopItem(_shop : vector, _itemId : string, _shopLocation : params) : params
+   var ret        : params = _shopLocation
+   var sectionIdx : int
+   var shelfIdx   : int
+   var itemIdx    : int
+   
+   for sectionIdx := 0 to _shop.Count() - 1
+      var shopSection : GL_ShopSection = (GL_ShopSection)_shop.Get(sectionIdx)
+      for shelfIdx := 0 to shopSection.shelves.Get().Count() - 1
+         var shopShelf : GL_ShopShelf = (GL_ShopShelf)shopSection.shelves.Get().Get(shelfIdx)
+         for itemIdx := 0 to shopShelf.items.Get().Count() - 1
+            var item : GL_String = (GL_String)shopShelf.items.Get().Get(itemIdx)
+            if ((string)item.value.Get() == _itemId)
+               ret.found      := true
+               ret.sectionIdx := sectionIdx
+               ret.shelfIdx   := shelfIdx
+               ret.itemIdx    := itemIdx
+               return ret
+            end            
+         end         
+      end      
+   end   
+   return ret
+end
+
+func FindSubShopItemSection(_shop : vector, itemSubType : int, _shopLocation : params) : params
+   var ret        : params = _shopLocation
+   var sectionIdx : int
+   var shelfIdx   : int
+   var itemIdx    : int
+   
+   for sectionIdx := 0 to _shop.Count() - 1
+      var shopSection : GL_ShopSection = (GL_ShopSection)_shop.Get(sectionIdx)
+      for shelfIdx := 0 to shopSection.shelves.Get().Count() - 1
+         var shopShelf : GL_ShopShelf = (GL_ShopShelf)shopSection.shelves.Get().Get(shelfIdx)
+         for itemIdx := 0 to shopShelf.items.Get().Count() - 1
+            var item : GL_String = (GL_String)shopShelf.items.Get().Get(itemIdx)
+            if (GetItemSubType((string)item.value.Get()) == itemSubType)
+               ret.found      := true
+               ret.sectionIdx := sectionIdx
+               ret.shelfIdx   := shelfIdx
+               ret.itemIdx    := itemIdx
+               return ret
+            end            
+         end         
+      end      
+   end   
+   return ret
+end
+
+func FindShopItem(_itemId : string) : params
+   var shopLocation  : params
+   shopLocation.found      := false
+   shopLocation.shopType   := $uiEnums.SHOP_TYPE_NONE
+   
+   if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+      var shop :  GL_ShopRace = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())   
+      if (! shopLocation.found and ! IsVoid(shop.weapons.Get()))         
+         shopLocation := FindSubShopItem(shop.weapons.Get(), _itemId, shopLocation)
+         if (shopLocation.found)
+            shopLocation.shopType := $uiEnums.SHOP_TYPE_WEAPON
+         end
+      end
+      if (! shopLocation.found and ! IsVoid(shop.tactical_packages))         
+         shopLocation := FindSubShopItem(shop.tactical_packages.Get(), _itemId, shopLocation)
+         if (shopLocation.found)
+            shopLocation.shopType := $uiEnums.SHOP_TYPE_TACTICAL
+         end
+      end
+      if (! shopLocation.found and ! IsVoid(shop.armors))         
+         shopLocation := FindSubShopItem(shop.armors.Get(), _itemId, shopLocation)
+         if (shopLocation.found)
+            shopLocation.shopType := $uiEnums.SHOP_TYPE_ARMOR
+         end
+      end
+      if (! shopLocation.found and ! IsVoid(shop.bundles))         
+         shopLocation := FindSubShopItem(shop.bundles.Get(), _itemId, shopLocation)
+         if (shopLocation.found)
+            shopLocation.shopType := $uiEnums.SHOP_TYPE_BUNDLES
+         end
+      end
+   end
+   return shopLocation
+end
+
+func FindShopItemSection(shopType : int, itemSubType : int) : params
+   var shopLocation  : params
+   shopLocation.found      := false
+   shopLocation.shopType   := $uiEnums.SHOP_TYPE_NONE
+   
+   if (! IsVoid($UiGlobals.shop.race_shops) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+      var shop :  GL_ShopRace = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())   
+      if (! shopLocation.found and ! IsVoid(shop.weapons) and shopType == $uiEnums.SHOP_TYPE_WEAPON)         
+         shopLocation := FindSubShopItemSection(shop.weapons.Get(), itemSubType, shopLocation)
+      end
+      if (! shopLocation.found and ! IsVoid(shop.tactical_packages) and shopType == $uiEnums.SHOP_TYPE_TACTICAL)         
+         shopLocation := FindSubShopItemSection(shop.tactical_packages.Get(), itemSubType, shopLocation)
+      end
+      if (! shopLocation.found and ! IsVoid(shop.armors) and shopType == $uiEnums.SHOP_TYPE_ARMOR)         
+         shopLocation := FindSubShopItemSection(shop.armors.Get(), itemSubType, shopLocation)
+      end
+      if (! shopLocation.found and ! IsVoid(shop.bundles) and shopType == $uiEnums.SHOP_TYPE_BUNDLES)         
+         shopLocation := FindSubShopItemSection(shop.bundles.Get(), itemSubType, shopLocation)
+      end
+   end
+   return shopLocation
+end
+
+func GetItemType(_itemId : string) : int
+   var ret : int = $uiEnums.ITEM_TYPE_UNKNOWN
+   if ($UiGlobals.componentsArmor.Exist(_itemId))
+      ret := $uiEnums.ITEM_TYPE_ARMOR
+   else if ($UiGlobals.componentsWeapon.Exist(_itemId))
+      ret := $uiEnums.ITEM_TYPE_WEAPON
+   else if ($UiGlobals.componentsConsumable.Exist(_itemId))
+      ret := $uiEnums.ITEM_TYPE_TACTICAL
+   else if ($UiGlobals.componentsArmorSuit.Exist(_itemId))
+      ret := $uiEnums.ITEM_TYPE_ARMOR_SUIT
+   else if ($UiGlobals.GetTokenFrame(_itemId) != "") // hack
+      ret := $uiEnums.ITEM_TYPE_TOKEN
+   end
+   return ret
+end
+
+func GetItemSubType(_itemId : string) : int
+   var ret : int = $uiEnums.ITEM_SUB_TYPE_NONE
+   if ($UiGlobals.PassesAsPrimaryWeaponFilter(_itemId))
+      ret := $uiEnums.ITEM_SUB_TYPE_WPN_PRIMARY
+   elif ($UiGlobals.PassesAsSecondaryWeaponFilter(_itemId))
+      ret := $uiEnums.ITEM_SUB_TYPE_WPN_SECONDARY
+   elif ($UiGlobals.PassesAsGrenadeWeaponFilter(_itemId))
+      ret := $uiEnums.ITEM_SUB_TYPE_WPN_GRENADE
+   elif ($UiGlobals.PassesAsTacticalPackageFilter(_itemId))
+      ret := $uiEnums.ITEM_SUB_TYPE_TP_PERK
+   elif ($UiGlobals.PassesAsSupportPackageFilter(_itemId))
+      ret := $uiEnums.ITEM_SUB_TYPE_TP_BOOST   
+   end   
+   return ret
+end
+
+func GetIsItemNew(itemId : string) : bool
+   var   ret      : bool   = false
+   var shopComp   : GL_ComponentShop = (GL_ComponentShop)$UiGlobals.componentsShop.Get(itemId)
+   ret := (bool)shopComp.is_new.Get()
+   return ret
+end
+
+func HasChallengeBooster() : bool
+   var ret : bool = false      
+   if ($uiEconomy.GetItemOwnType($uiEnums.UI_BOOST_CHALLENGES) == $uiEnums.ITEM_OWN_TYPE_RENTED)
+      ret := true
+   end
+   return ret   
+end
+
+end // end of UiEconomy
+
+var $uiEconomy : UiEconomy
+
+func ui_init_economy()
+   CreateObjectByClassName("UiEconomy", "uiEconomy")
+end
+
+func ui_term_economy()
+   DestroyObjectByName("uiEconomy")
+end
+
+func ui_recreate_economy()
+   ui_term_economy()
+   ui_init_economy()
+end

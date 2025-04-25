@@ -1,0 +1,64 @@
+var $OM : ObservableManager
+
+class ObservableProperty
+   native func Get () : *
+   native func Set (value : *)
+   native func Invalidate ()
+   native func OnChanged ()
+   native func Subscribe(funcHost : object, funcName : string) 
+   //funcExample(newValue: *)
+   native func Unsubscribe(funcHost : object, funcName : string)
+   var Dbg : params
+end
+
+class ObservableArray
+   native func Length() : int
+   native func IsEmpty() : bool
+   native func Get(index : int) : *
+   native func First() : *
+   native func Last() : *
+   native func AddRange(items : vector)
+   native func Insert(index : int, value : *)
+   native func PushBack(value : *)
+   native func PushFront(value : *)
+   native func RemoveAt(index : int)
+   native func PopBack()
+   native func PopFront()
+   native func Clear()
+   native func OnChanged ()
+   native func Subscribe(funcHost : object, funcName : string)  
+   //funcExample(delta: int, index: int, item: *)
+   //<delta> = 1, if added and -1, if removed; <index> - added or removed index, <item> - added or removed item
+   native func Unsubscribe(funcHost : object, funcName : string)
+   var Dbg : params
+   
+   func Count() : int
+      return Length()
+   end
+end
+
+class ObservableMap
+   native func Length() : int
+   native func IsEmpty() : bool
+   native func Contains(key : string) : bool
+   native func Get(key : string) : *
+   native func GetKeys() : vector
+   native func Insert(key : string, value : *)
+   native func Remove(key : string)
+   native func Clear()
+   native func OnChanged ()
+   native func Subscribe(funcHost : object, funcName : string)
+   //funcExample(delta: int, key: string, value: *)
+   //<delta> = 1, if added and -1, if removed; <key> - added or removed key, <value> - added or removed value
+   native func Unsubscribe(funcHost : object, funcName : string)
+   var Dbg : params
+end
+
+//class for global object $OM
+class ObservableManager
+   native func Property (value : *) : ObservableProperty
+   native func Calculated (getterHost : object, getterMethodName : string, weak : bool = false) : ObservableProperty
+   native func Array () : ObservableArray
+   native func Map () : ObservableMap
+
+end

@@ -1,0 +1,250 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ui.ui_party_monitor
+import ui.hf2p_SlidingScreens.hf2p_SlidingScreens
+import ssl.hf2p.ui_globals
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.user_service
+import ui.root
+
+class UiSlidingScreensSettingsMenu : UiSlidingScreens
+   
+
+var is_subscreen :  bool = false
+
+override Init
+   var flowButtonParm   : params
+   flowButtonParm.showFrame   := true
+   flowButtonParm.showBg      := true   
+   
+   isLooping := true
+   flowElements.Clear()
+   
+   totalElems := 4
+   
+   if (GetViewMode() == "Settings")
+      flowButtonParm.label    := "settings_lbl_gameplay"
+      flowButtonParm.idx      := 0
+      flowButtonParm.name     := "Gameplay"
+      flowButtonParm.showStarBg  := false
+      flowButtonParm.aliasname:= "SlidingButton_Gameplay"
+      flowElements.Push(flowButtonParm.Clone())
+      
+      flowButtonParm.label    := "settings_lbl_controls"
+      flowButtonParm.idx      := 1
+      flowButtonParm.name     := "Controls"
+      flowButtonParm.showStarBg  := false
+      flowButtonParm.aliasname:= "SlidingButton_Controls"
+      flowElements.Push(flowButtonParm.Clone())
+      
+      flowButtonParm.label    := "settings_lbl_video"
+      flowButtonParm.idx      := 2
+      flowButtonParm.name     := "Video"
+      flowButtonParm.showStarBg  := false
+      flowButtonParm.aliasname:= "SlidingButton_Video"
+      flowElements.Push(flowButtonParm.Clone())   
+      
+      flowButtonParm.label    := "settings_lbl_audio"
+      flowButtonParm.idx      := 3
+      flowButtonParm.name     := "Audio"
+      flowButtonParm.showStarBg  := false
+      flowButtonParm.aliasname:= "SlidingButton_Audio"
+      flowElements.Push(flowButtonParm.Clone())
+   end
+   
+   
+   var startingIndex : int = GetScreenIndexByName(startingScreen)
+   Log("ui~content", "starting Index = " + (string)startingIndex)
+   if (startingIndex < 0)
+      startingIndex := 0
+   end
+   Widgets.flowButtons.SetMaxWidth(720)
+   Widgets.flowButtons.InitElements(flowElements, startingIndex)
+end
+
+override OnEnterVisible//()
+   Widgets.navPanelSet.backBtn.SetFocus()
+end
+
+func ResetConfirmed(p : params) : bool
+   Log("ui~content", "Reset clicked")
+   if (p.isOK)
+      GetSettingsPage(GetCurrentFlowIndex()).Reset()
+   end
+   return false
+end
+
+func CloseConfirmed(p : params) : bool
+   if (p.isOK)
+      OnSubmitClick(p)
+   else
+      Revert()
+      GenerateEvent("#OnCloseBtn")
+   end
+   return false
+end
+
+func OnSlidingScreenDialogRequest(p:params) : bool
+   Widgets.messageBox.OpenDialog(p)
+   return false
+end
+
+func OnSlidingScreenDialogControl(p:params) : bool
+   GenerateEventTargeted("OnMessageBoxControl", p, Widgets.messageBox)
+   return false
+end
+
+func OnBackClick(p:params) : bool
+   if okBtnCooldown
+      return false
+   end
+   if (is_subscreen)
+      Widgets.navPanelSet.backBtn.Props.label := "main_btn_close"
+   end
+   
+   Log("ui~content", "On Back Clicked")
+   var controls_index :  int
+   var all_are_closing :  bool = true
+   if (GetCurrentScreenName() == "Controls" or GetCurrentScreenName() == "Video")
+      controls_index := GetScreenIndexByName(GetCurrentScreenName())
+      all_are_closing := GetSettingsPage(controls_index).tryToCloseOrReturn()
+   end
+   
+   if (all_are_closing)
+      var have_unsaved_changes : bool = false
+      var i : int = 0
+      
+      for i := 0 to totalElems - 1
+         if (GetSettingsPage(i).HaveUnsavedChanges())
+            have_unsaved_changes := true
+            Log("ui~content", "Changes observed") 
+            break
+         end
+      end
+      
+      if (have_unsaved_changes)
+         var pp:params
+         pp.callbackEvent  := "OnCloseConfirmed"
+         pp.callbackTarget := Props
+         pp.titleTxt       := "msg_ui_settings_exit"
+         pp.messageTxt     := "msg_ui_confirm_exit"
+         Widgets.messageBox.OpenDialog(pp)
+      else
+         GenerateEvent("#OnCloseBtn")
+      end
+   end
+
+   okBtnCooldown := true
+   ResetOkBtnCooldown() : 0.5
+
+   return false
+end
+
+func EnterSubscreen(p : params) : bool
+   Widgets.navPanelSet.backBtn.Props.label := "main_btn_back"
+   is_subscreen := true
+   
+   return false
+end
+
+func EnterNewTab(p : params) : bool
+   Widgets.navPanelSet.backBtn.Props.label := "main_btn_close"
+   var defaultsLabel : string = "main_btn_defaults"
+   if (GetCurrentScreenName() == "Video")
+      defaultsLabel := "settings_txt_autodetect"
+   end
+   Widgets.navPanelSet.defBtn.Props.label := defaultsLabel
+   is_subscreen := false
+   $UiBiLogger.LogSettingsState(GetCurrentScreenName(), "")
+   return false
+end
+
+func OnDefaultsClick(p:params) : bool
+   var pp:params
+   pp.callbackEvent  := "OnResetConfirmed"
+   pp.callbackTarget := Props
+   pp.titleTxt       := "msg_ui_confirm_reset"      
+   pp.messageTxt     := "msg_ui_reset_settings_default"
+   Widgets.messageBox.OpenDialog(pp)
+   
+   return false
+end
+
+var okBtnCooldown : bool = false
+func OnSubmitClick(p:params) : bool
+   var i : int = 0
+   var need_to_close : bool = true
+   
+   for i := 0 to totalElems - 1
+      if (i == GetScreenIndexByName("Video"))
+         need_to_close := GetSettingsPage(i).Apply()
+      else
+         GetSettingsPage(i).Apply()
+      end
+   end
+   
+   if (need_to_close)
+      if !okBtnCooldown
+         GenerateEvent("closeSlidingScreens")
+         okBtnCooldown := true
+         ResetOkBtnCooldown() : 0.5
+      end
+   end
+   
+   return false
+end
+
+func ResetOkBtnCooldown()
+   okBtnCooldown := false
+end
+
+func GetSettingsPage(i : int) : UiSlidingScreenPageSettings
+   return (UiSlidingScreenPageSettings)GetSlidingElementContent(i)
+end
+
+func Revert()
+   var i : int = 0
+   
+   for i := 0 to totalElems - 1
+      if (i == GetScreenIndexByName("Video"))
+         GetSettingsPage(i).Revert()
+      elif (i == GetScreenIndexByName("Controls"))
+         GetSettingsPage(i).ReInit()
+      else
+         GetSettingsPage(i).Init()
+         GetSettingsPage(i).Apply()
+      end
+   end
+   
+end
+
+override inputEvent //(p : params) : bool
+   var isTerminated  : bool   = false
+   var keyCode       : int    = p.keyCode
+   var ret           : bool   = false
+   if (keyCode == $uiKeys.VK_LEFT or keyCode == $uiKeys.VK_RIGHT)
+      isTerminated := true
+   end
+   if (isTerminated)
+      p.eventState.SetIsTerminated(isTerminated)
+   else
+      ret := SlidingBaseInputEvent(p)
+   end
+   return ret
+end
+
+override HasLobbyMode // () : bool
+   return false
+end
+
+end
+
+class SlidingSettingsVM : SlidingScreensVM
+   override OnEscClicked //(p : params) : bool
+      if (wgt != null)
+         var wgtLocal : UiSlidingScreensSettingsMenu = (UiSlidingScreensSettingsMenu)wgt
+         wgtLocal.OnBackClick(null)
+      end
+      return true
+   end   
+end

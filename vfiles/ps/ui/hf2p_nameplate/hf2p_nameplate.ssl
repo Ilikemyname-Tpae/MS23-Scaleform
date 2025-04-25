@@ -1,0 +1,229 @@
+import ssl.observables
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_data
+
+class DefaultNameplateVM
+   var userId : ObservableProperty = $OM.Property($UserDataStorage.GetInvalidUID())
+   var userData : ObservableProperty = $OM.Calculated(this, "GetUserData")
+
+   var userContext      : UserContextMenu = new UserContextMenu()
+
+   func Init(p : params)
+      BaseInit(p)
+   end
+   
+   func BaseInit(p : params)
+      var uid : * = p.uid
+      if !IsValid(uid)
+         uid := $UserDataStorage.GetInvalidUID()
+      end
+      userId.Set(uid)
+      if IsValidData()
+         $user_service.RequestData(UID(), $uiEnums.USER_DATA_BASE)
+         $user_service.RequestData(UID(), $uiEnums.USER_DATA_CUSTOMIZATIONS)
+         
+         userContext.uid := p.uid
+      end
+   end
+   
+   func UID() : *
+      return userId.Get()
+   end
+   
+   func IsValidData() : bool
+      return $UserDataStorage.IsValidUID(UID())
+   end
+   
+   func HasData() : bool
+      if IsValidData()
+         var ud : UserData = (UserData)userData.Get()
+         var ret = (bool)ud.has_base.Get() and (bool)ud.has_customizations.Get()
+         return ret
+      end
+      return false
+   end
+   
+   func GetUserData() : UserData
+      var ret = (UserData)$UserDataStorage.users.Get(UID())
+      return ret
+   end
+   
+   func GetNickname() : wstring
+      var ret : wstring = $UiGlobals.String2WString("")
+      if IsValidData()
+         if HasData()
+            var ud : UserData = (UserData)userData.Get()
+            ret := ud.base.nickname.Get()
+         else
+            ret := $UiGlobals.String2WString("???")
+         end
+      end
+      var colorCode  : string = "FFFFFF"
+      if IsValidData()
+         colorCode   := $UserDataStorage.GetPlayerStatusColorCode(UID())
+      end
+      ret := $root.MakeColorCodedWText(ret, colorCode)      
+      return ret
+   end
+      
+   func GetClanTag() : wstring
+      var ret : wstring = $UiGlobals.String2WString("")
+      if HasData()
+         var ud : UserData = (UserData)userData.Get()
+         ret := ud.base.clan_tag.Get()
+      end
+      return ret
+   end
+   
+   func GetRankText() : string
+      var ret : string = ""
+      if HasData()
+         var ud : UserData = (UserData)userData.Get()
+         ret := (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(ud.base.level_id.Get())).desc.Get()
+      end
+      return ret
+   end
+   
+   func GetRankIcon() : string
+      var ret : string = ""
+      if HasData()
+         var ud : UserData = (UserData)userData.Get()
+         ret := (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get(ud.base.level_id.Get())).icon.Get()
+      end
+      return ret
+   end
+   
+   func GetUserLabel() : string
+      var ret : string = ""
+      if IsValidData()
+         if HasData()
+            var ud : UserData = (UserData)userData.Get()
+            var uiComp : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)ud.customizations.account_label.Get())
+            ret := (string)uiComp.icon.Get()
+            if (ret == "" or ret == "unknown" or ret == "no_icon")
+               ret := "defaultPlayerNameplate"
+            end
+         else
+            ret := "defaultPlayerNameplate"
+         end
+      end
+      return ret
+   end
+   
+   func GetUserEmblem() : string
+      var ret : string = ""
+      if HasData()
+         var ud : UserData = (UserData)userData.Get()
+         var uiComp : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get((string)ud.customizations.emblem.Get())
+         ret := (string)uiComp.icon.Get()
+         if (ret == "")
+            ret := "emb_standart1"
+         end   
+      end
+      return ret
+   end
+end
+
+class LobbyNameplateVM : DefaultNameplateVM
+   var lobbyPlayer : GL_LobbyPlayer = null
+   
+   override Init  //(p : params)
+      lobbyPlayer := p.lobbyPlayer
+      BaseInit(p)
+   end
+   
+   func IsPartyLeader() : bool
+      var partyData = (GL_ComponentUserPartyData)$UiGlobals.componentsUserPartyData.Get(UID())
+      var ret = (bool)partyData.is_party_leader.Get() and $UserDataStorage.local_user.IsInParty()
+      return ret
+   end
+   
+   func IsInParty() : bool
+      var ret =  false
+      if GetPartyIndex() > 0 and lobbyPlayer != null and lobbyPlayer.lobbyState.Get() != $uiEnums.LOBBY_SCREEN_STATE_PLAYLIST
+         ret := true
+      end
+      return ret
+   end
+   
+   func GetPartyIndex() : int
+      var ret : int = -1
+      if IsValidData()
+         var partyData = (GL_ComponentUserPartyData)$UiGlobals.componentsUserPartyData.Get(UID())
+         ret := (int)partyData.party_icon_index.Get()
+      end
+      return ret + 1
+   end
+   
+   func GetLirState() : string
+      var ret : string = "none"
+      if !IsValidData() and lobbyPlayer != null
+         if (bool)lobbyPlayer.isAddSlot.Get()
+            ret := "add"
+         else
+            ret := "disabled"
+         end
+      end
+      return ret
+   end
+   
+   func GetLirText() : string
+      var ret : string = ""
+      if !IsValidData() and lobbyPlayer != null
+         if (bool)lobbyPlayer.isAddSlot.Get()
+            ret := "lobby_invite_player"
+         elif ((bool)lobbyPlayer.isSlotEnabled.Get())
+            ret := "lobby_waiting"
+         end
+      end
+      return ret
+   end
+   
+   func GetLirTint() : params
+      var ret : params
+      ret.a := 255
+      ret.v := 255
+      ret.r := 255
+      ret.g := 255
+      ret.b := 255
+      if (lobbyPlayer != null and !(bool)lobbyPlayer.isSlotEnabled.Get())
+         ret.r := 96
+         ret.g := 96
+         ret.b := 96
+      end
+      return ret
+   end
+end
+
+class ScoreboardNameplateVM : DefaultNameplateVM
+   var scoreboardPlayer : GL_ScoreboardPlayer = null
+   
+   override Init  //(p : params)
+      scoreboardPlayer := p.scoreboardPlayer
+      BaseInit(p)
+   end
+   
+   func IsPartyLeader() : bool
+      var partyData = (GL_ComponentUserPartyData)$UiGlobals.componentsUserPartyData.Get(UID())
+      var ret = (bool)partyData.is_party_leader.Get() and $UserDataStorage.local_user.IsInParty()
+      return ret
+   end
+   
+   func IsInParty() : bool
+      var ret =  false
+      if GetPartyIndex() > 0
+         ret := true
+      end
+      return ret
+   end
+   
+   func GetPartyIndex() : int
+      var ret : int = -1
+      if IsValidData()
+         var partyData = (GL_ComponentUserPartyData)$UiGlobals.componentsUserPartyData.Get(UID())
+         ret := (int)partyData.party_icon_index.Get()
+      end
+      return ret + 1
+   end
+
+end

@@ -1,0 +1,62 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ui.ui_party_monitor
+import ssl.hf2p.user_data
+import ssl.hf2p.ui_globals
+import ssl.lib.ui.ui_widget_list_item
+import ssl.lib.ui.ui_widget_button
+import ssl.lib.ui.ui_widget_list
+
+class UiPlaylist : UiWidgetContainer
+
+func clickedPlist(p:params):bool
+   var par  : params
+   par := Widgets.Playlists.GetItemData(p.index)
+   $uiPartyMonitor.SetPlaylist(par.Id)
+   GenerateEvent("onMatchmakeGame")
+   return false
+end
+
+func overPlist(p : params) : bool
+   p.playlists := Widgets.Playlists
+   GenerateEvent("onPopupOpen", p) : 0
+   return false
+end
+
+func outPlist(p : params) : bool
+   Widgets.playListCard.visible := false
+   return false
+end 
+
+end // UiPlaylist
+
+class UiPlaylistLir : UiWidgetListItem
+
+override SetData
+   Props.playlistIdx  := p.Idx
+   Props.playListId   := p.Id
+   Props.desc         := "" //p.Desc
+   Props.label        := p.Label
+end
+
+end
+
+class UiPlaylistPopup : UiWidget
+   
+   func onPopupOpen(p : params) : bool
+      var par  : params
+      par := p.playlists.GetItemData(p.index)
+      var compUI     : GL_ComponentUI        = (GL_ComponentUI)$UiGlobals.componentsUI.Get(par.Id)
+      var cmpPl      : GL_ComponentPlaylist  = (GL_ComponentPlaylist)$UiGlobals.componentsPlaylist.Get(par.Id)
+      var scrollPos  : int = p.playlists.Props.scrollPosition 
+      Widgets.playListCard.visible := true
+      //Widgets.playListCard.y := p.playlists.GetChild(p.index - scrollPos).Props.y - 335 //- 137
+      Widgets.playListCard.tf1 := (string)$UiGlobals.componentsUI.Get(par.Id).name.Get()
+      Widgets.playListCard.tf2 := (string)$UiGlobals.componentsUI.Get(par.Id).desc.Get()
+      Widgets.playListCard.tf3 := "carousel_playlist_card_info," + (string)cmpPl.player_count_min.Get() + "," + (string)cmpPl.player_count_max.Get() + "," + (string)cmpPl.party_size_max.Get() + "," + (string)cmpPl.players_active.Get()
+      Widgets.playListCard.icnAttach.pic := (string)$UiGlobals.componentsUI.Get(par.Id).icon_med.Get()
+      return false
+   end
+   
+end

@@ -1,0 +1,155 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.game_preferences
+import ui.libs.hf2p_SlidingScreens.hf2p_sliding_screens_lib
+
+class UiControls : UiSlidingScreenPageSettings
+   
+var is_inited :  bool = false
+   
+func sliderMouseSensitivityVertSliderValueChange()
+   Widgets.sliderMouseSensitivityVert.Props.tf2 := (string)((int)(Widgets.sliderMouseSensitivityVert.slider.value))
+end
+
+func sliderMouseSensitivityHorSliderValueChange()
+   Widgets.sliderMouseSensitivityHor.Props.tf2 := (string)((int)(Widgets.sliderMouseSensitivityHor.slider.value))
+end
+
+func sliderMouseSensitivityVehicleVertSliderValueChange()
+   Widgets.sliderMouseSensitivityVehicleVert.Props.tf2 := (string)((int)(Widgets.sliderMouseSensitivityVehicleVert.slider.value))
+end
+
+func sliderMouseSensitivityVehicleHorSliderValueChange()
+   Widgets.sliderMouseSensitivityVehicleHor.Props.tf2 := (string)((int)(Widgets.sliderMouseSensitivityVehicleHor.slider.value))
+end
+
+func sliderMouseAccelerationSliderValueChange()
+   Widgets.sliderMouseAcceleration.Props.tf2 := (string)((int)(Widgets.sliderMouseAcceleration.slider.value))
+end
+   
+override Init // ()
+   is_inited := true
+   var stepperData :  vector
+   stepperData.Push("settings_keyboard")
+   Widgets.stepperControlsMethod.SetData(stepperData)
+   Widgets.stepperControlsMethod.selection := $hf2pPreferences.GetControlsMethod()
+   Widgets.sliderMouseSensitivityVert.slider.value := $hf2pPreferences.GetMouseSensitivityVert()
+   Widgets.sliderMouseSensitivityHor.slider.value := $hf2pPreferences.GetMouseSensitivityHor()
+   Widgets.sliderMouseSensitivityVehicleVert.slider.value := $hf2pPreferences.GetMouseSensitivityVehicleVert()
+   Widgets.sliderMouseSensitivityVehicleHor.slider.value := $hf2pPreferences.GetMouseSensitivityVehicleHor()
+   Widgets.sliderMouseAcceleration.slider.value := $hf2pPreferences.GetMouseAcceleration()
+   Widgets.buttonMouseFilter.selected := $hf2pPreferences.GetMouseFilter()
+   Widgets.buttonInvertMouse.selected := $hf2pPreferences.GetInvertMouse()
+   Widgets.buttonToggleCrouch.selected := $hf2pPreferences.GetToggleCrouch()
+end
+
+override HaveUnsavedChanges // () :  bool
+   var result : int = 0
+
+   if (!is_inited)
+      return false
+   end
+
+   result := result + (int)(Widgets.stepperControlsMethod.selection != $hf2pPreferences.GetControlsMethod())
+   
+   result := result + (int)(Widgets.sliderMouseSensitivityVert.slider.value != $hf2pPreferences.GetMouseSensitivityVert())
+   result := result + (int)(Widgets.sliderMouseSensitivityHor.slider.value != $hf2pPreferences.GetMouseSensitivityHor())
+   
+   result := result + (int)(Widgets.sliderMouseSensitivityVehicleVert.slider.value != $hf2pPreferences.GetMouseSensitivityVehicleVert())
+   result := result + (int)(Widgets.sliderMouseSensitivityVehicleHor.slider.value != $hf2pPreferences.GetMouseSensitivityVehicleHor())
+   
+   result := result + (int)(Widgets.sliderMouseAcceleration.slider.value != $hf2pPreferences.GetMouseAcceleration())
+
+   result := result + (int)(Widgets.buttonMouseFilter.selected != $hf2pPreferences.GetMouseFilter())
+   result := result + (int)(Widgets.buttonInvertMouse.selected != $hf2pPreferences.GetInvertMouse())
+   
+   result := result + (int)(Widgets.buttonToggleCrouch.selected != $hf2pPreferences.GetToggleCrouch())
+   
+   return (result > 0)
+end
+
+override Reset // ()
+   var settings : params = $hf2pPreferences.GetDefaultControlsSettings()
+
+   Widgets.stepperControlsMethod.selection := settings.controls_method
+   Widgets.sliderMouseSensitivityVert.slider.value := settings.mouse_sensitivity_vert
+   Widgets.sliderMouseSensitivityHor.slider.value := settings.mouse_sensitivity_hor
+   Widgets.sliderMouseSensitivityVehicleVert.slider.value := settings.mouse_sensitivity_vehicle_vert
+   Widgets.sliderMouseSensitivityVehicleHor.slider.value := settings.mouse_sensitivity_vehicle_hor
+   Widgets.sliderMouseAcceleration.slider.value := settings.mouse_acceleration
+   Widgets.buttonMouseFilter.selected := settings.mouse_filter
+   Widgets.buttonInvertMouse.selected := settings.mouse_invertion
+
+   Widgets.buttonToggleCrouch.selected := false
+end
+
+override Apply // ()
+   if (!is_inited)
+      return true
+   end
+   
+   $hf2pPreferences.SetControlsMethod(Widgets.stepperControlsMethod.selection)
+   $hf2pPreferences.SetMouseSensitivityVert((int)(Widgets.sliderMouseSensitivityVert.slider.value))
+   $hf2pPreferences.SetMouseSensitivityHor((int)(Widgets.sliderMouseSensitivityHor.slider.value))
+   $hf2pPreferences.SetMouseSensitivityVehicleVert((int)(Widgets.sliderMouseSensitivityVehicleVert.slider.value))
+   $hf2pPreferences.SetMouseSensitivityVehicleHor((int)(Widgets.sliderMouseSensitivityVehicleHor.slider.value))
+   $hf2pPreferences.SetMouseAcceleration((int)(Widgets.sliderMouseAcceleration.slider.value))
+   $hf2pPreferences.SetMouseFilter(Widgets.buttonMouseFilter.selected)
+   $hf2pPreferences.SetInvertMouse(Widgets.buttonInvertMouse.selected)
+   $hf2pPreferences.SetToggleCrouch(Widgets.buttonToggleCrouch.selected)
+   GenerateEvent("OnApplyFinished")
+   
+   return false
+end
+
+func OnSubscreenBtnClick(p:params):bool
+   var pp : params
+   pp.target := p.widget.target
+   GenerateEvent("OnShowSubscreen", pp)
+   return false
+end
+
+func OnRebindSelected(p:params):bool
+   GenerateEvent("onRebindSelectedLower")
+   return false
+end
+
+handle OnEnteringState("Initial")
+end          
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+end  
+        
+handle OnEnteringState("Visible")
+   Log("ui~states_folowing", "Entered visible")
+   Init()
+   StartDefaultBlinking(0.5, 1.0)
+   Set("visible", true)
+end  
+
+override SwitchToScreen // ()
+   Log("ui~content", "Audio setting SwitchSlide")
+   Props.visible := true
+end
+
+override PrepareSlide // ()
+   Log("ui~content", "Audio setting EnableSlide")
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   GenerateEvent("OnEnterNewTab")
+   Props.visible := true
+end
+
+override PrepareHideSlide // ()
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      Log("ui~content", "Audio setting DisableSlide")
+      Props.visible := false
+      SetStateName("Initial")
+   end
+end
+end

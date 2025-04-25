@@ -1,0 +1,108 @@
+import ssl.lib.logging
+import ssl.lib.objects
+import ssl.lib.types
+import ssl.observables
+import ssl.lib.ui.bindings.bindings
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_data
+
+/***************************************************************
+* GL_Respawn
+*
+***************************************************************/   
+class GL_Respawn : UiSslBindableBase
+   var is_auto_respawn_countdown       : ObservableProperty = null
+   
+   var is_early_respawn_enabled        : ObservableProperty = null
+   var is_early_respawn_requested      : ObservableProperty = null
+  
+   var killer_uid                      : GL_UID             = null
+   var killer_damage_type              : ObservableProperty = null
+end
+
+/***************************************************************
+* GL_MatchResult
+*
+***************************************************************/   
+class GL_MatchResult : UiSslBindableBase
+   var tie_victory_defeat              : ObservableProperty = null
+end
+
+/***************************************************************
+* GL_IngameWidget
+*
+***************************************************************/   
+class GL_IngameWidget : UiSslBindableBase
+   var state                           : ObservableProperty = null
+   
+   func IsVisible() : bool
+      return (int)state.Get() == $uiEnums.INGAME_WIDGET_STATE_VISIBLE
+   end
+   
+   func GetState() : int
+      return (int)state.Get()
+   end
+end
+
+/***************************************************************
+* UiIngame
+*
+***************************************************************/   
+class UiIngame : UiSslBindableBase
+   var state                           : ObservableProperty = null
+   var state_timer                     : ObservableProperty = null
+
+   var system_menu                     : GL_IngameWidget = null
+   var scoreboard                      : GL_IngameWidget = null
+   var chat                            : GL_IngameWidget = null 
+   var mouse_inversion                 : GL_IngameWidget = null
+   
+   var system_menu_close_request       : ObservableProperty = null
+
+   var respawn                         : GL_Respawn         = null
+   var match_result                    : GL_MatchResult     = null
+
+   var scoring_event                   : ObservableProperty = null
+   var medal                           : ObservableProperty = null
+
+   var game_mode_id                    : ObservableProperty = null
+   var team_index                      : ObservableProperty = null
+
+   var loadout_index_armor_desired     : ObservableProperty = null
+   var loadout_index_weapon_desired    : ObservableProperty = null
+
+   var character_index_desired         : ObservableProperty = null
+
+   func UiIngame()
+      upcomingChallenges         := new GL_IngameWidget()
+      upcomingChallenges.state   := $OM.Property("hidden")
+   end
+   
+   native func ScoringEventNext()
+   native func MedalNext()
+
+   native func EarlyRespawnRequest()
+   native func IsTutorialLevel() : bool
+
+   // ssl-only
+   var isIngame                        : ObservableProperty = $OM.Property(false)
+   var upcomingChallenges              : GL_IngameWidget    = null
+   
+   func IsTeamMode() : bool
+      return (int)team_index.Get() >= 0
+   end
+   
+   func HideChat()
+      if ((int)$UiIngame.chat.state.Get() != $uiEnums.INGAME_CHAT_STATE_NONE)
+         $UiIngame.chat.state.Set($uiEnums.INGAME_CHAT_STATE_NONE)
+      end               
+   end
+   
+   func DeactivateChat()
+      var chatState : int = (int)$UiIngame.chat.state.Get()
+      if (chatState == $uiEnums.INGAME_CHAT_STATE_INPUT_ALL or chatState == $uiEnums.INGAME_CHAT_STATE_INPUT_TEAM)
+         $UiIngame.chat.state.Set($uiEnums.INGAME_CHAT_STATE_VISIBLE)
+      end                     
+   end
+end
+var $UiIngame : UiIngame

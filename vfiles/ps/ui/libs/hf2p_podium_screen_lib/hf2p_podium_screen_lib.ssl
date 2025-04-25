@@ -1,0 +1,34 @@
+import ssl.lib.ui.ui_widget_container
+
+class UiFirstPlaceAnimContainer : UiWidgetContainer
+
+handle OnEnterState("Initial") 
+   Props.visible := false
+end
+
+handle OnEnteringState("Visible")
+   Props.visible := true
+end
+end
+
+class UiSecondPlaceAnimContainer : UiWidgetContainer
+
+handle OnEnterState("Initial") 
+   Props.visible := false
+end
+
+handle OnEnteringState("Visible")
+   Props.visible := true
+end
+end
+
+class UiThirdPlaceAnimContainer : UiWidgetContainer
+
+handle OnEnterState("Initial")
+   Props.visible := false
+end
+
+handle OnEnteringState("Visible")
+   Props.visible := true
+end
+end

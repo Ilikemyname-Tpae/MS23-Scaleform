@@ -1,0 +1,73 @@
+import ui.libs.hf2p_MainMenu_lib.hf2p_MainMenu_lib
+
+class UiGoldScreen : UiFullscreenScreen
+   handle OnEnterState("Visible")
+      GenerateEvent("UpdateGoldPage")
+      GenerateEvent("#BackBtnEnabled")
+   end
+   
+   handle OnEnterState("Initial")
+      GenerateEvent("#BackBtnDisabled")
+      ((UiWidget)((UiWidget)GetWidget("screenAttach")).GetWidget("BuyGoldSplashScreen")).ForceFinishStateChange()
+   end
+   
+end
+
+class UiGoldSplashScreen : UiWidgetContainer
+   
+   handle OnEnteringState("Hidden")
+      Props.visible := false
+   end
+   
+   handle OnEnteringState("Visible")
+      Props.visible := true
+   end
+   
+   handle OnEnterState("Visible")
+      SetStateName("Hidden")
+   end
+   
+   func OnGoldPurchasingFinished(p : params) : bool
+      var index : int = p.opParam.index
+      var amount : int = p.opParam.amount
+      var offerId : string = p.opParam.offer
+      var contWgt : UiWidget = (UiWidget)GetWidget("content")
+      var i : int
+      for i := 1 to 5
+         var wgt : UiWidget = (UiWidget)contWgt.GetWidget("GoldAnim" + (string)i)
+         if i == index
+            wgt.Props.visible := true
+            wgt.Widgets.goldValueTf.textField := (string)amount
+            wgt.GotoAndPlay(1)
+         else
+            wgt.Props.visible := false
+            wgt.GotoAndStop(1)
+         end
+      end
+      ((UiWidget)contWgt.GetWidget("glowAnim")).GotoAndPlay(1)
+      ((UiWidget)contWgt.GetWidget("wingsAnim")).GotoAndPlay(1)
+      SetStateName("Visible")
+      return false
+   end
+   
+   func OnBuyGoldSplashClick(p : params) : bool
+      ForceFinishStateChange()
+      return false
+   end
+end
+
+class GoldScrVM
+   
+   var btnEnabled : ObservableProperty = $OM.Property(true)
+   
+   func BackBtnEnabled(p : params) : bool
+      btnEnabled.Set(true)
+      return true
+   end
+   
+   func BackBtnDisabled(p : params) : bool
+      btnEnabled.Set(false)
+      return true
+   end
+   
+end

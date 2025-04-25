@@ -1,0 +1,738 @@
+import ssl.lib.logging
+import ssl.lib.types
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.user_data
+import ui.ui_matchmaking
+import ssl.hf2p.user_service
+import ui.root
+
+class UiPostgame : UiSlidingScreenPageMainMenu
+
+var   xpGained          : int = 0
+var   xpBonus           : int = 0
+var   xpCons            : int = 0
+var   xpComplete        : int = 0
+var   xpTotal           : int = 0
+var   xpTotalModif      : int = 0
+var   xpBoost           : bool = false
+var   crGained          : int = 0
+var   crBonus           : int = 0
+var   crTotal           : int = 0
+var   crTotalModif      : int = 0
+var   crBoost           : bool = false
+var   dec               : int = 0
+var   curCounter        : *
+var   statsVec          : vector
+var   medalsVec         : vector
+var   medalsTest        : vector
+var   subscribe         : bool = false
+var   isReplay          : bool = false
+
+handle OnChangeStateAny // ()
+   //delay kill, this, STATE_SKIP
+end
+
+handle OnChangeState("StatWaiting")
+   OnEnterStatWaiting()
+   if ($UiGlobals.notifications.session_reward_replayIdx != $uiEnums.NOTIFICATION_SESSION_REWARDS_UNDEFINED)
+      isReplay := true
+   end
+   StartWaitingReward()
+end
+
+handle OnEnterState("StatSequence")
+   delay kill, this, STATE_SKIP
+   $hf2pEngine.SetUIMusicId(2)
+   StatStateLayout() : 0.5
+   OnEnterPmStatStatic() : 6 , STATE_SKIP
+   //OnEnterPmChallengeState() : 6 , STATE_SKIP
+end
+
+handle OnLeavingState("StatSequence")
+   PlayStatAnim("fadeOut")
+end
+
+handle OnEnteringState("Visible")
+   GenerateEvent("#PostgameOpen")
+   var stateName : string = GetStateName()
+   OnEnteringVisible()
+end
+
+handle OnChangeState("Visible")
+   OnEnterVisible()
+end
+
+handle OnEnterState("ChallengeSequence")
+   // $root.CheckAllNotifications()
+   delay kill, this, STATE_SKIP
+   ChallengeStateLayout() : 1
+   EnterPmChallengeStatic() : 2 , STATE_SKIP
+end
+
+handle OnLeavingState("ChallengeSequence")
+   //PlayChallengesAnim("fadeOut")
+end
+
+func EnterPmChallengeStatic()
+   SetStateName("ChallengeStatic")
+end
+
+handle OnEnterState("ChallengeStatic")
+   ChallengeStateLayout()
+   //$root.CheckAllNotifications() : 1
+end
+
+handle OnEnterState("StatStatic")
+   StatStateLayout()
+   $root.CheckAllNotifications() : 1
+   GenerateEvent("PostmatchSkip")
+end
+
+handle OnEnteringState("Initial")
+   factLog("UI/POSTGAME", "Initial")
+   StopRewardWaiting()
+end
+
+handle OnEnterState("Initial")
+   GenerateEvent("#PostgameClose")
+   Props.visible := false
+end 
+
+func ChallengeStateLayout()
+   Widgets.statsBg.visible             := false
+   Widgets.rightCountersPanel.visible  := false
+   Widgets.rightBoostPanel.visible     := false
+   Widgets.consPanel.visible           := false
+   Widgets.nextMedalsBtn.visible       := false
+   Widgets.prevMedalsBtn.visible       := false
+   Widgets.medals.visible              := false
+   Widgets.challengesGrid.visible      := true
+   Widgets.bookmarkBtn0.visible        := true
+   //Widgets.bookmarkBtn1.visible        := true
+   //Widgets.bookmarkBtn2.visible        := true
+   if (GetStateName() == "ChallengeSequence")
+      PlayChallengesAnim("fadeIn")
+      Widgets.challengesGrid.StopBlinking()
+      Widgets.challengesGrid.StartDefaultBlinking(0 , 0.5)
+   elif (GetStateName() == "ChallengeStatic")
+      PlayChallengesAnim("none", false)
+      Widgets.challengesGrid.StopBlinking()
+   end   
+end
+
+func StartWaitingReward()
+   if (!$UiGlobals.notifications.IsWaitingRewardStats())
+      UpdateStats(null)
+   else      
+      if (! subscribe)
+         subscribe := true
+         $UiGlobals.notifications.isWaitingRewardStats.Subscribe(this, "UpdateStats")         
+      end
+   end
+end
+
+func StopRewardWaiting()
+   if (subscribe)
+      subscribe := false
+      $UiGlobals.notifications.isWaitingRewardStats.Unsubscribe(this, "UpdateStats")         
+   end
+end
+
+func FirePostmatchStarted()
+   GenerateEvent("PostmatchStarted")   
+end
+
+func OnEnteringVisible()   
+   isReplay                   := false
+   Props.visible              := false
+   FirePostmatchStarted()
+   factLog("UI/POSTGAME", "OnEntering")
+   GenerateEvent("AddXpNoAnim")
+   //$user_service.RequestData($UserDataStorage.local_user.uid.Get(), $uiEnums.USER_DATA_ARMOR_LOADOUT)
+   $hq.TextureRenderBipedPostmatch($UserDataStorage.local_user.uid.Get())
+   //$hq.TextureRenderBipedClassSelection($UserDataStorage.local_user.uid.Get(), GetClassKit(0), false)
+end
+
+func OnEnterVisible()
+   Log("ui~postgame", "PostGame OnChangeState Visible")
+   Props.visible := true
+   Widgets.waitingInfo.visible := false
+   Widgets.prevMedalsBtn.visible := false
+   Widgets.nextMedalsBtn.visible := false
+   Widgets.challengesGrid.visible := false
+   Widgets.bookmarkBtn0.visible := true
+   //Widgets.bookmarkBtn1.visible := true
+   //Widgets.bookmarkBtn2.visible := true
+   Widgets.statsBg.visible := true
+   Widgets.medals.visible := true
+   Widgets.rightCountersPanel.visible := true
+   Widgets.rightBoostPanel.visible := true
+   Widgets.consPanel.visible := true
+   Widgets.spaceBg.plrAttach.visible := true
+   Widgets.spaceBg.GotoAndStop("none")
+   StopRewardWaiting()
+   SetStateName("StatWaiting")
+end
+
+func OnEnterPmChallengeState()
+   GenerateEvent("#InvalidatePmChallenges")
+   SetStateName("ChallengeSequence")
+end
+
+func OnEnterPmStatStatic()
+   SetStateName("StatStatic")
+end
+
+func PlayStatAnim(state : string, play : bool = true)
+   // fadeIn fadeOut none
+   if play
+      Widgets.statsBg.GotoAndPlay(state)
+      Widgets.medals.GotoAndPlay(state)
+      Widgets.rightCountersPanel.GotoAndPlay(state)
+      Widgets.consPanel.GotoAndPlay(state)
+      Widgets.rightBoostPanel.GotoAndPlay(state)
+   else
+      Widgets.statsBg.GotoAndStop(state)
+      Widgets.medals.GotoAndStop(state)
+      Widgets.rightCountersPanel.GotoAndStop(state)
+      Widgets.consPanel.GotoAndStop(state)
+      Widgets.rightBoostPanel.GotoAndStop(state)
+   end
+end
+
+func PlayConsecutiveAnim(state : string, play : bool = true)
+   if play
+      Widgets.consPanel.consecutiveBar.GotoAndPlay(state)
+   else
+      Widgets.consPanel.consecutiveBar.GotoAndStop(state)
+   end
+end
+
+func PlayChallengesAnim(state : string, play : bool = true)
+   if play
+      Widgets.challengesGrid.GotoAndPlay(state)
+   else
+      Widgets.challengesGrid.GotoAndStop(state)
+   end   
+end
+
+func GetIsWait() : bool
+   var isWaiting : bool = (bool) $UiGlobals.notifications.isWaitingRewardStats.Get()
+   return isWaiting   
+end
+
+override SaveState //() : params
+   var stateName : string = GetStateName()
+   if (stateName == "StatWaiting")
+      stateName := "Visible"
+   else 
+      stateName := "StatStatic"
+   end
+   var ret : params
+   ret.stateName := stateName
+   return ret
+end
+
+override LoadState //() : params
+   if (! IsVoid(p.stateName))
+      var stateName : string = p.stateName
+      if (stateName != GetStateName())
+         SetStateName(p.stateName)
+      end
+   end
+   return true
+end
+
+func UpdateStats(val : *)
+   if (GetIsWait())
+      return 
+   end
+   
+   StopRewardWaiting()
+   
+   factLog("UI/POSTGAME", "UpdateStats")
+   var rewards    : vector             = $UiGlobals.notifications.session_rewards.Get()
+   var versionIdx : int                = rewards.Count() - 1
+   if (isReplay)
+      versionIdx := $UiGlobals.notifications.session_reward_replayIdx
+      $UiGlobals.notifications.session_reward_replayIdx := -1
+   end
+   var notif      : NT_SessionRewards  = rewards.Get(versionIdx)
+   xpGained := (int)(notif.xp.Get())
+   xpBonus := (int)(notif.xp_bonus.Get())
+   xpCons  := (int)(notif.xp_consecutive_bonus.Get())
+   xpComplete := (int)(notif.xp_game_complete_bonus.Get())
+   xpTotal := xpGained + xpBonus + xpCons + xpComplete
+   xpTotalModif := (int)(notif.xp_boosted.Get())
+   xpBoost := (bool)(notif.xp_has_booster.Get())
+   crGained := (int)(notif.cr.Get())
+   crBonus := (int)(notif.cr_bonus.Get())
+   crTotal := crGained + crBonus
+   crTotalModif := (int)(notif.cr_boosted.Get())
+   crBoost := (bool)(notif.cr_has_booster.Get())
+   if (notif.stats.Get().Count() > 0)
+      statsVec := notif.stats.Get()
+   end
+   if (notif.medals.Get().Count() > 0)
+      medalsVec := notif.medals.Get()
+   end
+   
+   CheckAccountModifiers()
+
+   $UiGlobals.notifications.MarkNotNew($uiEnums.NOTIFICATION_SESSION_LVLUP)
+   $UiGlobals.notifications.MarkNotNew($uiEnums.NOTIFICATION_CHALLENGE_COMPLETE)
+   $UiGlobals.notifications.MarkProcessedFirstByType($uiEnums.NOTIFICATION_SESSION_REWARDS)
+   
+   if (GetStateName() == "StatWaiting")
+      if (bool)$UiGlobals.IsPostMatchStatic.Get()
+         SetStateName("StatStatic")
+      else   
+         SetStateName("StatSequence")
+      end
+      $UiGlobals.IsPostMatchStatic.Set(true)
+   end
+end
+
+func StatStateLayout()
+   Widgets.waitingInfo.visible         := false
+   Widgets.bookmarkBtn0.visible        := true
+   //Widgets.bookmarkBtn1.visible        := true
+   //Widgets.bookmarkBtn2.visible        := true
+   Widgets.statsBg.visible             := true
+   Widgets.rightCountersPanel.visible  := true
+   Widgets.rightBoostPanel.visible     := true
+   Widgets.consPanel.visible           := true
+   Widgets.spaceBg.plrAttach.visible   := true
+   Widgets.challengesGrid.visible      := false
+   FillStats(false)
+   FillMedalCont()
+   FillRightPanelCont()
+   if (GetStateName() == "StatSequence")   
+      PlayStatAnim("fadeIn")
+      if (GetConsecutiveIdx() == -1)
+         PlayConsecutiveAnim("none")
+      else
+         PlayConsecutiveAnim("bar" + GetConsecutiveIdx())
+      end
+      ShowHidePlrRender(false)
+      ShowHidePlrRender(true) : 0.3
+   elif (GetStateName() == "StatStatic") 
+      PlayStatAnim("none" , false)
+      if (GetConsecutiveIdx() == -1)
+         PlayConsecutiveAnim("staticNone", false)
+      else   
+         PlayConsecutiveAnim("staticBar" + GetConsecutiveIdx(), false)
+      end   
+   end
+end
+   
+func ShowHidePlrRender(showRender : bool)
+   if (showRender)
+      Widgets.spaceBg.plrAttach.SetStateName("Visible")
+   else
+      Widgets.spaceBg.plrAttach.SetStateName("Hidden")
+   end
+end
+
+func GetConsecutiveIdx() : int
+   var ret : int = -1
+   var vec : vector = $UiGlobals.consecutiveBonuses.Get()
+   if (vec.Count() > 0)
+      var i : int
+      for i := 0 to vec.Count() - 1
+         var consecutive : GL_Consecutive_Bonus = (GL_Consecutive_Bonus)vec.Get(i)
+         if (xpCons == (int)consecutive.xp_amount.Get())
+            ret := i
+            break
+         end
+      end   
+   end
+   return ret
+end
+
+func MedalsCountAnim() : bool
+   var ret : bool = false
+   if (GetStateName() == "StatSequence")
+      return true
+   end
+   return ret
+end
+
+func GetClassKit(idx: int) : string
+      var ret : string
+      if (! IsVoid($UiGlobals.shop.race_shops.Get()) and $UiGlobals.shop.race_shops.Get().Count() > 0)
+         var shop       :  GL_ShopRace    = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get((int)$UserDataStorage.local_user.race.Get())
+         var section : GL_ShopSection = shop.FindInternalSection("section_career")
+         if section != null
+            var shelf :  GL_ShopShelf = section.FindShelf("shelf_bundles_start_kits")
+            if shelf != null
+               if shelf.items.Get().Count() > idx
+                  ret := (string)shelf.items.Get().Get(idx).value.Get()
+               end
+            end
+         end
+      end
+      return ret
+   end  
+
+func OnEnterStatWaiting()
+   Props.visible                        := true
+   Widgets.waitingInfo.visible          := true
+   Widgets.bookmarkBtn0.visible         := false
+   //Widgets.bookmarkBtn1.visible         := false
+   //Widgets.bookmarkBtn2.visible         := false
+   Widgets.statsBg.visible              := false
+   Widgets.rightCountersPanel.visible   := false
+   Widgets.rightBoostPanel.visible      := false
+   Widgets.consPanel.visible            := false
+   Widgets.medals.visible               := false
+   Widgets.spaceBg.plrAttach.visible    := false
+end
+
+func OnRewardBoxAnimFinished(p : params) : bool
+   Finalyze()
+   return true
+end
+
+func FillStats(anim : bool = true)
+   var   statsVector : vector    
+   var   stat        : params
+   var   i           : int
+   /* TEST
+   stat.statName     := "stat1"
+   stat.statCount    := 111
+   stat.statBonuses  := 678
+   stat.anim         := anim
+   statsVector.Push(stat.Clone())
+   
+   stat.statName     := "stat2"
+   stat.statCount    := 56
+   stat.statBonuses  := 768
+   stat.anim         := anim
+   statsVector.Push(stat.Clone())
+
+   stat.statName     := "stat3"
+   stat.statCount    := 345
+   stat.statBonuses  := 4545
+   stat.anim         := anim
+   statsVector.Push(stat.Clone())
+   
+   Widgets.statsBg.statCont.postMatchStatsList.SetData(statsVector)
+   if (anim)
+      StatsPanelStopCountAnim(statsVector) : 0.1
+   end
+   */
+   if (statsVec.Count() > 0)    
+      for i := 0 to statsVec.Count() - 1
+         var statName : string = (string)((GL_ComponentUI)$UiGlobals.componentsUI.Get((string)statsVec.Get(i).id.Get())).name.Get()
+         stat.statName     := statName
+         stat.statCount    := (int)statsVec.Get(i).count.Get()
+         stat.statBonuses  := (int)statsVec.Get(i).xp.Get()
+         stat.anim         := anim
+         statsVector.Push(stat.Clone())
+      end
+      Widgets.statsBg.statCont.postMatchStatsList.SetData(statsVector)
+      if (anim)
+         StatsPanelStopCountAnim(statsVector) : 0
+      end
+   end
+end
+
+func StatsPanelStopCountAnim(_vec :  vector)
+   var i : int
+   for i := 0 to _vec.Count() - 1
+      _vec.Get(i).anim := false
+   end
+end
+
+func FillRightPanelCont()
+   GenerateEvent("uiUpdatePlayerInfoNoAnim")
+   Widgets.rightCountersPanel.xp  := (string)xpGained
+   Widgets.rightCountersPanel.xpBonus := (string)xpBonus
+   Widgets.rightCountersPanel.xpCons := (string)xpCons
+   Widgets.rightCountersPanel.xpComplete := (string)xpComplete
+   Widgets.rightBoostPanel.xpTotal := (string)xpTotal
+   Widgets.rightBoostPanel.xpTotalModif := (string)xpTotalModif
+   Widgets.rightBoostPanel.crTotalModif := (string)crTotalModif
+   Widgets.rightBoostPanel.crTotal := (string)crTotal
+   Widgets.rightBoostPanel.rightCounterItemXPTotal.tfNum.text := (string)xpTotal //"0"
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfNum.text := (string)crTotal //"0"
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfNum.text := (string)xpTotalModif //"0"
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfNum.text := (string)crTotalModif //"0"
+end
+
+func FillMedalCont()
+   /* TEST
+   medalsTest.Clear()    
+   var   med        : params
+   med.name     := "medal_1"
+   medalsTest.Push(med.Clone())
+   med.name     := "medal_2"
+   medalsTest.Push(med.Clone())
+   med.name     := "medal_3"
+   medalsTest.Push(med.Clone())
+   
+   Widgets.medals.visible := true
+   Widgets.medals.ShowMedals(medalsTest, MedalsCountAnim())
+   */
+   Widgets.medals.visible := false
+   if (medalsVec.Count() > 0)
+      dec := 0
+      if (medalsVec.Count() > 10)
+         Widgets.prevMedalsBtn.visible := false//true
+         Widgets.nextMedalsBtn.visible := false//true
+      end
+      Widgets.medals.visible := true
+      Widgets.medals.ShowMedals(medalsVec, MedalsCountAnim())
+   end
+end
+
+func switchMedalsNext (p : params) : bool
+   var total : int = medalsVec.Count()
+   if ((total - dec) > 10)
+      dec := dec + 10
+   end
+   if (dec >= 40)
+      dec := 40
+   end
+   Widgets.medals.ShowMedals(medalsVec, MedalsCountAnim(), dec)
+   return false
+end
+
+func switchMedalsPrev (p : params) : bool
+   dec := dec - 10
+   if (dec <= 0)
+      dec := 0
+   end
+   Widgets.medals.ShowMedals(medalsVec, dec)
+   return false
+end
+
+func onMarkClicked0(p : params) : bool
+   if (GetStateName() != "StatSequence" and GetStateName() != "StatStatic")
+      delay kill, this, STATE_SKIP
+      SetStateName("StatStatic")
+   end
+   return false
+end
+
+func onMarkClicked1(p : params) : bool
+   if (GetStateName() != "ChallengeSequence" and GetStateName() != "ChallengeStatic")
+      delay kill, this, STATE_SKIP
+      SetStateName("ChallengeStatic")
+   end
+   return false
+end
+
+func onMarkClicked2(p : params) : bool
+   delay kill, this, STATE_SKIP
+   SetStateName("Scoreboard")
+   return false
+end
+
+func CheckAccountModifiers()
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.bgLine.visible := true
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.bgLine.visible := true
+   Widgets.rightBoostPanel.iconXpBooster.visible := true
+   Widgets.rightBoostPanel.iconCrBooster.visible := true
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.glowAnim.visible := false
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.glowAnim.visible := false
+   
+   Widgets.rightBoostPanel.rightCounterItemXPTotal.tfName.SetTextSize(38.0)
+   Widgets.rightBoostPanel.rightCounterItemXPTotal.tfNum.SetTextSize(38.0)
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfName.SetTextSize(38.0)
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfNum.SetTextSize(38.0)
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfName.SetTextSize(26.0)
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfNum.SetTextSize(26.0)
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfName.SetTextSize(26.0)
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfNum.SetTextSize(26.0)
+   
+   Widgets.rightBoostPanel.rightCounterItemXPTotal.tfName.y := 0
+   Widgets.rightBoostPanel.rightCounterItemXPTotal.tfNum.y := 0
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfName.y := 0
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfNum.y := 0
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfName.y := 6
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfNum.y := 6
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfName.y := 6
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfNum.y := 6
+   
+   Widgets.rightBoostPanel.iconXpBooster.alpha := 30
+   Widgets.rightBoostPanel.iconCrBooster.alpha := 30
+   
+   Widgets.rightBoostPanel.rightCounterItemXPTotal.tfName.alpha := 100
+   Widgets.rightBoostPanel.rightCounterItemXPTotal.tfNum.alpha := 100
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfName.alpha := 100
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfNum.alpha := 100
+   
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.bgLine.alpha := 30
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfName.alpha := 30
+   Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfNum.alpha  := 30
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.bgLine.alpha := 30
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfName.alpha := 30
+   Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfNum.alpha := 30
+   
+   if (xpBoost)
+      Widgets.rightBoostPanel.rightCounterItemXPTotal.tfName.alpha := 30
+      Widgets.rightBoostPanel.rightCounterItemXPTotal.tfNum.alpha := 30
+      
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.bgLine.alpha := 100
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfName.alpha := 100
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfNum.alpha  := 100
+      Widgets.rightBoostPanel.iconXpBooster.alpha := 100
+      
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.glowAnim.visible := true
+      Widgets.rightBoostPanel.rightCounterItemXPTotal.tfName.SetTextSize(26.0)
+      Widgets.rightBoostPanel.rightCounterItemXPTotal.tfNum.SetTextSize(26.0)
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfName.SetTextSize(33.0)
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfNum.SetTextSize(33.0)
+      Widgets.rightBoostPanel.rightCounterItemXPTotal.tfName.y := 6
+      Widgets.rightBoostPanel.rightCounterItemXPTotal.tfNum.y := 6
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfName.y := 0
+      Widgets.rightBoostPanel.rightCounterItemXPTotalModif.tfNum.y := 0
+   end
+   if (crBoost)
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfName.alpha := 30
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfNum.alpha := 30
+      
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.bgLine.alpha := 100
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfName.alpha := 100
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfNum.alpha := 100
+      Widgets.rightBoostPanel.iconCrBooster.alpha := 100
+      
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.glowAnim.visible := true
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfName.SetTextSize(26.0)
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfNum.SetTextSize(26.0)
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfName.SetTextSize(33.0)
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfNum.SetTextSize(33.0)
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfName.y := 6
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotal.tfNum.y := 6
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfName.y := 0
+      Widgets.rightBoostPanel.rightCounterItemCreditsTotalModif.tfNum.y := 0
+   end
+end
+
+func StartBlinking(blink : float)
+   StopBlinking()
+   StartDefaultBlinking(blink)
+end
+
+func skipPostMatchBtnClick(p:params):bool
+   delay kill, this, STATE_SKIP
+   if (GetStateName() == "StatSequence")
+      //OnEnterPmChallengeState()
+      SetStateName("StatStatic")
+   elif (GetStateName() == "ChallengeSequence")
+      SetStateName("ChallengeStatic")
+   elif (GetStateName() == "StatStatic" or GetStateName() == "ChallengeStatic" or GetStateName() == "Scoreboard")
+      //DoPostgameOut()
+   end
+   
+   return false
+end
+
+func Finalyze()
+   Log("ui~postgame", "Postgame_Finalyze")
+   //SetStateName("ChallengeStatic")
+end
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+
+end
+
+override PrepareHideSlide // ()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+   end
+end
+
+override DisableSlide // ()
+end
+
+end
+
+class UiPostgameVM : UiSlidingScreenMainMenuPageVM
+   
+   var wgt           : UiPostgame = null
+   var nick          : ObservableProperty = $OM.Calculated(this, "GetPlrName")
+   var pmChallenges  : ObservableProperty = $OM.Calculated(this, "GetPmChallenges")
+   var pmState       : ObservableProperty = $OM.Calculated(this, "GetPmState")
+   var closeVisible  : ObservableProperty = $OM.Calculated(this, "IsCloseBtnVisible")
+   var isOpened      : ObservableProperty = $OM.Property(false) 
+   
+   override InitOverride // (p : params)
+      wgt := p.widget
+   end
+   
+   func GetPlrName() : *
+      var ud   :  UserData = (UserData)$UserDataStorage.users.Get($UserDataStorage.local_user.uid.Get())
+      var val  : wstring    = ud.base.full_nickname.Get()
+      return val
+   end
+   
+   func PostgameOpen(p : params) : bool
+      isOpened.Set(true)
+      return true
+   end
+   
+   func PostgameClose(p : params) : bool
+      isOpened.Set(false)
+      return true
+   end
+   
+   func GetPmState() : string
+      var ret : string = ""
+      if (wgt.IsChangingStateInProgress() == false)
+         ret := wgt.GetStateName()
+      end
+      return ret
+   end
+   
+   func SkipBtnLabel() : string
+      return "lobby_btn_skip"
+   end
+   
+   func GetConsecutiveBarLabel(idx : int) : string
+      var ret : string = ""
+      var vec : vector = $UiGlobals.consecutiveBonuses.Get()
+      if (bool)isOpened.Get()
+         if (vec.Count() >= idx)
+            var consecutive : GL_Consecutive_Bonus = (GL_Consecutive_Bonus)vec.Get(idx)
+            ret := (string)(int)consecutive.xp_amount.Get() + " XP"
+         end
+      end   
+      return ret   
+   end
+   
+   func IsCloseBtnVisible() : bool
+      var ret : bool = false
+      if ((string)pmState.Get() == "StatSequence" or (string)pmState.Get() == "ChallengeSequence")
+         ret := true
+      end
+      return ret
+   end
+   
+   func InvalidatePmChallenges(p:params) : bool
+      pmChallenges.Invalidate()
+      return true
+   end
+   
+   func GetPmChallenges() : vector     
+      if (!(bool)isOpened.Get())
+         return new vector
+      end
+      var tmpVec : vector = $UiGlobals.GetUpcomingChallenges(6)      
+      var ret : vector
+      var i : int
+      for i := 0 to tmpVec.Count() -1
+         var p : params
+         p.challengeItemId := tmpVec.Get(i).itemId
+         ret.Push(p)
+      end
+      return ret 
+   end
+   
+end

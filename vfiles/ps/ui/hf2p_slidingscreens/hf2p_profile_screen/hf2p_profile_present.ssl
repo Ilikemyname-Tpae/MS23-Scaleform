@@ -1,0 +1,163 @@
+import ssl.lib.logging
+import ssl.lib.ui.ui_widget_container
+import ssl.hf2p.engine_ctrl
+import ssl.hf2p.ui_globals
+import ssl.hf2p.user_service
+import ui.root
+import ui.hf2p_SlidingScreens.hf2p_Lobby.hf2p_Lobby
+import ui.hf2p_SlidingScreens.hf2p_WeaponConf.hf2p_WeaponConf
+
+class ProfilePresentScreen : UiSlidingScreenPageMainMenu
+
+handle OnEnteringState("Initial")
+end   
+
+handle OnEnterState("Initial")
+   Set("visible", false)            
+   GenerateEvent("#CloseShop")
+end   
+
+handle OnEnteringState("Visible")
+   GenerateEvent("#ProfilePresentOpen")
+   Set("visible", true)       
+end   
+
+handle OnEnterState("Visible")
+   Log("ui~content", "OnEnterState")         
+end   
+
+func onLabelTabClicked() : bool
+   return false
+end
+
+func SetListSelection(p : params) : bool
+   Widgets.labelList.SetSelectionIdx(p.idx)
+   return false
+end
+
+override PrepareSlide // ()
+   if (GetStateName() != "Visible")
+      SetStateName("Visible")
+   end
+   EnableFakeBg()
+   GenerateEvent("#OpenedProfilePresent")
+   $UiGlobals.profileLabelOverride.Set(Get("DC").mouseOverItemId)
+end
+ 
+override PrepareHideSlide // ()
+   GenerateEvent("#HideShop")
+   $UiGlobals.profileLabelOverride.Set(null)
+end
+
+override DisableSlide // ()
+   if (GetStateName() != "Initial")
+      SetStateName("Initial")
+      $UiGlobals.profileLabelOverride.Set(null)
+   end
+end
+
+func EnableFakeBg()
+   var p: params
+   p.state := "profile_present"
+   GenerateEvent("ChangeFakeBackground", p)
+end
+
+end // ProfilePresentScreen
+
+class ProfilePresentVM  : ItemShopBaseVM
+   
+   var nick             : ObservableProperty = $OM.Calculated(this, "GetUserName")
+   
+   func ProfilePresentOpen() : bool
+      descpanelVM.itemId.Set(mouseOverItemId.Get())
+      offersModuleVM.UpdateItemId((string)mouseOverItemId.Get())
+      itemList.Invalidate()
+      nick.Invalidate()
+      SetListSelection((int)selectedIdx.Get())
+      return false
+   end
+   
+   override GetItemList
+      var   vec : vector = new vector
+      if isActive.Get() == true
+         if (!IsVoid($UiGlobals.shop.race_shops))
+            var shop = (GL_ShopRace)$UiGlobals.shop.race_shops.Get().Get($UserDataStorage.local_user.race.Get())
+            if (!IsVoid(shop.FindInternalSection("section_account_labels")))
+               var section = shop.FindInternalSection("section_account_labels")
+               if (section != null and ! IsVoid(section.FindShelf("shelf_account_labels")))
+                  var shelf = section.FindShelf("shelf_account_labels")
+                  if (shelf != null and ! IsVoid(shelf.items.Get()))
+                     //label := (string)shelf.items.Get().Get(0).value.Get()
+                     vec := shelf.items.Get()
+                  end
+               end
+            end
+         end
+      end
+      return vec
+   end
+   
+   func OpenedProfilePresent(p : params) : bool
+      isActive.Set(true)
+      BiLogShopState()
+      return true
+   end
+   
+   override GetBiShopName//() : string
+      return $uiEnums.UI_BI_SHOP_PROFILE_PRESENT
+   end
+   
+   override UpdateSelectedItem
+      descpanelVM.itemId.Set(mouseOverItemId.Get())
+      offersModuleVM.UpdateItemId((string)mouseOverItemId.Get())
+   end 
+   
+   func OnLabelAssignBtnClicked(p : params) : bool
+      var labelId : string = (string)selectedItemId.Get()
+      $user_service.SetAccountLabel(labelId)
+      return false
+   end
+   
+   func GetDemoLirLabelIcon() : string
+      var ret : string = ""
+      var uiComp     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(mouseOverItemId.Get())
+      ret := (string)uiComp.icon.Get()
+      if (ret == "" or ret == "unknown" or ret == "no_icon")
+         ret := "defaultPlayerNameplate"
+      end
+      return ret
+   end
+   
+   func GetPlrEmblemIcon() : string
+      var ret : string = ""
+      var ud : UserData = GetUserData()
+      var compUi : GL_ComponentUI = (GL_ComponentUI)$UiGlobals.componentsUI.Get(ud.customizations.emblem.Get())
+      return (string)compUi.icon.Get()
+   end
+   
+   func GetDemoCardLabelIcon() : string
+      var ret : string = ""
+      var uiComp     : GL_ComponentUI  = (GL_ComponentUI)$UiGlobals.componentsUI.Get(mouseOverItemId.Get())
+      ret := (string)uiComp.icon_big.Get()
+      return ret
+   end
+   
+   func GetUID() : *
+      return $UserDataStorage.local_user.uid.Get()
+   end
+   
+   func IsLocalUser() : bool
+      return $UserDataStorage.IsLocalUID(GetUID())
+   end
+   
+   func GetUserName() : *
+      var ud   : UserData  = GetUserData()
+      var ret  : wstring    = ud.base.full_nickname.Get()
+      return ret
+   end
+
+   func GetUserData() : UserData
+      var ret : UserData = (UserData) $UserDataStorage.users.Get(GetUID())
+      return ret
+   end     
+end
